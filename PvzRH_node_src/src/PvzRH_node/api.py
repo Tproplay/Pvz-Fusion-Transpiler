@@ -210,6 +210,12 @@ class GameAPP:
     def trigger_game_over(reason="Defeated!"): nodes.game_over(reason=format_string(reason))
     @staticmethod
     def trigger_game_win(): nodes.game_win()
+    
+    @staticmethod
+    def get_buff(buff_enum):
+        if isinstance(buff_enum, Enum):
+            buff_enum = buff_type.value #type: ignore
+        nodes.get_travel_buff(buff_enum=buff_enum)
 
 class InGameUI:
     @staticmethod
@@ -426,7 +432,7 @@ class Lawnf:
         """Returns the list port for all plants on the board, to be used in For_each_plant loops."""
         return nodes.get_all_plants().plants
 
-    class all_plants:
+    class for_each_plant_on_lawn:
         """
         Returns a Plant Object for each plant on the Board.
         """
@@ -442,3 +448,6 @@ class Lawnf:
             ctx.trigger_stack.pop()
 
     
+
+
+

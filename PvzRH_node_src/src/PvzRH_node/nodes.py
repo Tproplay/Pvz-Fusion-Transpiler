@@ -233,6 +233,7 @@ class show_text(BaseNode):
         wire(duration, self.id, "持续时间", enforce_float)
 
 class get_travel_entry(BaseNode):
+    """Deprecated"""
     def __init__(self, buff_type=1, entry_index=0): super().__init__("GetTravelEntryNode", trigger_PortName="触发", buffType=buff_type, entryIndex=entry_index)
 
 class create_grave(BaseNode):
@@ -602,6 +603,38 @@ class random_trigger(BaseNode):
         wire(count, self.id, "触发数量", enforce_int)
         wire(allow_repeat, self.id, "重复触发", enforce_bool)
 
+class get_travel_buff(BaseNode):
+    def __init__(self, buff_enum):
+        super().__init__(
+            "GetTravelBuffNode", 
+            trigger_PortName="触发", 
+            onSuccess_PortName="成功"
+        )
+        
+        if hasattr(buff_enum, "value"):
+            asset_class, internal_id = buff_enum.value
+        else:
+            asset_class, internal_id = buff_enum
+
+        if not hasattr(ctx, 'variables'):
+            ctx.variables = []
+            
+        asset_rid = len(ctx.variables) + 80000 
+        
+        self.kwargs["buff"] = {"rid": asset_rid}
+        
+        ctx.variables.append({
+            "rid": asset_rid,
+            "type": {
+                "class": asset_class, 
+                "ns": "",
+                "asm": "Assembly-CSharp"
+            },
+            "data": {
+                "value__": internal_id
+            }
+        })
+        
 # --- INTEGER VARIABLES ---
 class get_int_variable_value(BaseNode):
     def __init__(self, variable=None):
