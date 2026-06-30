@@ -1,0 +1,13 @@
+# Python virtual environment
+.venv/
+
+# Build and distribution outputs
+build/
+dist/
+output/
+
+# Project levels data
+Levels/
+
+# Python pip editable metadata folder
+PvZRH_node.egg-info/
