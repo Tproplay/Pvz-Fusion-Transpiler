@@ -4,19 +4,16 @@ import json
 import math
 from typing import Dict, List, Any
 
-class CompilerSettings:
-    def __init__(self):
-        # 0 = Heavy optimization + grid deduplication (Default production mode)
-        # 1 = Group per line
-        # 2 = Group by immediate parent indentation block
-        # 3 = Group by outer grandparent indentation block
-        self.group_level = 0
+class CompilerSetting:
+    """Contains setting related to compiler and output layout."""
+    group_level: int = 0
+    spacing_x: float = 220.0
+    spacing_y: float = 170.0
+    hierarchical_spacing_x: float = 240.0
+    hierarchical_spacing_y: float = 180.0
 
-    def export_file(self, group_level=0):
-        """Configures the structural layout pass mapping system."""
-        self.group_level = group_level
+settings = CompilerSetting()
 
-settings = CompilerSettings()
 
 class CompilerState:
     config: Dict[str, Any]
@@ -33,6 +30,17 @@ class CompilerState:
         self.trigger_stack = [] 
         self.registry = {}      
         self.variables = []
+
+        # --- Integrated Compiler Settings ---
+        # 0 = Heavy optimization + grid deduplication (Default production mode)
+        # 1 = Group per line
+        # 2 = Group by immediate parent indentation block
+        # 3 = Group by outer grandparent indentation block
+        self.group_level = settings.group_level
+        self.spacing_x = settings.spacing_x
+        self.spacing_y = settings.spacing_y
+        self.hierarchical_spacing_x = settings.hierarchical_spacing_x
+        self.hierarchical_spacing_y = settings.hierarchical_spacing_y
         self.groups_map = {}  # Tracks line-by-line source statements
 
     def generate_uuid(self) -> str:
@@ -68,8 +76,6 @@ class CompilerState:
         return original_count - len(self.connections)
     
     def export(self) -> None:
-        from .core import settings  # Import locally to prevent circular locks
-        
         file_path = os.path.join(self.config["output"], f"{self.config['name']}.json")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
@@ -86,7 +92,7 @@ class CompilerState:
         # =====================================================================
         # PASS 1: GRAPH OPTIMIZATION (DEDUFICATION) - Activated ONLY at Level 0
         # =====================================================================
-        if settings.group_level == 0:
+        if self.group_level == 0:
             DEDUPE_TYPES = {
                 "IntValueNode", "FloatValueNode", "BoolValueNode", "StringValueNode",
                 "OnBoardStartNode", "OnPlantCreateNode", "OnPlantClickNode", 
@@ -137,12 +143,11 @@ class CompilerState:
         # =====================================================================
         node_positions = {}
 
-        if settings.group_level == 0:
-            # High-efficiency Production Packing Grid Layout
+        if self.group_level == 0:
             N = len(self.nodes)
             grid_size = int(math.ceil(math.sqrt(N))) if N > 0 else 1
-            X_SPACING = 220.0
-            Y_SPACING = 170.0
+            X_SPACING = self.spacing_x
+            Y_SPACING = self.spacing_y
             
             in_degree = {node["id"]: 0 for node in self.nodes}
             adj = {node["id"]: [] for node in self.nodes}
@@ -178,8 +183,8 @@ class CompilerState:
             current_x = 0.0
             current_y = 120.0
             
-            X_SPACING = 240.0
-            Y_SPACING = 180.0
+            X_SPACING = self.hierarchical_spacing_x
+            Y_SPACING = self.hierarchical_spacing_y
             ROW_RESET_LIMIT = 3.0
             
             group_index = 0
@@ -232,7 +237,7 @@ class CompilerState:
         num_nodes = len(self.nodes)
         
         active_groups = []
-        if settings.group_level >= 1:
+        if self.group_level >= 1:
             active_groups = [grp for grp in self.groups_map.values() if grp["nodeIds"]]
             
         num_groups = len(active_groups)
@@ -275,7 +280,7 @@ class CompilerState:
             current_rid += 1
 
         # Only register NodeGroup structures if grouping is active (>= 1)
-        if settings.group_level >= 1:
+        if self.group_level >= 1:
             for code_line, grp in self.groups_map.items():
                 if not grp["nodeIds"]:
                     continue
@@ -305,4 +310,3 @@ class CompilerState:
 
 
 ctx = CompilerState()
-

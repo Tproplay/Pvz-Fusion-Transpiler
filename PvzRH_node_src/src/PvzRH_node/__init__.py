@@ -1,5 +1,5 @@
 import atexit
-from .core import (ctx as _ctx,settings)
+from .core import (ctx as _ctx, settings)
 from . import nodes as nodes
 
 # API Setup
@@ -43,8 +43,6 @@ from .TypeMgr import (
     KeyCode,
     ZombieAnimation
 )
-
-from .functions import *
 
 
 def Config(output="./", name="Untitled"):
@@ -107,9 +105,6 @@ __all__ = [
     "SoundType",
     "KeyCode",
     "ZombieAnimation",
-
-    # Functions
-    "format_string",
 
     # Modules
     "nodes",

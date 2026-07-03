@@ -2,7 +2,8 @@ from . import nodes
 from .core import ctx
 from .node_base import ExecutionPath, BaseNode
 from enum import Enum
-
+from .TypeMgr import PlantType, ZombieAnimation
+from typing import Any
 
 class If:
     """Syntactic sugar that acts as a safe visual scripting 'if/elif/else' block."""
@@ -514,11 +515,11 @@ class Plant:
     def add_shield(self, amount):
         nodes.give_plant_shield(plant=self.ref, shield=amount)
 
-    def move(self, row, col, force=False):
+    def move(self, col, row, force=False):
         """force bypasses all ingame checks."""
         nodes.move_plant(plant=self.ref, row=row, column=col, force=force)
         
-    def move_relative(self, row_diff, col_diff, force=False):
+    def move_relative(self, col_diff, row_diff, force=False):
         """force bypasses all ingame checks."""
         nodes.move_plant(plant=self.ref, row=self.row + row_diff, column=self.col + col_diff, force=force)
 
@@ -552,7 +553,7 @@ class Zombie:
     def move(self, row, col):
         nodes.move_zombie(zombie=self.ref, row=row, column=col)
 
-    def play_animation(self, anim_name : str | ZombieAnimation = "idle"): # type: ignore
+    def play_animation(self, anim_name : str | ZombieAnimation | Any= "idle"): # type: ignore
         if isinstance(anim_name, Enum):
             anim_name = anim_name.value
         nodes.play_zombie_anim(zombie=self.ref, animation_name=anim_name)

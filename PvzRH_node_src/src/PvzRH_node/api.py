@@ -2,7 +2,7 @@ from . import nodes
 from .core import ctx
 from .node_base import ExecutionPath, PortReference
 from .extensions import Plant, Zombie, If
-from .functions import format_string
+from .StdLib import format_string
 
 from enum import Enum
 from .TypeMgr import *
