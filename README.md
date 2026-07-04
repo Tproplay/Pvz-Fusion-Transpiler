@@ -30,9 +30,9 @@ Obtain the latest compiled release file from the repository's [releases section]
 ### 💻 Step 2: Install via Command Line
 Open your terminal or command prompt, navigate to the folder containing your downloaded `.whl` file, and execute the following installation command:
 
-`pip install PvzRH_node-<version>-py3-none-any.whl`
+`pip install pvzrh_node-3.7-py3-none-any.whl`
 
-*(Alternatively, if you are installing it directly to a local development sandbox environment, use: `pip install --force-reinstall PvzRH_node-<version>-py3-none-any.whl`)*
+*(Alternatively, if you are installing it directly to a local development sandbox environment, use: `pip install --force-reinstall pvzrh_node-3.7-py3-none-any.whl`)*
 
 ---
 
