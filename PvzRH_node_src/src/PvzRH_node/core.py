@@ -75,7 +75,14 @@ class CompilerState:
         
         return original_count - len(self.connections)
     
+    
     def export(self) -> None:
+        self.group_level = settings.group_level
+        self.spacing_x = settings.spacing_x
+        self.spacing_y = settings.spacing_y
+        self.hierarchical_spacing_x = settings.hierarchical_spacing_x
+        self.hierarchical_spacing_y = settings.hierarchical_spacing_y
+        
         file_path = os.path.join(self.config["output"], f"{self.config['name']}.json")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 

@@ -474,8 +474,13 @@ class ForEachPlant:
         return self
         
     def __exit__(self, exc_type, exc_val, exc_tb):
-        ctx.trigger_stack.pop()   
+        ctx.trigger_stack.pop()
 
+    @property
+    def on_complete(self):
+        """Returns a clean context manager for the post-loop timeline track."""
+        return ExecutionPath(self.node.id, "循环完成")
+    
     @property
     def plant(self):
         """Returns the current iterated plant wrapped in a Smart Object."""

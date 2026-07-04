@@ -2,8 +2,6 @@ from . import nodes
 from .core import ctx
 from .node_base import ExecutionPath, PortReference
 from .extensions import Plant, Zombie, If
-from .StdLib import format_string
-
 from enum import Enum
 from .TypeMgr import *
 
@@ -167,59 +165,10 @@ class Spawner:
             from .node_base import ExecutionPath
             return ExecutionPath(self.node.id, "创建成功")
 
-class GameAPP:
-    @staticmethod
-    def spawn_particle(row, col): nodes.create_particle(row=row, column=col)
-    @staticmethod
-    def spawn_grave(row, col): nodes.create_grave(row=row, column=col)
-    @staticmethod
-    def spawn_crater(row, col): nodes.create_crater(row=row, column=col)
-    @staticmethod
-    def spawn_ladder(row, col): nodes.create_ladder(row=row, column=col)
-    @staticmethod
-    def spawn_ice_block(row, col, plant_type=-1): 
-        if isinstance(plant_type, Enum):
-            plant_type = plant_type.value
-        plant_type = nodes.plant_type_value(val=plant_type)
-        nodes.create_ice_block(row=row, column=col, plant_type=plant_type)
-
-    @staticmethod
-    def trigger_cherry_explosion(row, col, damage=1800): nodes.create_cherry_explode(row=row, column=col, damage=damage)
-    @staticmethod
-    def trigger_doom_explosion(row, col, damage=1800, create_pit=True): nodes.create_doom_shroom_effect(row=row, column=col, damage=damage, set_pit=create_pit)
-    @staticmethod
-    def trigger_zombie_explosion(row, col): nodes.create_zombie_explode(row=row, column=col)
-    @staticmethod
-    def trigger_jalapeno(row, damage=1800): nodes.create_jalapeno_effect(row=row, damage=damage)
-    @staticmethod
-    def trigger_ice_shroom(duration): nodes.create_ice_shroom_effect(duration=duration)
-    @staticmethod
-    def play_sound(sound_id : SoundType):
-        if isinstance(sound_id, Enum):
-            sound_id = sound_id.value  # type: ignore 
-        nodes.play_sound(sound_id=sound_id)
-
-    @staticmethod
-    def display_text(*args, duration=3.0):
-        """Pass any mix of text and variables, and it will auto-format and display them!"""
-        final_text = format_string(*args)
-        nodes.show_text(text=final_text, duration=duration)
-
-    
-    @staticmethod
-    def trigger_game_over(reason="Defeated!"): nodes.game_over(reason=format_string(reason))
-    @staticmethod
-    def trigger_game_win(): nodes.game_win()
-    
-    @staticmethod
-    def get_buff(buff_enum):
-        if isinstance(buff_enum, Enum):
-            buff_enum = buff_type.value #type: ignore
-        nodes.get_travel_buff(buff_enum=buff_enum)
-
 class InGameUI:
     @staticmethod
     def display_info_card(big_title, small_title) -> None: 
+        from .StdLib import format_string
         nodes.create_info_card(big_title=format_string(big_title), small_title=format_string(small_title))
         
     @staticmethod
@@ -242,6 +191,13 @@ class InGameUI:
             plant_type = plant_type.value
         plant_type = nodes.plant_type_value(val=plant_type)
         nodes.create_plant_card(row=row, column=col, plant_type=plant_type)
+    
+    @staticmethod
+    def display_text(*args, duration=3.0):
+        """Pass any mix of text and variables, and it will auto-format and display them!"""
+        from .StdLib import format_string
+        final_text = format_string(*args)
+        nodes.show_text(text=final_text, duration=duration)
 
 class Mouse:
     @staticmethod
@@ -253,14 +209,6 @@ class Mouse:
     @staticmethod
     def theItemType():
         return nodes.on_mouse_click().item
-
-class Repeat:
-    """A visual 'For Loop' Context Manager."""
-    def __init__(self, count): self.node = nodes.for_loop_node(count=count)
-    def __enter__(self):
-        ctx.trigger_stack.append(ExecutionPath(self.node.id, "循环体"))
-        return self.node.index
-    def __exit__(self, *args): ctx.trigger_stack.pop()
 
 class Random:
     
@@ -415,7 +363,52 @@ class _BoardState:
 Board = _BoardState()
 
 class Lawnf:
+    """Contains methods for interacting with the in-game events."""
     
+    @staticmethod
+    def spawn_particle(row, col): nodes.create_particle(row=row, column=col)
+    @staticmethod
+    def spawn_grave(row, col): nodes.create_grave(row=row, column=col)
+    @staticmethod
+    def spawn_crater(row, col): nodes.create_crater(row=row, column=col)
+    @staticmethod
+    def spawn_ladder(row, col): nodes.create_ladder(row=row, column=col)
+    @staticmethod
+    def spawn_ice_block(row, col, plant_type=-1): 
+        if isinstance(plant_type, Enum):
+            plant_type = plant_type.value
+        plant_type = nodes.plant_type_value(val=plant_type)
+        nodes.create_ice_block(row=row, column=col, plant_type=plant_type)
+
+    @staticmethod
+    def trigger_cherry_explosion(row, col, damage=1800): nodes.create_cherry_explode(row=row, column=col, damage=damage)
+    @staticmethod
+    def trigger_doom_explosion(row, col, damage=1800, create_pit=True): nodes.create_doom_shroom_effect(row=row, column=col, damage=damage, set_pit=create_pit)
+    @staticmethod
+    def trigger_zombie_explosion(row, col): nodes.create_zombie_explode(row=row, column=col)
+    @staticmethod
+    def trigger_jalapeno(row, damage=1800): nodes.create_jalapeno_effect(row=row, damage=damage)
+    @staticmethod
+    def trigger_ice_shroom(duration): nodes.create_ice_shroom_effect(duration=duration)
+    @staticmethod
+    def play_sound(sound_id : SoundType):
+        if isinstance(sound_id, Enum):
+            sound_id = sound_id.value  # type: ignore 
+        nodes.play_sound(sound_id=sound_id)
+    
+    @staticmethod
+    def trigger_game_over(reason="Defeated!"):
+        from .StdLib import format_string 
+        nodes.game_over(reason=format_string(reason))
+    @staticmethod
+    def trigger_game_win(): nodes.game_win()
+    
+    @staticmethod
+    def get_buff(buff_enum):
+        if isinstance(buff_enum, Enum):
+            buff_enum = buff_type.value #type: ignore
+        nodes.get_travel_buff(buff_enum=buff_enum)
+        
     @staticmethod
     def get_closest_zombie(row, col) -> Zombie:
         """Returns a Zombie Object."""

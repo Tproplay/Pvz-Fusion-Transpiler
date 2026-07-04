@@ -1,3 +1,5 @@
+"""Contains some useful functions and classes for level creation and manipulation."""
+
 from .extensions import *
 from .TypeMgr import KeyCode
 
@@ -26,6 +28,8 @@ def format_string(*args):
         current_chain = string_concat(a=current_chain, b=next_piece).result
 
     return current_chain
+
+from .api import *
 
 class _wasd_key:
     def __init__(self):
