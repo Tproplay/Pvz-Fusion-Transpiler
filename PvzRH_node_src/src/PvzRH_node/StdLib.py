@@ -63,5 +63,56 @@ class WASDPlant:
         with Trigger.OnKeyDown(self.wasd_keys.right):
             self.plant.move_relative(1, 0)
 
+class Dictionary:
+    """A Virtual Dictionary (Global State Manager) utilizing Native Variables."""
+    def __init__(self, schema: dict = None): #type: ignore
+        self._store = {}
+        if schema:
+            for key, initial_val in schema.items():
+                self.add_key(key, initial_val)
+
+    def add_key(self, key: str, initial_val): #type: ignore
+        if key in self._store: raise KeyError(f"Key '{key}' already exists!")
+            
+        if isinstance(initial_val, bool):
+            self._store[key] = BoolVar(start_val=initial_val)
+        elif isinstance(initial_val, float):
+            self._store[key] = FloatVar(start_val=initial_val)
+        elif isinstance(initial_val, int):
+            self._store[key] = IntVar(start_val=initial_val)
+        else:
+            raise TypeError("Unsupported Dictionary type. Use int, float, or bool.")
+
+    def __getitem__(self, key): return self._store[key]
+    def __setitem__(self, key, value): self._store[key].set(value)
+    def __getattr__(self, key): return self._store[key]
+    def __setattr__(self, key, value):
+        if key == "_store": super().__setattr__(key, value)
+        else: self._store[key].set(value)
+
+class Array:
+    """A Pre-Allocated Virtual Array utilizing Native Variables."""
+    def __init__(self, size: int, default_val=0):
+        self.size = size
+        self._store = []
+        
+        for _ in range(size):
+            if isinstance(default_val, bool): self._store.append(BoolVar(start_val=default_val))
+            elif isinstance(default_val, float): self._store.append(FloatVar(start_val=default_val))
+            elif isinstance(default_val, int): self._store.append(IntVar(start_val=default_val))
+
+    def __getitem__(self, index: int): return self._store[index]
+    def __setitem__(self, index: int, value): self._store[index].set(value)
+    def __len__(self): return self.size
+
+    def read(self, index_port, on_read_callback):
+        for i in range(self.size):
+            with If(index_port == i):
+                on_read_callback(self._store[i])
+                
+    def write(self, index_port, value):
+        for i in range(self.size):
+            with If(index_port == i):
+                self._store[i].set(value)            
 
 

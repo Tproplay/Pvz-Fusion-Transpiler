@@ -29,8 +29,8 @@ class on_board_start(BaseNode):
     def __init__(self): super().__init__("OnBoardStartNode", trigger_PortName="触发")
 
 class on_wave(BaseNode):
-    def __init__(self, wave=None, wave_val=0):
-        super().__init__("WaveEventNode", trigger_PortName="触发", wave_PortName="波次", waveValue=wave_val)
+    def __init__(self, wave=None):
+        super().__init__("WaveEventNode", trigger_PortName="触发", wave_PortName="波次")
         wire(wave, self.id, "波次", enforce_int)
 
 class on_mouse_click(BaseNode):

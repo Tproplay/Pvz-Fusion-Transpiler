@@ -1,7 +1,7 @@
 from . import nodes
 from .core import ctx
 from .node_base import ExecutionPath, PortReference
-from .extensions import Plant, Zombie, If
+from .extensions import Plant, Zombie, If, Mouse
 from enum import Enum
 from .TypeMgr import *
 
@@ -30,19 +30,19 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnWave:
-        """Triggers every wave, including non-flag waves."""
-        def __init__(self, wave_num): self.node = nodes.on_wave(wave_val=wave_num)
-        def __enter__(self):
+        """Triggers every wave, including non-flag waves. Returns the wave number as an Int."""
+        def __init__(self): self.node = nodes.on_wave()
+        def __enter__(self) -> int:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
-            return self
+            return self #type: ignore
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnMouseClick:
-        """Triggers when the mouse (left button) is clicked."""
+        """Triggers when the mouse is clicked."""
         def __init__(self): self.node = nodes.on_mouse_click()
         def __enter__(self):
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发")) # type: ignore
-            return self.node
+            return Mouse(self.node)
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnKeyDown:
@@ -198,17 +198,6 @@ class InGameUI:
         from .StdLib import format_string
         final_text = format_string(*args)
         nodes.show_text(text=final_text, duration=duration)
-
-class Mouse:
-    @staticmethod
-    def col():
-        return nodes.on_mouse_click().column
-    @staticmethod
-    def row():
-        return nodes.on_mouse_click().row
-    @staticmethod
-    def theItemType():
-        return nodes.on_mouse_click().item
 
 class Random:
     

@@ -16,5 +16,5 @@ def main():
     with pvn.Trigger.OnGameStart(): # Start the process after the Ready, Set, Go! message appears
         with pvn.Time.OnFixedUpdate(4):
             show_message_based_on_sun()
-
+            
 pvn.add_graph(main)
