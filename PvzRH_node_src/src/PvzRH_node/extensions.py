@@ -3,7 +3,7 @@ from .core import ctx
 from .node_base import ExecutionPath, BaseNode
 from enum import Enum
 from .TypeMgr import PlantType, ZombieAnimation
-from typing import Any
+from typing import Any, Final
 
 class If:
     """Syntactic sugar that acts as a safe visual scripting 'if/elif/else' block."""
@@ -27,6 +27,98 @@ class If:
         ctx.trigger_stack.pop()
         return new_branch
 
+class Switch:
+    """
+    Syntactic sugar for transpiling 'switch-case' branching statements.
+    
+    Usage:
+        with pvn.Switch(plant.plantType) as sw:
+            with sw.case(PlantType.SunFlower):
+                pvn.nodes.add_sun(100)
+                
+            with sw.case(PlantType.Peashooter, PlantType.GatlingPea):
+                pvn.nodes.add_sun(50)
+                
+            with sw.default:
+                pvn.nodes.add_sun(10)
+    """
+    def __init__(self, target):
+        self.target = target
+        self.last_false_path = None
+        self.parent_trigger = ctx.trigger_stack[-1] if ctx.trigger_stack else None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def case(self, *values):
+        if len(values) == 1 and isinstance(values[0], (list, tuple, set)):
+            values = tuple(values[0])
+        return _SwitchCase(self, values)
+
+    @property
+    def default(self):
+        return _SwitchDefault(self)
+
+
+class _SwitchCase:
+    def __init__(self, switch_obj, values):
+        self.switch = switch_obj
+        self.values = values
+        self.branch_node = None
+
+    def __enter__(self):
+        condition = (self.switch.target == self.values[0])
+        for val in self.values[1:]:
+            condition = condition | (self.switch.target == val)
+
+        # 🎯 THE FIX: Temporarily hide the stack to prevent parallel auto-wiring!
+        saved_stack = ctx.trigger_stack[:]
+        ctx.trigger_stack.clear()
+        
+        self.branch_node = nodes.branch_node(condition=condition)
+        
+        ctx.trigger_stack.extend(saved_stack)
+
+        # Now explicitly wire it in a sequential chain (False -> Next Case)
+        if self.switch.last_false_path is not None:
+            ctx.add_connection(
+                self.switch.last_false_path.id,
+                self.switch.last_false_path.out_trigger,
+                self.branch_node.id,
+                "触发"
+            )
+        elif ctx.trigger_stack:
+            curr = ctx.trigger_stack[-1]
+            ctx.add_connection(curr.id, curr.out_trigger, self.branch_node.id, "触发")
+
+        # Update the False path chain for the next case or default block
+        self.switch.last_false_path = ExecutionPath(self.branch_node.id, "假（停止）")
+
+        # Push the True branch onto trigger stack for statements inside this case
+        ctx.trigger_stack.append(ExecutionPath(self.branch_node.id, "真（触发）"))
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        ctx.trigger_stack.pop()
+
+class _SwitchDefault:
+    def __init__(self, switch_obj):
+        self.switch = switch_obj
+
+    def __enter__(self):
+        if self.switch.last_false_path is not None:
+            ctx.trigger_stack.append(self.switch.last_false_path)
+        elif self.switch.parent_trigger:
+            ctx.trigger_stack.append(self.switch.parent_trigger)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        ctx.trigger_stack.pop()
+    
+
 #region Variables
 
 class IntVar:
@@ -48,13 +140,14 @@ class IntVar:
         return nodes.get_int_variable_value(variable=self._node.variable).value
         
     def set(self, target_value):
+        # 1. Protect against 'n += 1' double-triggers caused by Dictionary reassignments
+        if target_value is self:
+            return self
+            
         casted_val = self._cast_to_int(target_value)
-        set_node = nodes.set_int_variable_value(variable=self._node.variable, value=casted_val)
-        if ctx.trigger_stack:
-            current = ctx.trigger_stack[-1]
-            ctx.add_connection(current.id, current.out_trigger, set_node.id, "触发")
-            ctx.trigger_stack[-1] = ExecutionPath(set_node.id, "完成")
-        return set_node
+        
+        # 2. Let BaseNode handle the trigger/complete wiring natively!
+        return nodes.set_int_variable_value(variable=self._node.variable, value=casted_val)
 
     def _cast_to_int(self, val):
         cls_name = val.__class__.__name__
@@ -225,13 +318,11 @@ class FloatVar:
         return nodes.get_float_variable_value(variable=self._node.variable).value
 
     def set(self, target_value):
+        if target_value is self:
+            return self
+            
         casted_val = self._cast_to_float(target_value)
-        set_node = nodes.set_float_variable_value(variable=self._node.variable, value=casted_val)
-        if ctx.trigger_stack:
-            current = ctx.trigger_stack[-1]
-            ctx.add_connection(current.id, current.out_trigger, set_node.id, "触发")
-            ctx.trigger_stack[-1] = ExecutionPath(set_node.id, "完成")
-        return set_node
+        return nodes.set_float_variable_value(variable=self._node.variable, value=casted_val)
 
     def _cast_to_float(self, val):
         cls_name = val.__class__.__name__
@@ -296,14 +387,12 @@ class BoolVar:
     def value(self):
         return nodes.get_bool_variable_value(variable=self._node.variable).value
 
-    def set(self, target_state: bool):
+    def set(self, target_state):
+        if target_state is self:
+            return self
+            
         casted_val = self._cast_to_bool(target_state)
-        set_node = nodes.set_bool_variable_value(variable=self._node.variable, value=casted_val)
-        if ctx.trigger_stack:
-            current = ctx.trigger_stack[-1]
-            ctx.add_connection(current.id, current.out_trigger, set_node.id, "触发")
-            ctx.trigger_stack[-1] = ExecutionPath(set_node.id, "完成")
-        return set_node
+        return nodes.set_bool_variable_value(variable=self._node.variable, value=casted_val)
 
     def _cast_to_bool(self, val):
         cls_name = val.__class__.__name__
@@ -571,6 +660,14 @@ class For:
 class Mathf:
     """Commonly used math functions"""
     
+    PI : Final[float] = 3.1415
+    """The mathematical constant π, representing the ratio of a circle's circumference to its diameter."""
+    E : Final[float] = 2.7182
+    """The mathematical constant e, representing the base of the natural logarithm."""
+    TAU : Final[float] = 6.2830
+    """The mathematical constant τ, representing the ratio of a circle's circumference to its radius (τ = 2π)."""
+    
+    
     class Counter:
         """
         A high-level wrapper for the Engine's native CounterNode.
@@ -605,7 +702,7 @@ class Mathf:
 
         @property
         def on_count(self):
-            """Exposes the '计数完成' execution track as a context manager timeline path."""
+            """Exposes the '计数完成' (Count Complete) execution track as a context manager timeline path."""
             return self.ref.path("计数完成")
 
     @staticmethod
@@ -758,12 +855,77 @@ class Mathf:
 
         return final_port
 
+    @staticmethod
+    def clamp(value, min_value, max_value):
+        return Mathf.max(min_value, Mathf.min(value, max_value))
+
+    @staticmethod
+    def floor(value):
+        from . import nodes
+        if isinstance(value, (int, float)):
+            return int(value)
+        return nodes.float_to_int(float_val=value).int
+
+    @staticmethod
+    def ceil(value):
+        from . import nodes
+        if isinstance(value, (int, float)):
+            return int(-(-value // 1))  # Ceiling for numeric types
+        return nodes.float_to_int(float_val=value).int + 1  # Ceiling for node references
+    
+    @staticmethod
+    def clamp01(value):
+        """Clamps a value between 0 and 1."""
+        return Mathf.clamp(value, 0.0, 1.0)
+    
+    @staticmethod
+    def lerp(start, end, t):
+        """Linearly interpolates between start and end by t (0 <= t <= 1)."""
+        return start + (end - start) * Mathf.clamp01(t)
+    
+    @staticmethod
+    def lerp_unclamped(start, end, t):
+        """Linearly interpolates between start and end by t without clamping."""
+        return start + (end - start) * t
+    
+    @staticmethod
+    def sign(value):
+        """Returns 1 if value is positive, -1 if negative, and 0 if zero."""
+        from . import nodes
+        if isinstance(value, (int, float)):
+            return (value > 0) - (value < 0)
+        
+        with If(value > 0) as branch:
+            return 1
+        with branch.Elif(value < 0):
+            return -1
+        with branch.Else:
+            return 0
+
+    @staticmethod
+    def round(value):
+        """Rounds a value to the nearest integer."""
+        from . import nodes
+        if isinstance(value, (int, float)):
+            return round(value)
+        
+        # For node references, we can use a combination of floor and ceil
+        with If(value - Mathf.floor(value) < 0.5) as branch:
+            return Mathf.floor(value)
+        with branch.Else:
+            return Mathf.ceil(value)
+    
+    @staticmethod
+    def copy_sign(magnitude, sign):
+        """Returns a value with the magnitude of 'magnitude' and the sign of 'sign'."""
+        return Mathf.sign(sign) * abs(magnitude)
+    
 class Time:
     
     class OnFixedUpdate:
         """
         High-frequency/timed event loop driven natively by ToggleCycleNode.
-        Runs 20 times a second by default.
+        Runs 10 times a second by default.
         Features a lazy-loaded frame tracker.
         
         ### Usage:
@@ -847,20 +1009,20 @@ class Time:
             ctx.trigger_stack.pop()
 
 class Mouse:
-        def __init__(self, mouse_ref = None): 
-            if mouse_ref is None: mouse_ref = nodes.on_mouse_click()
-            self.node = mouse_ref
-        @property
-        def col(self):
-            return self.node.column
-        @property
-        def row(self):
-            return self.node.row
-        @property
-        def theItemType(self):
-            return self.node.item
-        @property
-        def isLeftClick(self):
-            return self.node.isLeftButton
+    def __init__(self, mouse_ref = None): 
+        if mouse_ref is None: mouse_ref = nodes.on_mouse_click()
+        self.node = mouse_ref
+    @property
+    def col(self):
+        return self.node.column
+    @property
+    def row(self):
+        return self.node.row
+    @property
+    def theItemType(self):
+        return self.node.item
+    @property
+    def isLeftClick(self):
+        return self.node.isLeftButton
 
 
