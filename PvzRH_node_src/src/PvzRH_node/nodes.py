@@ -689,7 +689,7 @@ class int_variable(BaseNode):
             "data": {
                 "name": var_name,
                 "referencedNodeIds": [self.id], 
-                "value": initial_value
+                "value": int(initial_value)
             }
         })
 

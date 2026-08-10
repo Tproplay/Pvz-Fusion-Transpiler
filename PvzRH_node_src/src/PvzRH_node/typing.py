@@ -58,3 +58,12 @@ def enforce_string(value) -> str:
         }
     })
     return node_id
+
+class staticproperty:
+    def __init__(self, func):
+        self.fget = func
+
+    def __get__(self, instance, owner):
+        return self.fget(owner)
+
+

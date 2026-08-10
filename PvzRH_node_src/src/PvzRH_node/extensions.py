@@ -1,9 +1,10 @@
-from . import nodes
+from . import nodes, api
 from .core import ctx
 from .node_base import ExecutionPath, BaseNode
 from enum import Enum
 from .TypeMgr import PlantType, ZombieAnimation
 from typing import Any, Final
+
 
 class If:
     """Syntactic sugar that acts as a safe visual scripting 'if/elif/else' block."""
@@ -123,14 +124,23 @@ class _SwitchDefault:
 
 class IntVar:
     """Use to create a Variable Int Value. Don't use = to set the value, use .set() instead."""
-    def __init__(self, start_val=0, node_ref=None):
-        self._node = node_ref if node_ref else nodes.int_variable() 
-        if start_val != 0:
-            saved_stack = ctx.trigger_stack[:]
-            ctx.trigger_stack.clear()
-            init_trigger = nodes.on_board_start()
-            ctx.add_connection(init_trigger.id, "触发", nodes.set_int_variable_value(variable=self._node.variable, value=start_val).id, "触发")
-            ctx.trigger_stack.extend(saved_stack)
+    def __init__(self, start_val=0, node_ref=None, name: str = "整数"):
+        if node_ref:
+            self._node = node_ref
+        else:
+            asset_init_val = start_val if isinstance(start_val, int) else 0
+            self._node = nodes.int_variable(var_name=name, initial_value=asset_init_val)
+            
+            if not isinstance(start_val, int):
+                saved_stack = ctx.trigger_stack[:]
+                ctx.trigger_stack.clear()
+                init_trigger = nodes.on_board_start()
+                set_node = nodes.set_int_variable_value(
+                    variable=self._node.variable, 
+                    value=self._cast_to_int(start_val)
+                )
+                ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
+                ctx.trigger_stack.extend(saved_stack)
 
     def _is_float_port(self): return False
     def _get_primary_port(self): return self.value
@@ -140,13 +150,11 @@ class IntVar:
         return nodes.get_int_variable_value(variable=self._node.variable).value
         
     def set(self, target_value):
-        # 1. Protect against 'n += 1' double-triggers caused by Dictionary reassignments
         if target_value is self:
             return self
             
         casted_val = self._cast_to_int(target_value)
         
-        # 2. Let BaseNode handle the trigger/complete wiring natively!
         return nodes.set_int_variable_value(variable=self._node.variable, value=casted_val)
 
     def _cast_to_int(self, val):
@@ -301,14 +309,23 @@ class IntVar:
 
 class FloatVar:
     """Use to create a Variable Float Value. Don't use = to set the value, use .set() instead."""
-    def __init__(self, start_val=0.0, node_ref=None):
-        self._node = node_ref if node_ref else nodes.float_variable() 
-        if start_val != 0.0:
-            saved_stack = ctx.trigger_stack[:]
-            ctx.trigger_stack.clear()
-            init_trigger = nodes.on_board_start()
-            ctx.add_connection(init_trigger.id, "触发", nodes.set_float_variable_value(variable=self._node.variable, value=start_val).id, "触发")
-            ctx.trigger_stack.extend(saved_stack)
+    def __init__(self, start_val=0.0, node_ref=None, name: str = "浮点数"):
+        if node_ref:
+            self._node = node_ref
+        else:
+            asset_init_val = float(start_val) if isinstance(start_val, (int, float)) and not isinstance(start_val, bool) else 0.0
+            self._node = nodes.float_variable(var_name=name, initial_value=asset_init_val)
+
+            if not isinstance(start_val, (int, float)) or isinstance(start_val, bool):
+                saved_stack = ctx.trigger_stack[:]
+                ctx.trigger_stack.clear()
+                init_trigger = nodes.on_board_start()
+                set_node = nodes.set_float_variable_value(
+                    variable=self._node.variable, 
+                    value=self._cast_to_float(start_val)
+                )
+                ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
+                ctx.trigger_stack.extend(saved_stack)
 
     def _is_float_port(self): return True
     def _get_primary_port(self): return self.value
@@ -371,14 +388,23 @@ class FloatVar:
 
 class BoolVar:
     """Use to create a Variable Bool Value. Don't use = to set the value, use .set() instead."""
-    def __init__(self, start_val=False, node_ref=None):
-        self._node = node_ref if node_ref else nodes.bool_variable() 
-        if start_val:
-            saved_stack = ctx.trigger_stack[:]
-            ctx.trigger_stack.clear()
-            init_trigger = nodes.on_board_start()
-            ctx.add_connection(init_trigger.id, "触发", nodes.set_bool_variable_value(variable=self._node.variable, value=True).id, "触发")
-            ctx.trigger_stack.extend(saved_stack)
+    def __init__(self, start_val=False, node_ref=None, name: str = "布尔值"):
+        if node_ref:
+            self._node = node_ref
+        else:
+            asset_init_val = bool(start_val) if isinstance(start_val, bool) else False
+            self._node = nodes.bool_variable(var_name=name, initial_value=asset_init_val)
+            
+            if not isinstance(start_val, bool):
+                saved_stack = ctx.trigger_stack[:]
+                ctx.trigger_stack.clear()
+                init_trigger = nodes.on_board_start()
+                set_node = nodes.set_bool_variable_value(
+                    variable=self._node.variable, 
+                    value=self._cast_to_bool(start_val)
+                )
+                ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
+                ctx.trigger_stack.extend(saved_stack)
 
     def _is_float_port(self): return False
     def _get_primary_port(self): return self.value
@@ -723,34 +749,33 @@ class Mathf:
         is_negative = val < 0 
         branch = nodes.branch_node(condition=is_negative)
 
-        ctx.trigger_stack.append(ExecutionPath(branch.id, "真（触发）"))
-        inverted_val = val * -1
-        ctx.trigger_stack.pop()
-
-        ctx.trigger_stack.extend(saved_stack)
-        
         is_float = hasattr(val, "_is_float_port") and val._is_float_port()
+        
         if is_float:
             result_reg = nodes.float_variable(var_name="abs_temp_f")
-            ctx.add_connection(branch.id, "真（触发）", nodes.set_float_variable_value(variable=result_reg.variable, value=inverted_val).id, "触发")
-            ctx.add_connection(branch.id, "假（停止）", nodes.set_float_variable_value(variable=result_reg.variable, value=val).id, "触发")
-            
+            set_true = nodes.set_float_variable_value(variable=result_reg.variable, value=val * -1)
+            set_false = nodes.set_float_variable_value(variable=result_reg.variable, value=val)
             final_port = nodes.get_float_variable_value(variable=result_reg.variable).value
         else:
             result_reg = nodes.int_variable(var_name="abs_temp_i")
-            
-            ctx.add_connection(branch.id, "真（触发）", nodes.set_int_variable_value(variable=result_reg.variable, value=inverted_val).id, "触发")
-            ctx.add_connection(branch.id, "假（停止）", nodes.set_int_variable_value(variable=result_reg.variable, value=val).id, "触发")
-            
+            set_true = nodes.set_int_variable_value(variable=result_reg.variable, value=val * -1)
+            set_false = nodes.set_int_variable_value(variable=result_reg.variable, value=val)
             final_port = nodes.get_int_variable_value(variable=result_reg.variable).value
+
+        ctx.add_connection(branch.id, "真（触发）", set_true.id, "触发")
+        ctx.add_connection(branch.id, "假（停止）", set_false.id, "触发")
+
+        ctx.trigger_stack.extend(saved_stack)
 
         if ctx.trigger_stack:
             prev_node = ctx.trigger_stack[-1]
             ctx.add_connection(prev_node.id, prev_node.out_trigger, branch.id, "触发")
-            ctx.trigger_stack[-1] = ExecutionPath(branch.id, "真（触发）")
+            
+            # Replace stack pointer with a merged path wrapper or wire next node to both
+            ctx.trigger_stack[-1] = ExecutionPath(set_true.id, "完成")
+            ctx.add_connection(set_false.id, "完成", set_true.id, "完成") # Converge False into True completion
 
         return final_port
-
     @staticmethod
     def max(*args):
         """
@@ -920,8 +945,7 @@ class Mathf:
         """Returns a value with the magnitude of 'magnitude' and the sign of 'sign'."""
         return Mathf.sign(sign) * abs(magnitude)
     
-class Time:
-    
+class _Time:
     class OnFixedUpdate:
         """
         High-frequency/timed event loop driven natively by ToggleCycleNode.
@@ -1008,6 +1032,53 @@ class Time:
         def __exit__(self, exc_type, exc_val, exc_tb):
             ctx.trigger_stack.pop()
 
+    def __init__(self):
+        self._global_time_var = None
+    
+    @property
+    def time_since_start(self):
+        """
+        Returns the time in seconds since the level started.
+        """
+        if self._global_time_var is None:
+            # 1. Preserve active compiler context stack
+            saved_stack = ctx.trigger_stack[:]
+            ctx.trigger_stack.clear()
+            
+            # 2. Instantiate global float tracking register
+            self._global_time_var = FloatVar(start_val=0.0)
+            
+            # 3. Clean background loop driven by high-level trigger context managers
+            with api.Trigger.OnBoardStart():
+                with self.OnFixedUpdate(interval=0.1):
+                    self._global_time_var += 0.1
+            
+            # 4. Restore the user's active compilation stack
+            ctx.trigger_stack.extend(saved_stack)
+            
+        return self._global_time_var.value
+    
+    @property
+    def time_since_game_start(self):
+        """
+        Returns the time in seconds since the game started.
+        """
+        if self._global_time_var is None:
+            saved_stack = ctx.trigger_stack[:]
+            ctx.trigger_stack.clear()
+            
+            self._global_time_var = FloatVar(start_val=0.0)
+            
+            with api.Trigger.OnGameStart():
+                with self.OnFixedUpdate(interval=0.1):
+                    self._global_time_var += 0.1
+            
+            ctx.trigger_stack.extend(saved_stack)
+            
+        return self._global_time_var.value
+
+Time = _Time()
+    
 class Mouse:
     def __init__(self, mouse_ref = None): 
         if mouse_ref is None: mouse_ref = nodes.on_mouse_click()

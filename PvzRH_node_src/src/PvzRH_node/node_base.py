@@ -40,6 +40,27 @@ class PortReference(tuple):
         if hasattr(val, "_is_float_port") and not val._is_float_port(): return val
         return nodes.float_to_int(float_val=val).int
 
+    @staticmethod
+    def _float_modulo(f_a, f_b):
+        """
+        Manually calculates float modulo (f_a % f_b) using base game math nodes:
+        result = f_a - (floor(f_a / f_b) * f_b)
+        """
+        from . import nodes
+        
+        # 1. Divide: f_a / f_b
+        div_val = nodes.divide_node(a=f_a, b=f_b).result
+        
+        # 2. Floor: Convert float -> int -> float to drop decimal places
+        int_val = nodes.float_to_int(float_val=div_val).int
+        floored_float = nodes.int_to_float(int_val=int_val).float
+        
+        # 3. Multiply: floor(f_a / f_b) * f_b
+        mult_val = nodes.multiply_node(a=floored_float, b=f_b).result
+        
+        # 4. Subtract: f_a - mult_val
+        return nodes.subtract_node(a=f_a, b=mult_val).result
+
     def _execute_op(self, other, op_type):
         from . import nodes
         
@@ -55,7 +76,7 @@ class PortReference(tuple):
             elif op_type == "sub": return nodes.subtract_node(a=f_self, b=f_other).result
             elif op_type == "mul": return nodes.multiply_node(a=f_self, b=f_other).result
             elif op_type == "div": return nodes.divide_node(a=f_self, b=f_other).result
-            elif op_type == "mod": raise TypeError("Modulo operations are not supported on Float configurations.")
+            elif op_type == "mod": return self._float_modulo(f_self, f_other)
             
         # Otherwise, perform safe Integer Math
         else:
