@@ -673,68 +673,88 @@ class set_bool_variable_value(BaseNode):
 
 # --- VARIABLE ASSETS ---
 class int_variable(BaseNode):
-    def __init__(self, var_name="整数", initial_value=0):
+    def __init__(self, var_name="整数", initial_value=0, asset_dict=None):
         super().__init__("IntVariableNode", variable_PortName="变量")
         if not hasattr(ctx, 'variables'):
             ctx.variables = []
-        asset_rid = len(ctx.variables) + 50000 
-        self.kwargs["asset"] = {"rid": asset_rid}
-        ctx.variables.append({
-            "rid": asset_rid,
-            "type": {
-                "class": "IntVariableAsset",
-                "ns": "GameLevel.EventNodes",
-                "asm": "Assembly-CSharp"
-            },
-            "data": {
-                "name": var_name,
-                "referencedNodeIds": [self.id], 
-                "value": int(initial_value)
+            
+        if asset_dict:
+            self.kwargs["asset"] = {"rid": asset_dict["rid"]}
+            asset_dict["data"]["referencedNodeIds"].append(self.id)
+            self.asset_dict = asset_dict
+        else:
+            asset_rid = len(ctx.variables) + 50000 
+            self.kwargs["asset"] = {"rid": asset_rid}
+            self.asset_dict = {
+                "rid": asset_rid,
+                "type": {
+                    "class": "IntVariableAsset",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "name": var_name,
+                    "referencedNodeIds": [self.id], 
+                    "value": int(initial_value)
+                }
             }
-        })
+            ctx.variables.append(self.asset_dict)
+
 
 class float_variable(BaseNode):
-    def __init__(self, var_name="浮点数", initial_value=0.0):
+    def __init__(self, var_name="浮点数", initial_value=0.0, asset_dict=None):
         super().__init__("FloatVariableNode", variable_PortName="变量")
-        if not hasattr(ctx, 'variables'): ctx.variables = []
+        if not hasattr(ctx, 'variables'):
+            ctx.variables = []
             
-        asset_rid = len(ctx.variables) + 60000 
-        self.kwargs["asset"] = {"rid": asset_rid}
-        
-        ctx.variables.append({
-            "rid": asset_rid,
-            "type": {
-                "class": "FloatVariableAsset",
-                "ns": "GameLevel.EventNodes",
-                "asm": "Assembly-CSharp"
-            },
-            "data": {
-                "name": var_name,
-                "referencedNodeIds": [self.id], 
-                "value": initial_value
+        if asset_dict:
+            self.kwargs["asset"] = {"rid": asset_dict["rid"]}
+            asset_dict["data"]["referencedNodeIds"].append(self.id)
+            self.asset_dict = asset_dict
+        else:
+            asset_rid = len(ctx.variables) + 60000 
+            self.kwargs["asset"] = {"rid": asset_rid}
+            self.asset_dict = {
+                "rid": asset_rid,
+                "type": {
+                    "class": "FloatVariableAsset",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "name": var_name,
+                    "referencedNodeIds": [self.id], 
+                    "value": float(initial_value)
+                }
             }
-        })
+            ctx.variables.append(self.asset_dict)
+
 
 class bool_variable(BaseNode):
-    def __init__(self, var_name="布尔值", initial_value=False):
+    def __init__(self, var_name="布尔值", initial_value=False, asset_dict=None):
         super().__init__("BoolVariableNode", variable_PortName="变量")
-        if not hasattr(ctx, 'variables'): ctx.variables = []
+        if not hasattr(ctx, 'variables'):
+            ctx.variables = []
             
-        asset_rid = len(ctx.variables) + 70000 
-        self.kwargs["asset"] = {"rid": asset_rid}
-        
-        ctx.variables.append({
-            "rid": asset_rid,
-            "type": {
-                "class": "BoolVariableAsset",
-                "ns": "GameLevel.EventNodes",
-                "asm": "Assembly-CSharp"
-            },
-            "data": {
-                "name": var_name,
-                "referencedNodeIds": [self.id], 
-                "value": initial_value
+        if asset_dict:
+            self.kwargs["asset"] = {"rid": asset_dict["rid"]}
+            asset_dict["data"]["referencedNodeIds"].append(self.id)
+            self.asset_dict = asset_dict
+        else:
+            asset_rid = len(ctx.variables) + 70000 
+            self.kwargs["asset"] = {"rid": asset_rid}
+            self.asset_dict = {
+                "rid": asset_rid,
+                "type": {
+                    "class": "BoolVariableAsset",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "name": var_name,
+                    "referencedNodeIds": [self.id], 
+                    "value": bool(initial_value)
+                }
             }
-        })
-
+            ctx.variables.append(self.asset_dict)
 

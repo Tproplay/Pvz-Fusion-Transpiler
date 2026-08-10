@@ -125,37 +125,58 @@ class _SwitchDefault:
 class IntVar:
     """Use to create a Variable Int Value. Don't use = to set the value, use .set() instead."""
     def __init__(self, start_val=0, node_ref=None, name: str = "整数"):
+        self._nodes_by_scope = {}
+        
         if node_ref:
             self._node = node_ref
+            self._asset_dict = getattr(node_ref, "asset_dict", None)
+            scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+            self._nodes_by_scope[scope_key] = node_ref
         else:
-            asset_init_val = start_val if isinstance(start_val, int) else 0
+            asset_init_val = start_val if isinstance(start_val, int) and not isinstance(start_val, bool) else 0
             self._node = nodes.int_variable(var_name=name, initial_value=asset_init_val)
+            self._asset_dict = getattr(self._node, "asset_dict", None)
+            scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+            self._nodes_by_scope[scope_key] = self._node
             
-            if not isinstance(start_val, int):
+            if not isinstance(start_val, int) or isinstance(start_val, bool):
                 saved_stack = ctx.trigger_stack[:]
                 ctx.trigger_stack.clear()
                 init_trigger = nodes.on_board_start()
                 set_node = nodes.set_int_variable_value(
-                    variable=self._node.variable, 
+                    variable=self.variable, 
                     value=self._cast_to_int(start_val)
                 )
                 ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
                 ctx.trigger_stack.extend(saved_stack)
 
+    def _get_current_node(self):
+        scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+        if scope_key not in self._nodes_by_scope:
+            if self._asset_dict:
+                new_node = nodes.int_variable(asset_dict=self._asset_dict)
+            else:
+                new_node = self._node
+            self._nodes_by_scope[scope_key] = new_node
+        return self._nodes_by_scope[scope_key]
+
     def _is_float_port(self): return False
     def _get_primary_port(self): return self.value
 
     @property
+    def variable(self):
+        return self._get_current_node().variable
+
+    @property
     def value(self):
-        return nodes.get_int_variable_value(variable=self._node.variable).value
+        return nodes.get_int_variable_value(variable=self.variable).value
         
     def set(self, target_value):
         if target_value is self:
             return self
             
         casted_val = self._cast_to_int(target_value)
-        
-        return nodes.set_int_variable_value(variable=self._node.variable, value=casted_val)
+        return nodes.set_int_variable_value(variable=self.variable, value=casted_val)
 
     def _cast_to_int(self, val):
         cls_name = val.__class__.__name__
@@ -310,36 +331,58 @@ class IntVar:
 class FloatVar:
     """Use to create a Variable Float Value. Don't use = to set the value, use .set() instead."""
     def __init__(self, start_val=0.0, node_ref=None, name: str = "浮点数"):
+        self._nodes_by_scope = {}
+        
         if node_ref:
             self._node = node_ref
+            self._asset_dict = getattr(node_ref, "asset_dict", None)
+            scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+            self._nodes_by_scope[scope_key] = node_ref
         else:
             asset_init_val = float(start_val) if isinstance(start_val, (int, float)) and not isinstance(start_val, bool) else 0.0
             self._node = nodes.float_variable(var_name=name, initial_value=asset_init_val)
+            self._asset_dict = getattr(self._node, "asset_dict", None)
+            scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+            self._nodes_by_scope[scope_key] = self._node
 
             if not isinstance(start_val, (int, float)) or isinstance(start_val, bool):
                 saved_stack = ctx.trigger_stack[:]
                 ctx.trigger_stack.clear()
                 init_trigger = nodes.on_board_start()
                 set_node = nodes.set_float_variable_value(
-                    variable=self._node.variable, 
+                    variable=self.variable, 
                     value=self._cast_to_float(start_val)
                 )
                 ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
                 ctx.trigger_stack.extend(saved_stack)
 
+    def _get_current_node(self):
+        scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+        if scope_key not in self._nodes_by_scope:
+            if self._asset_dict:
+                new_node = nodes.float_variable(asset_dict=self._asset_dict)
+            else:
+                new_node = self._node
+            self._nodes_by_scope[scope_key] = new_node
+        return self._nodes_by_scope[scope_key]
+
     def _is_float_port(self): return True
     def _get_primary_port(self): return self.value
 
     @property
+    def variable(self):
+        return self._get_current_node().variable
+
+    @property
     def value(self):
-        return nodes.get_float_variable_value(variable=self._node.variable).value
+        return nodes.get_float_variable_value(variable=self.variable).value
 
     def set(self, target_value):
         if target_value is self:
             return self
             
         casted_val = self._cast_to_float(target_value)
-        return nodes.set_float_variable_value(variable=self._node.variable, value=casted_val)
+        return nodes.set_float_variable_value(variable=self.variable, value=casted_val)
 
     def _cast_to_float(self, val):
         cls_name = val.__class__.__name__
@@ -389,36 +432,58 @@ class FloatVar:
 class BoolVar:
     """Use to create a Variable Bool Value. Don't use = to set the value, use .set() instead."""
     def __init__(self, start_val=False, node_ref=None, name: str = "布尔值"):
+        self._nodes_by_scope = {}
+        
         if node_ref:
             self._node = node_ref
+            self._asset_dict = getattr(node_ref, "asset_dict", None)
+            scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+            self._nodes_by_scope[scope_key] = node_ref
         else:
             asset_init_val = bool(start_val) if isinstance(start_val, bool) else False
             self._node = nodes.bool_variable(var_name=name, initial_value=asset_init_val)
+            self._asset_dict = getattr(self._node, "asset_dict", None)
+            scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+            self._nodes_by_scope[scope_key] = self._node
             
             if not isinstance(start_val, bool):
                 saved_stack = ctx.trigger_stack[:]
                 ctx.trigger_stack.clear()
                 init_trigger = nodes.on_board_start()
                 set_node = nodes.set_bool_variable_value(
-                    variable=self._node.variable, 
+                    variable=self.variable, 
                     value=self._cast_to_bool(start_val)
                 )
                 ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
                 ctx.trigger_stack.extend(saved_stack)
 
+    def _get_current_node(self):
+        scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
+        if scope_key not in self._nodes_by_scope:
+            if self._asset_dict:
+                new_node = nodes.bool_variable(asset_dict=self._asset_dict)
+            else:
+                new_node = self._node
+            self._nodes_by_scope[scope_key] = new_node
+        return self._nodes_by_scope[scope_key]
+
     def _is_float_port(self): return False
     def _get_primary_port(self): return self.value
 
     @property
+    def variable(self):
+        return self._get_current_node().variable
+
+    @property
     def value(self):
-        return nodes.get_bool_variable_value(variable=self._node.variable).value
+        return nodes.get_bool_variable_value(variable=self.variable).value
 
     def set(self, target_state):
         if target_state is self:
             return self
             
         casted_val = self._cast_to_bool(target_state)
-        return nodes.set_bool_variable_value(variable=self._node.variable, value=casted_val)
+        return nodes.set_bool_variable_value(variable=self.variable, value=casted_val)
 
     def _cast_to_bool(self, val):
         cls_name = val.__class__.__name__
@@ -454,7 +519,7 @@ class BoolVar:
 
     def __eq__(self, other): return self.value == self._cast_to_bool(other) #type: ignore
     def __ne__(self, other): return self.value != self._cast_to_bool(other) #type: ignore
-
+    
 #endregion
 
 class MultiSelectMenu:

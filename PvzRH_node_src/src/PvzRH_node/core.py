@@ -14,7 +14,6 @@ class CompilerSetting:
 
 settings = CompilerSetting()
 
-
 class CompilerState:
     config: Dict[str, Any]
     nodes: List[Dict[str, Any]]
@@ -31,23 +30,17 @@ class CompilerState:
         self.registry = {}      
         self.variables = []
 
-        # --- Integrated Compiler Settings ---
-        # 0 = Heavy optimization + grid deduplication (Default production mode)
-        # 1 = Group per line
-        # 2 = Group by immediate parent indentation block
-        # 3 = Group by outer grandparent indentation block
         self.group_level = settings.group_level
         self.spacing_x = settings.spacing_x
         self.spacing_y = settings.spacing_y
         self.hierarchical_spacing_x = settings.hierarchical_spacing_x
         self.hierarchical_spacing_y = settings.hierarchical_spacing_y
-        self.groups_map = {}  # Tracks line-by-line source statements
+        self.groups_map = {}
 
     def generate_uuid(self) -> str:
         return str(uuid.uuid4())
 
     def add_connection(self, source_id: str, source_port: str, target_id: str, target_port: str) -> None:
-        """Explicitly draws a wire between two node ports."""
         self.connections.append({
             "sourceNodeId": source_id,
             "sourcePortName": source_port,
@@ -57,10 +50,6 @@ class CompilerState:
 
     def remove_connection(self, source_id: str = None, source_port: str = None, #type: ignore
                           target_id: str = None, target_port: str = None): #type: ignore
-        """
-        Removes connections from the compiler state that match the given parameters.
-        Any parameter left as None acts as a wildcard.
-        """
         original_count = len(self.connections)
         
         self.connections = [
@@ -74,7 +63,6 @@ class CompilerState:
         ]
         
         return original_count - len(self.connections)
-    
     
     def export(self) -> None:
         self.group_level = settings.group_level
@@ -97,7 +85,7 @@ class CompilerState:
                 level_data = {}
 
         # =====================================================================
-        # PASS 1: GRAPH OPTIMIZATION (DEDUFICATION) - Activated ONLY at Level 0
+        # PASS 1: GRAPH OPTIMIZATION (DEDUPLICATION) - Level 0 Only
         # =====================================================================
         if self.group_level == 0:
             DEDUPE_TYPES = {
@@ -146,7 +134,7 @@ class CompilerState:
             self.connections = optimized_conns
 
         # =====================================================================
-        # PASS 2: LAYOUT ENGINE (Standard Word-Wrap vs Hierarchical Square Grids)
+        # PASS 2: LAYOUT ENGINE
         # =====================================================================
         node_positions = {}
 
@@ -230,6 +218,35 @@ class CompilerState:
                 
                 group_index += 1
 
+            # 🎯 FIX: Auto-gather and layout all un-grouped constants and variables
+            positioned_node_ids = set(node_positions.keys())
+            orphaned_node_ids = [n["id"] for n in self.nodes if n["id"] not in positioned_node_ids]
+
+            if orphaned_node_ids:
+                if current_x > 0.0:
+                    current_x = 0.0
+                    current_y += max_row_height + 150.0
+
+                num_orphans = len(orphaned_node_ids)
+                orphan_grid_size = int(math.ceil(math.sqrt(num_orphans)))
+
+                orphan_group = {
+                    "groupId": self.generate_uuid(),
+                    "title": "Global Constants & Variables",
+                    "nodeIds": orphaned_node_ids,
+                    "position": {"x": current_x - 30.0, "y": current_y}
+                }
+                self.groups_map["Global Constants & Variables"] = orphan_group
+
+                for index, n_id in enumerate(orphaned_node_ids):
+                    col = index % orphan_grid_size
+                    row = index // orphan_grid_size
+
+                    node_positions[n_id] = {
+                        "x": current_x + (col * X_SPACING),
+                        "y": current_y + 80.0 + (row * Y_SPACING)
+                    }
+
         # =====================================================================
         # PASS 3: NATIVE SCHEMA EXPORT STITCHING
         # =====================================================================
@@ -286,7 +303,6 @@ class CompilerState:
             })
             current_rid += 1
 
-        # Only register NodeGroup structures if grouping is active (>= 1)
         if self.group_level >= 1:
             for code_line, grp in self.groups_map.items():
                 if not grp["nodeIds"]:
@@ -298,7 +314,7 @@ class CompilerState:
                     "type": {"class": "NodeGroup", "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp"},
                     "data": {
                         "groupId": grp["groupId"],
-                        "title": code_line,
+                        "title": grp.get("title", code_line),
                         "nodeIds": grp["nodeIds"],
                         "position": grp["position"],
                         "isFolded": False
@@ -314,6 +330,5 @@ class CompilerState:
             json.dump(level_data, f, indent=4, ensure_ascii=False)
             
         print(f"Successfully Packed and Exported to: {file_path}")
-
 
 ctx = CompilerState()
