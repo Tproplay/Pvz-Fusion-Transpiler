@@ -3,32 +3,55 @@
 from .extensions import *
 from .TypeMgr import KeyCode
 
+from enum import Enum
+
 def format_string(*args):
-    """Dynamically chains text and variables using physical StringValueNodes!"""
+    """
+    Dynamically chains text, variables, node ports, and constants into a single string port.
+    """
     if not args:
-        return ""
+        from .nodes import string_value
+        return string_value(val="").value
 
     from .nodes import string_concat, string_value
-    from .node_base import PortReference 
-    
+    from .node_base import PortReference
+
     def _parse_arg(arg):
-        if hasattr(arg, 'to_string'):
+        # 1. Objects with explicit .to_string() method
+        if hasattr(arg, 'to_string') and callable(getattr(arg, 'to_string')):
             return arg.to_string()
+
+        # 2. PortReference instances (math/logic node outputs)
         if isinstance(arg, PortReference):
             return arg._to_string_port()
+
+        # 3. Node outputs wrapped in objects exposing a .node attribute
         if hasattr(arg, 'node'):
-            return arg
-            
+            from .node_base import PortReference as PR
+            port_name = getattr(arg, 'port_name', getattr(arg, 'out_port', 'Output'))
+            return PR(arg.node, port_name)._to_string_port()
+
+        # 4. Python Booleans (True / False)
+        if isinstance(arg, bool):
+            return string_value(val="True" if arg else "False").value
+
+        # 5. Python Enums
+        if isinstance(arg, Enum):
+            return string_value(val=arg.name).value
+
+        # 6. Primitive Fallback (str, int, float)
         return string_value(val=str(arg)).value
 
     current_chain = _parse_arg(args[0])
+
+    if len(args) == 1:
+        return current_chain
 
     for i in range(1, len(args)):
         next_piece = _parse_arg(args[i])
         current_chain = string_concat(a=current_chain, b=next_piece).result
 
     return current_chain
-
 from .api import *
 
 class _wasd_key:
@@ -114,5 +137,42 @@ class Array:
         for i in range(self.size):
             with If(index_port == i):
                 self._store[i].set(value)            
+
+class Counter:
+    """
+    A high-level wrapper for the Engine's native CounterNode.
+    
+    Usage:
+        zombie_counter = pvn.Counter(start_val=0, reset_condition=is_wave_over)
+        
+        with pvn.nodes.on_zombie_die().trigger:
+            zombie_counter.up()
+    """
+    def __init__(self, start_val=0, reset_condition=None):
+        saved_stack = ctx.trigger_stack[:]
+        ctx.trigger_stack.clear()
+        
+        self.ref = nodes.counter_node(start_val=start_val, reset=reset_condition)
+        
+        ctx.trigger_stack.extend(saved_stack)
+
+    def up(self):
+        """Increments the counter by 1 manually along the current execution timeline track."""
+        if ctx.trigger_stack:
+            previous_exec = ctx.trigger_stack[-1]
+            ctx.add_connection(previous_exec.id, previous_exec.out_trigger, self.ref.id, "触发")
+            
+            ctx.trigger_stack[-1] = ExecutionPath(self.ref.id, "触发")
+        return self
+
+    @property
+    def value(self):
+        """Returns the data output port reference containing the current count."""
+        return self.ref.count
+
+    @property
+    def on_count(self):
+        """Exposes the '计数完成' (Count Complete) execution track as a context manager timeline path."""
+        return self.ref.path("计数完成")
 
 

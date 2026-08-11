@@ -10,14 +10,18 @@ class PortReference(tuple):
     @property
     def port_name(self): return self[1]
 
+    def __bool__(self):
+        """Ensures both bool(port_ref) and port_ref.__bool__() return True safely."""
+        return True
+
     # ==========================================================
-    # TYPE-SAFE MATH ENGINE (Prevents Unity C# Cast Crashes)
+    # TYPE-SAFE MATH ENGINE
     # ==========================================================
     def _is_float_port(self):
         """Intelligently detects if the underlying Unity node outputs a Float."""
-        t = self.node.type
+        t = getattr(self.node, "type", "")
         float_nodes = ["FloatValueNode", "RandomFloatNode", "IntToFloatNode", "AddNode", "SubtractNode", "MultiplyNode", "DivideNode"]
-        int_nodes = ["IntValueNode", "RandomIntNode", "FloatToIntNode", "IntAddNode", "IntSubtractNode", "IntMultiplyNode", "IntDivideNode", "IntModuloNode", "CounterNode"]
+        int_nodes = ["IntValueNode", "RandomIntNode", "FloatToIntNode", "IntAddNode", "IntSubtractNode", "IntMultiplyNode", "IntDivideNode", "IntModuloNode", "CounterNode", "GetSunAmountNode"]
         
         if t in float_nodes: return True
         if t in int_nodes: return False
@@ -25,7 +29,6 @@ class PortReference(tuple):
         return False
 
     def _ensure_float(self, val):
-        """Forces any value or node into a safe Float Port."""
         from . import nodes
         if isinstance(val, float): return nodes.float_value(val=val).value
         if isinstance(val, int): return nodes.float_value(val=float(val)).value
@@ -33,7 +36,6 @@ class PortReference(tuple):
         return nodes.int_to_float(int_val=val).float
 
     def _ensure_int(self, val):
-        """Forces any value or node into a safe Int Port."""
         from . import nodes
         if isinstance(val, int): return nodes.int_value(val=val).value
         if isinstance(val, float): return nodes.int_value(val=int(val)).value
@@ -42,32 +44,18 @@ class PortReference(tuple):
 
     @staticmethod
     def _float_modulo(f_a, f_b):
-        """
-        Manually calculates float modulo (f_a % f_b) using base game math nodes:
-        result = f_a - (floor(f_a / f_b) * f_b)
-        """
         from . import nodes
-        
-        # 1. Divide: f_a / f_b
         div_val = nodes.divide_node(a=f_a, b=f_b).result
-        
-        # 2. Floor: Convert float -> int -> float to drop decimal places
         int_val = nodes.float_to_int(float_val=div_val).int
         floored_float = nodes.int_to_float(int_val=int_val).float
-        
-        # 3. Multiply: floor(f_a / f_b) * f_b
         mult_val = nodes.multiply_node(a=floored_float, b=f_b).result
-        
-        # 4. Subtract: f_a - mult_val
         return nodes.subtract_node(a=f_a, b=mult_val).result
 
     def _execute_op(self, other, op_type):
         from . import nodes
-        
         self_is_f = self._is_float_port()
         other_is_f = isinstance(other, float) or (hasattr(other, "_is_float_port") and other._is_float_port())
         
-        # If either side is a Float, elevate the entire operation to Float Math
         if self_is_f or other_is_f:
             f_self = self._ensure_float(self)
             f_other = self._ensure_float(other)
@@ -77,16 +65,13 @@ class PortReference(tuple):
             elif op_type == "mul": return nodes.multiply_node(a=f_self, b=f_other).result
             elif op_type == "div": return nodes.divide_node(a=f_self, b=f_other).result
             elif op_type == "mod": return self._float_modulo(f_self, f_other)
-            
-        # Otherwise, perform safe Integer Math
         else:
             i_self = self._ensure_int(self)
             i_other = self._ensure_int(other)
             
             if op_type == "add": return nodes.int_add(a=i_self, b=i_other).result
             elif op_type == "sub": 
-                # ENGINE BUG BYPASS: Unity's IntSubtractNode is natively broken. 
-                # Route all Int Subtraction through the Float nodes safely!
+                # ENGINE BUG BYPASS: Route Int Subtraction through Float nodes safely
                 f_a = nodes.int_to_float(int_val=i_self).float
                 f_b = nodes.int_to_float(int_val=i_other).float
                 f_sub = nodes.subtract_node(a=f_a, b=f_b).result
@@ -105,7 +90,6 @@ class PortReference(tuple):
 
     def _execute_comp(self, other, comp_type):
         from . import nodes
-        
         self_is_f = self._is_float_port()
         other_is_f = isinstance(other, float) or (hasattr(other, "_is_float_port") and other._is_float_port())
         
@@ -126,28 +110,53 @@ class PortReference(tuple):
         if comp_type == "le": return nodes.not_node(inp=comp_node.greater).output
 
     def _to_string_port(self):
-        """Magically auto-casts any Integer or Float node into a String node!"""
-        from . import nodes
-        
-        if "String" in self.node.type or "Concat" in self.node.type:
-            return self
-            
-        # FIX: Uses the typing engine to know if it's REALLY a float
-        if self._is_float_port():
-            return nodes.float_to_string(float_val=self, decimals=1).result
-            
-        # If it's a true integer, cast it to 0 decimals!
-        f_val = nodes.int_to_float(int_val=self).float
-        return nodes.float_to_string(float_val=f_val, decimals=0).result
+        """Converts raw numeric or boolean node output ports into string node ports."""
+        from .nodes import float_to_string, int_to_float, int_value, string_value
+        from .extensions import IntVar, If
 
+        if not hasattr(self, 'node') or not hasattr(self.node, 'type'):
+            return self
+
+        node_type = getattr(self.node, 'type', '')
+
+        # 1. Boolean Port Outputs
+        bool_nodes = ["BoolVariableNode", "GetBoolVariableValueNode", "CompareIntNode", 
+                      "CompareFloatNode", "CompareGameObjectNode", "AndNode", "OrNode", "NotNode", "ToggleNode"]
+        if node_type in bool_nodes:
+            bool_int = IntVar(start_val=0, name="bool_to_str_tmp")
+            with If(self):
+                bool_int.set(1)
+            
+            f_val = int_to_float(int_val=bool_int.value).float
+            dec_node = int_value(val=0).value
+            return float_to_string(float_val=f_val, decimals=dec_node).result
+
+        # 2. Float Port Outputs
+        float_nodes = ["FloatVariableNode", "GetFloatVariableValueNode", "RandomFloatNode", 
+                       "AddNode", "SubtractNode", "MultiplyNode", "DivideNode", "IntToFloatNode"]
+        if node_type in float_nodes or self._is_float_port():
+            dec_node = int_value(val=2).value
+            return float_to_string(float_val=self, decimals=dec_node).result
+
+        # 3. Integer Port Outputs
+        int_nodes = ["IntVariableNode", "GetIntVariableValueNode", "RandomIntNode", 
+                     "FloatToIntNode", "IntAddNode", "IntSubtractNode", "IntMultiplyNode", 
+                     "IntDivideNode", "IntModuloNode", "CounterNode", "GetSunAmountNode"]
+        if node_type in int_nodes or not self._is_float_port():
+            f_val = int_to_float(int_val=self).float
+            dec_node = int_value(val=0).value
+            return float_to_string(float_val=f_val, decimals=dec_node).result
+
+        return self
+
+    # --- DYNAMIC OPERATORS ---
     def __add__(self, other):
         if hasattr(other, "_get_primary_port"): other = other._get_primary_port()
         elif hasattr(other, 'value'): other = other.value
             
         from . import nodes
-        
-        is_other_str = isinstance(other, str) or (hasattr(other, 'node') and ("String" in other.node.type or "Concat" in other.node.type))
-        is_self_str = "String" in self.node.type or "Concat" in self.node.type
+        is_other_str = isinstance(other, str) or (hasattr(other, 'node') and ("String" in getattr(other.node, 'type', '') or "Concat" in getattr(other.node, 'type', '')))
+        is_self_str = "String" in getattr(self.node, 'type', '') or "Concat" in getattr(self.node, 'type', '')
         
         if is_other_str or is_self_str:
             str_self = self._to_string_port()
@@ -161,7 +170,6 @@ class PortReference(tuple):
         elif hasattr(other, 'value'): other = other.value
             
         from . import nodes
-        
         if isinstance(other, str):
             str_self = self._to_string_port()
             str_other = nodes.string_value(val=other).value
@@ -178,30 +186,19 @@ class PortReference(tuple):
     def __rtruediv__(self, other): return self._execute_rop(other, "div")
     def __rmod__(self, other): return self._execute_rop(other, "mod")
 
-    # Inside node_base.py -> class PortReference(tuple):
-
+    # --- COMPARISONS ---
     def __eq__(self, other):
         from . import nodes
         from enum import Enum
         
-        if self.port_name == "植物类型":
-            if isinstance(other, Enum):
-                other = other.value
-                
-            if isinstance(other, int):
-                other_node = nodes.plant_type_value(val=other)
-                other = other_node.value
-
+        if getattr(self, "port_name", "") == "植物类型":
+            if isinstance(other, Enum): other = other.value
+            if isinstance(other, int): other = nodes.plant_type_value(val=other).value
             return nodes.compare_plant_type(a=self, b=other).equal
         
-        if self.port_name == "僵尸类型":
-            if isinstance(other, Enum): 
-                other = other.value
-                
-            if isinstance(other, int):
-                other_node = nodes.zombie_type_value(val=other)
-                other = other_node.value
-
+        if getattr(self, "port_name", "") == "僵尸类型":
+            if isinstance(other, Enum): other = other.value
+            if isinstance(other, int): other = nodes.zombie_type_value(val=other).value
             return nodes.compare_zombie_type(a=self, b=other).equal
 
         return self._execute_comp(other, "eq")
@@ -210,23 +207,15 @@ class PortReference(tuple):
         from . import nodes
         from enum import Enum
         
-        if self.port_name == "植物类型":
-            if isinstance(other, Enum):
-                other = other.value
-                
-            if isinstance(other, int):
-                other = nodes.plant_type_value(val=other).value
-                
+        if getattr(self, "port_name", "") == "植物类型":
+            if isinstance(other, Enum): other = other.value
+            if isinstance(other, int): other = nodes.plant_type_value(val=other).value
             eq_port = nodes.compare_plant_type(a=self, b=other).equal
             return nodes.not_node(inp=eq_port).output
         
-        if self.port_name == "僵尸类型":
-            if isinstance(other, Enum):
-                other = other.value
-                
-            if isinstance(other, int):
-                other = nodes.zombie_type_value(val=other).value
-                
+        if getattr(self, "port_name", "") == "僵尸类型":
+            if isinstance(other, Enum): other = other.value
+            if isinstance(other, int): other = nodes.zombie_type_value(val=other).value
             eq_port = nodes.compare_zombie_type(a=self, b=other).equal
             return nodes.not_node(inp=eq_port).output
             
@@ -237,6 +226,7 @@ class PortReference(tuple):
     def __ge__(self, other): return self._execute_comp(other, "ge")
     def __le__(self, other): return self._execute_comp(other, "le")
 
+    # --- LOGICAL OPERATORS ---
     def __and__(self, other):
         from . import nodes
         return nodes.and_node(a=self, b=other).output  
@@ -244,6 +234,10 @@ class PortReference(tuple):
     def __or__(self, other):
         from . import nodes
         return nodes.or_node(a=self, b=other).output
+
+    def __invert__(self):
+        from . import nodes
+        return nodes.not_node(inp=self).output
 
 class ExecutionPath:
     def __init__(self, parent_id: str, out_trigger: str):
@@ -402,7 +396,7 @@ class BaseNode:
     def __lt__(self, other): return self._get_primary_port().__lt__(other)
     def __ge__(self, other): return self._get_primary_port().__ge__(other)
     def __le__(self, other): return self._get_primary_port().__le__(other)
-    def __bool__(self): return self._get_primary_port().__bool__()
+    def __bool__(self): return bool(self._get_primary_port())
     
     def path(self, trigger_name: str) -> ExecutionPath:
         return ExecutionPath(self.id, self._port_map.get(trigger_name, trigger_name))

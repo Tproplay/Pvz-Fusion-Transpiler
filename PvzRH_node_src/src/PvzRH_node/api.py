@@ -194,10 +194,53 @@ class InGameUI:
     
     @staticmethod
     def display_text(*args, duration=3.0):
-        """Pass any mix of text and variables, and it will auto-format and display them!"""
+        """Pass any mix of text and variables to auto-format and display them on screen."""
         from .StdLib import format_string
+        from .extensions import BoolVar, If
+        from .nodes import show_text, string_value
+        from .node_base import PortReference
+
+        BOOL_NODE_TYPES = {
+            "BoolVariableNode", "GetBoolVariableValueNode", "CompareIntNode", 
+            "CompareFloatNode", "CompareGameObjectNode", "AndNode", "OrNode", 
+            "NotNode", "ToggleNode"
+        }
+
+        # 1. Detect if any argument is a dynamic boolean port or BoolVar
+        bool_arg = None
+        for arg in args:
+            if isinstance(arg, BoolVar):
+                bool_arg = arg.value
+                break
+            elif isinstance(arg, PortReference) or hasattr(arg, 'node'):
+                node_type = getattr(getattr(arg, 'node', None), 'type', '')
+                if node_type in BOOL_NODE_TYPES:
+                    bool_arg = arg
+                    break
+
+        # 2. If a runtime boolean argument exists, branch execution to show "True" or "False"
+        if bool_arg is not None:
+            true_args = [
+                "True" if (a is bool_arg or (isinstance(a, BoolVar) and a.value is bool_arg)) else a
+                for a in args
+            ]
+            false_args = [
+                "False" if (a is bool_arg or (isinstance(a, BoolVar) and a.value is bool_arg)) else a
+                for a in args
+            ]
+
+            true_text_wire = format_string(*true_args)
+            false_text_wire = format_string(*false_args)
+
+            with If(bool_arg):
+                show_text(text=true_text_wire, duration=duration)
+            with If(~bool_arg): #type: ignore
+                show_text(text=false_text_wire, duration=duration)
+            return
+
+        # 3. Standard execution path for string and numeric arguments
         final_text = format_string(*args)
-        nodes.show_text(text=final_text, duration=duration)
+        show_text(text=final_text, duration=duration)
 
 class Random:
 

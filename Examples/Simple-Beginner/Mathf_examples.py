@@ -54,6 +54,21 @@ def main():
             with switch.case(12):
                 pvn.InGameUI.display_text("PI= ", Mathf.PI, " E= ", Mathf.E, " TAU= ", Mathf.TAU)
                 n += 1
+            with switch.case(13):
+                pvn.InGameUI.display_text("sqrt(16) = ", Mathf.sqrt(16))
+                n += 1
+            with switch.case(14):
+                pvn.InGameUI.display_text("cbrt(8) = ", Mathf.cbrt(8))
+                n += 1
+            with switch.case(15):
+                pvn.InGameUI.display_text("natural_pow(2, 3) = ", Mathf.natural_pow(2, 3))
+                n += 1
+            with switch.case(16):
+                pvn.InGameUI.display_text("sqrt(n) = ", Mathf.sqrt(n))
+                n += 1
+            with switch.case(17):
+                pvn.InGameUI.display_text("is_prime(n) = ", Mathf.is_prime(n))
+                n += 1
             with switch.default:
                 pvn.InGameUI.display_text("No more Mathf examples.")
                 n.set(0)
