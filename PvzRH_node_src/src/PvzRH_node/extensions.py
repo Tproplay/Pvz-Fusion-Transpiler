@@ -547,7 +547,7 @@ class MultiSelectMenu:
         current_list_node_id, current_list_port_name = None, None
         
         for opt_id, opt_data in self._options.items():
-            node_id = ctx.generate_uuid()
+            node_id = ctx._generate_uuid()
             kwargs = {
                 "class": "AddMultipleChoiceOptionNode", "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp",
                 "title": opt_data["title"], "description": opt_data["description"], "plantType": opt_data["plant_type"], "zombieType": opt_data["zombie_type"],
@@ -569,7 +569,7 @@ class MultiSelectMenu:
                 opt_data["callback"]()
                 ctx.trigger_stack[-1] = prev_trigger
 
-        self._show_node_id = ctx.generate_uuid()
+        self._show_node_id = ctx._generate_uuid()
         show_kwargs = {
             "class": "ShowMultipleChoiceMenuNode", "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp",
             "refreshable": self.refreshable, "refreshCount": self.refreshCount, "cancelable": self.cancelable, "windowCount": self.windowCount,

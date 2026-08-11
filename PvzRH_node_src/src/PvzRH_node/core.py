@@ -2,10 +2,292 @@ import uuid
 import os
 import json
 import math
-from typing import Dict, List, Any
+import copy
+from typing import Dict, List, Any, Optional, Union
+from .TypeMgr import (
+    SceneType,
+    LevelType,
+    PlantType,
+    ZombieType
+)
+# =====================================================================
+# STATE TRACKING DATA STRUCTURES
+# =====================================================================
+
+class BoardConfig:
+    """Stores all configurable runtime parameters for board dynamics."""
+    def __init__(self):
+        self._dirty = False
+        self.izDropCount: int = 0
+        self.redLineColumn: int = 5
+        self.zombieStartAmmor: float = 0.0
+        self.zombieHealthMultiplier: float = 1.0
+        self.zombieDamageMultiplier: float = 1.0
+        self.zombieSpeedMultiplier: float = 1.0
+        self.zombieCountMultiplier: float = 1.0
+        self.minOriginalSpeed: float = 1.0
+        self.maxOriginalSpeed: float = 1.4
+        self.waveInterval: float = 30.0
+        self.firstWaveArrivedTimer: float = 999999.0
+        self.conveyInterval: float = 6.0
+        self.gloveSpeed: float = 10.0
+        self.holdTimer: float = 4.2
+        self.holdTimer2: float = 1.8
+        self.holdTimer3: float = 5.0
+        self.startTip: str = "Test level"
+        self.tipTime: float = 6.0
+        self.applyRandomData: bool = False
+        self.plantModifyMin: float = 0.2
+        self.plantModifyMax: float = 6.0
+        self.plantSpeedMin: float = 0.2
+        self.plantSpeedMax: float = 6.0
+        self.plantSpeedAvg: float = 1.5
+        self.zombieModifyMin: float = 0.1
+        self.zombieModifyMax: float = 10.0
+        self.zombieModifyAvg: float = 3.0
+        self.zombieSpeedMin: float = 0.3
+        self.zombieSpeedMax: float = 4.0
+        self.zombieSpeedAvg: float = 1.5
+        self.zombieScaleMin: float = 0.3
+        self.zombieScaleMax: float = 2.5
+        self.zombieScaleAvg: float = 1.0
+
+    def __setattr__(self, name, value):
+        if not name.startswith("_"):
+            super().__setattr__("_dirty", True)
+        super().__setattr__(name, value)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
+
+
+class BoardTag:
+    """Stores all active game modifier and mode flags."""
+    def __init__(self):
+        self._dirty = False
+        self.waveLeaders: bool = False
+        self.evolutionWar: bool = False
+        self.rhythmGame: bool = False
+        self.imZombieBoss: bool = False
+        self.allScaryPotShow: bool = False
+        self.customEdit: bool = False
+        self.allCards: bool = False
+        self.isIZ: bool = False
+        self.HorseBoss: bool = False
+        self.Iz_ai: bool = False
+        self.rShowHealth: bool = False
+        self.lessSun: bool = False
+        self.lessMoney: bool = False
+        self.zombieDropSun: bool = False
+        self.disableNormalSun: bool = False
+        self.zombieRevive: bool = False
+        self.isScaredyDream: bool = False
+        self.isTowerDefence: bool = False
+        self.isShooting: bool = False
+        self.rogueShooting: bool = False
+        self.newShooting: bool = False
+        self.isSeedRain: bool = False
+        self.isIndestructible: bool = False
+        self.isColumn: bool = False
+        self.isSuperRandom: bool = False
+        self.isNormalRandom: bool = False
+        self.isElementRandom: bool = False
+        self.isDrawCards: bool = False
+        self.isUltimateSuperRandom: bool = False
+        self.isNight: bool = False
+        self.isBigMap: bool = False
+        self.freeCamera: bool = False
+        self.isEndless: bool = False
+        self.isTravel: bool = False
+        self.isEasyTravel: bool = False
+        self.randomTravel: bool = False
+        self.superCustomEditorMode: bool = False
+        self.enableTravelPlant: bool = False
+        self.enableAllTravelPlant: bool = False
+        self.enableTravelBuff: bool = False
+        self.isRoof: bool = False
+        self.isGarden: bool = False
+        self.isMirror: bool = False
+        self.isConvey: bool = False
+        self.isExchange: bool = False
+        self.shooting_loon: bool = False
+        self.isBoss: bool = False
+        self.isBoss2: bool = False
+        self.isFreeCardSelect: bool = False
+        self.isTutor: bool = False
+        self.isObsidianImp: bool = False
+        self.isDixMix: bool = False
+        self.isSingle: bool = False
+        self.bungiBattle: bool = False
+        self.isBejeweled: bool = False
+        self.isBubbleGame: bool = False
+        self.isScaryPot: bool = False
+        self.isMidMap: bool = False
+        self.isChess: bool = False
+        self.isMidMap2: bool = False
+        self.isLookStar: bool = False
+        self.isGardenBattle: bool = False
+        self.isRandomMix: bool = False
+        self.isRandomMix2: bool = False
+        self.freeGloveZombie: bool = False
+        self.disableMower: bool = False
+        self.isHappyRandom: bool = False
+        self.oppsiteBuff: bool = False
+        self.pvpScaryPot: bool = False
+        self.pvpRandom: bool = False
+        self.ultimateEndless: bool = False
+        self.isHammerZombie: bool = False
+        self.fastZombie: bool = False
+        self.isHugeGravity: bool = False
+        self.zombieSplit: bool = False
+        self.fullStrike: bool = False
+        self.billiardBall: bool = False
+        self.isSnake: bool = False
+        self.isSquash: bool = False
+        self.zombieBattle: bool = False
+        self.plantingZombie: bool = False
+        self.is2048: bool = False
+        self.isRogue: bool = False
+        self.isFruitNinjia: bool = False
+        self.isFruitNinjia2: bool = False
+        self.lightShadow: bool = False
+        self.isLoonGame: bool = False
+        self.snowBoss: bool = False
+        self.playerShooting: bool = False
+        self.smallZombie: bool = False
+        self.isFlagGame: bool = False
+        self.isTreasure: bool = False
+        self.isBrick: bool = False
+        self.disableSummonZombie: bool = False
+        self.disableSelectCard: bool = False
+        self.disableInInterlude: bool = False
+
+    def __setattr__(self, name, value):
+        if not name.startswith("_"):
+            super().__setattr__("_dirty", True)
+        super().__setattr__(name, value)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
+
+
+# =====================================================================
+# HELPER UTILITIES & DATA FACTORIES
+# =====================================================================
+
+def _to_json_val(val: Any) -> Any:
+    """Recursively unwraps Enums, dicts, lists, and tuples into raw JSON values."""
+    if hasattr(val, 'value'):
+        return _to_json_val(val.value)
+    if isinstance(val, dict):
+        return {k: _to_json_val(v) for k, v in val.items()}
+    if isinstance(val, (list, tuple, set)):
+        return [_to_json_val(v) for v in val]
+    return val
+
+class PlantData:
+    @staticmethod
+    def create(
+        plant_type: Any,
+        cost: int = 100,
+        cd: float = 10.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 25.0
+    ) -> Dict[str, Any]:
+        return {
+            "thePlantType": _to_json_val(plant_type),
+            "attackInterval": float(attack_interval),
+            "produceInterval": float(produce_interval),
+            "attackDamage": int(attack_damage),
+            "maxHealth": int(max_health),
+            "cd": float(cd),
+            "cost": int(cost)
+        }
+
+
+class PlantEntry:
+    @staticmethod
+    def create(
+        row: int,
+        col: int,
+        plant_type: Any,
+        health: int = 300,
+        stage: int = 0,
+        lily_type: int = -1,
+        attribute_count: int = 0,
+        level: int = 0,
+        imitatless: bool = False,
+        diemeanlose: bool = False,
+        uncrashable: bool = False,
+        star_up: bool = False,
+        towards: int = 0,
+        upgrade_type: int = 0
+    ) -> Dict[str, Any]:
+        return {
+            "thePlantColumn": col,
+            "thePlantRow": row,
+            "thePlantType": _to_json_val(plant_type),
+            "thePlantHealth": health,
+            "theLilyType": lily_type,
+            "thePlantStage": stage,
+            "theAttributeCount": attribute_count,
+            "theLevel": level,
+            "imitatless": imitatless,
+            "diemeanlose": diemeanlose,
+            "uncrashable": uncrashable,
+            "starUp": star_up,
+            "towards": towards,
+            "upgradeType": upgrade_type,
+            "objects": []
+        }
+
+
+class OrderedSpawn:
+    """Factory helper for creating wave-ordered zombie spawns."""
+    @staticmethod
+    def create(
+        wave: int,
+        zombies: Optional[List[Any]] = None,
+        zombies_with_row: Optional[List[Any]] = None
+    ) -> Dict[str, Any]:
+        formatted_rows = []
+        for item in (zombies_with_row or []):
+            if isinstance(item, (tuple, list)) and len(item) == 2:
+                # Flexibly handles both (ZombieType, row) and (row, ZombieType)
+                first, second = item
+                if isinstance(first, int) and not isinstance(first, bool) and not hasattr(first, 'value'):
+                    z_type, row_num = second, first
+                else:
+                    z_type, row_num = first, second
+
+                formatted_rows.append({
+                    "zombieType": _to_json_val(z_type),
+                    "row": row_num
+                })
+            elif isinstance(item, dict):
+                formatted_rows.append({
+                    "zombieType": _to_json_val(item.get("zombieType", item.get("zombie_type"))),
+                    "row": item.get("row", -1)
+                })
+            else:
+                formatted_rows.append({
+                    "zombieType": _to_json_val(item),
+                    "row": -1
+                })
+
+        return {
+            "wave": wave,
+            "zombies": [_to_json_val(z) for z in (zombies or [])],
+            "zombiesWithRow": formatted_rows
+        }
+
+# =====================================================================
+# COMPILER STATE & ENGINE
+# =====================================================================
 
 class CompilerSetting:
-    """Contains setting related to compiler and output layout."""
     group_level: int = 0
     spacing_x: float = 220.0
     spacing_y: float = 170.0
@@ -14,16 +296,106 @@ class CompilerSetting:
 
 settings = CompilerSetting()
 
-class CompilerState:
-    config: Dict[str, Any]
-    nodes: List[Dict[str, Any]]
-    connections: List[Dict[str, Any]]
-    trigger_stack: List[Any]
-    registry: Dict[str, Any]
-    variables: List[Dict[str, Any]] 
 
+DEFAULT_LEVEL_TEMPLATE = {
+    "scaryPots": [],
+    "victoryType": 0,
+    "boardConfig": BoardConfig().to_dict(),
+    "boardTag": BoardTag().to_dict(),
+    "rhythmLevelData": {
+        "musicType": 13,
+        "musicName": "song",
+        "fallTime": 1.0,
+        "bpm": 160.0,
+        "audioOffset": 0.0,
+        "notes": []
+    },
+    "eventNodeGraph": {
+        "nodes": [],
+        "connections": [],
+        "variables": [],
+        "groups": []
+    },
+    "plantDatas": [],
+    "plants": [],
+    "preSelectCards": [],
+    "preSelectCards_zombie": [],
+    "GodShootingConfig": {
+        "plants": []
+    },
+    "advBuffs": [],
+    "ultiBuffs2": [],
+    "ultiBuffs": [],
+    "travelDebuffs": [],
+    "zombieDatas": [],
+    "SpawnZombies": [],
+    "orderedSpawns": [],
+    "sceneType": 0,
+    "levelType": 11,
+    "levelNumber": 8001,
+    "name": "exported level",
+    "startSun": 500,
+    "maxWave": 10,
+    "cardCount": 14,
+    "references": {
+        "version": 2,
+        "RefIds": []
+    }
+}
+
+class LevelConfig:
+    """Convenience proxy for builder level parameters with full IDE auto-completion."""
+
+    # Type annotations for VS Code Pylance / Pyright IntelliSense
+    level_number: Optional[int]
+    scene_type: Optional[Union[SceneType, int]]
+    level_type: Optional[Union[LevelType, int]]
+    start_sun: Optional[int]
+    max_wave: Optional[int]
+    card_count: Optional[int]
+    victory_type: Optional[int]
+
+    plant_datas: Optional[List[Dict[str, Any]]]
+    plants: Optional[List[Dict[str, Any]]]
+    pre_select_cards: Optional[List[Union[PlantType, int]]]
+    pre_select_cards_zombie: Optional[List[Union[ZombieType, int]]]
+
+    adv_buffs: Optional[List[int]]
+    ulti_buffs: Optional[List[int]]
+    ulti_buffs2: Optional[List[int]]
+    travel_debuffs: Optional[List[int]]
+
+    spawn_zombies: Optional[List[Union[ZombieType, int]]]
+    ordered_spawns: Optional[List[Dict[str, Any]]]
+
+    board_config: BoardConfig
+    board_tag: BoardTag
+
+    def __init__(self, state: 'CompilerState'):
+        self._state = state
+
+    def add_ordered_spawn(self, spawn_entry: Dict[str, Any]) -> None:
+        """Appends a wave spawn entry generated via OrderedSpawn.create()."""
+        if not isinstance(spawn_entry, dict):
+            raise TypeError("❌ Error: Expected a dictionary generated by OrderedSpawn.create().")
+        self._state.add_ordered_spawn(spawn_entry)
+
+    def __setattr__(self, name: str, value: Any):
+        if name.startswith("_"):
+            super().__setattr__(name, value)
+        else:
+            unwrapped_val = _to_json_val(value)
+            setattr(self._state, name, unwrapped_val)
+
+    def __getattr__(self, name: str):
+        if hasattr(self._state, name):
+            return getattr(self._state, name)
+        raise AttributeError(f"'LevelConfig' has no attribute '{name}'")
+
+
+class CompilerState:
     def __init__(self) -> None:
-        self.config = {"output": "./", "name": "Custom_Level"}
+        self.config = {"output": "./", "name": "exported level"}
         self.nodes = []
         self.connections = []
         self.trigger_stack = [] 
@@ -37,8 +409,50 @@ class CompilerState:
         self.hierarchical_spacing_y = settings.hierarchical_spacing_y
         self.groups_map = {}
 
-    def generate_uuid(self) -> str:
+        # LEVEL CONFIGURATION PROXY
+        self.level_config = LevelConfig(self)
+
+        self.board_config = BoardConfig()
+        self.board_tag = BoardTag()
+
+        self.level_number: Optional[int] = None
+        self.scene_type: Optional[int] = None
+        self.level_type: Optional[int] = None
+        self.start_sun: Optional[int] = None
+        self.max_wave: Optional[int] = None
+        self.card_count: Optional[int] = None
+        self.victory_type: Optional[int] = None
+
+        self.plant_datas: Optional[List[Dict[str, Any]]] = None
+        self.plants: Optional[List[Dict[str, Any]]] = None
+        self.pre_select_cards: Optional[List[Any]] = None
+        self.pre_select_cards_zombie: Optional[List[Any]] = None
+
+        self.adv_buffs: Optional[List[int]] = None
+        self.ulti_buffs: Optional[List[int]] = None
+        self.ulti_buffs2: Optional[List[int]] = None
+        self.travel_debuffs: Optional[List[int]] = None
+
+        self.spawn_zombies: Optional[List[Any]] = None
+        self.ordered_spawns: Optional[List[Dict[str, Any]]] = None
+
+    def _generate_uuid(self) -> str:
         return str(uuid.uuid4())
+
+    def add_plant_data(self, plant_data: Dict[str, Any]) -> None:
+        if self.plant_datas is None:
+            self.plant_datas = []
+        self.plant_datas.append(_to_json_val(plant_data))
+
+    def add_plant(self, plant_entry: Dict[str, Any]) -> None:
+        if self.plants is None:
+            self.plants = []
+        self.plants.append(_to_json_val(plant_entry))
+
+    def add_ordered_spawn(self, spawn_entry: Dict[str, Any]) -> None:
+        if self.ordered_spawns is None:
+            self.ordered_spawns = []
+        self.ordered_spawns.append(_to_json_val(spawn_entry))
 
     def add_connection(self, source_id: str, source_port: str, target_id: str, target_port: str) -> None:
         self.connections.append({
@@ -51,7 +465,6 @@ class CompilerState:
     def remove_connection(self, source_id: str = None, source_port: str = None, #type: ignore
                           target_id: str = None, target_port: str = None): #type: ignore
         original_count = len(self.connections)
-        
         self.connections = [
             conn for conn in self.connections
             if not (
@@ -61,9 +474,8 @@ class CompilerState:
                 (target_port is None or conn["targetPortName"] == target_port)
             )
         ]
-        
         return original_count - len(self.connections)
-    
+
     def export(self) -> None:
         self.group_level = settings.group_level
         self.spacing_x = settings.spacing_x
@@ -71,21 +483,82 @@ class CompilerState:
         self.hierarchical_spacing_x = settings.hierarchical_spacing_x
         self.hierarchical_spacing_y = settings.hierarchical_spacing_y
         
-        file_path = os.path.join(self.config["output"], f"{self.config['name']}.json")
+        file_name = self.config.get("name", "exported level")
+        file_path = os.path.join(self.config["output"], f"{file_name}.json")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
+        is_new_file = not os.path.exists(file_path)
         level_data = {}
-        if os.path.exists(file_path):
+
+        if not is_new_file:
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     level_data = json.load(f)
                 print(f"Modifying existing premade level data found at: {file_path}")
             except Exception as e:
                 print(f"Warning: Failed to read existing file ({e}). Creating a fresh level instead.")
-                level_data = {}
+                is_new_file = True
+                level_data = copy.deepcopy(DEFAULT_LEVEL_TEMPLATE)
+        else:
+            level_data = copy.deepcopy(DEFAULT_LEVEL_TEMPLATE)
 
         # =====================================================================
-        # PASS 1: GRAPH OPTIMIZATION (DEDUPLICATION) - Level 0 Only
+        # PASS 0: MERGE LEVEL CONFIGURATION DATA
+        # =====================================================================
+        level_data["name"] = file_name if self.config.get("name") else level_data.get("name", "exported level")
+        
+        if self.level_number is not None:
+            level_data["levelNumber"] = self.level_number
+        elif is_new_file:
+            level_data["levelNumber"] = 8001
+
+        if self.scene_type is not None:
+            level_data["sceneType"] = _to_json_val(self.scene_type)
+        if self.level_type is not None:
+            level_data["levelType"] = _to_json_val(self.level_type)
+        if self.start_sun is not None:
+            level_data["startSun"] = self.start_sun
+        if self.max_wave is not None:
+            level_data["maxWave"] = self.max_wave
+        if self.card_count is not None:
+            level_data["cardCount"] = self.card_count
+        if self.victory_type is not None:
+            level_data["victoryType"] = self.victory_type
+
+        # Update entire BoardConfig / BoardTag if any attribute was modified by user
+        if self.board_config._dirty:
+            level_data["boardConfig"] = self.board_config.to_dict()
+        if self.board_tag._dirty:
+            level_data["boardTag"] = self.board_tag.to_dict()
+
+        # List Overwrites
+        if self.plant_datas is not None:
+            level_data["plantDatas"] = _to_json_val(self.plant_datas)
+        if self.plants is not None:
+            level_data["plants"] = _to_json_val(self.plants)
+        if self.pre_select_cards is not None:
+            level_data["preSelectCards"] = _to_json_val(self.pre_select_cards)
+        if self.pre_select_cards_zombie is not None:
+            level_data["preSelectCards_zombie"] = _to_json_val(self.pre_select_cards_zombie)
+        if self.adv_buffs is not None:
+            level_data["advBuffs"] = _to_json_val(self.adv_buffs)
+        if self.ulti_buffs is not None:
+            level_data["ultiBuffs"] = _to_json_val(self.ulti_buffs)
+        if self.ulti_buffs2 is not None:
+            level_data["ultiBuffs2"] = _to_json_val(self.ulti_buffs2)
+        if self.travel_debuffs is not None:
+            level_data["travelDebuffs"] = _to_json_val(self.travel_debuffs)
+        if self.spawn_zombies is not None:
+            level_data["SpawnZombies"] = _to_json_val(self.spawn_zombies)
+        if self.ordered_spawns is not None:
+            level_data["orderedSpawns"] = _to_json_val(self.ordered_spawns)
+
+        if "plants" in level_data:
+            for plant in level_data["plants"]:
+                plant["objects"] = []
+
+        # =====================================================================
+        # PASS 1: GRAPH OPTIMIZATION (DEDUPLICATION)
         # =====================================================================
         if self.group_level == 0:
             DEDUPE_TYPES = {
@@ -218,7 +691,6 @@ class CompilerState:
                 
                 group_index += 1
 
-            # 🎯 FIX: Auto-gather and layout all un-grouped constants and variables
             positioned_node_ids = set(node_positions.keys())
             orphaned_node_ids = [n["id"] for n in self.nodes if n["id"] not in positioned_node_ids]
 
@@ -231,7 +703,7 @@ class CompilerState:
                 orphan_grid_size = int(math.ceil(math.sqrt(num_orphans)))
 
                 orphan_group = {
-                    "groupId": self.generate_uuid(),
+                    "groupId": self._generate_uuid(),
                     "title": "Global Constants & Variables",
                     "nodeIds": orphaned_node_ids,
                     "position": {"x": current_x - 30.0, "y": current_y}
@@ -259,16 +731,11 @@ class CompilerState:
         level_data["references"] = {"version": 2, "RefIds": []}
 
         num_nodes = len(self.nodes)
-        
-        active_groups = []
-        if self.group_level >= 1:
-            active_groups = [grp for grp in self.groups_map.values() if grp["nodeIds"]]
-            
+        active_groups = [grp for grp in self.groups_map.values() if grp["nodeIds"]] if self.group_level >= 1 else []
         num_groups = len(active_groups)
         
         asset_rid_map = {}
         variables_list = getattr(self, "variables", [])
-        
         next_asset_rid = 1000 + num_nodes + num_groups
         
         for var_asset in variables_list:
@@ -330,5 +797,6 @@ class CompilerState:
             json.dump(level_data, f, indent=4, ensure_ascii=False)
             
         print(f"Successfully Packed and Exported to: {file_path}")
+
 
 ctx = CompilerState()

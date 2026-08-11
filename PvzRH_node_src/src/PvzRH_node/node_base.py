@@ -265,7 +265,7 @@ class PathAccessor:
 
 class BaseNode:
     def __init__(self, node_type: str, out_trigger: str = "触发", in_trigger: str = "触发", **kwargs):
-        self.id = ctx.generate_uuid()
+        self.id = ctx._generate_uuid()
         self.type = node_type
         self.out_trigger = out_trigger
         self.in_trigger = in_trigger
@@ -349,7 +349,7 @@ class BaseNode:
 
             if target_line not in ctx.groups_map:
                 ctx.groups_map[target_line] = {
-                    "groupId": ctx.generate_uuid(),
+                    "groupId": ctx._generate_uuid(),
                     "nodeIds": [],
                     "position": {"x": 0.0, "y": 0.0}
                 }

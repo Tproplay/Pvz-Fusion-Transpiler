@@ -1,5 +1,11 @@
 import atexit
-from .core import (ctx as _ctx, settings)
+from .core import (
+    ctx as _ctx, 
+    settings,
+    PlantData,
+    PlantEntry,
+    OrderedSpawn
+)
 from . import nodes as nodes
 
 # API Setup
@@ -25,8 +31,6 @@ from .extensions import (
     MultiSelectMenu,
     ForEachPlant,
     ForEachPlantType,
-    Plant,
-    Zombie,
     While,
     For,
     Mathf,
@@ -38,7 +42,10 @@ from .TypeMgr import (
     ZombieType,
     SoundType,
     KeyCode,
-    ZombieAnimation
+    ZombieAnimation,
+    SceneType,
+    LevelType,
+    TravelBuffType
 )
 
 
@@ -62,6 +69,8 @@ class _GeneralNamespace:
     add_sun = nodes.add_sun
     add_money = nodes.add_money
     branch_node = nodes.branch_node
+
+level_config = _ctx.level_config
 
 __all__ = [
     "Config",
@@ -93,12 +102,20 @@ __all__ = [
     "Mathf",
     "Time",
 
+    # Level Data Helpers
+    "PlantData",
+    "PlantEntry",
+    "OrderedSpawn",
+
     # Types
     "PlantType",
     "ZombieType",
     "SoundType",
     "KeyCode",
     "ZombieAnimation",
+    "SceneType",
+    "LevelType",
+    "TravelBuffType",
 
     # Modules
     "nodes",

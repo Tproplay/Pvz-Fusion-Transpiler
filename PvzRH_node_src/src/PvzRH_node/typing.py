@@ -7,7 +7,7 @@ def enforce_int(value) -> str:
     value = int(value) if isinstance(value, float) else value
     value = 1 if isinstance(value, bool) else value
 
-    node_id = ctx.generate_uuid()
+    node_id = ctx._generate_uuid()
     ctx.nodes.append({
         "id": node_id, 
         "type": "IntValueNode", 
@@ -22,7 +22,7 @@ def enforce_float(value) -> str:
     if hasattr(value, "id"): return value.id
     if isinstance(value, str): raise TypeError(f"Cannot cast string '{value}' to a Float.")
 
-    node_id = ctx.generate_uuid()
+    node_id = ctx._generate_uuid()
     ctx.nodes.append({
         "id": node_id, 
         "type": "FloatValueNode", 
@@ -35,7 +35,7 @@ def enforce_float(value) -> str:
 
 def enforce_bool(value) -> str:
     if hasattr(value, "id"): return value.id
-    node_id = ctx.generate_uuid()
+    node_id = ctx._generate_uuid()
     ctx.nodes.append({
         "id": node_id, 
         "type": "BoolValueNode", 
@@ -48,7 +48,7 @@ def enforce_bool(value) -> str:
 
 def enforce_string(value) -> str:
     if hasattr(value, "id"): return value.id
-    node_id = ctx.generate_uuid()
+    node_id = ctx._generate_uuid()
     ctx.nodes.append({
         "id": node_id, 
         "type": "StringValueNode", 
