@@ -52,6 +52,7 @@ def format_string(*args):
         current_chain = string_concat(a=current_chain, b=next_piece).result
 
     return current_chain
+
 from .api import *
 
 class _wasd_key:

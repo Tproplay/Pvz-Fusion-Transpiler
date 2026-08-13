@@ -20,12 +20,23 @@ class PortReference(tuple):
     def _is_float_port(self):
         """Intelligently detects if the underlying Unity node outputs a Float."""
         t = getattr(self.node, "type", "")
-        float_nodes = ["FloatValueNode", "RandomFloatNode", "IntToFloatNode", "AddNode", "SubtractNode", "MultiplyNode", "DivideNode"]
-        int_nodes = ["IntValueNode", "RandomIntNode", "FloatToIntNode", "IntAddNode", "IntSubtractNode", "IntMultiplyNode", "IntDivideNode", "IntModuloNode", "CounterNode", "GetSunAmountNode"]
+        float_nodes = [
+            "FloatValueNode", "RandomFloatNode", "IntToFloatNode", 
+            "AddNode", "SubtractNode", "MultiplyNode", "DivideNode"
+        ]
+        int_nodes = [
+            "IntValueNode", "RandomIntNode", "FloatToIntNode", 
+            "IntAddNode", "IntSubtractNode", "IntMultiplyNode", 
+            "IntDivideNode", "IntModuloNode", "CounterNode", "GetSunAmountNode"
+        ]
         
         if t in float_nodes: return True
         if t in int_nodes: return False
-        if "Float" in t and "ToInt" not in t: return True
+        
+        # Must exclude FloatToStringNode and string formatting nodes
+        if "Float" in t and "ToInt" not in t and "ToString" not in t: 
+            return True
+            
         return False
 
     def _ensure_float(self, val):
@@ -111,7 +122,7 @@ class PortReference(tuple):
 
     def _to_string_port(self):
         """Converts raw numeric or boolean node output ports into string node ports."""
-        from .nodes import float_to_string, int_to_float, int_value, string_value
+        from .nodes import float_to_string, int_to_float, int_value
         from .extensions import IntVar, If
 
         if not hasattr(self, 'node') or not hasattr(self.node, 'type'):
@@ -119,9 +130,17 @@ class PortReference(tuple):
 
         node_type = getattr(self.node, 'type', '')
 
+        # 0. Early Return for Ports that are ALREADY String Wires
+        string_nodes = ["StringValueNode", "FloatToStringNode", "StringConcatNode"]
+        if node_type in string_nodes or "String" in node_type or "Concat" in node_type:
+            return self
+
         # 1. Boolean Port Outputs
-        bool_nodes = ["BoolVariableNode", "GetBoolVariableValueNode", "CompareIntNode", 
-                      "CompareFloatNode", "CompareGameObjectNode", "AndNode", "OrNode", "NotNode", "ToggleNode"]
+        bool_nodes = [
+            "BoolVariableNode", "GetBoolVariableValueNode", "CompareIntNode", 
+            "CompareFloatNode", "CompareGameObjectNode", "AndNode", "OrNode", 
+            "NotNode", "ToggleNode"
+        ]
         if node_type in bool_nodes:
             bool_int = IntVar(start_val=0, name="bool_to_str_tmp")
             with If(self):
@@ -132,16 +151,20 @@ class PortReference(tuple):
             return float_to_string(float_val=f_val, decimals=dec_node).result
 
         # 2. Float Port Outputs
-        float_nodes = ["FloatVariableNode", "GetFloatVariableValueNode", "RandomFloatNode", 
-                       "AddNode", "SubtractNode", "MultiplyNode", "DivideNode", "IntToFloatNode"]
+        float_nodes = [
+            "FloatVariableNode", "GetFloatVariableValueNode", "RandomFloatNode", 
+            "AddNode", "SubtractNode", "MultiplyNode", "DivideNode", "IntToFloatNode"
+        ]
         if node_type in float_nodes or self._is_float_port():
             dec_node = int_value(val=2).value
             return float_to_string(float_val=self, decimals=dec_node).result
 
         # 3. Integer Port Outputs
-        int_nodes = ["IntVariableNode", "GetIntVariableValueNode", "RandomIntNode", 
-                     "FloatToIntNode", "IntAddNode", "IntSubtractNode", "IntMultiplyNode", 
-                     "IntDivideNode", "IntModuloNode", "CounterNode", "GetSunAmountNode"]
+        int_nodes = [
+            "IntVariableNode", "GetIntVariableValueNode", "RandomIntNode", 
+            "FloatToIntNode", "IntAddNode", "IntSubtractNode", "IntMultiplyNode", 
+            "IntDivideNode", "IntModuloNode", "CounterNode", "GetSunAmountNode"
+        ]
         if node_type in int_nodes or not self._is_float_port():
             f_val = int_to_float(int_val=self).float
             dec_node = int_value(val=0).value

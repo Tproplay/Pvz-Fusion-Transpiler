@@ -1350,7 +1350,8 @@ class Mathf:
     
     RAD2DEG = 57.29577951308232   # 180.0 / PI
     DEG2RAD = 0.017453292519943295 # PI / 180.0
-
+    TWO_PI = 6.283185307179586   # 2 * PI
+    
     @staticmethod
     def rad2deg(rad):
         """Converts radians to degrees (rad * 180 / PI)."""
@@ -1428,8 +1429,24 @@ class Mathf:
         return a + (delta * t)
     
     @staticmethod
+    def _wrap_rad(rad):
+        """Wraps radians into the range [-PI, PI] for optimal Taylor series convergence."""
+        import math
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(rad, (int, float)) and not isinstance(rad, PortReference):
+            return ((rad + math.pi) % (2 * math.pi)) - math.pi
+
+        # Dynamic Graph: ((rad + PI) % TWO_PI) - PI
+        add_pi = nodes.add_node(a=rad, b=Mathf.PI).result
+        mod_2pi = PortReference._float_modulo(add_pi, Mathf.TWO_PI)
+        return nodes.subtract_node(a=mod_2pi, b=Mathf.PI).result
+
+    @staticmethod
     def sin(rad, terms: int = 5):
-        """Calculates sine (in radians). Unrolls a Taylor series graph for dynamic inputs."""
+        """Calculates sine (in radians) with range reduction."""
+        import math
         from . import nodes
         from .node_base import PortReference
 
@@ -1437,19 +1454,22 @@ class Mathf:
         if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
             return math.sin(raw_val)
 
-        # Dynamic Graph: Taylor Series x - x^3/3! + x^5/5! - x^7/7! + ...
-        result = raw_val
-        x_power = raw_val
+        # 1. Wrap angle into [-PI, PI]
+        wrapped = Mathf._wrap_rad(raw_val)
+
+        # 2. Compute Taylor Series: x - x^3/3! + x^5/5! - x^7/7! ...
+        result = wrapped
+        x_power = wrapped
         sign = -1.0
 
         for n in range(3, 3 + (terms - 1) * 2, 2):
-            x_sq = nodes.multiply_node(a=raw_val, b=raw_val).result
+            x_sq = nodes.multiply_node(a=wrapped, b=wrapped).result
             x_power = nodes.multiply_node(a=x_power, b=x_sq).result
-            
+
             fact = float(math.factorial(n))
             term = nodes.divide_node(a=x_power, b=fact).result
             term_scaled = nodes.multiply_node(a=term, b=sign).result
-            
+
             result = nodes.add_node(a=result, b=term_scaled).result
             sign *= -1.0
 
@@ -1457,7 +1477,8 @@ class Mathf:
 
     @staticmethod
     def cos(rad, terms: int = 5):
-        """Calculates cosine (in radians). Unrolls a Taylor series graph for dynamic inputs."""
+        """Calculates cosine (in radians) with range reduction."""
+        import math
         from . import nodes
         from .node_base import PortReference
 
@@ -1465,13 +1486,16 @@ class Mathf:
         if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
             return math.cos(raw_val)
 
-        # Dynamic Graph: Taylor Series 1 - x^2/2! + x^4/4! - x^6/6! + ...
+        # 1. Wrap angle into [-PI, PI]
+        wrapped = Mathf._wrap_rad(raw_val)
+
+        # 2. Compute Taylor Series: 1 - x^2/2! + x^4/4! - x^6/6! ...
         result = nodes.float_value(val=1.0).value
         x_power = nodes.float_value(val=1.0).value
         sign = -1.0
 
         for n in range(2, 2 + terms * 2, 2):
-            x_sq = nodes.multiply_node(a=raw_val, b=raw_val).result
+            x_sq = nodes.multiply_node(a=wrapped, b=wrapped).result
             x_power = nodes.multiply_node(a=x_power, b=x_sq).result
 
             fact = float(math.factorial(n))
@@ -1482,7 +1506,7 @@ class Mathf:
             sign *= -1.0
 
         return result
-
+    
     @staticmethod
     def tan(rad, terms: int = 5):
         """Calculates tangent (sin / cos)."""
