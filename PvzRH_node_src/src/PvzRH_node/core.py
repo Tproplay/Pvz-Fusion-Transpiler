@@ -18,6 +18,7 @@ class BoardConfig:
     """Stores all configurable runtime parameters for board dynamics."""
     def __init__(self):
         self._dirty = False
+        self._dirty_keys = set()
         self.izDropCount: int = 0
         self.redLineColumn: int = 5
         self.zombieStartAmmor: float = 0.0
@@ -28,13 +29,13 @@ class BoardConfig:
         self.minOriginalSpeed: float = 1.0
         self.maxOriginalSpeed: float = 1.4
         self.waveInterval: float = 30.0
-        self.firstWaveArrivedTimer: float = 999999.0
+        self.firstWaveArrivedTimer: float = 15.0
         self.conveyInterval: float = 6.0
         self.gloveSpeed: float = 10.0
         self.holdTimer: float = 4.2
         self.holdTimer2: float = 1.8
         self.holdTimer3: float = 5.0
-        self.startTip: str = "Test level"
+        self.startTip: str = ""
         self.tipTime: float = 6.0
         self.applyRandomData: bool = False
         self.plantModifyMin: float = 0.2
@@ -55,16 +56,18 @@ class BoardConfig:
     def __setattr__(self, name, value):
         if not name.startswith("_"):
             super().__setattr__("_dirty", True)
+            if hasattr(self, "_dirty_keys"):
+                self._dirty_keys.add(name)
         super().__setattr__(name, value)
 
     def to_dict(self) -> Dict[str, Any]:
         return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
 
-
 class BoardTag:
     """Stores all active game modifier and mode flags."""
     def __init__(self):
         self._dirty = False
+        self._dirty_keys = set()
         self.waveLeaders: bool = False
         self.evolutionWar: bool = False
         self.rhythmGame: bool = False
@@ -165,11 +168,12 @@ class BoardTag:
     def __setattr__(self, name, value):
         if not name.startswith("_"):
             super().__setattr__("_dirty", True)
+            if hasattr(self, "_dirty_keys"):
+                self._dirty_keys.add(name)
         super().__setattr__(name, value)
 
     def to_dict(self) -> Dict[str, Any]:
         return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
-
 
 # =====================================================================
 # HELPER UTILITIES & DATA FACTORIES
@@ -332,8 +336,8 @@ DEFAULT_LEVEL_TEMPLATE = {
     "orderedSpawns": [],
     "sceneType": 0,
     "levelType": 11,
-    "levelNumber": 8001,
-    "name": "exported level",
+    "levelNumber": 1,
+    "name": "Unnamed",
     "startSun": 500,
     "maxWave": 10,
     "cardCount": 14,
@@ -415,6 +419,7 @@ class CompilerState:
         self.board_config = BoardConfig()
         self.board_tag = BoardTag()
 
+        self.name: Optional[str] = None
         self.level_number: Optional[int] = None
         self.scene_type: Optional[int] = None
         self.level_type: Optional[int] = None
@@ -503,10 +508,13 @@ class CompilerState:
             level_data = copy.deepcopy(DEFAULT_LEVEL_TEMPLATE)
 
         # =====================================================================
-        # PASS 0: MERGE LEVEL CONFIGURATION DATA
+        # PASS 0: MERGE LEVEL CONFIGURATION DATA SELECTIVELY
         # =====================================================================
-        level_data["name"] = file_name if self.config.get("name") else level_data.get("name", "exported level")
-        
+        if self.name is not None:
+            level_data["name"] = self.name
+        elif is_new_file:
+            level_data["name"] = file_name if self.config.get("name") else "Unnamed"
+
         if self.level_number is not None:
             level_data["levelNumber"] = self.level_number
         elif is_new_file:
@@ -525,17 +533,27 @@ class CompilerState:
         if self.victory_type is not None:
             level_data["victoryType"] = self.victory_type
 
-        # Update entire BoardConfig / BoardTag if any attribute was modified by user
-        if self.board_config._dirty:
+        # Merge BoardConfig & BoardTag keys selectively
+        if not is_new_file and "boardConfig" in level_data:
+            for k in self.board_config._dirty_keys:
+                level_data["boardConfig"][k] = getattr(self.board_config, k)
+        elif self.board_config._dirty or is_new_file:
             level_data["boardConfig"] = self.board_config.to_dict()
-        if self.board_tag._dirty:
+
+        if not is_new_file and "boardTag" in level_data:
+            for k in self.board_tag._dirty_keys:
+                level_data["boardTag"][k] = getattr(self.board_tag, k)
+        elif self.board_tag._dirty or is_new_file:
             level_data["boardTag"] = self.board_tag.to_dict()
 
-        # List Overwrites
+        # List Overwrites (Only applied when explicitly configured)
         if self.plant_datas is not None:
             level_data["plantDatas"] = _to_json_val(self.plant_datas)
         if self.plants is not None:
             level_data["plants"] = _to_json_val(self.plants)
+            for plant in level_data["plants"]:
+                if isinstance(plant, dict):
+                    plant["objects"] = []
         if self.pre_select_cards is not None:
             level_data["preSelectCards"] = _to_json_val(self.pre_select_cards)
         if self.pre_select_cards_zombie is not None:
@@ -552,10 +570,6 @@ class CompilerState:
             level_data["SpawnZombies"] = _to_json_val(self.spawn_zombies)
         if self.ordered_spawns is not None:
             level_data["orderedSpawns"] = _to_json_val(self.ordered_spawns)
-
-        if "plants" in level_data:
-            for plant in level_data["plants"]:
-                plant["objects"] = []
 
         # =====================================================================
         # PASS 1: GRAPH OPTIMIZATION (DEDUPLICATION)

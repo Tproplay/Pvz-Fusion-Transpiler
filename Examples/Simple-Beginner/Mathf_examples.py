@@ -11,7 +11,7 @@ n = pvn.IntVar()
 def main():
     global n
     with pvn.Trigger.OnGameStart():
-        update = pvn.Time.OnFixedUpdate(3)
+        update = pvn.Time.OnFixedUpdate(2)
         
     with update.on_cycle:
         with pvn.Switch(n) as switch:

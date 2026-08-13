@@ -4,7 +4,7 @@ from .node_base import ExecutionPath, BaseNode
 from enum import Enum
 from .TypeMgr import PlantType, ZombieAnimation
 from typing import Any, Final
-
+import math
 
 class If:
     """Syntactic sugar that acts as a safe visual scripting 'if/elif/else' block."""
@@ -62,7 +62,6 @@ class Switch:
     @property
     def default(self):
         return _SwitchDefault(self)
-
 
 class _SwitchCase:
     def __init__(self, switch_obj, values):
@@ -763,11 +762,13 @@ class For:
 class Mathf:
     """Commonly used math functions"""
     
-    PI : Final[float] = 3.1415
+    PI : Final[float] = 3.141592653589793
     """The mathematical constant π, representing the ratio of a circle's circumference to its diameter."""
-    E : Final[float] = 2.7182
+    HALF_PI : Final[float] = 1.570796326794896
+    """Half value of PI."""
+    E : Final[float] = 2.718281828459045
     """The mathematical constant e, representing the base of the natural logarithm."""
-    TAU : Final[float] = 6.2830
+    TAU : Final[float] = 6.283018867E-17
     """The mathematical constant τ, representing the ratio of a circle's circumference to its radius (τ = 2π)."""
     
     @staticmethod
@@ -1167,6 +1168,7 @@ class Mathf:
         Evaluates statically if constant, or builds an optimized O(sqrt(N)) runtime loop on the node canvas.
         """
         import math
+        import uuid
         from . import nodes
         from .extensions import BoolVar, IntVar, If
         from .node_base import PortReference
@@ -1185,9 +1187,9 @@ class Mathf:
             return True
 
         # 2. Dynamic Node Graph Calculation (Runtime)
-        result_var = BoolVar(start_val=True, name="is_prime_result")
-        
-        val_var = IntVar(start_val=0, name="prime_check_val")
+        uid = uuid.uuid4().hex[:6]
+        result_var = BoolVar(start_val=True, name=f"is_prime_res_{uid}")
+        val_var = IntVar(start_val=0, name=f"prime_val_{uid}")
         val_var.set(raw_val)
 
         # Edge case: N <= 1 is not prime
@@ -1196,7 +1198,7 @@ class Mathf:
 
         # Main check: N > 1
         with If(val_var > 1):
-            # Calculate sqrt(N) to constrain loop iterations up to sqrt(N)
+            # Calculate sqrt(N) to constrain loop iterations
             sqrt_float = Mathf.sqrt(val_var, precision=5)
             sqrt_int = nodes.float_to_int(float_val=sqrt_float).int
             
@@ -1214,11 +1216,10 @@ class Mathf:
             current_index = PortReference(loop_node, "当前索引")
             divisor = nodes.int_add(a=current_index, b=2).result
             
+            # Direct dataflow comparison: N % divisor == 0 (No intermediate IntVar)
             mod_res = nodes.int_modulo(a=val_var.value, b=divisor).result
-            mod_var = IntVar(start_val=1, name="mod_temp")
-            mod_var.set(mod_res)
-
-            with If(mod_var == 0):
+            
+            with If(mod_res == 0):
                 result_var.set(False)
 
             # Restore parent execution stack
@@ -1227,7 +1228,415 @@ class Mathf:
 
         return result_var.value
     
+    @staticmethod
+    def perlin_noise(x, y=0.0):
+        """
+        Calculates 1D or 2D Smooth Perlin/Value Noise in the range [0.0, 1.0].
+        - Static inputs: Evaluates procedurally at compile time in Python.
+        - Dynamic inputs: Constructs a node graph with bilinear interpolation and smoothstep curves.
+        """
+        import math
+        from . import nodes
+        from .node_base import PortReference
 
+        raw_x = Mathf._ensure_float_port(x)
+        raw_y = Mathf._ensure_float_port(y)
+
+        is_x_static = isinstance(raw_x, (int, float)) and not isinstance(raw_x, PortReference)
+        is_y_static = isinstance(raw_y, (int, float)) and not isinstance(raw_y, PortReference)
+
+        # Helper: Deterministic Hash for Static Python Evaluation
+        def _static_hash(ix: int, iy: int) -> float:
+            h = (ix * 374761393 + iy * 668265263) % 1000003
+            h = (h * 1274126177) % 1000003
+            return float(h) / 1000003.0
+
+        # Helper: Smoothstep Fade Curve f(t) = 3t^2 - 2t^3
+        def _fade(t):
+            return t * t * (3.0 - 2.0 * t)
+
+        # ==========================================================
+        # 1. STATIC PYTHON EVALUATION (Compile-Time)
+        # ==========================================================
+        if is_x_static and is_y_static:
+            x_val, y_val = float(raw_x), float(raw_y) #type: ignore
+
+            x0, y0 = math.floor(x_val), math.floor(y_val)
+            x1, y1 = x0 + 1, y0 + 1
+
+            tx, ty = x_val - x0, y_val - y0
+            sx, sy = _fade(tx), _fade(ty)
+
+            v00 = _static_hash(x0, y0)
+            v10 = _static_hash(x1, y0)
+            v01 = _static_hash(x0, y1)
+            v11 = _static_hash(x1, y1)
+
+            # Bilinear Interpolation
+            l0 = v00 + sx * (v10 - v00)
+            l1 = v01 + sx * (v11 - v01)
+            return l0 + sy * (l1 - l0)
+
+        # ==========================================================
+        # 2. DYNAMIC NODE GRAPH CALCULATION (Runtime)
+        # ==========================================================
+        def _node_hash(i_port, j_port):
+            """Generates a deterministic pseudo-random float [0, 1] on the node graph."""
+            h1 = nodes.int_modulo(
+                a=nodes.int_add(
+                    a=nodes.int_multiply(a=i_port, b=374761393).result,
+                    b=nodes.int_multiply(a=j_port, b=668265263).result
+                ).result,
+                b=1000003
+            ).result
+
+            h2 = nodes.int_modulo(
+                a=nodes.int_multiply(a=h1, b=1274126177).result,
+                b=1000003
+            ).result
+
+            f_hash = nodes.int_to_float(int_val=h2).float
+            return nodes.divide_node(a=f_hash, b=1000003.0).result
+
+        # Floor inputs to get cell integer coordinates
+        x_int = nodes.float_to_int(float_val=raw_x).int
+        y_int = nodes.float_to_int(float_val=raw_y).int
+
+        x0_float = nodes.int_to_float(int_val=x_int).float
+        y0_float = nodes.int_to_float(int_val=y_int).float
+
+        x1_int = nodes.int_add(a=x_int, b=1).result
+        y1_int = nodes.int_add(a=y_int, b=1).result
+
+        # Fractional distance inside cell
+        tx = nodes.subtract_node(a=raw_x, b=x0_float).result
+        ty = nodes.subtract_node(a=raw_y, b=y0_float).result
+
+        # Smoothstep curve sx = tx * tx * (3.0 - 2.0 * tx)
+        tx_sq = nodes.multiply_node(a=tx, b=tx).result
+        two_tx = nodes.multiply_node(a=tx, b=2.0).result
+        three_sub_tx = nodes.subtract_node(a=3.0, b=two_tx).result
+        sx = nodes.multiply_node(a=tx_sq, b=three_sub_tx).result
+
+        ty_sq = nodes.multiply_node(a=ty, b=ty).result
+        two_ty = nodes.multiply_node(a=ty, b=2.0).result
+        three_sub_ty = nodes.subtract_node(a=3.0, b=two_ty).result
+        sy = nodes.multiply_node(a=ty_sq, b=three_sub_ty).result
+
+        # Sample cell corners
+        v00 = _node_hash(x_int, y_int)
+        v10 = _node_hash(x1_int, y_int)
+        v01 = _node_hash(x_int, y1_int)
+        v11 = _node_hash(x1_int, y1_int)
+
+        # Bilinear Interpolation Nodes
+        # l0 = v00 + sx * (v10 - v00)
+        diff0 = nodes.subtract_node(a=v10, b=v00).result
+        mult0 = nodes.multiply_node(a=sx, b=diff0).result
+        l0 = nodes.add_node(a=v00, b=mult0).result
+
+        # l1 = v01 + sx * (v11 - v01)
+        diff1 = nodes.subtract_node(a=v11, b=v01).result
+        mult1 = nodes.multiply_node(a=sx, b=diff1).result
+        l1 = nodes.add_node(a=v01, b=mult1).result
+
+        # result = l0 + sy * (l1 - l0)
+        diff_final = nodes.subtract_node(a=l1, b=l0).result
+        mult_final = nodes.multiply_node(a=sy, b=diff_final).result
+        
+        return nodes.add_node(a=l0, b=mult_final).result
+
+    #region Trignometry
+    
+    RAD2DEG = 57.29577951308232   # 180.0 / PI
+    DEG2RAD = 0.017453292519943295 # PI / 180.0
+
+    @staticmethod
+    def rad2deg(rad):
+        """Converts radians to degrees (rad * 180 / PI)."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(rad)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return raw_val * Mathf.RAD2DEG
+
+        return nodes.multiply_node(a=raw_val, b=Mathf.RAD2DEG).result
+
+    @staticmethod
+    def deg2rad(deg):
+        """Converts degrees to radians (deg * PI / 180)."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(deg)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return raw_val * Mathf.DEG2RAD
+
+        return nodes.multiply_node(a=raw_val, b=Mathf.DEG2RAD).result
+
+    @staticmethod
+    def normalize_angle_360(angle):
+        """Wraps any angle in degrees to the range [0.0, 360.0)."""
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(angle)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return raw_val % 360.0
+
+        return PortReference._float_modulo(raw_val, 360.0)
+
+    @staticmethod
+    def normalize_angle_180(angle):
+        """
+        Wraps any angle in degrees to the range [-180.0, 180.0).
+        Calculates: ((angle + 180) % 360) - 180
+        """
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(angle)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return ((raw_val + 180.0) % 360.0) - 180.0
+
+        # Dynamic graph calculation
+        add_180 = nodes.add_node(a=raw_val, b=180.0).result
+        mod_360 = PortReference._float_modulo(add_180, 360.0)
+        return nodes.subtract_node(a=mod_360, b=180.0).result
+
+    @staticmethod
+    def delta_angle(current, target):
+        """Calculates the shortest difference between two angles in degrees [-180.0, 180.0]."""
+        from .node_base import PortReference
+
+        raw_curr = Mathf._ensure_float_port(current)
+        raw_targ = Mathf._ensure_float_port(target)
+
+        is_curr_static = isinstance(raw_curr, (int, float)) and not isinstance(raw_curr, PortReference)
+        is_targ_static = isinstance(raw_targ, (int, float)) and not isinstance(raw_targ, PortReference)
+
+        if is_curr_static and is_targ_static:
+            return Mathf.normalize_angle_180(raw_targ - raw_curr)
+
+        diff = raw_targ - raw_curr
+        return Mathf.normalize_angle_180(diff)
+
+    @staticmethod
+    def lerp_angle(a, b, t):
+        """Linearly interpolates between two angles (in degrees) taking the shortest path."""
+        delta = Mathf.delta_angle(a, b)
+        return a + (delta * t)
+    
+    @staticmethod
+    def sin(rad, terms: int = 5):
+        """Calculates sine (in radians). Unrolls a Taylor series graph for dynamic inputs."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(rad)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.sin(raw_val)
+
+        # Dynamic Graph: Taylor Series x - x^3/3! + x^5/5! - x^7/7! + ...
+        result = raw_val
+        x_power = raw_val
+        sign = -1.0
+
+        for n in range(3, 3 + (terms - 1) * 2, 2):
+            x_sq = nodes.multiply_node(a=raw_val, b=raw_val).result
+            x_power = nodes.multiply_node(a=x_power, b=x_sq).result
+            
+            fact = float(math.factorial(n))
+            term = nodes.divide_node(a=x_power, b=fact).result
+            term_scaled = nodes.multiply_node(a=term, b=sign).result
+            
+            result = nodes.add_node(a=result, b=term_scaled).result
+            sign *= -1.0
+
+        return result
+
+    @staticmethod
+    def cos(rad, terms: int = 5):
+        """Calculates cosine (in radians). Unrolls a Taylor series graph for dynamic inputs."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(rad)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.cos(raw_val)
+
+        # Dynamic Graph: Taylor Series 1 - x^2/2! + x^4/4! - x^6/6! + ...
+        result = nodes.float_value(val=1.0).value
+        x_power = nodes.float_value(val=1.0).value
+        sign = -1.0
+
+        for n in range(2, 2 + terms * 2, 2):
+            x_sq = nodes.multiply_node(a=raw_val, b=raw_val).result
+            x_power = nodes.multiply_node(a=x_power, b=x_sq).result
+
+            fact = float(math.factorial(n))
+            term = nodes.divide_node(a=x_power, b=fact).result
+            term_scaled = nodes.multiply_node(a=term, b=sign).result
+
+            result = nodes.add_node(a=result, b=term_scaled).result
+            sign *= -1.0
+
+        return result
+
+    @staticmethod
+    def tan(rad, terms: int = 5):
+        """Calculates tangent (sin / cos)."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(rad)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.tan(raw_val)
+
+        s = Mathf.sin(raw_val, terms=terms)
+        c = Mathf.cos(raw_val, terms=terms)
+        return nodes.divide_node(a=s, b=c).result
+
+    @staticmethod
+    def cosec(rad, terms: int = 5):
+        """Calculates cosecant (1 / sin)."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(rad)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return 1.0 / math.sin(raw_val)
+
+        s = Mathf.sin(raw_val, terms=terms)
+        return nodes.divide_node(a=1.0, b=s).result
+
+    @staticmethod
+    def sec(rad, terms: int = 5):
+        """Calculates secant (1 / cos)."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(rad)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return 1.0 / math.cos(raw_val)
+
+        c = Mathf.cos(raw_val, terms=terms)
+        return nodes.divide_node(a=1.0, b=c).result
+
+    @staticmethod
+    def cot(rad, terms: int = 5):
+        """Calculates cotangent (cos / sin)."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(rad)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return 1.0 / math.tan(raw_val)
+
+        s = Mathf.sin(raw_val, terms=terms)
+        c = Mathf.cos(raw_val, terms=terms)
+        return nodes.divide_node(a=c, b=s).result
+
+
+    @staticmethod
+    def asin(val, terms: int = 5):
+        """Calculates arcsine in radians [-pi/2, pi/2]. Input domain [-1, 1]."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(val)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.asin(raw_val)
+
+        # Dynamic Graph: Taylor Series x + (1/2)(x^3/3) + (3/8)(x^5/5) + (15/48)(x^7/7) + ...
+        result = raw_val
+        x_power = raw_val
+
+        for n in range(1, terms):
+            two_n = 2 * n
+            x_sq = nodes.multiply_node(a=raw_val, b=raw_val).result
+            x_power = nodes.multiply_node(a=x_power, b=x_sq).result
+
+            # Coefficient: ( (2n)! ) / ( (4^n) * (n!)^2 * (2n + 1) )
+            coeff = float(math.factorial(two_n)) / ((4.0 ** n) * (math.factorial(n) ** 2) * (two_n + 1))
+            term = nodes.multiply_node(a=x_power, b=coeff).result
+            result = nodes.add_node(a=result, b=term).result
+
+        return result
+
+    @staticmethod
+    def acos(val, terms: int = 5):
+        """Calculates arccostine in radians [0, pi]. (pi/2 - asin(val))"""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(val)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.acos(raw_val)
+
+        asin_val = Mathf.asin(raw_val, terms=terms)
+        return nodes.subtract_node(a=Mathf.HALF_PI, b=asin_val).result
+
+    @staticmethod
+    def atan(val, terms: int = 5):
+        """Calculates arctangent in radians [-pi/2, pi/2]."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(val)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.atan(raw_val)
+
+        # Transform atan(x) = asin(x / sqrt(1 + x^2)) for full range domain stability
+        x_sq = nodes.multiply_node(a=raw_val, b=raw_val).result
+        one_plus_x_sq = nodes.add_node(a=1.0, b=x_sq).result
+        denom = Mathf.sqrt(one_plus_x_sq)
+        ratio = nodes.divide_node(a=raw_val, b=denom).result
+
+        return Mathf.asin(ratio, terms=terms)
+
+    @staticmethod
+    def acosec(val, terms: int = 5):
+        """Calculates arccosecant in radians (asin(1 / val))."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(val)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.asin(1.0 / raw_val)
+
+        reciprocal = nodes.divide_node(a=1.0, b=raw_val).result
+        return Mathf.asin(reciprocal,terms=terms)
+
+    @staticmethod
+    def asec(val, terms: int = 5):
+        """Calculates arcsecant in radians (acos(1 / val))."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(val)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.acos(1.0 / raw_val)
+
+        reciprocal = nodes.divide_node(a=1.0, b=raw_val).result
+        return Mathf.acos(reciprocal, terms=terms)
+
+    @staticmethod
+    def acot(val, terms: int = 5):
+        """Calculates arccotangent in radians (pi/2 - atan(val))."""
+        from . import nodes
+        from .node_base import PortReference
+
+        raw_val = Mathf._ensure_float_port(val)
+        if isinstance(raw_val, (int, float)) and not isinstance(raw_val, PortReference):
+            return math.atan(1.0 / raw_val)
+
+        atan_val = Mathf.atan(raw_val, terms=terms)
+        return nodes.subtract_node(a=Mathf.HALF_PI, b=atan_val).result
+    
+    #endregion
+    
+    
 class _Time:
     
     class OnFixedUpdate:

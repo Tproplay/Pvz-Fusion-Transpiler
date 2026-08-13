@@ -175,4 +175,118 @@ class Counter:
         """Exposes the '计数完成' (Count Complete) execution track as a context manager timeline path."""
         return self.ref.path("计数完成")
 
+class Vector2:
+    def __init__(self, x=0.0, y=0.0):
+        # Unpack Var wrappers if passed directly
+        self.x = x.value if hasattr(x, 'value') and not hasattr(x, '_is_float_port') else x #type: ignore
+        self.y = y.value if hasattr(y, 'value') and not hasattr(y, '_is_float_port') else y #type: ignore
+
+    # ==========================================================
+    # STATIC FACTORIES
+    # ==========================================================
+    @classmethod
+    def zero(cls): return cls(0.0, 0.0)
+
+    @classmethod
+    def one(cls): return cls(1.0, 1.0)
+
+    @classmethod
+    def up(cls): return cls(0.0, 1.0)
+
+    @classmethod
+    def down(cls): return cls(0.0, -1.0)
+
+    @classmethod
+    def left(cls): return cls(-1.0, 0.0)
+
+    @classmethod
+    def right(cls): return cls(1.0, 0.0)
+
+    # ==========================================================
+    # VECTOR MATHEMATICS
+    # ==========================================================
+    def sqr_magnitude(self):
+        """Returns the squared length of the vector (x^2 + y^2)."""
+        return (self.x * self.x) + (self.y * self.y)
+
+    def magnitude(self):
+        """Returns the length/magnitude of the vector using Mathf.sqrt."""
+        from .extensions import Mathf
+        return Mathf.sqrt(self.sqr_magnitude())
+
+    def normalized(self):
+        """Returns a normalized vector with a magnitude of 1."""
+        mag = self.magnitude()
+        return self / mag
+
+    @staticmethod
+    def dot(v1, v2):
+        """Calculates the dot product of two vectors (v1.x * v2.x + v1.y * v2.y)."""
+        return (v1.x * v2.x) + (v1.y * v2.y)
+
+    @staticmethod
+    def distance(v1, v2):
+        """Calculates the Euclidean distance between two vectors."""
+        return (v1 - v2).magnitude()
+
+    @staticmethod
+    def lerp(v1, v2, t):
+        """Linearly interpolates between vector v1 and vector v2 by t [0, 1]."""
+        return v1 + (v2 - v1) * t
+
+    # ==========================================================
+    # STRING & FORMATTING INTEGRATION
+    # ==========================================================
+    def to_string(self):
+        """Formats the vector as '(x, y)' using physical StringConcatNodes."""
+        from .StdLib import format_string
+        return format_string("(", self.x, ", ", self.y, ")")
+
+    def __repr__(self):
+        return f"Vector2({self.x}, {self.y})"
+
+    # ==========================================================
+    # OPERATOR OVERLOADING (+, -, *, /, ==, -v)
+    # ==========================================================
+    def __add__(self, other):
+        if isinstance(other, Vector2):
+            return Vector2(self.x + other.x, self.y + other.y)
+        return Vector2(self.x + other, self.y + other)
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other):
+        if isinstance(other, Vector2):
+            return Vector2(self.x - other.x, self.y - other.y)
+        return Vector2(self.x - other, self.y - other)
+
+    def __rsub__(self, other):
+        if isinstance(other, Vector2):
+            return Vector2(other.x - self.x, other.y - self.y)
+        return Vector2(other - self.x, other - self.y)
+
+    def __mul__(self, other):
+        if isinstance(other, Vector2):
+            # Component-wise multiplication
+            return Vector2(self.x * other.x, self.y * other.y)
+        # Scalar multiplication
+        return Vector2(self.x * other, self.y * other)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        if isinstance(other, Vector2):
+            return Vector2(self.x / other.x, self.y / other.y)
+        return Vector2(self.x / other, self.y / other)
+
+    def __neg__(self):
+        return Vector2(-self.x, -self.y)
+
+    def __eq__(self, other):
+        if isinstance(other, Vector2):
+            return (self.x == other.x) & (self.y == other.y)
+        return False
+
 
