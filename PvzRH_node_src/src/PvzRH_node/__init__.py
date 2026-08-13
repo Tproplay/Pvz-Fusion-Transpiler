@@ -33,7 +33,6 @@ from .extensions import (
     ForEachPlantType,
     While,
     For,
-    Mathf,
     Time
 )
 
@@ -99,7 +98,6 @@ __all__ = [
     "ForEachPlantType",
     "While",
     "For",
-    "Mathf",
     "Time",
 
     # Level Data Helpers
