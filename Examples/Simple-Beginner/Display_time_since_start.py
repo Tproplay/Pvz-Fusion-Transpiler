@@ -1,5 +1,5 @@
 import PvzRH_node as pvn
-from PvzRH_node import Mathf
+from PvzRH_node import Math
 from PvzRH_node.StdLib import format_string
 
 pvn.Config(output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH\Saves\Custm Lvl\LevelData\Levels",
@@ -7,8 +7,8 @@ pvn.Config(output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombi
 pvn.settings.group_level = 1
 
 def format_time(time_in_seconds):
-    minutes = Mathf.floor(time_in_seconds / 60)
-    seconds = Mathf.floor(time_in_seconds % 60)
+    minutes = Math.floor(time_in_seconds / 60)
+    seconds = Math.floor(time_in_seconds % 60)
     return format_string(minutes, " m ", seconds, " s")
 
 def main():
