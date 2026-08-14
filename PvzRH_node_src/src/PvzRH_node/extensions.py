@@ -3,7 +3,9 @@ from .core import ctx
 from .node_base import ExecutionPath, BaseNode
 from enum import Enum
 from .TypeMgr import PlantType, ZombieAnimation
-from typing import Any, Final
+from typing import Any, Final, Union
+from enum import Enum
+
 
 
 class If:
@@ -642,79 +644,219 @@ class ForEachPlantType:
         ctx.trigger_stack.pop()
 
 class Plant:
-    """A smart wrapper for a Plant pointer that exposes built-in actions."""
-    def __init__(self, plant_ref):
-        if isinstance(plant_ref, Plant): plant_ref = plant_ref.ref
-        else: self.ref = plant_ref
-        
-        self.split = nodes.plant_split(plant=self.ref)
-        
+    """A smart wrapper for a Plant pointer that exposes built-in actions and properties."""
 
+    def __init__(self, plant_ref):
+        if isinstance(plant_ref, Plant):
+            self.ref = plant_ref.ref
+        else:
+            self.ref = plant_ref
+
+        self._split_cache = None
+
+    # ==========================================================
+    # INTERNAL TYPE CASTING HELPERS
+    # ==========================================================
+    @staticmethod
+    def _to_float_port(val):
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
+            return nodes.float_value(val=float(val)).value
+        if hasattr(val, "_is_float_port") and not val._is_float_port():
+            return nodes.int_to_float(int_val=val).float
+        if hasattr(val, "value"):
+            return val.value #type: ignore
+        return val
+
+    @staticmethod
+    def _to_int_port(val):
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
+            return nodes.int_value(val=int(val)).value
+        if hasattr(val, "_is_float_port") and val._is_float_port():
+            return nodes.float_to_int(float_val=val).int
+        if hasattr(val, "value"):
+            return val.value #type: ignore
+        return val
+
+    @staticmethod
+    def _to_bool_port(val):
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(val, bool) and not isinstance(val, PortReference):
+            return nodes.bool_value(val=val).value
+        if hasattr(val, "value"):
+            return val.value
+        return val
+
+    # ==========================================================
+    # ACTIONS & METHODS
+    # ==========================================================
     def die(self):
         """Instantly destroys the plant."""
-        nodes.die_plant(plant=self.ref)
+        from . import nodes
+        return nodes.die_plant(plant=self.ref)
 
     def damage(self, amount):
-        nodes.damage_plant(plant=self.ref, damage=amount)
+        """Damages the plant by a specified amount."""
+        from . import nodes
+        int_amount = self._to_int_port(amount)
+        return nodes.damage_plant(plant=self.ref, damage=int_amount)
 
     def heal(self, amount):
-        nodes.heal_plant(plant=self.ref, heal_amount=amount)
+        """Heals the plant by a specified amount."""
+        from . import nodes
+        int_amount = self._to_int_port(amount)
+        return nodes.heal_plant(plant=self.ref, heal_amount=int_amount)
 
     def add_shield(self, amount):
-        nodes.give_plant_shield(plant=self.ref, shield=amount)
+        """Adds shield to the plant (ensures float/Single input to avoid C# cast crashes)."""
+        from . import nodes
+        float_amount = self._to_float_port(amount)
+        return nodes.give_plant_shield(plant=self.ref, shield=float_amount)
 
     def move(self, col, row, force=False):
-        """force bypasses all ingame checks."""
-        nodes.move_plant(plant=self.ref, row=row, column=col, force=force)
-        
-    def move_relative(self, col_diff, row_diff, force=False):
-        """force bypasses all ingame checks."""
-        nodes.move_plant(plant=self.ref, row=self.row + row_diff, column=self.col + col_diff, force=force)
+        """Moves the plant to a new grid cell. `force` bypasses all in-game placement checks."""
+        from . import nodes
+        int_col = self._to_int_port(col)
+        int_row = self._to_int_port(row)
+        bool_force = self._to_bool_port(force)
+        return nodes.move_plant(plant=self.ref, row=int_row, column=int_col, force=bool_force)
 
-    # Automatically unrolls the plant_split node to fetch properties!
+    def move_relative(self, col_diff, row_diff, force=False):
+        """Moves the plant relative to its current grid position."""
+        return self.move(col=self.col + col_diff, row=self.row + row_diff, force=force)
+
+    # ==========================================================
+    # LAZY DESTRUCTURED PROPERTIES (via plant_split)
+    # ==========================================================
     @property
-    def plantType(self): return self.split.plantType
-    
+    def split(self):
+        if self._split_cache is None:
+            from . import nodes
+            self._split_cache = nodes.plant_split(plant=self.ref)
+        return self._split_cache
+
     @property
-    def row(self): return self.split.row
-    
+    def plantType(self):
+        return self.split.plantType
+
     @property
-    def col(self): return self.split.column
-    
+    def row(self):
+        return self.split.row
+
     @property
-    def attributeCD(self): return self.split.attributeCountdown
+    def col(self):
+        return self.split.column
+
+    @property
+    def attributeCD(self):
+        return self.split.attributeCountdown
 
 class Zombie:
-    """A smart wrapper for a Zombie pointer that exposes built-in actions."""
-    def __init__(self, zombie_ref):
-        if isinstance(zombie_ref, Zombie): zombie_ref = zombie_ref.ref
-        else: self.ref = zombie_ref
+    """A smart wrapper for a Zombie pointer that exposes built-in actions and properties."""
 
+    def __init__(self, zombie_ref):
+        if isinstance(zombie_ref, Zombie):
+            self.ref = zombie_ref.ref
+        else:
+            self.ref = zombie_ref
+
+        self._split_cache = None
+
+    # ==========================================================
+    # INTERNAL TYPE CASTING HELPERS
+    # ==========================================================
+    @staticmethod
+    def _to_float_port(val):
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
+            return nodes.float_value(val=float(val)).value
+        if hasattr(val, "_is_float_port") and not val._is_float_port():
+            return nodes.int_to_float(int_val=val).float
+        if hasattr(val, "value"):
+            return val.value #type: ignore
+        return val
+
+    @staticmethod
+    def _to_int_port(val):
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
+            return nodes.int_value(val=int(val)).value
+        if hasattr(val, "_is_float_port") and val._is_float_port():
+            return nodes.float_to_int(float_val=val).int
+        if hasattr(val, "value"):
+            return val.value #type: ignore
+        return val
+
+    # ==========================================================
+    # ACTIONS & METHODS
+    # ==========================================================
     def damage(self, amount):
-        nodes.damage_zombie(zombie=self.ref, damage=amount)
+        """Damages the zombie by a specified integer amount."""
+        from . import nodes
+        int_amount = self._to_int_port(amount)
+        return nodes.damage_zombie(zombie=self.ref, damage=int_amount)
 
     def set_health_multiplier(self, ratio):
-        nodes.modify_zombie_health(zombie=self.ref, ratio=ratio)
+        """Modifies zombie health multiplier (ensures float/Single input to avoid C# cast crashes)."""
+        from . import nodes
+        float_ratio = self._to_float_port(ratio)
+        return nodes.modify_zombie_health(zombie=self.ref, ratio=float_ratio)
 
     def hypnotize(self):
-        nodes.set_zombie_mind_controlled(zombie=self.ref)
+        """Mind-controls/hypnotizes the zombie to fight for the player."""
+        from . import nodes
+        return nodes.set_zombie_mind_controlled(zombie=self.ref)
 
     def move(self, row, col):
-        nodes.move_zombie(zombie=self.ref, row=row, column=col)
+        """Moves the zombie to a specific grid row and column."""
+        from . import nodes
+        int_row = self._to_int_port(row)
+        int_col = self._to_int_port(col)
+        return nodes.move_zombie(zombie=self.ref, row=int_row, column=int_col)
 
-    def play_animation(self, anim_name : str | ZombieAnimation | Any= "idle"): # type: ignore
+    def move_relative(self, row_diff=0, col_diff=0):
+        """Moves the zombie relative to its current position."""
+        return self.move(row=self.row + row_diff, col=self.col + col_diff)
+
+    def play_animation(self, anim_name: Union[str, Enum, Any] = "idle"):
+        """Plays a named animation clip on the zombie."""
+        from . import nodes
         if isinstance(anim_name, Enum):
             anim_name = anim_name.value
-        nodes.play_zombie_anim(zombie=self.ref, animation_name=anim_name)
-    
+        return nodes.play_zombie_anim(zombie=self.ref, animation_name=anim_name)
+
+    # ==========================================================
+    # LAZY DESTRUCTURED PROPERTIES (via zombie_split)
+    # ==========================================================
     @property
-    def zombieType(self): return nodes.zombie_split(zombie=self.ref).zombieType
-    
+    def split(self):
+        if self._split_cache is None:
+            from . import nodes
+            self._split_cache = nodes.zombie_split(zombie=self.ref)
+        return self._split_cache
+
     @property
-    def row(self): return nodes.zombie_split(zombie=self.ref).row
-    
+    def zombieType(self):
+        return self.split.zombieType
+
     @property
-    def col(self): return nodes.zombie_split(zombie=self.ref).column
+    def row(self):
+        return self.split.row
+
+    @property
+    def col(self):
+        return self.split.column
     
 class While:
     """

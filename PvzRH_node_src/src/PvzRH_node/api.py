@@ -58,7 +58,7 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnPlantCreate:
-        """Triggers when a plant is created."""
+        """Triggers when a plant is created. Returns a Plant object."""
         def __init__(self): self.node = nodes.on_plant_create()
         def __enter__(self) -> Plant:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
@@ -66,7 +66,7 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnPlantClicked:
-        """Triggers when a plant is clicked."""
+        """Triggers when a plant is clicked. Returns a Plant object."""
         def __init__(self): self.node = nodes.on_plant_click()
         def __enter__(self) -> Plant:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
@@ -74,7 +74,7 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnPlantDeath:
-        """Triggers before a plant dies."""
+        """Triggers before a plant dies. Returns a Plant object."""
         def __init__(self): self.node = nodes.on_plant_die()
         def __enter__(self) -> Plant:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
@@ -82,7 +82,7 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnZombieSpawn:
-        """Triggers when a zombie spawns."""
+        """Triggers when a zombie spawns. Returns a Zombie object."""
         def __init__(self): self.node = nodes.on_zombie_spawn()
         def __enter__(self) -> Zombie:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
@@ -90,7 +90,7 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnZombieDeath:
-        """Triggers when a zombie dies."""
+        """Triggers when a zombie dies. Returns a Zombie object."""
         def __init__(self): self.node = nodes.on_zombie_die()
         def __enter__(self) -> Zombie:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
@@ -98,7 +98,7 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnPlantDeathComplete:
-        """Triggers after a plant's death animation completes."""
+        """Triggers after a plant's death animation completes. Returns a Plant object."""
         def __init__(self): self.node = nodes.on_plant_death_complete()
         def __enter__(self) -> Plant:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
@@ -110,6 +110,7 @@ class Spawner:
     class Set_Plant:
         """
         Spawns a plant at the specified grid coordinates.
+        Returns a Plant object.
         """
         def __init__(self, row, col, plant_type, force=False):
             from . import nodes
@@ -142,6 +143,7 @@ class Spawner:
     class Set_Zombie:
         """
         Spawns a zombie at the specified grid coordinates.
+        Returns a Zombie object.
         """
         def __init__(self, row, col, zombie_type, mind_controlled=False):
             from . import nodes
