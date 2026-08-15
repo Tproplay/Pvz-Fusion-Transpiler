@@ -46,8 +46,8 @@ class _on_mouse_clickPaths:
 class on_mouse_click(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _on_mouse_clickPaths
-    column: PortReference
     item: PortReference
+    column: PortReference
     isLeftButton: PortReference
     row: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
@@ -107,42 +107,42 @@ class on_zombie_spawn(BaseNode):
 
 class _set_plantPaths:
     OnCreated: ExecutionPath
-    Trigger: ExecutionPath
     OnCreateFailed: ExecutionPath
+    Trigger: ExecutionPath
 
 class set_plant(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _set_plantPaths
+    forcePlant: PortReference
     column: PortReference
     plant: PortReference
-    forcePlant: PortReference
-    plantType: PortReference
     row: PortReference
+    plantType: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _move_plantPaths:
-    Trigger: ExecutionPath
     OnMoved: ExecutionPath
+    Trigger: ExecutionPath
 
 class move_plant(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _move_plantPaths
-    movedPlant: PortReference
+    force: PortReference
     column: PortReference
     plant: PortReference
     row: PortReference
-    force: PortReference
+    movedPlant: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _heal_plantPaths:
-    Trigger: ExecutionPath
     OnHealed: ExecutionPath
+    Trigger: ExecutionPath
 
 class heal_plant(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _heal_plantPaths
-    plant: PortReference
     healAmount: PortReference
+    plant: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _damage_plantPaths:
@@ -151,8 +151,8 @@ class _damage_plantPaths:
 class damage_plant(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _damage_plantPaths
-    plant: PortReference
     damage: PortReference
+    plant: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _give_plant_shieldPaths:
@@ -161,32 +161,32 @@ class _give_plant_shieldPaths:
 class give_plant_shield(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _give_plant_shieldPaths
-    plant: PortReference
     shieldAmount: PortReference
+    plant: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _modify_plant_attackPaths:
-    Trigger: ExecutionPath
     OnModified: ExecutionPath
+    Trigger: ExecutionPath
 
 class modify_plant_attack(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _modify_plant_attackPaths
-    plantOut: PortReference
     multiplier: PortReference
     plant: PortReference
+    plantOut: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _modify_plant_healthPaths:
-    Trigger: ExecutionPath
     OnModified: ExecutionPath
+    Trigger: ExecutionPath
 
 class modify_plant_health(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _modify_plant_healthPaths
-    plantOut: PortReference
     multiplier: PortReference
     plant: PortReference
+    plantOut: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _plant_splitPaths:
@@ -195,9 +195,10 @@ class _plant_splitPaths:
 class plant_split(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _plant_splitPaths
+    column: PortReference
     plant: PortReference
     row: PortReference
-    column: PortReference
+    attributeCountdown: PortReference
     plantType: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
@@ -207,34 +208,34 @@ class _get_plants_in_cellPaths:
 class get_plants_in_cell(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _get_plants_in_cellPaths
+    row: PortReference
     plants: PortReference
     column: PortReference
-    row: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _for_each_plantPaths:
     LoopBody: ExecutionPath
-    Trigger: ExecutionPath
     OnCompleted: ExecutionPath
+    Trigger: ExecutionPath
 
 class for_each_plant(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _for_each_plantPaths
+    currentIndex: PortReference
     plantList: PortReference
     currentPlant: PortReference
-    currentIndex: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _for_each_plant_typePaths:
     LoopBody: ExecutionPath
-    Trigger: ExecutionPath
     OnCompleted: ExecutionPath
+    Trigger: ExecutionPath
 
 class for_each_plant_type(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _for_each_plant_typePaths
-    currentPlantType: PortReference
     plantTypeList: PortReference
+    currentPlantType: PortReference
     currentIndex: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
@@ -273,10 +274,10 @@ class _plant_type_list_storagePaths:
 class plant_type_list_storage(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _plant_type_list_storagePaths
-    currentList: PortReference
     list: PortReference
-    plantType: PortReference
     count: PortReference
+    currentList: PortReference
+    plantType: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _merge_plant_type_listsPaths:
@@ -285,10 +286,10 @@ class _merge_plant_type_listsPaths:
 class merge_plant_type_lists(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _merge_plant_type_listsPaths
-    listB: PortReference
     count: PortReference
-    mergedList: PortReference
+    listB: PortReference
     listA: PortReference
+    mergedList: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _get_random_plant_typePaths:
@@ -321,8 +322,8 @@ class create_zombie(BaseNode):
     Output: _create_zombiePaths
     zombieType: PortReference
     column: PortReference
-    zombie: PortReference
     isMindControlled: PortReference
+    zombie: PortReference
     row: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
@@ -332,8 +333,8 @@ class _damage_zombiePaths:
 class damage_zombie(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _damage_zombiePaths
-    zombie: PortReference
     damage: PortReference
+    zombie: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _set_zombie_mind_controlledPaths:
@@ -351,21 +352,21 @@ class _get_nearest_zombiePaths:
 class get_nearest_zombie(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _get_nearest_zombiePaths
-    column: PortReference
     row: PortReference
     zombie: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _modify_zombie_healthPaths:
-    Trigger: ExecutionPath
     OnModified: ExecutionPath
+    Trigger: ExecutionPath
 
 class modify_zombie_health(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _modify_zombie_healthPaths
     zombieOut: PortReference
-    zombie: PortReference
     ratio: PortReference
+    zombie: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _zombie_splitPaths:
@@ -375,9 +376,9 @@ class zombie_split(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _zombie_splitPaths
     zombieType: PortReference
+    isHypnotized: PortReference
     column: PortReference
     zombie: PortReference
-    isHypnotized: PortReference
     row: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
@@ -406,8 +407,8 @@ class _show_textPaths:
 class show_text(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _show_textPaths
-    text: PortReference
     duration: PortReference
+    text: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _get_travel_entryPaths:
@@ -424,8 +425,8 @@ class _create_gravePaths:
 class create_grave(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_gravePaths
-    column: PortReference
     row: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _add_sunPaths:
@@ -438,9 +439,9 @@ class add_sun(BaseNode):
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _use_sunPaths:
-    OnSuccess: ExecutionPath
-    Trigger: ExecutionPath
     OnFailed: ExecutionPath
+    Trigger: ExecutionPath
+    OnSuccess: ExecutionPath
 
 class use_sun(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -458,9 +459,9 @@ class add_money(BaseNode):
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _use_moneyPaths:
-    OnSuccess: ExecutionPath
-    Trigger: ExecutionPath
     OnFailed: ExecutionPath
+    Trigger: ExecutionPath
+    OnSuccess: ExecutionPath
 
 class use_money(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -486,18 +487,18 @@ class game_win(BaseNode):
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _show_multiple_choice_menuPaths:
-    Trigger: ExecutionPath
     ActionOnExit: ExecutionPath
     ActionOnRefresh: ExecutionPath
+    Trigger: ExecutionPath
 
 class show_multiple_choice_menu(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _show_multiple_choice_menuPaths
-    options: PortReference
-    refreshable: PortReference
-    cancelable: PortReference
-    windowCount: PortReference
     refreshCount: PortReference
+    options: PortReference
+    cancelable: PortReference
+    refreshable: PortReference
+    windowCount: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _add_multiple_choice_optionPaths:
@@ -507,11 +508,11 @@ class add_multiple_choice_option(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _add_multiple_choice_optionPaths
     zombieType: PortReference
-    optionSelected: PortReference
     description: PortReference
-    list: PortReference
-    plantType: PortReference
     title: PortReference
+    list: PortReference
+    optionSelected: PortReference
+    plantType: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _merge_multiple_choice_option_listsPaths:
@@ -520,8 +521,8 @@ class _merge_multiple_choice_option_listsPaths:
 class merge_multiple_choice_option_lists(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _merge_multiple_choice_option_listsPaths
-    list1: PortReference
     list2: PortReference
+    list1: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _delete_card_by_typePaths:
@@ -542,16 +543,16 @@ class create_plant_card(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_plant_cardPaths
     column: PortReference
+    row: PortReference
     outPlantType: PortReference
     plantType: PortReference
-    row: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _add_plant_cardPaths:
     OnPlant: ExecutionPath
+    Failed: ExecutionPath
     Success: ExecutionPath
     Trigger: ExecutionPath
-    Failed: ExecutionPath
 
 class add_plant_card(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -559,8 +560,8 @@ class add_plant_card(BaseNode):
     cost: PortReference
     plantedPlant: PortReference
     cooldown: PortReference
-    plantType: PortReference
     useDefaultData: PortReference
+    plantType: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _create_ice_shroom_effectPaths:
@@ -588,10 +589,10 @@ class _create_doom_shroom_effectPaths:
 class create_doom_shroom_effect(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_doom_shroom_effectPaths
-    setPit: PortReference
     column: PortReference
     damage: PortReference
     row: PortReference
+    setPit: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _create_cherry_explodePaths:
@@ -600,9 +601,9 @@ class _create_cherry_explodePaths:
 class create_cherry_explode(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_cherry_explodePaths
-    column: PortReference
     row: PortReference
     damage: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _create_ladderPaths:
@@ -611,8 +612,8 @@ class _create_ladderPaths:
 class create_ladder(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_ladderPaths
-    column: PortReference
     row: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _create_craterPaths:
@@ -621,8 +622,8 @@ class _create_craterPaths:
 class create_crater(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_craterPaths
-    column: PortReference
     row: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _create_ice_blockPaths:
@@ -631,9 +632,9 @@ class _create_ice_blockPaths:
 class create_ice_block(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_ice_blockPaths
-    column: PortReference
     row: PortReference
     plantType: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _create_zombie_explodePaths:
@@ -642,14 +643,14 @@ class _create_zombie_explodePaths:
 class create_zombie_explode(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_zombie_explodePaths
-    column: PortReference
     row: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _branch_nodePaths:
     Trigger: ExecutionPath
-    Then: ExecutionPath
     Else: ExecutionPath
+    Then: ExecutionPath
 
 class branch_node(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -674,15 +675,15 @@ class _for_loop_nodePaths:
 class for_loop_node(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _for_loop_nodePaths
-    index: PortReference
     count: PortReference
+    index: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _toggle_cycle_nodePaths:
+    OnEnable: ExecutionPath
     Cycle: ExecutionPath
     Trigger: ExecutionPath
     OnDisable: ExecutionPath
-    OnEnable: ExecutionPath
 
 class toggle_cycle_node(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -711,14 +712,14 @@ class pulse_node(BaseNode):
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _counter_nodePaths:
-    Trigger: ExecutionPath
     OnCount: ExecutionPath
+    Trigger: ExecutionPath
 
 class counter_node(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _counter_nodePaths
-    shouldReset: PortReference
     count: PortReference
+    shouldReset: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _not_nodePaths:
@@ -752,26 +753,26 @@ class or_node(BaseNode):
 
 class _compare_intPaths:
     Greater: ExecutionPath
-    Less: ExecutionPath
     Equal: ExecutionPath
+    Less: ExecutionPath
 
 class compare_int(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _compare_intPaths
-    valueA: PortReference
     valueB: PortReference
+    valueA: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _compare_floatPaths:
     Greater: ExecutionPath
-    Less: ExecutionPath
     Equal: ExecutionPath
+    Less: ExecutionPath
 
 class compare_float(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _compare_floatPaths
-    valueA: PortReference
     valueB: PortReference
+    valueA: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _compare_game_objectPaths:
@@ -780,8 +781,8 @@ class _compare_game_objectPaths:
 class compare_game_object(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _compare_game_objectPaths
-    gameObjectB: PortReference
     gameObjectA: PortReference
+    gameObjectB: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _add_nodePaths:
@@ -900,9 +901,9 @@ class _random_intPaths:
 class random_int(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _random_intPaths
-    max: PortReference
-    result: PortReference
     min: PortReference
+    result: PortReference
+    max: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _random_floatPaths:
@@ -911,9 +912,9 @@ class _random_floatPaths:
 class random_float(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _random_floatPaths
-    max: PortReference
-    result: PortReference
     min: PortReference
+    result: PortReference
+    max: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _int_to_floatPaths:
@@ -922,8 +923,8 @@ class _int_to_floatPaths:
 class int_to_float(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _int_to_floatPaths
-    int: PortReference
     float: PortReference
+    int: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _float_to_intPaths:
@@ -932,8 +933,8 @@ class _float_to_intPaths:
 class float_to_int(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _float_to_intPaths
-    int: PortReference
     float: PortReference
+    int: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _float_to_stringPaths:
@@ -942,8 +943,8 @@ class _float_to_stringPaths:
 class float_to_string(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _float_to_stringPaths
-    value: PortReference
     result: PortReference
+    value: PortReference
     decimals: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
@@ -1006,8 +1007,8 @@ class _on_plant_death_completePaths:
 class on_plant_death_complete(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _on_plant_death_completePaths
-    plant: PortReference
     dieReason: PortReference
+    plant: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _die_plantPaths:
@@ -1030,15 +1031,15 @@ class get_all_plants(BaseNode):
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _move_zombiePaths:
-    Trigger: ExecutionPath
     OnMoved: ExecutionPath
+    Trigger: ExecutionPath
 
 class move_zombie(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _move_zombiePaths
     column: PortReference
-    zombie: PortReference
     movedZombie: PortReference
+    zombie: PortReference
     row: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
@@ -1066,8 +1067,8 @@ class _create_particlePaths:
 class create_particle(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_particlePaths
-    column: PortReference
     row: PortReference
+    column: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _create_info_cardPaths:
@@ -1077,8 +1078,8 @@ class _create_info_cardPaths:
 class create_info_card(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _create_info_cardPaths
-    bigTitle: PortReference
     smallTitle: PortReference
+    bigTitle: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _random_triggerPaths:
@@ -1088,13 +1089,13 @@ class _random_triggerPaths:
 class random_trigger(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _random_triggerPaths
-    allowRepeat: PortReference
     count: PortReference
+    allowRepeat: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _get_travel_buffPaths:
-    OnSuccess: ExecutionPath
     Trigger: ExecutionPath
+    OnSuccess: ExecutionPath
 
 class get_travel_buff(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -1107,8 +1108,8 @@ class _get_int_variable_valuePaths:
 class get_int_variable_value(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _get_int_variable_valuePaths
-    value: PortReference
     variable: PortReference
+    value: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _set_int_variable_valuePaths:
@@ -1118,9 +1119,9 @@ class _set_int_variable_valuePaths:
 class set_int_variable_value(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _set_int_variable_valuePaths
-    variable: PortReference
-    variableOut: PortReference
     value: PortReference
+    variableOut: PortReference
+    variable: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _get_float_variable_valuePaths:
@@ -1129,8 +1130,8 @@ class _get_float_variable_valuePaths:
 class get_float_variable_value(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _get_float_variable_valuePaths
-    value: PortReference
     variable: PortReference
+    value: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _set_float_variable_valuePaths:
@@ -1140,9 +1141,9 @@ class _set_float_variable_valuePaths:
 class set_float_variable_value(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _set_float_variable_valuePaths
-    variable: PortReference
-    variableOut: PortReference
     value: PortReference
+    variableOut: PortReference
+    variable: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _get_bool_variable_valuePaths:
@@ -1151,8 +1152,8 @@ class _get_bool_variable_valuePaths:
 class get_bool_variable_value(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _get_bool_variable_valuePaths
-    value: PortReference
     variable: PortReference
+    value: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _set_bool_variable_valuePaths:
@@ -1162,9 +1163,9 @@ class _set_bool_variable_valuePaths:
 class set_bool_variable_value(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _set_bool_variable_valuePaths
-    variable: PortReference
-    variableOut: PortReference
     value: PortReference
+    variableOut: PortReference
+    variable: PortReference
     def __getattr__(self, name: str) -> PortReference: ...
 
 class _int_variablePaths:
@@ -1192,4 +1193,13 @@ class bool_variable(BaseNode):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     Output: _bool_variablePaths
     variable: PortReference
+    def __getattr__(self, name: str) -> PortReference: ...
+
+class _multi_plant_type_listPaths:
+    pass
+
+class multi_plant_type_list(BaseNode):
+    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    Output: _multi_plant_type_listPaths
+    plantTypeList: PortReference
     def __getattr__(self, name: str) -> PortReference: ...

@@ -80,14 +80,9 @@ class PortReference(tuple):
             i_self = self._ensure_int(self)
             i_other = self._ensure_int(other)
             
+            # Direct integer operations without float conversion overhead
             if op_type == "add": return nodes.int_add(a=i_self, b=i_other).result
-            elif op_type == "sub": 
-                # ENGINE BUG BYPASS: Route Int Subtraction through Float nodes safely
-                f_a = nodes.int_to_float(int_val=i_self).float
-                f_b = nodes.int_to_float(int_val=i_other).float
-                f_sub = nodes.subtract_node(a=f_a, b=f_b).result
-                return nodes.float_to_int(float_val=f_sub).int
-                
+            elif op_type == "sub": return nodes.int_subtract(a=i_self, b=i_other).result
             elif op_type == "mul": return nodes.int_multiply(a=i_self, b=i_other).result
             elif op_type == "div": return nodes.int_divide(a=i_self, b=i_other).result
             elif op_type == "mod": return nodes.int_modulo(a=i_self, b=i_other).result

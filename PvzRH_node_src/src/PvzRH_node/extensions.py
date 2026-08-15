@@ -2,8 +2,8 @@ from . import nodes, api
 from .core import ctx
 from .node_base import ExecutionPath, BaseNode
 from enum import Enum
-from .TypeMgr import PlantType, ZombieAnimation
-from typing import Any, Final, Union
+from .TypeMgr import PlantType, ZombieAnimation, ZombieType
+from typing import Any, Final, Union, Iterable, Optional
 from enum import Enum
 
 
@@ -497,11 +497,16 @@ class BoolVar:
             
         if hasattr(val, 'node'):
             t = val.node.type 
-            bool_nodes = ["BoolVariableNode", "GetBoolVariableValueNode", "ToggleNode", "CompareIntNode", "CompareFloatNode", "CompareGameObjectNode", "AndNode", "OrNode", "NotNode"]
+            bool_nodes = [
+                "BoolValueNode", "BoolVariableNode", "GetBoolVariableValueNode", 
+                "ToggleNode", "CompareIntNode", "CompareFloatNode", 
+                "CompareGameObjectNode", "ComparePlantTypeNode", "CompareZombieTypeNode",
+                "AndNode", "OrNode", "NotNode"
+            ]
             if t in bool_nodes: return val
             raise TypeError(f"❌ Type Error: The node output '{t}' is not a valid boolean.")
             
-        raise TypeError(f"❌ Type Error: Unsupported type '{type(val).__name__}' passed to BoolVar.")
+        return val
 
     def toggle(self):
         with If(self.value == True) as flow:
@@ -521,17 +526,34 @@ class BoolVar:
         true_str = string_value(val="True").value
         return true_str if b else res_str
     
-    def __iand__(self, other): self.set(nodes.and_node(a=self.value, b=self._cast_to_bool(other)).Output); return self #type: ignore
-    def __ior__(self, other): self.set(nodes.or_node(a=self.value, b=self._cast_to_bool(other)).Output); return self #type: ignore
+    def __iand__(self, other): 
+        self.set(nodes.and_node(a=self.value, b=self._cast_to_bool(other)).output)
+        return self
 
-    def __and__(self, other): return nodes.and_node(a=self.value, b=self._cast_to_bool(other)).Output
-    def __rand__(self, other): return nodes.and_node(a=self._cast_to_bool(other), b=self.value).Output
-    def __or__(self, other): return nodes.or_node(a=self.value, b=self._cast_to_bool(other)).Output
-    def __ror__(self, other): return nodes.or_node(a=self._cast_to_bool(other), b=self.value).Output
-    def __invert__(self): return nodes.not_node(inp=self.value).Output
+    def __ior__(self, other): 
+        self.set(nodes.or_node(a=self.value, b=self._cast_to_bool(other)).output)
+        return self
 
-    def __eq__(self, other): return self.value == self._cast_to_bool(other) #type: ignore
-    def __ne__(self, other): return self.value != self._cast_to_bool(other) #type: ignore
+    def __and__(self, other): 
+        return nodes.and_node(a=self.value, b=self._cast_to_bool(other)).output
+
+    def __rand__(self, other): 
+        return nodes.and_node(a=self._cast_to_bool(other), b=self.value).output
+
+    def __or__(self, other): 
+        return nodes.or_node(a=self.value, b=self._cast_to_bool(other)).output
+
+    def __ror__(self, other): 
+        return nodes.or_node(a=self._cast_to_bool(other), b=self.value).output
+
+    def __invert__(self): 
+        return nodes.not_node(inp=self.value).output
+
+    def __eq__(self, other): #type: ignore
+        return self.value == self._cast_to_bool(other)
+
+    def __ne__(self, other): #type: ignore
+        return self.value != self._cast_to_bool(other)
     
 #endregion
 
@@ -550,7 +572,18 @@ class MultiSelectMenu:
     def __enter__(self): return self
     def __exit__(self, exc_type, exc_val, exc_tb): pass
 
-    def add_option(self, title: str, description: str, callback, plant_type: int = 254, zombie_type: int = -1) -> str:
+    def add_option(self, title: str, description: str, callback, plant_type: int | PlantType = 254, zombie_type: int | ZombieType = -1) -> str:
+        if isinstance(plant_type, PlantType): plant_type = plant_type.value
+        if isinstance(zombie_type, ZombieType): zombie_type = zombie_type.value
+        
+        if (plant_type != -1 and zombie_type != -1):
+            print(f"Warning: Cannot pass both Zombie or Plant type to MultiSelectMenu.add_option()")
+            plant_type = 254
+            zombie_type = -1
+        if (plant_type == -1 and zombie_type == -1):
+            print(f"Warning: None Zombie or Plant type passed to MultiSelectMenu.add_option()")
+            plant_type = 254
+        
         opt_id = f"opt_{self._option_id_counter}"
         self._option_id_counter += 1
         self._options[opt_id] = {"title": title, "description": description, "callback": callback, "plant_type": plant_type, "zombie_type": zombie_type}
@@ -606,42 +639,324 @@ class MultiSelectMenu:
         def on_refresh(self): return ExecutionPath(self.parent._show_node_id, "刷新时触发")           
 
 class ForEachPlant:
-    """Safely loops through plants and yields a Plant Object."""
+    """Safely loops through plants and acts as a direct proxy to the current Plant object."""
     def __init__(self, plant_list_port):
+        from . import nodes
+
+        # Unpack list wrappers if passed directly
+        if hasattr(plant_list_port, "list_port"):
+            plant_list_port = plant_list_port.list_port
+        elif hasattr(plant_list_port, "value"):
+            plant_list_port = plant_list_port.value
+
         self.node = nodes.for_each_plant(plant_list=plant_list_port)
+        self._plant_cache = None
         
     def __enter__(self):
+        from .node_base import ExecutionPath
+        from .core import ctx
         ctx.trigger_stack.append(ExecutionPath(self.node.id, "循环体"))
         return self
         
     def __exit__(self, exc_type, exc_val, exc_tb):
+        from .core import ctx
         ctx.trigger_stack.pop()
 
     @property
     def on_complete(self):
-        """Returns a clean context manager for the post-loop timeline track."""
+        """Returns an execution path context manager for post-loop logic."""
+        from .node_base import ExecutionPath
         return ExecutionPath(self.node.id, "循环完成")
     
     @property
     def plant(self):
-        """Returns the current iterated plant wrapped in a Smart Object."""
-        return Plant(self.node.currentPlant)
+        """Returns the current iterated plant wrapped in a Plant helper object."""
+        from .extensions import Plant
+        if self._plant_cache is None:
+            self._plant_cache = Plant(self.node.currentPlant)
+        return self._plant_cache
 
     @property
     def index(self):
+        """The index of the current iteration."""
         return self.node.currentIndex
- 
+
+    # ==========================================================
+    # TRANSPARENT PROXY TO PLANT WRAPPER
+    # ==========================================================
+    def __getattr__(self, name):
+        """Forwards all plant methods and properties (heal, damage, die, row, col, etc.) directly."""
+        return getattr(self.plant, name)
+
+
 class ForEachPlantType:
-    """Safely loops through a list of Plant Types natively."""
+    """Safely loops through a list of Plant Types natively on the node canvas."""
     def __init__(self, type_list_port):
+        from . import nodes
+
+        # Unpack list wrappers if passed directly
+        if hasattr(type_list_port, "list_port"):
+            type_list_port = type_list_port.list_port
+        elif hasattr(type_list_port, "value"):
+            type_list_port = type_list_port.value
+
         self.node = nodes.for_each_plant_type(type_list=type_list_port)
         
     def __enter__(self):
+        from .node_base import ExecutionPath
+        from .core import ctx
         ctx.trigger_stack.append(ExecutionPath(self.node.id, "循环体"))
-        return self.node
+        return self
         
     def __exit__(self, exc_type, exc_val, exc_tb):
+        from .core import ctx
         ctx.trigger_stack.pop()
+
+    @property
+    def on_complete(self):
+        """Returns an execution path context manager for post-loop logic."""
+        from .node_base import ExecutionPath
+        return ExecutionPath(self.node.id, "循环完成")
+
+    @property
+    def plant_type(self):
+        """The plant type of the current iteration."""
+        return self.node.currentPlantType
+
+    # Aliases
+    type = plant_type
+    value = plant_type
+
+    @property
+    def index(self):
+        """The index of the current iteration."""
+        return self.node.currentIndex
+
+    # ==========================================================
+    # DIRECT PORT & OPERATOR FORWARDING
+    # ==========================================================
+    def _get_primary_port(self):
+        return self.plant_type
+
+    def __eq__(self, other):
+        return self.plant_type == other
+
+    def __ne__(self, other):
+        return self.plant_type != other
+
+class PlantTypeList:
+    """
+    A smart wrapper representing a dynamic or static list of Plant Types on the node canvas.
+    """
+    def __init__(self, initial: Optional[Any] = None, initialize_empty: bool = True):
+        from . import nodes
+        from .node_base import PortReference
+
+        self._current_port = None
+        self._count_port = None
+
+        if initial is None:
+            storage = nodes.plant_type_list_storage(op=0, init_empty=initialize_empty)
+            self._current_port = storage.currentList
+            self._count_port = storage.count
+
+        elif isinstance(initial, (Enum, int)):
+            val = initial.value if isinstance(initial, Enum) else int(initial)
+            multi_node = nodes.multi_plant_type_list(plant_types=[val])
+            self._current_port = multi_node.plantTypeList
+            self._count_port = nodes.int_value(val=1).value
+
+        # Guard: check list/set while strictly excluding PortReference (which is a tuple subclass)
+        elif isinstance(initial, (list, tuple, set)) and not isinstance(initial, PortReference):
+            items = list(initial)
+            if len(items) == 0:
+                storage = nodes.plant_type_list_storage(op=0, init_empty=initialize_empty)
+                self._current_port = storage.currentList
+                self._count_port = storage.count
+            else:
+                raw_types = [item.value if isinstance(item, Enum) else int(item) for item in items]
+                multi_node = nodes.multi_plant_type_list(plant_types=raw_types)
+                self._current_port = multi_node.plantTypeList
+                self._count_port = nodes.int_value(val=len(raw_types)).value
+
+        elif isinstance(initial, PlantTypeList):
+            self._current_port = initial.list_port
+            self._count_port = initial.count
+        elif isinstance(initial, PortReference) or hasattr(initial, "node"):
+            self._current_port = initial
+        else:
+            self._current_port = initial
+
+    @property
+    def list_port(self):
+        return self._current_port
+
+    @property
+    def count(self):
+        if self._count_port is not None:
+            return self._count_port
+        return self._current_port
+
+    def set(self, other: Union['PlantTypeList', Iterable, Enum, int, Any]):
+        new_list = PlantTypeList(other)
+        self._current_port = new_list.list_port
+        self._count_port = new_list.count
+        return self
+
+    def _contains_single(self, target_type):
+        """
+        Uses ForEachPlantTypeNode to search MultiPlantTypeListNode, protected by
+        conditional branches to ensure safe state reset and latching.
+        """
+        from . import nodes
+        from .core import ctx
+        from .node_base import PortReference, ExecutionPath
+
+        # 1. Resolve target port reference safely
+        raw_target = target_type.value if hasattr(target_type, "value") else target_type
+        if isinstance(raw_target, int) and not isinstance(raw_target, PortReference):
+            target_port = nodes.plant_type_value(val=raw_target).value
+        elif hasattr(raw_target, "_get_primary_port"):
+            target_port = raw_target._get_primary_port() #type: ignore
+        elif hasattr(raw_target, "value"):
+            target_port = raw_target.value #type: ignore
+        else:
+            target_port = raw_target
+
+        # 2. State tracking toggle node
+        match_toggle = nodes.toggle_node(initial_state=False)
+
+        # 3. PRE-LOOP RESET: If toggle is currently True, trigger it once to reset to False
+        reset_branch = nodes.branch_node(condition=match_toggle.state)
+        ctx.add_connection(reset_branch.id, "真（触发）", match_toggle.id, "触发")
+
+        loop = nodes.for_each_plant_type(type_list=self._current_port)
+        ctx.add_connection(reset_branch.id, "假（停止）", loop.id, "触发")
+        ctx.add_connection(reset_branch.id, "真（触发）", loop.id, "触发")
+
+        # 4. INSIDE LOOP BODY: Compare Current Type == Target Plant Type
+        curr_type = PortReference(loop, "当前类型")
+        is_equal = nodes.compare_plant_type(a=curr_type, b=target_port).equal
+
+        match_branch = nodes.branch_node(condition=is_equal)
+        ctx.add_connection(loop.id, "循环体", match_branch.id, "触发")
+
+        # 5. SAFE LATCH: When matched, only trigger Toggle if Toggle.State is False
+        state_guard_branch = nodes.branch_node(condition=match_toggle.state)
+        ctx.add_connection(match_branch.id, "真（触发）", state_guard_branch.id, "触发")
+        ctx.add_connection(state_guard_branch.id, "假（停止）", match_toggle.id, "触发")
+
+        # 6. Route subsequent execution from Loop's OnComplete trigger
+        ctx.trigger_stack[-1] = ExecutionPath(loop.id, "循环完成")
+
+        return match_toggle.state
+
+    def contains(self, plant_type: Union[Enum, int, Iterable, Any]):
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(plant_type, (list, set)) and not isinstance(plant_type, PortReference):
+            items = list(plant_type)
+            if not items:
+                return nodes.bool_value(val=True).value
+
+            result_wire = None
+            for p in items:
+                check_wire = self._contains_single(p)
+                result_wire = check_wire if result_wire is None else (result_wire & check_wire)
+            return result_wire
+
+        return self._contains_single(plant_type)
+
+    Contains = contains
+
+    def __iadd__(self, other: Union['PlantTypeList', Enum, int, Iterable, Any]):
+        from . import nodes
+        from .node_base import PortReference
+
+        if isinstance(other, (Enum, int)):
+            val = other.value if isinstance(other, Enum) else int(other)
+            single_node = nodes.single_plant_type_list(plant_type=val)
+            merge_node = nodes.merge_plant_type_lists(list_a=self._current_port, list_b=single_node.plantTypeList)
+            self._current_port = merge_node.mergedList
+            self._count_port = merge_node.count
+        elif isinstance(other, (list, set)) and not isinstance(other, PortReference):
+            raw_types = [item.value if isinstance(item, Enum) else int(item) for item in other]
+            multi_node = nodes.multi_plant_type_list(plant_types=raw_types)
+            merge_node = nodes.merge_plant_type_lists(list_a=self._current_port, list_b=multi_node.plantTypeList)
+            self._current_port = merge_node.mergedList
+            self._count_port = merge_node.count
+        elif isinstance(other, PlantTypeList):
+            merge_node = nodes.merge_plant_type_lists(list_a=self._current_port, list_b=other.list_port)
+            self._current_port = merge_node.mergedList
+            self._count_port = merge_node.count
+        elif hasattr(other, 'list_port') or hasattr(other, 'node'):
+            port = other.list_port if hasattr(other, 'list_port') else other #type: ignore
+            merge_node = nodes.merge_plant_type_lists(list_a=self._current_port, list_b=port)
+            self._current_port = merge_node.mergedList
+            self._count_port = merge_node.count
+
+        return self
+
+    def __add__(self, other: Union['PlantTypeList', Enum, int, Iterable, Any]):
+        copy_list = PlantTypeList(self._current_port)
+        copy_list._count_port = self._count_port
+        copy_list += other
+        return copy_list
+
+    def __isub__(self, other: Union['PlantTypeList', Enum, int, Iterable, Any]):
+        from . import nodes
+        from .node_base import PortReference
+        from .extensions import ForEachPlantType
+
+        if isinstance(other, (Enum, int)):
+            raw_val = other.value if isinstance(other, Enum) else int(other)
+            rem_node = nodes.remove_plant_type(list_in=self._current_port, plant_type=raw_val)
+            self._current_port = rem_node.resultList
+        elif isinstance(other, (list, set)) and not isinstance(other, PortReference):
+            for item in other:
+                self.__isub__(item)
+        elif isinstance(other, PlantTypeList):
+            with ForEachPlantType(other.list_port) as loop:
+                rem_node = nodes.remove_plant_type(list_in=self._current_port, plant_type=loop.plant_type)
+                self._current_port = rem_node.resultList
+        elif hasattr(other, 'node'):
+            rem_node = nodes.remove_plant_type(list_in=self._current_port, plant_type=other)
+            self._current_port = rem_node.resultList
+
+        return self
+
+    def __sub__(self, other: Union['PlantTypeList', Enum, int, Iterable, Any]):
+        copy_list = PlantTypeList(self._current_port)
+        copy_list._count_port = self._count_port
+        copy_list -= other
+        return copy_list
+
+    def __eq__(self, other: Union['PlantTypeList', Any]): #type: ignore
+        from . import nodes
+        if isinstance(other, PlantTypeList):
+            return nodes.compare_int(a=self.count, b=other.count).equal
+        return False
+
+    def add(self, plant_type: Union[Enum, int, Any]):
+        self += plant_type
+        return self
+
+    def remove(self, plant_type: Union[Enum, int, Any]):
+        self -= plant_type
+        return self
+
+    def get_random(self):
+        from . import nodes
+        return nodes.get_random_plant_type(list_in=self._current_port).result
+
+    def merge(self, other: Union['PlantTypeList', Any]):
+        self += other
+        return self
+
+    def for_each(self):
+        from .extensions import ForEachPlantType
+        return ForEachPlantType(self._current_port)
 
 class Plant:
     """A smart wrapper for a Plant pointer that exposes built-in actions and properties."""
@@ -654,9 +969,8 @@ class Plant:
 
         self._split_cache = None
 
-    # ==========================================================
     # INTERNAL TYPE CASTING HELPERS
-    # ==========================================================
+    
     @staticmethod
     def _to_float_port(val):
         from . import nodes
@@ -705,17 +1019,17 @@ class Plant:
     def damage(self, amount):
         """Damages the plant by a specified amount."""
         from . import nodes
-        int_amount = self._to_int_port(amount)
-        return nodes.damage_plant(plant=self.ref, damage=int_amount)
+        float_amount = self._to_float_port(amount)
+        return nodes.damage_plant(plant=self.ref, damage=float_amount)
 
     def heal(self, amount):
-        """Heals the plant by a specified amount."""
+        """Heals the plant by a specified amount (ensures float port)."""
         from . import nodes
-        int_amount = self._to_int_port(amount)
-        return nodes.heal_plant(plant=self.ref, heal_amount=int_amount)
+        float_amount = self._to_float_port(amount)
+        return nodes.heal_plant(plant=self.ref, heal_amount=float_amount)
 
     def add_shield(self, amount):
-        """Adds shield to the plant (ensures float/Single input to avoid C# cast crashes)."""
+        """Adds shield to the plant (ensures float port)."""
         from . import nodes
         float_amount = self._to_float_port(amount)
         return nodes.give_plant_shield(plant=self.ref, shield=float_amount)
@@ -732,6 +1046,21 @@ class Plant:
         """Moves the plant relative to its current grid position."""
         return self.move(col=self.col + col_diff, row=self.row + row_diff, force=force)
 
+    def modify_attack(self, multiplier):
+            """Modifies attack multiplier (ensures float port)."""
+            from . import nodes
+            float_multiplier = self._to_float_port(multiplier)
+            return nodes.modify_plant_attack(plant=self.ref, multiplier=float_multiplier)
+    
+    def modify_health(self, multiplier):
+        """Modifies health multiplier (ensures float port)."""
+        from . import nodes
+        float_multiplier = self._to_float_port(multiplier)
+        return nodes.modify_plant_health(plant=self.ref, multiplier=float_multiplier)
+
+    # Alias for consistency with Zombie wrapper
+    set_health_multiplier = modify_health
+    
     # ==========================================================
     # LAZY DESTRUCTURED PROPERTIES (via plant_split)
     # ==========================================================
@@ -802,10 +1131,10 @@ class Zombie:
     # ACTIONS & METHODS
     # ==========================================================
     def damage(self, amount):
-        """Damages the zombie by a specified integer amount."""
+        """Damages the zombie by a specified amount."""
         from . import nodes
-        int_amount = self._to_int_port(amount)
-        return nodes.damage_zombie(zombie=self.ref, damage=int_amount)
+        float_amount = self._to_float_port(amount)
+        return nodes.damage_zombie(zombie=self.ref, damage=float_amount)
 
     def set_health_multiplier(self, ratio):
         """Modifies zombie health multiplier (ensures float/Single input to avoid C# cast crashes)."""

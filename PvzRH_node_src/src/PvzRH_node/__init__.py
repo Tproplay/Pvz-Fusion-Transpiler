@@ -31,6 +31,7 @@ from .extensions import (
     MultiSelectMenu,
     ForEachPlant,
     ForEachPlantType,
+    PlantTypeList,
     While,
     For,
     Time
@@ -96,6 +97,7 @@ __all__ = [
     "MultiSelectMenu",
     "ForEachPlant",
     "ForEachPlantType",
+    "PlantTypeList",
     "While",
     "For",
     "Time",

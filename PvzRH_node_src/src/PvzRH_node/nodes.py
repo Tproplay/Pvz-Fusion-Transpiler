@@ -2,25 +2,71 @@ from .node_base import BaseNode
 from .typing import enforce_int, enforce_float, enforce_bool, enforce_string
 from .core import ctx
 
+FLOAT_OUTPUT_NODES = {
+    "FloatValueNode", "RandomFloatNode", "IntToFloatNode", 
+    "AddNode", "SubtractNode", "MultiplyNode", "DivideNode", 
+    "GetFloatVariableValueNode", "FloatVariableNode"
+}
+
+INT_OUTPUT_NODES = {
+    "IntValueNode", "RandomIntNode", "FloatToIntNode", 
+    "IntAddNode", "IntSubtractNode", "IntMultiplyNode", 
+    "IntDivideNode", "IntModuloNode", "CounterNode", 
+    "GetSunAmountNode", "GetIntVariableValueNode", "IntVariableNode"
+}
+
 def wire(val, target_id, target_port, enforce_func=None):
-    """
-    Safely wires inputs. 
-    Accepts primitives (auto-casted via enforce_func), PortReferences, OR custom variable objects.
-    """
-    if val is None: return
+    if val is None:
+        return
     
-    if hasattr(val, 'value'):
+    # 1. Safely unwrap Port / Variable wrappers
+    if hasattr(val, '_get_primary_port'):
+        val = val._get_primary_port() if callable(val._get_primary_port) else val._get_primary_port
+    elif hasattr(val, 'value'):
         val = val.value
 
-    if enforce_func and not (isinstance(val, tuple) and len(val) == 2):
-        val_id = enforce_func(val)
-        ctx.add_connection(val_id, "值", target_id, target_port)
-    elif isinstance(val, tuple) and len(val) == 2:
+    # 2. Dynamic Port References
+    if isinstance(val, (tuple, list)) and len(val) == 2:
         src, src_port = val
         src_id = src.id if hasattr(src, "id") else src
+        node_type = getattr(src, "type", "")
+        
+        is_float = (node_type in FLOAT_OUTPUT_NODES) or (
+            getattr(val, "_is_float_port", lambda: False)() if hasattr(val, "_is_float_port") else False
+        )
+        is_int = (node_type in INT_OUTPUT_NODES) or not is_float
+
+        if enforce_func == enforce_float:
+            if is_int and node_type != "IntToFloatNode":
+                from .nodes import int_to_float
+                conv = int_to_float(int_val=val)
+                src_id, src_port = conv.id, "浮点数"
+
+        elif enforce_func == enforce_int:
+            if is_float and node_type != "FloatToIntNode":
+                from .nodes import float_to_int
+                conv = float_to_int(float_val=val)
+                src_id, src_port = conv.id, "整数"
+
         ctx.add_connection(src_id, src_port, target_id, target_port)
+        return
 
-
+    # 3. Static Primitives
+    if enforce_func:
+        val_id = enforce_func(val)
+        ctx.add_connection(val_id, "值", target_id, target_port)
+    elif isinstance(val, bool):
+        from .nodes import bool_value
+        ctx.add_connection(bool_value(val).id, "值", target_id, target_port)
+    elif isinstance(val, int):
+        from .nodes import int_value
+        ctx.add_connection(int_value(val).id, "值", target_id, target_port)
+    elif isinstance(val, float):
+        from .nodes import float_value
+        ctx.add_connection(float_value(val).id, "值", target_id, target_port)
+    elif isinstance(val, str):
+        from .nodes import string_value
+        ctx.add_connection(string_value(val).id, "值", target_id, target_port)
 
 # ==========================================
 # EVENTS
@@ -84,13 +130,13 @@ class damage_plant(BaseNode):
     def __init__(self, plant=None, damage=None):
         super().__init__("DamagePlantNode", trigger_PortName="触发", plant_PortName="植物", damage_PortName="伤害值")
         wire(plant, self.id, "植物")
-        wire(damage, self.id, "伤害值", enforce_int)
+        wire(damage, self.id, "伤害值", enforce_float)
 
 class give_plant_shield(BaseNode):
     def __init__(self, plant=None, shield=None):
         super().__init__("GivePlantShieldNode", trigger_PortName="触发", plant_PortName="植物", shieldAmount_PortName="护盾值")
         wire(plant, self.id, "植物")
-        wire(shield, self.id, "护盾值", enforce_int)
+        wire(shield, self.id, "护盾值", enforce_float)
 
 class modify_plant_attack(BaseNode):
     def __init__(self, plant=None, multiplier=None):
@@ -105,14 +151,10 @@ class modify_plant_health(BaseNode):
         wire(multiplier, self.id, "血量加成x100%", enforce_float)
 
 class plant_split(BaseNode):
-    def __init__(self, plant=None, column=None, row=None, plant_type=None, attributeCountdown=None):
+    def __init__(self, plant=None):
         super().__init__("PlantSplitNode", plant_PortName="植物", column_PortName="列", 
-                         row_PortName="行", plantType_PortName="植物类型", attributeCountdown_PortName = "属性倒计时")
+                         row_PortName="行", plantType_PortName="植物类型", attributeCountdown_PortName="属性倒计时")
         wire(plant, self.id, "植物")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(plant_type, self.id, "植物类型", enforce_int)
-        wire(attributeCountdown, self.id, "属性倒计时", enforce_float)
 
 class get_plants_in_cell(BaseNode):
     def __init__(self, row=None, column=None):
@@ -205,13 +247,9 @@ class modify_zombie_health(BaseNode):
         wire(ratio, self.id, "血量倍率", enforce_float)
 
 class zombie_split(BaseNode):
-    def __init__(self, zombie=None, column=None, row=None, zombie_type=None, hypno=None):
+    def __init__(self, zombie=None):
         super().__init__("ZombieSplitNode", zombie_PortName="僵尸", column_PortName="列", row_PortName="行", zombieType_PortName="僵尸类型", isHypnotized_PortName="是否被魅惑")
         wire(zombie, self.id, "僵尸")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(zombie_type, self.id, "僵尸类型", enforce_int)
-        wire(hypno, self.id, "是否被魅惑", enforce_bool)
 
 class zombie_type_value(BaseNode):
     def __init__(self, val=0): super().__init__("ZombieTypeValueNode", value=val, value_PortName="僵尸类型")
@@ -386,9 +424,14 @@ class toggle_cycle_node(BaseNode):
         wire(interval, self.id, "周期间隔", enforce_float)
 
 class toggle_node(BaseNode):
-    def __init__(self, state=None):
-        super().__init__("ToggleNode", trigger_PortName="触发", state_PortName="状态", onChanged_PortName="状态改变时")
-        wire(state, self.id, "状态", enforce_bool)
+    def __init__(self, initial_state=False):
+        super().__init__(
+            "ToggleNode", 
+            trigger_PortName="触发", 
+            state_PortName="状态", 
+            onChanged_PortName="状态改变时",
+            state=bool(initial_state)
+        )
 
 class pulse_node(BaseNode):
     def __init__(self, state=None):
@@ -514,12 +557,12 @@ class random_float(BaseNode):
 class int_to_float(BaseNode):
     def __init__(self, int_val=None):
         super().__init__("IntToFloatNode", int_PortName="整数", float_PortName="浮点数")
-        wire(int_val, self.id, "整数", enforce_int)
+        wire(int_val, self.id, "整数")  # Omit enforce_int to avoid circular recursion
 
 class float_to_int(BaseNode):
     def __init__(self, float_val=None):
         super().__init__("FloatToIntNode", float_PortName="浮点数", int_PortName="整数")
-        wire(float_val, self.id, "浮点数", enforce_float)
+        wire(float_val, self.id, "浮点数")  # Omit enforce_float to avoid circular recursion
 
 class float_to_string(BaseNode):
     def __init__(self, float_val=None, decimals=None):
@@ -758,3 +801,16 @@ class bool_variable(BaseNode):
             }
             ctx.variables.append(self.asset_dict)
 
+class multi_plant_type_list(BaseNode):
+    def __init__(self, plant_types=None):
+        formatted_types = []
+        for pt in (plant_types or []):
+            if hasattr(pt, "value"):
+                formatted_types.append(pt.value)
+            else:
+                formatted_types.append(int(pt))
+        super().__init__(
+            "MultiPlantTypeListNode",
+            plantTypes=formatted_types,
+            plantTypeList_PortName="植物类型列表"
+        )
