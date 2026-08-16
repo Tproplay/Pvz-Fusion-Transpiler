@@ -2,8 +2,9 @@ from . import nodes, api
 from .core import ctx
 from .node_base import ExecutionPath, BaseNode
 from enum import Enum
-from .TypeMgr import PlantType, ZombieAnimation, ZombieType
-from typing import Any, Final, Union, Iterable, Optional
+from .TypeMgr import PlantType, ZombieType
+from typing import Any, Final, Union, Iterable, Optional, Callable, List, overload
+from functools import singledispatchmethod
 from enum import Enum
 
 
@@ -172,12 +173,15 @@ class IntVar:
     def value(self):
         return nodes.get_int_variable_value(variable=self.variable).value
         
-    def set(self, target_value):
-        if target_value is self:
-            return self
-            
-        casted_val = self._cast_to_int(target_value)
-        return nodes.set_int_variable_value(variable=self.variable, value=casted_val)
+    def set(self, value):
+        from . import nodes
+        from .core import ctx
+        from .node_base import ExecutionPath
+        
+        node = nodes.set_int_variable_value(variable=self.variable, value=value)
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.id, "完成")
+        return self
 
     def _cast_to_int(self, val):
         cls_name = val.__class__.__name__
@@ -378,12 +382,15 @@ class FloatVar:
     def value(self):
         return nodes.get_float_variable_value(variable=self.variable).value
 
-    def set(self, target_value):
-        if target_value is self:
-            return self
-            
-        casted_val = self._cast_to_float(target_value)
-        return nodes.set_float_variable_value(variable=self.variable, value=casted_val)
+    def set(self, value):
+        from . import nodes
+        from .core import ctx
+        from .node_base import ExecutionPath
+        
+        node = nodes.set_float_variable_value(variable=self.variable, value=value)
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.id, "完成")
+        return self
 
     def _cast_to_float(self, val):
         cls_name = val.__class__.__name__
@@ -479,12 +486,18 @@ class BoolVar:
     def value(self):
         return nodes.get_bool_variable_value(variable=self.variable).value
 
-    def set(self, target_state):
-        if target_state is self:
-            return self
-            
-        casted_val = self._cast_to_bool(target_state)
-        return nodes.set_bool_variable_value(variable=self.variable, value=casted_val)
+    def set(self, value):
+        from . import nodes
+        from .core import ctx
+        from .node_base import ExecutionPath
+        
+        # Pass variable and value directly
+        node = nodes.set_bool_variable_value(variable=self.variable, value=value)
+        
+        # Update trigger stack to "完成" (matches onComplete_PortName="完成")
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.id, "完成")
+        return self
 
     def _cast_to_bool(self, val):
         cls_name = val.__class__.__name__
@@ -557,86 +570,242 @@ class BoolVar:
     
 #endregion
 
+class Option:
+    """
+    Standalone multiple choice option card.
+    Instantiates its node and compiles its callback graph once for reuse across multiple menus.
+    """
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        callback: Optional[Callable[[], None]] = None,
+        plant_type: Union[int, PlantType] = 254,
+        zombie_type: Union[int, ZombieType] = -1
+    ) -> None:
+        p_val = plant_type.value if isinstance(plant_type, PlantType) else plant_type
+        z_val = zombie_type.value if isinstance(zombie_type, ZombieType) else zombie_type
+
+        if p_val != -1 and p_val != 254 and z_val != -1:
+            print("[Warning] Option: Cannot set both Plant and Zombie type. Defaulting to Plant.")
+            z_val = -1
+        elif p_val == -1 and z_val == -1:
+            p_val = 254
+
+        self.title: str = title
+        self.description: str = description
+        self.callback: Optional[Callable[[], None]] = callback
+        self.plant_type: int = p_val
+        self.zombie_type: int = z_val
+
+        self.node_id: str = ctx._generate_uuid()
+        self._build_node()
+
+    def _build_node(self) -> None:
+        kwargs = {
+            "class": "AddMultipleChoiceOptionNode",
+            "ns": "GameLevel.EventNodes",
+            "asm": "Assembly-CSharp",
+            "title": self.title,
+            "description": self.description,
+            "plantType": self.plant_type,
+            "zombieType": self.zombie_type,
+            "list_PortName": "选项列表",
+            "title_PortName": "标题",
+            "description_PortName": "描述",
+            "plantType_PortName": "植物类型",
+            "zombieType_PortName": "僵尸类型",
+            "optionSelected_PortName": "选项被点击"
+        }
+        ctx.nodes.append({"id": self.node_id, "type": "AddMultipleChoiceOptionNode", "kwargs": kwargs})
+
+        # Compile option callback logic once
+        if self.callback:
+            saved_stack = ctx.trigger_stack[:]
+            ctx.trigger_stack.clear()
+            ctx.trigger_stack.append(ExecutionPath(self.node_id, "选项被点击"))
+            try:
+                self.callback()
+            finally:
+                ctx.trigger_stack.clear()
+                ctx.trigger_stack.extend(saved_stack)
+
+    @property
+    def output_port(self) -> tuple[str, str]:
+        return (self.node_id, "选项列表")
+
+    def _get_primary_port(self) -> tuple[str, str]:
+        return self.output_port
+
 class MultiSelectMenu:
-    """Deferred UI Builder for Multiple Choice Menus."""
-    def __init__(self, is_rerollable: bool = True, reroll_count: int = 3, is_skippable: bool = False, window_count: int = 3):
-        self.refreshable = is_rerollable
-        self.refreshCount = reroll_count
-        self.cancelable = is_skippable
-        self.windowCount = window_count
-        self._options = {}
-        self._option_id_counter = 0
-        self._show_node_id = None
-        self.Output = self._Outputs(self)
+    """
+    Deferred UI Builder for Multiple Choice Menus.
+    Supports sharing Option instances across menus using merge nodes.
+    """
 
-    def __enter__(self): return self
-    def __exit__(self, exc_type, exc_val, exc_tb): pass
+    def __init__(
+        self,
+        is_rerollable: bool = True,
+        reroll_count: int = 3,
+        is_skippable: bool = False,
+        window_count: int = 3
+    ) -> None:
+        self.refreshable: bool = is_rerollable
+        self.refreshCount: int = reroll_count
+        self.cancelable: bool = is_skippable
+        self.windowCount: int = window_count
 
-    def add_option(self, title: str, description: str, callback, plant_type: int | PlantType = 254, zombie_type: int | ZombieType = -1) -> str:
-        if isinstance(plant_type, PlantType): plant_type = plant_type.value
-        if isinstance(zombie_type, ZombieType): zombie_type = zombie_type.value
-        
-        if (plant_type != -1 and zombie_type != -1):
-            print(f"Warning: Cannot pass both Zombie or Plant type to MultiSelectMenu.add_option()")
-            plant_type = 254
-            zombie_type = -1
-        if (plant_type == -1 and zombie_type == -1):
-            print(f"Warning: None Zombie or Plant type passed to MultiSelectMenu.add_option()")
-            plant_type = 254
-        
-        opt_id = f"opt_{self._option_id_counter}"
-        self._option_id_counter += 1
-        self._options[opt_id] = {"title": title, "description": description, "callback": callback, "plant_type": plant_type, "zombie_type": zombie_type}
-        return opt_id
+        self._options: List[Option] = []
+        self._show_node_id: Optional[str] = None
+        self.Output: MultiSelectMenu._Outputs = self._Outputs(self)
 
-    def show(self):
-        current_list_node_id, current_list_port_name = None, None
-        
-        for opt_id, opt_data in self._options.items():
-            node_id = ctx._generate_uuid()
-            kwargs = {
-                "class": "AddMultipleChoiceOptionNode", "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp",
-                "title": opt_data["title"], "description": opt_data["description"], "plantType": opt_data["plant_type"], "zombieType": opt_data["zombie_type"],
-                "list_PortName": "选项列表", "title_PortName": "标题", "description_PortName": "描述",
-                "plantType_PortName": "植物类型", "zombieType_PortName": "僵尸类型", "optionSelected_PortName": "选项被点击"
-            }
-            ctx.nodes.append({"id": node_id, "type": "AddMultipleChoiceOptionNode", "kwargs": kwargs})
-            
-            if current_list_node_id:
-                ctx.add_connection(current_list_node_id, current_list_port_name, node_id, "选项列表") # type: ignore
-            
-            current_list_node_id, current_list_port_name = node_id, "选项列表"
-            
-            if opt_data["callback"]:
-                prev_trigger = ctx.trigger_stack[-1]
-                class OptionClickTrigger:
-                    def __init__(self, n_id): self.id, self.out_trigger = n_id, "选项被点击"
-                ctx.trigger_stack[-1] = OptionClickTrigger(node_id)
-                opt_data["callback"]()
-                ctx.trigger_stack[-1] = prev_trigger
+    def __enter__(self) -> MultiSelectMenu:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        pass
+
+    @property
+    def _get_show_node_id(self) -> str:
+        if self._show_node_id is None:
+            raise RuntimeError("ShowMultipleChoiceMenuNode has not been generated yet. Call menu.show() first.")
+        return self._show_node_id
+
+    @overload
+    def add_option(self, option: Option, /) -> Option:
+        """Add a pre-instantiated Option object."""
+        ...
+
+    @overload
+    def add_option(
+        self,
+        title: str,
+        description: str,
+        callback: Optional[Callable[[], None]] = None,
+        plant_type: Union[int, PlantType] = 254,
+        zombie_type: Union[int, ZombieType] = -1,
+    ) -> Option:
+        """Create and register an Option card inline."""
+        ...
+
+    def add_option(self, *args: Any, **kwargs: Any) -> Option:
+        if args and isinstance(args[0], Option):
+            opt = args[0]
+        elif "option" in kwargs and isinstance(kwargs["option"], Option):
+            opt = kwargs["option"]
+        else:
+            # Extract arguments for inline Option creation
+            title = args[0] if len(args) > 0 else kwargs.get("title", "")
+            description = args[1] if len(args) > 1 else kwargs.get("description", "")
+            callback = args[2] if len(args) > 2 else kwargs.get("callback", None)
+            plant_type = args[3] if len(args) > 3 else kwargs.get("plant_type", 254)
+            zombie_type = args[4] if len(args) > 4 else kwargs.get("zombie_type", -1)
+
+            opt = Option(
+                title=title,
+                description=description,
+                callback=callback,
+                plant_type=plant_type,
+                zombie_type=zombie_type,
+            )
+
+        self._options.append(opt)
+        return opt
+
+    def option(
+        self,
+        title: str,
+        description: str,
+        plant_type: Union[int, PlantType] = 254,
+        zombie_type: Union[int, ZombieType] = -1
+    ) -> Callable[[Callable[[], None]], Option]:
+        """Decorator syntax to register a choice callback cleanly inline."""
+        def decorator(func: Callable[[], None]) -> Option:
+            opt = Option(
+                title=title,
+                description=description,
+                callback=func,
+                plant_type=plant_type,
+                zombie_type=zombie_type
+            )
+            self._options.append(opt)
+            return opt
+        return decorator
+
+    def show(self) -> None:
+        """
+        Merges all registered Option lists, links them to ShowMultipleChoiceMenuNode,
+        and connects execution triggers into the compiler graph.
+        """
+        from . import nodes
 
         self._show_node_id = ctx._generate_uuid()
         show_kwargs = {
-            "class": "ShowMultipleChoiceMenuNode", "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp",
-            "refreshable": self.refreshable, "refreshCount": self.refreshCount, "cancelable": self.cancelable, "windowCount": self.windowCount,
-            "trigger_PortName": "触发", "options_PortName": "选项列表", "refreshable_PortName": "可刷新",
-            "refreshCount_PortName": "刷新次数", "cancelable_PortName": "可取消", "windowCount_PortName": "窗口数量",
-            "actionOnExit_PortName": "退出时触发", "actionOnRefresh_PortName": "刷新时触发"
+            "class": "ShowMultipleChoiceMenuNode",
+            "ns": "GameLevel.EventNodes",
+            "asm": "Assembly-CSharp",
+            "refreshable": self.refreshable,
+            "refreshCount": self.refreshCount,
+            "cancelable": self.cancelable,
+            "windowCount": self.windowCount,
+            "trigger_PortName": "触发",
+            "options_PortName": "选项列表",
+            "refreshable_PortName": "可刷新",
+            "refreshCount_PortName": "刷新次数",
+            "cancelable_PortName": "可取消",
+            "windowCount_PortName": "窗口数量",
+            "actionOnExit_PortName": "退出时触发",
+            "actionOnRefresh_PortName": "刷新时触发"
         }
         ctx.nodes.append({"id": self._show_node_id, "type": "ShowMultipleChoiceMenuNode", "kwargs": show_kwargs})
-        
+
+        # Connect execution trigger into menu display node
         current_execution = ctx.trigger_stack[-1]
         ctx.add_connection(current_execution.id, current_execution.out_trigger, self._show_node_id, "触发")
-        
-        if current_list_node_id:
-            ctx.add_connection(current_list_node_id, current_list_port_name, self._show_node_id, "选项列表") # type: ignore
-            
-        ctx.trigger_stack[-1] = nodes.wait_node(0.0)
 
+        # Merge and wire option lists
+        if self._options:
+            if len(self._options) == 1:
+                ctx.add_connection(self._options[0].node_id, "选项列表", self._show_node_id, "选项列表")
+            else:
+                # 1. Merge first two Option nodes
+                first_merge = nodes.merge_multiple_choice_option_lists(
+                    list1=(self._options[0].node_id, "选项列表"),
+                    list2=(self._options[1].node_id, "选项列表")
+                )
+                
+                prev_node_id = first_merge.id
+
+                # 2. Chain subsequent options one by one
+                for next_opt in self._options[2:]:
+                    next_merge = nodes.merge_multiple_choice_option_lists(
+                        list1=(prev_node_id, "合并列表"),
+                        list2=(next_opt.node_id, "选项列表")
+                    )
+                    prev_node_id = next_merge.id
+                
+                # 3. Connect the final merge node's merged list to the menu
+                ctx.add_connection(prev_node_id, "合并列表", self._show_node_id, "选项列表")
+
+        # Advance trigger stack past the menu window
+        ctx.trigger_stack[-1] = ExecutionPath(self._show_node_id, "退出时触发")
     class _Outputs:
-        def __init__(self, parent): self.parent = parent
-        def on_exit(self): return ExecutionPath(self.parent._show_node_id, "退出时触发")
-        def on_refresh(self): return ExecutionPath(self.parent._show_node_id, "刷新时触发")           
+        def __init__(self, parent: MultiSelectMenu) -> None:
+            self._parent = parent
+
+        @property
+        def OnExit(self) -> ExecutionPath:
+            return ExecutionPath(self._parent._get_show_node_id, "退出时触发")
+
+        @property
+        def OnRefresh(self) -> ExecutionPath:
+            return ExecutionPath(self._parent._get_show_node_id, "刷新时触发")
+
+        def on_exit(self) -> ExecutionPath:
+            return self.OnExit
+
+        def on_refresh(self) -> ExecutionPath:
+            return self.OnRefresh
 
 class ForEachPlant:
     """Safely loops through plants and acts as a direct proxy to the current Plant object."""
@@ -805,8 +974,8 @@ class PlantTypeList:
 
     def _contains_single(self, target_type):
         """
-        Uses ForEachPlantTypeNode to search MultiPlantTypeListNode, protected by
-        conditional branches to ensure safe state reset and latching.
+        Uses ForEachPlantTypeNode to search MultiPlantTypeListNode.
+        Strictly prevents duplicate trigger wiring by isolating BaseNode.__init__.
         """
         from . import nodes
         from .core import ctx
@@ -823,30 +992,39 @@ class PlantTypeList:
         else:
             target_port = raw_target
 
-        # 2. State tracking toggle node
+        parent_trigger = ctx.trigger_stack[-1] if ctx.trigger_stack else None
+
+        # 🎯 CRITICAL: Keep trigger stack empty during node construction
+        # to prevent BaseNode from auto-connecting parent_trigger in parallel!
+        saved_stack = ctx.trigger_stack[:]
+        ctx.trigger_stack.clear()
+
+        # 2. Instantiate search nodes cleanly with zero auto-wires
         match_toggle = nodes.toggle_node(initial_state=False)
-
-        # 3. PRE-LOOP RESET: If toggle is currently True, trigger it once to reset to False
         reset_branch = nodes.branch_node(condition=match_toggle.state)
-        ctx.add_connection(reset_branch.id, "真（触发）", match_toggle.id, "触发")
-
         loop = nodes.for_each_plant_type(type_list=self._current_port)
-        ctx.add_connection(reset_branch.id, "假（停止）", loop.id, "触发")
-        ctx.add_connection(reset_branch.id, "真（触发）", loop.id, "触发")
-
-        # 4. INSIDE LOOP BODY: Compare Current Type == Target Plant Type
+        
         curr_type = PortReference(loop, "当前类型")
         is_equal = nodes.compare_plant_type(a=curr_type, b=target_port).equal
-
         match_branch = nodes.branch_node(condition=is_equal)
+        state_guard = nodes.branch_node(condition=match_toggle.state)
+
+        # 3. Explicit Single-Track Execution Wiring
+        if parent_trigger:
+            ctx.add_connection(parent_trigger.id, parent_trigger.out_trigger, reset_branch.id, "触发")
+
+        # Reset toggle if True, otherwise continue directly into loop
+        ctx.add_connection(reset_branch.id, "真（触发）", match_toggle.id, "触发")
+        ctx.add_connection(reset_branch.id, "真（触发）", loop.id, "触发")
+        ctx.add_connection(reset_branch.id, "假（停止）", loop.id, "触发")
+
+        # Loop body -> match check -> state guard -> toggle
         ctx.add_connection(loop.id, "循环体", match_branch.id, "触发")
+        ctx.add_connection(match_branch.id, "真（触发）", state_guard.id, "触发")
+        ctx.add_connection(state_guard.id, "假（停止）", match_toggle.id, "触发")
 
-        # 5. SAFE LATCH: When matched, only trigger Toggle if Toggle.State is False
-        state_guard_branch = nodes.branch_node(condition=match_toggle.state)
-        ctx.add_connection(match_branch.id, "真（触发）", state_guard_branch.id, "触发")
-        ctx.add_connection(state_guard_branch.id, "假（停止）", match_toggle.id, "触发")
-
-        # 6. Route subsequent execution from Loop's OnComplete trigger
+        # 4. Restore stack and forward execution strictly through loop's OnComplete
+        ctx.trigger_stack.extend(saved_stack)
         ctx.trigger_stack[-1] = ExecutionPath(loop.id, "循环完成")
 
         return match_toggle.state

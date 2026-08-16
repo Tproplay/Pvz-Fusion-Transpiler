@@ -319,10 +319,22 @@ class add_multiple_choice_option(BaseNode):
         wire(list_in, self.id, "选项列表")
 
 class merge_multiple_choice_option_lists(BaseNode):
+    """Merges two option lists into a single combined options list."""
     def __init__(self, list1=None, list2=None):
-        super().__init__("MergeMultipleChoiceOptionListsNode", list1_PortName="列表1", list2_PortName="列表2")
+        super().__init__(
+            "MergeMultipleChoiceOptionListsNode",
+            list1_PortName="列表1",
+            list2_PortName="列表2"
+        )
         wire(list1, self.id, "列表1")
         wire(list2, self.id, "列表2")
+
+    @property
+    def output(self) -> tuple[str, str]:
+        return (self.id, "合并列表")
+
+    def _get_primary_port(self) -> str:
+        return "合并列表"
 
 class delete_card_by_type(BaseNode):
     def __init__(self, plant_type=None, type_val=0):
@@ -814,3 +826,4 @@ class multi_plant_type_list(BaseNode):
             plantTypes=formatted_types,
             plantTypeList_PortName="植物类型列表"
         )
+

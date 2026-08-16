@@ -244,6 +244,29 @@ class InGameUI:
         final_text = format_string(*args)
         show_text(text=final_text, duration=duration)
 
+    class InfoCard:
+        """
+        Context manager for CreateInfoCardNode.
+        Blocks enclosed within the 'with' scope execute when the user clicks the info card.
+        """
+        def __init__(self, big_title: str, small_title: str = ""):
+            from . import nodes
+            from .core import ctx
+            from .node_base import ExecutionPath
+
+            self.node = nodes.create_info_card(big_title=big_title, small_title=small_title)
+
+        def __enter__(self):
+            from .core import ctx
+            from .node_base import ExecutionPath
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "点击卡牌时触发"))
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            from .core import ctx
+            if ctx.trigger_stack:
+                ctx.trigger_stack.pop()
+
 class Random:
 
     class TriggerChance:
@@ -461,6 +484,16 @@ class _BoardMeta(type):
     def Money(cls) -> _MoneyManager:
         return _MoneyManager()
 
+    @Money.setter
+    def Money(cls, value):
+        # Allows `Board.Money += X` and `Board.Money -= X` to evaluate without Pylance errors
+        if isinstance(value, _MoneyManager):
+            return
+        raise NotImplementedError(
+            "Direct assignment `Board.Money = X` is not supported by the game engine. "
+            "Use `Board.Money += amount` or `Board.Money -= amount` instead."
+        )
+    
     @property
     def Wave(cls) -> int: 
         return nodes.on_wave().wave #type: ignore

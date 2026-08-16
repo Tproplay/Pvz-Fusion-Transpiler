@@ -824,3 +824,34 @@ class CompilerState:
 
 
 ctx = CompilerState()
+
+def save_trigger_stack(clear: bool = True) -> List[Any]:
+    """
+    Saves a shallow copy of the active compiler trigger stack.
+    If clear=True (default), clears ctx.trigger_stack to start an isolated execution tree.
+    """
+    saved_stack = ctx.trigger_stack[:]
+    if clear:
+        ctx.trigger_stack.clear()
+    return saved_stack
+
+
+def restore_trigger_stack(saved_stack: List[Any]) -> None:
+    """
+    Restores a previously saved trigger stack back into compiler context.
+    """
+    ctx.trigger_stack.clear()
+    ctx.trigger_stack.extend(saved_stack)
+
+
+class IsolatedTriggerScope:
+    """
+    Context manager that automatically saves/clears the trigger stack on entry
+    and restores it on exit.
+    """
+    def __enter__(self):
+        self.saved_stack = save_trigger_stack(clear=True)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        restore_trigger_stack(self.saved_stack)

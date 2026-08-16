@@ -4,7 +4,10 @@ from .core import (
     settings,
     PlantData,
     PlantEntry,
-    OrderedSpawn
+    OrderedSpawn,
+    IsolatedTriggerScope,
+    save_trigger_stack,
+    restore_trigger_stack
 )
 from . import nodes as nodes
 
@@ -34,7 +37,8 @@ from .extensions import (
     PlantTypeList,
     While,
     For,
-    Time
+    Time,
+    Option
 )
 
 from .TypeMgr import (
@@ -101,6 +105,10 @@ __all__ = [
     "While",
     "For",
     "Time",
+    "Option",
+    "IsolatedTriggerScope",
+    "save_trigger_stack",
+    "restore_trigger_stack",
 
     # Level Data Helpers
     "PlantData",
