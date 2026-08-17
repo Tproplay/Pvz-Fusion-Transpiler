@@ -23,3 +23,6 @@ packages = ["PvzRH_node"]
 
 [tool.setuptools.package-dir]
 "PvzRH_node" = "src/PvzRH_node"
+
+[tool.ruff.lint]
+ignore = ["F541"]

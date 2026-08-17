@@ -1,10 +1,11 @@
+from enum import Enum
+
 from . import nodes
 from .core import ctx
+from .Data.TypeMgr import *
+from .Libraries.extensions import If, Mouse, Plant, Zombie
 from .node_base import ExecutionPath
-from .extensions import Plant, Zombie, If, Mouse
-from enum import Enum
-from .TypeMgr import *
-from .typing import staticproperty
+
 
 class Trigger:
     
@@ -113,8 +114,9 @@ class Spawner:
         Returns a Plant object.
         """
         def __init__(self, row, col, plant_type, force=False):
-            from . import nodes
             from enum import Enum
+
+            from . import nodes
             
             if isinstance(plant_type, Enum):
                 plant_type = plant_type.value
@@ -146,8 +148,9 @@ class Spawner:
         Returns a Zombie object.
         """
         def __init__(self, row, col, zombie_type, mind_controlled=False):
-            from . import nodes
             from enum import Enum
+
+            from . import nodes
             
             if isinstance(zombie_type, Enum):
                 zombie_type = zombie_type.value
@@ -170,7 +173,7 @@ class Spawner:
 class InGameUI:
     @staticmethod
     def display_info_card(big_title, small_title) -> None: 
-        from .StdLib import format_string
+        from .Libraries.StdLib import format_string
         nodes.create_info_card(big_title=format_string(big_title), small_title=format_string(small_title))
         
     @staticmethod
@@ -197,10 +200,10 @@ class InGameUI:
     @staticmethod
     def display_text(*args, duration=3.0):
         """Pass any mix of text and variables to auto-format and display them on screen."""
-        from .StdLib import format_string
-        from .extensions import BoolVar, If
-        from .nodes import show_text, string_value
+        from .Libraries.extensions import BoolVar, If
+        from .Libraries.StdLib import format_string
         from .node_base import PortReference
+        from .nodes import show_text
 
         BOOL_NODE_TYPES = {
             "BoolVariableNode", "GetBoolVariableValueNode", "CompareIntNode", 
@@ -251,8 +254,6 @@ class InGameUI:
         """
         def __init__(self, big_title: str, small_title: str = ""):
             from . import nodes
-            from .core import ctx
-            from .node_base import ExecutionPath
 
             self.node = nodes.create_info_card(big_title=big_title, small_title=small_title)
 
@@ -266,95 +267,7 @@ class InGameUI:
             from .core import ctx
             if ctx.trigger_stack:
                 ctx.trigger_stack.pop()
-
-class Random:
-
-    class TriggerChance:
-        """Fires its contents based on a random probability (e.g. TriggerChance(0.5) is 50%)."""
-        def __init__(self, probability):
-            rand = Random.randf(0.0, 1.0)
-            self.flow = If(rand <= probability)
-        def __enter__(self):
-            self.flow.__enter__()
-            return self
-        def __exit__(self, *args):
-            self.flow.__exit__(*args)
-    
-    class RandomTrigger:
-        """
-        Triggers a random connected event.
-        """
-        def __init__(self, count=1, allow_repeat=False):
-            self.node = nodes.random_trigger(count=count, allow_repeat=allow_repeat)
-
-        def __enter__(self):
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
-            return self
-
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            ctx.trigger_stack.pop()
-    
-    @staticmethod
-    def randint(min_val, max_val) -> Int: return nodes.random_int(min_val=min_val, max_val=max_val).result # type: ignore
-    @staticmethod
-    def randf(min_val, max_val) -> Float: return nodes.random_float(min_val=min_val, max_val=max_val).result # type: ignore
-        
-    @staticproperty
-    def value():
-        return Random.randf(0.0, 1.0)
-    
-    class Seeded:
-        """
-        A deterministic, graph-compatible pseudo-random number generator (LCG).
-        Uses overflow-safe LCG constants (a=75, c=74, m=65537) to prevent C# 32-bit integer wrapping.
-        """
-        def __init__(self, seed: int = 12345, name: str = "PRNG_State"):
-            from .extensions import IntVar
-            # Clamp seed into valid positive range
-            safe_seed = (abs(seed) % 65537) or 1
-            self.state = IntVar(start_val=safe_seed, name=name)
-            
-            # Overflow-safe LCG constants: Max math is (75 * 65536 + 74) = 4,915,274 << 2,147,483,647
-            self.a = 75
-            self.c = 74
-            self.m = 65537
-
-        def set_seed(self, seed_value):
-            """Manually update or reset the active random seed at runtime."""
-            safe_seed = (abs(seed_value) % self.m) or 1
-            return self.state.set(safe_seed)
-
-        def _next(self):
-            """Advances LCG state. Guaranteed strictly positive without overflow or BranchNodes."""
-            next_state = ((self.state * self.a) + self.c) % self.m
-            self.state.set(next_state)
-            return self.state.value
-
-        def randint(self, min_val: int, max_val: int):
-            """Generates a seeded random integer within [min_val, max_val]."""
-            range_size = (max_val - min_val) + 1
-            raw_val = self._next()
-            return min_val + (raw_val % range_size)
-
-        def randf(self, min_val: float = 0.0, max_val: float = 1.0):
-            """Generates a seeded random float within [min_val, max_val]."""
-            raw_val = self._next()
-            normalized = raw_val / float(self.m - 1)
-            return min_val + (normalized * (max_val - min_val))
-
-        class TriggerChance:
-            """Context manager that fires based on seeded probability (0.0 to 1.0)."""
-            def __init__(self, rng: Seeded, probability: float): #type: ignore
-                roll = rng.randf(0.0, 1.0)
-                self.flow = If(roll <= probability)
-
-            def __enter__(self):
-                self.flow.__enter__()
-                return self
-
-            def __exit__(self, exc_type, exc_val, exc_tb):
-                self.flow.__exit__(exc_type, exc_val, exc_tb)
-    
+  
 class _SunManager:
     """Get/Set the board Sun value."""
     @property
@@ -539,7 +452,7 @@ class Lawnf:
     
     @staticmethod
     def trigger_game_over(reason="Defeated!"):
-        from .StdLib import format_string 
+        from .Libraries.StdLib import format_string
         nodes.game_over(reason=format_string(reason))
     @staticmethod
     def trigger_game_win(): nodes.game_win()

@@ -118,7 +118,7 @@ class PortReference(tuple):
     def _to_string_port(self):
         """Converts raw numeric or boolean node output ports into string node ports."""
         from .nodes import float_to_string, int_to_float, int_value
-        from .extensions import IntVar, If
+        from .Libraries.extensions import IntVar, If
 
         if not hasattr(self, 'node') or not hasattr(self.node, 'type'):
             return self
