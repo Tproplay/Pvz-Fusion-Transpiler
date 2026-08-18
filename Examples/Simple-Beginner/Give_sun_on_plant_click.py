@@ -1,5 +1,5 @@
 import PvzRH_node as pvn
-from PvzRH_node import PlantType
+from PvzRH_node.Types import PlantType
 
 # Configure the output folder and name
 pvn.Config(output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH\Saves\Custm Lvl\LevelData\Levels",

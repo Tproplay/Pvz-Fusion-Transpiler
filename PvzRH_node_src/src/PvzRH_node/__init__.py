@@ -15,13 +15,7 @@ from .core import (
 from .core import ctx as _ctx
 from .Data.PlantData import PlantData
 from .Data.TypeMgr import (
-    KeyCode,
-    LevelType,
     PlantType,
-    SceneType,
-    SoundType,
-    TravelBuffType,
-    ZombieAnimation,
     ZombieType,
 )
 
@@ -111,12 +105,6 @@ __all__ = [  # noqa: RUF022
     # Types
     "PlantType",
     "ZombieType",
-    "SoundType",
-    "KeyCode",
-    "ZombieAnimation",
-    "SceneType",
-    "LevelType",
-    "TravelBuffType",
 
     # Modules
     "nodes",

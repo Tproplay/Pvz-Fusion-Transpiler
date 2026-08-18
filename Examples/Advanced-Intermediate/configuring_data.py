@@ -1,7 +1,10 @@
 import PvzRH_node as pvn
 from PvzRH_node import (
-    SceneType, LevelType, PlantType, ZombieType, KeyCode,
-    PlantData, PlantEntry, OrderedSpawn, TravelBuffType
+    PlantType, ZombieType,PlantData, PlantEntry, OrderedSpawn
+)
+
+from PvzRH_node.Types import (
+    SceneType, LevelType, KeyCode, TravelBuffType
 )
 
 # =====================================================================

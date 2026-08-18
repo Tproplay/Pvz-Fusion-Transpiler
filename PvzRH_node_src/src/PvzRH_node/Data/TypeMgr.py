@@ -1,5 +1,6 @@
 from enum import Enum
 
+from .Recipes import RecipeData as RecipeData
 
 class SceneType(Enum):
     Day = 0
@@ -2983,7 +2984,6 @@ class ZombieAnimation:
         DIE = "die"
         IDLE = "idle"
         WALK = "walk"
-
 
 class TravelBuffType(Enum):
     ADV_ENCHANTRESS_SUBSPECIES = ("AdvBuff", 0)
