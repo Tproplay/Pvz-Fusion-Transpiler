@@ -21,7 +21,20 @@ except ImportError:
 
 
 def _to_id(val: Any) -> int:
-    return int(val.value if hasattr(val, "value") else val)
+    """Extracts raw integer ID handling Enums, Tuples, and int values."""
+    # 1. Extract .value if Enum member
+    if hasattr(val, "value"):
+        val = val.value
+
+    # 2. Extract first element if wrapped in a tuple/list (e.g. (0, 'Peashooter'))
+    while isinstance(val, (tuple, list)):
+        if not val:
+            raise ValueError("Cannot extract ID from an empty tuple/list.")
+        val = val[0]
+        if hasattr(val, "value"):
+            val = val.value
+
+    return int(val)
 
 
 def _to_type(plant_id: int) -> Union[Any, int]:
@@ -49,7 +62,6 @@ class RecipeData:
     def get_all_ingredients(plant: Union[int, Any]) -> List[Union[Any, int]]:
         """
         Recursively finds all sub-plants needed to craft this PlantType.
-        Safely handles cyclic loops (A + B -> C, C + D -> A).
         """
         target_id = _to_id(plant)
         visited: Set[int] = set()
@@ -73,7 +85,7 @@ class RecipeData:
         p1 = _to_id(plant1)
         p2 = _to_id(plant2)
         pair = tuple(sorted((p1, p2)))
-        res_id = PAIR_TO_RESULT.get(pair)
+        res_id = PAIR_TO_RESULT.get(pair) #type: ignore
         return _to_type(res_id) if res_id is not None else None
 
     # 4. Get direct parent recipe pairs for a target plant
