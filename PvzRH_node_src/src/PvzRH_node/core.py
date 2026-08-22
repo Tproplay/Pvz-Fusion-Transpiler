@@ -28,15 +28,24 @@ class BoardConfig:
         self.minOriginalSpeed: float = 1.0
         self.maxOriginalSpeed: float = 1.4
         self.waveInterval: float = 30.0
+        """Default time interval in seconds between each wave spawn"""
         self.firstWaveArrivedTimer: float = 15.0
+        """First wave arrival delay in seconds"""
         self.conveyInterval: float = 6.0
         self.gloveSpeed: float = 10.0
+        """Cooldown for glove"""
         self.holdTimer: float = 4.2
         self.holdTimer2: float = 1.8
         self.holdTimer3: float = 5.0
         self.startTip: str = ""
+        """Text to be displayed at the start of the level
+        
+        Change the time for which this text is shown by BoardConfig.tipTime
+        """
         self.tipTime: float = 6.0
+        """The time for which the start tip is displayed"""
         self.applyRandomData: bool = False
+        """Enable Gacha random data generation"""
         self.plantModifyMin: float = 0.2
         self.plantModifyMax: float = 6.0
         self.plantSpeedMin: float = 0.2
@@ -162,7 +171,13 @@ class BoardTag:
         self.isBrick: bool = False
         self.disableSummonZombie: bool = False
         self.disableSelectCard: bool = False
+        """Skips seed selection phase and directly start the level. 
+        
+        This doesn't disable the intro animation.
+        use board_tag.disableInInterlude to disable it.
+        """
         self.disableInInterlude: bool = False
+        """Skips initial camera movement at the start of the level."""
 
     def __setattr__(self, name, value):
         if not name.startswith("_"):

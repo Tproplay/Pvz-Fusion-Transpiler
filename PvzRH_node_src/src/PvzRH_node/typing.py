@@ -64,6 +64,42 @@ class staticproperty:
         self.fget = func
 
     def __get__(self, instance, owner):
-        return self.fget(owner)
+        try:
+            return self.fget(owner)
+        except TypeError:
+            return self.fget()
 
+from .node_base import PortReference
+from . import nodes
+
+@staticmethod
+def to_float_port(val):
+
+    if isinstance(val, (int, float)) and not isinstance(val, PortReference):
+        return nodes.float_value(val=float(val)).value
+    if hasattr(val, "_is_float_port") and not val._is_float_port():
+        return nodes.int_to_float(int_val=val).float
+    if hasattr(val, "value"):
+        return val.value  # type: ignore
+    return val
+
+@staticmethod
+def to_int_port(val):
+
+    if isinstance(val, (int, float)) and not isinstance(val, PortReference):
+        return nodes.int_value(val=int(val)).value
+    if hasattr(val, "_is_float_port") and val._is_float_port():
+        return nodes.float_to_int(float_val=val).int
+    if hasattr(val, "value"):
+        return val.value  # type: ignore
+    return val
+
+@staticmethod
+def to_bool_port(val):
+
+    if isinstance(val, bool) and not isinstance(val, PortReference):
+        return nodes.bool_value(val=val).value
+    if hasattr(val, "value"):
+        return val.value
+    return val
 

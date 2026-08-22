@@ -227,7 +227,7 @@ class damage_zombie(BaseNode):
     def __init__(self, zombie=None, damage=None):
         super().__init__("DamageZombieNode", trigger_PortName="触发", zombie_PortName="僵尸", damage_PortName="伤害值")
         wire(zombie, self.id, "僵尸")
-        wire(damage, self.id, "伤害值", enforce_float)
+        wire(damage, self.id, "伤害值", enforce_int)
 
 class set_zombie_mind_controlled(BaseNode):
     def __init__(self, zombie=None):

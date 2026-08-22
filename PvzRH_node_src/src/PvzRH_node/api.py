@@ -3,8 +3,10 @@ from enum import Enum
 from . import nodes
 from .core import ctx
 from .Data.TypeMgr import *
-from .Libraries.extensions import If, Mouse, Plant, Zombie
+from .Libraries.extensions import If, Mouse, Plant, Zombie, InfoCard
 from .node_base import ExecutionPath
+from .typing import to_int_port
+from typing import Optional, Union, Callable, Any
 
 
 class Trigger:
@@ -75,7 +77,10 @@ class Trigger:
         def __exit__(self, *args): ctx.trigger_stack.pop()
 
     class OnPlantDeath:
-        """Triggers before a plant dies. Returns a Plant object."""
+        """Triggers before a plant dies. Returns a Plant object.
+        
+        Additional note: This method doesn't trigger for insta plants like cherry bomb
+        """
         def __init__(self): self.node = nodes.on_plant_die()
         def __enter__(self) -> Plant:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
@@ -132,13 +137,13 @@ class Spawner:
 
         @property
         def on_created(self):
-            """Context manager for the '创建成功' (Created Successfully) execution port."""
+            """Context manager for the Created Successfully execution port."""
             from .node_base import ExecutionPath
             return ExecutionPath(self.node.id, "创建成功")
 
         @property
         def on_failed(self):
-            """Context manager for the '创建失败' (Creation Failed) execution port."""
+            """Context manager for the Creation Failed execution port."""
             from .node_base import ExecutionPath
             return ExecutionPath(self.node.id, "创建失败")
 
@@ -172,9 +177,15 @@ class Spawner:
 
 class InGameUI:
     @staticmethod
-    def display_info_card(big_title, small_title) -> None: 
-        from .Libraries.StdLib import format_string
-        nodes.create_info_card(big_title=format_string(big_title), small_title=format_string(small_title))
+    def display_info_card(
+        big_title: Any,
+        small_title: Any,
+        on_clicked: Optional[Callable[[], None]] = None
+    ) -> InfoCard:
+        """
+        Displays an in-game Info Card popup.
+        """
+        return InfoCard(big_title, small_title, callback=on_clicked)
         
     @staticmethod
     def give_plant_card(plant_type, cooldown=7.5, cost=100, use_default=True) -> None:
@@ -362,7 +373,9 @@ class _MoneyManager:
 
     
     class SpendMoney:
-        """Context Manager for spending money safely."""
+        """Context Manager for spending money safely.
+        
+        Default execution path for with statement is 'On Success'"""
         def __init__(self, amount): self.node = nodes.use_money(amount=amount)
         def __enter__(self):
             ctx.trigger_stack.append(ExecutionPath(self.node.id, "消耗成功"))
@@ -370,7 +383,9 @@ class _MoneyManager:
         def __exit__(self, *args): ctx.trigger_stack.pop()
         
         @property
-        def Failed(self) -> ExecutionPath: return ExecutionPath(self.node.id, "金币不足")
+        def Failed(self) -> ExecutionPath:
+            """Execution path for 'On Failed'"""
+            return ExecutionPath(self.node.id, "金币不足")
     
     def __iadd__(self, other):
         nodes.add_money(amount=other)
@@ -435,13 +450,15 @@ class Lawnf:
         nodes.create_ice_block(row=row, column=col, plant_type=plant_type)
 
     @staticmethod
-    def trigger_cherry_explosion(row, col, damage=1800): nodes.create_cherry_explode(row=row, column=col, damage=damage)
+    def trigger_cherry_explosion(row, col, damage=1800):
+        nodes.create_cherry_explode(row=row, column=col, damage=to_int_port(damage))
     @staticmethod
-    def trigger_doom_explosion(row, col, damage=1800, create_pit=True): nodes.create_doom_shroom_effect(row=row, column=col, damage=damage, set_pit=create_pit)
+    def trigger_doom_explosion(row, col, damage=1800, create_pit=True):
+        nodes.create_doom_shroom_effect(row=row, column=col, damage=to_int_port(damage), set_pit=create_pit)
     @staticmethod
     def trigger_zombie_explosion(row, col): nodes.create_zombie_explode(row=row, column=col)
     @staticmethod
-    def trigger_jalapeno(row, damage=1800): nodes.create_jalapeno_effect(row=row, damage=damage)
+    def trigger_jalapeno(row, damage=1800): nodes.create_jalapeno_effect(row=row, damage=to_int_port(damage))
     @staticmethod
     def trigger_ice_shroom(duration): nodes.create_ice_shroom_effect(duration=duration)
     @staticmethod

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 from enum import Enum
-from typing import Any, overload
+from typing import Any, overload, Optional, Union
 
 from typing_extensions import Self
 
@@ -22,8 +22,29 @@ from ..nodes import (
     multiply_node,
     string_value,
 )
-from ..typing import staticproperty
+from ..typing import staticproperty, to_int_port, to_bool_port, to_float_port
 
+__all__ = [
+    "If",
+    "Switch",
+    "IntVar",
+    "FloatVar",
+    "BoolVar",
+    "Option",
+    "MultiSelectMenu",
+    "ForEachPlant",
+    "ForEachPlantType",
+    "PlantTypeList",
+    "Plant",
+    "Zombie",
+    "While",
+    "For",
+    "Time",
+    "Mouse",
+    "Random",
+    "InfoCard",
+    
+]
 
 class If:
     """Syntactic sugar that acts as a safe visual scripting 'if/elif/else' block."""
@@ -1345,8 +1366,6 @@ class PlantTypeList:
 
         return self._contains_single(plant_type)
 
-    Contains = contains
-
     def __iadd__(self, other: PlantTypeList | Enum | int | Iterable | Any):
         if isinstance(other, (Enum, int)):
             val = other.value if isinstance(other, Enum) else int(other)
@@ -1456,39 +1475,6 @@ class Plant:
 
         self._split_cache = None
 
-    # INTERNAL TYPE CASTING HELPERS
-
-    @staticmethod
-    def _to_float_port(val):
-
-        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
-            return nodes.float_value(val=float(val)).value
-        if hasattr(val, "_is_float_port") and not val._is_float_port():
-            return nodes.int_to_float(int_val=val).float
-        if hasattr(val, "value"):
-            return val.value  # type: ignore
-        return val
-
-    @staticmethod
-    def _to_int_port(val):
-
-        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
-            return nodes.int_value(val=int(val)).value
-        if hasattr(val, "_is_float_port") and val._is_float_port():
-            return nodes.float_to_int(float_val=val).int
-        if hasattr(val, "value"):
-            return val.value  # type: ignore
-        return val
-
-    @staticmethod
-    def _to_bool_port(val):
-
-        if isinstance(val, bool) and not isinstance(val, PortReference):
-            return nodes.bool_value(val=val).value
-        if hasattr(val, "value"):
-            return val.value
-        return val
-
     # ==========================================================
     # ACTIONS & METHODS
     # ==========================================================
@@ -1499,27 +1485,27 @@ class Plant:
     def damage(self, amount):
         """Damages the plant by a specified amount."""
 
-        float_amount = self._to_float_port(amount)
+        float_amount = to_float_port(amount)
         return nodes.damage_plant(plant=self.ref, damage=float_amount)
 
     def heal(self, amount):
-        """Heals the plant by a specified amount (ensures float port)."""
+        """Heals the plant by a specified amount."""
 
-        float_amount = self._to_float_port(amount)
+        float_amount = to_float_port(amount)
         return nodes.heal_plant(plant=self.ref, heal_amount=float_amount)
 
     def add_shield(self, amount):
-        """Adds shield to the plant (ensures float port)."""
+        """Adds shield to the plant."""
 
-        float_amount = self._to_float_port(amount)
+        float_amount = to_float_port(amount)
         return nodes.give_plant_shield(plant=self.ref, shield=float_amount)
 
     def move(self, col, row, force=False):
         """Moves the plant to a new grid cell. `force` bypasses all in-game placement checks."""
 
-        int_col = self._to_int_port(col)
-        int_row = self._to_int_port(row)
-        bool_force = self._to_bool_port(force)
+        int_col = to_int_port(col)
+        int_row = to_int_port(row)
+        bool_force = to_bool_port(force)
         return nodes.move_plant(
             plant=self.ref, row=int_row, column=int_col, force=bool_force
         )
@@ -1529,44 +1515,41 @@ class Plant:
         return self.move(col=self.col + col_diff, row=self.row + row_diff, force=force)
 
     def modify_attack(self, multiplier):
-        """Modifies attack multiplier (ensures float port)."""
+        """Modifies attack multiplier."""
 
-        float_multiplier = self._to_float_port(multiplier)
+        float_multiplier = to_float_port(multiplier)
         return nodes.modify_plant_attack(plant=self.ref, multiplier=float_multiplier)
 
     def modify_health(self, multiplier):
-        """Modifies health multiplier (ensures float port)."""
+        """Modifies health multiplier."""
 
-        float_multiplier = self._to_float_port(multiplier)
+        float_multiplier = to_float_port(multiplier)
         return nodes.modify_plant_health(plant=self.ref, multiplier=float_multiplier)
-
-    # Alias for consistency with Zombie wrapper
-    set_health_multiplier = modify_health
 
     # ==========================================================
     # LAZY DESTRUCTURED PROPERTIES (via plant_split)
     # ==========================================================
     @property
-    def split(self):
+    def _split(self):
         if self._split_cache is None:
             self._split_cache = nodes.plant_split(plant=self.ref)
         return self._split_cache
 
     @property
     def plantType(self):
-        return self.split.plantType
+        return self._split.plantType
 
     @property
     def row(self):
-        return self.split.row
+        return self._split.row
 
     @property
     def col(self):
-        return self.split.column
+        return self._split.column
 
     @property
     def attributeCD(self):
-        return self.split.attributeCountdown
+        return self._split.attributeCountdown
 
 
 class Zombie:
@@ -1581,43 +1564,17 @@ class Zombie:
         self._split_cache = None
 
     # ==========================================================
-    # INTERNAL TYPE CASTING HELPERS
-    # ==========================================================
-    @staticmethod
-    def _to_float_port(val):
-
-        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
-            return nodes.float_value(val=float(val)).value
-        if hasattr(val, "_is_float_port") and not val._is_float_port():
-            return nodes.int_to_float(int_val=val).float
-        if hasattr(val, "value"):
-            return val.value  # type: ignore
-        return val
-
-    @staticmethod
-    def _to_int_port(val):
-
-        if isinstance(val, (int, float)) and not isinstance(val, PortReference):
-            return nodes.int_value(val=int(val)).value
-        if hasattr(val, "_is_float_port") and val._is_float_port():
-            return nodes.float_to_int(float_val=val).int
-        if hasattr(val, "value"):
-            return val.value  # type: ignore
-        return val
-
-    # ==========================================================
     # ACTIONS & METHODS
     # ==========================================================
     def damage(self, amount):
         """Damages the zombie by a specified amount."""
 
-        float_amount = self._to_float_port(amount)
-        return nodes.damage_zombie(zombie=self.ref, damage=float_amount)
+        return nodes.damage_zombie(zombie=self.ref, damage=amount)
 
     def set_health_multiplier(self, ratio):
         """Modifies zombie health multiplier (ensures float/Single input to avoid C# cast crashes)."""
 
-        float_ratio = self._to_float_port(ratio)
+        float_ratio = to_float_port(ratio)
         return nodes.modify_zombie_health(zombie=self.ref, ratio=float_ratio)
 
     def hypnotize(self):
@@ -1628,8 +1585,8 @@ class Zombie:
     def move(self, row, col):
         """Moves the zombie to a specific grid row and column."""
 
-        int_row = self._to_int_port(row)
-        int_col = self._to_int_port(col)
+        int_row = to_int_port(row)
+        int_col = to_int_port(col)
         return nodes.move_zombie(zombie=self.ref, row=int_row, column=int_col)
 
     def move_relative(self, row_diff=0, col_diff=0):
@@ -1908,15 +1865,16 @@ class Random:
             ctx.trigger_stack.pop()
 
     @staticmethod
-    def randint(min_val, max_val) -> int:
+    def randint(min_val : int, max_val : int) -> int:
         return nodes.random_int(min_val=min_val, max_val=max_val).result  # type: ignore
 
     @staticmethod
-    def randf(min_val, max_val) -> float:
+    def randf(min_val : float, max_val : float) -> float:
         return nodes.random_float(min_val=min_val, max_val=max_val).result  # type: ignore
 
     @staticproperty
     def value():
+        """Return a random float between 0.0 and 1.0."""
         return Random.randf(0.0, 1.0)
 
     class Seeded:
@@ -1973,3 +1931,69 @@ class Random:
 
             def __exit__(self, exc_type, exc_val, exc_tb):
                 self.flow.__exit__(exc_type, exc_val, exc_tb)
+
+
+class InfoCard:
+    """
+    High-level manager for CreateInfoCardNode.
+    Supports callbacks, context managers, decorators, and trigger outputs.
+    """
+
+    def __init__(
+        self,
+        big_title: Any,
+        small_title: Any,
+        callback: Optional[Callable[[], None]] = None
+    ) -> None:
+        self.big_title = big_title
+        self.small_title = small_title
+        self.callback = callback
+        
+        # Instantiate the underlying node
+        self.node = nodes.create_info_card(
+            big_title=self.big_title,
+            small_title=self.small_title
+        )
+        self.node_id = self.node.id
+        self.Output = self._Outputs(self)
+
+        # Connect callback graph if provided
+        if self.callback:
+            self._compile_callback(self.callback)
+
+    def _compile_callback(self, func: Callable[[], None]) -> None:
+        """Isolates and compiles the click execution path graph."""
+        saved_stack = ctx.trigger_stack[:]
+        ctx.trigger_stack.clear()
+        ctx.trigger_stack.append(self.Output.OnCardClicked)
+        try:
+            func()
+        finally:
+            ctx.trigger_stack.clear()
+            ctx.trigger_stack.extend(saved_stack)
+
+    def on_click(self, func: Callable[[], None]) -> Callable[[], None]:
+        """Decorator syntax for handling card click events."""
+        self._compile_callback(func)
+        return func
+
+    def __enter__(self) -> InfoCard:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        pass
+
+    class _Outputs:
+        """Execution paths for the card events."""
+
+        def __init__(self, parent: InfoCard) -> None:
+            self._parent = parent
+
+        @property
+        def OnCardClicked(self) -> ExecutionPath:
+            """Triggered when the player clicks this card."""
+            return ExecutionPath(self._parent.node_id, "点击卡牌时触发")
+
+        @property
+        def on_card_clicked(self) -> ExecutionPath:
+            return self.OnCardClicked
