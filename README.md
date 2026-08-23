@@ -18,36 +18,18 @@ This python library allows map designers, content creators, and modders to const
 
 ## 💾 Installation Guide
 
-The framework is packaged as a pre-built Python Wheel file (`.whl`) for easy, localized installation. Follow the steps below to set it up on your system ✨.
+### Prerequisite 
 
-### 📋 Prerequisites
-* **Python**: Ensure Python 3.10 or higher is installed on your computer 🐍.
-* **Pip**: Make sure the Python package installer (`pip`) is updated to the latest version.
+- Python 3.14+
+- Basic programming knowledge
 
-### 📦 Step 1: Download the Wheel File
-Obtain the latest compiled release file from the repository's [releases section](https://github.com/Tproplay/Pvz-Fusion-Transpiler/releases).
+### How to install
 
-### 💻 Step 2: Install via Command Line
-Open your terminal or command prompt, navigate to the folder containing your downloaded `.whl` file, and execute the following installation command:
+Open Powershell/terminal and run the following:
+```bash
+pip install "git+https://github.com/Tproplay/Pvz-Fusion-Transpiler.git#subdirectory=PvzRH_node_src"                  
+```
 
-`pip install pvzrh_node-3.7-py3-none-any.whl`
+### How to use
 
-*(Alternatively, if you are installing it directly to a local development sandbox environment, use: `pip install --force-reinstall pvzrh_node-3.7-py3-none-any.whl`)*
-
----
-
-## 📁 Level Export Configuration
-
-Once installed, the framework outputs your script files straight into the default custom levels sandbox storage folder of your Plants vs. Zombies Fusion game directory 📂.
-
-### 🛠️ Default Save Target Configuration
-To ensure your custom levels compile directly into the game's menu loader, point your level configuration script path to your game's app data directory structure.
-
----
-
-## 🗺️ Visual Organization System
-
-When generating intricate logic, the framework features adjustable organizational layout states to keep your canvas manageable 📑:
-
-1. **Production Mode (Level 0) ⚙️**: Maximizes optimization and automatically removes overlapping nodes to save memory.
-2. **Indentation Grouping (Level 1+) 🗂️**: Automatically wraps sequences inside collapsible text banners in the visual graph viewer based on your script layout lines, making manual edits inside the game simple and organized.
+There are several examples available on our [github](https://github.com/Tproplay/Pvz-Fusion-Transpiler/tree/main/Examples)
