@@ -502,10 +502,6 @@ class StatManager:
     def apply_stats_to_zombie(self, zombie_ref : Zombie) -> None:
         zombie_ref.set_health_multiplier(self.get_zombie_hp_stat(zombie_ref))
 
-    def refresh_entire_lawn(self) -> None:
-        """Refreshes all living plants AND zombies on the board."""
-        self.refresh_all_plants()
-
     def refresh_all_plants(self) -> None:
         with Lawnf.for_each_plant_on_lawn() as plant:
             self.apply_stats_to_plant(plant)

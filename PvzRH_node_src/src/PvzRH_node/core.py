@@ -343,28 +343,48 @@ DEFAULT_LEVEL_TEMPLATE = {
 class LevelConfig:
     """Convenience proxy for builder level parameters with full IDE auto-completion."""
 
-    # Type annotations for VS Code Pylance / Pyrigh..t IntelliSense
+    # Type annotations for VS Code Pylance / IntelliSense
     name: str | None 
+    """Name of the level"""
     level_number: Optional[int]
+    """The unique id for the level"""
     scene_type: SceneType | int | None
     level_type: LevelType | int | None
     start_sun: Optional[int]
     max_wave: Optional[int]
     card_count: Optional[int]
     victory_type: Optional[int]
+    """0: Normal Victory
+    
+    1: IZombie Victory"""
 
     plant_datas: Optional[List[dict[str, Any]]]
+    """Advannced modifed data for each plant
+    
+    Add a new data by using add_plant_data()
+    """
     plants: Optional[List[dict[str, Any]]]
+    """Data of preplaced plants
+    
+    Add a new data by using add_plant()
+    """
     pre_select_cards: Optional[List[Union[PlantType, int]]]
+    """Plant cards that are preselected and cannot be removed"""
     pre_select_cards_zombie: Optional[List[Union[ZombieType, int]]]
-
+    """Zombie cards that are preselected and cannot be removed"""
+    
     adv_buffs: Optional[List[int]]
     ulti_buffs: Optional[List[int]]
     ulti_buffs2: Optional[List[int]]
     travel_debuffs: Optional[List[int]]
 
     spawn_zombies: Optional[List[Union[ZombieType, int]]]
+    """Contains the list of allowd zombie to appear in the level"""
     ordered_spawns: Optional[List[dict[str, Any]]]
+    """Data of custom ordered zombie spawn
+    
+    Add a new data by using add_ordered_spawn()
+    """
 
     board_config: BoardConfig
     board_tag: BoardTag

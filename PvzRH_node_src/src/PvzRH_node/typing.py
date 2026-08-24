@@ -1,6 +1,13 @@
 from .core import ctx
 
-def enforce_int(value) -> str:
+__all__ =[
+    # For users
+    "to_float_port",
+    "to_int_port",
+    "to_bool_port",
+]
+
+def _enforce_int(value) -> str:
     if hasattr(value, "id"): return value.id
     if isinstance(value, str): raise TypeError(f"Cannot cast string '{value}' to an Integer.")
     
@@ -18,7 +25,7 @@ def enforce_int(value) -> str:
     })
     return node_id
 
-def enforce_float(value) -> str:
+def _enforce_float(value) -> str:
     if hasattr(value, "id"): return value.id
     if isinstance(value, str): raise TypeError(f"Cannot cast string '{value}' to a Float.")
 
@@ -33,7 +40,7 @@ def enforce_float(value) -> str:
     })
     return node_id
 
-def enforce_bool(value) -> str:
+def _enforce_bool(value) -> str:
     if hasattr(value, "id"): return value.id
     node_id = ctx._generate_uuid()
     ctx.nodes.append({
@@ -46,7 +53,7 @@ def enforce_bool(value) -> str:
     })
     return node_id
 
-def enforce_string(value) -> str:
+def _enforce_string(value) -> str:
     if hasattr(value, "id"): return value.id
     node_id = ctx._generate_uuid()
     ctx.nodes.append({
@@ -59,7 +66,7 @@ def enforce_string(value) -> str:
     })
     return node_id
 
-class staticproperty:
+class _staticproperty:
     def __init__(self, func):
         self.fget = func
 

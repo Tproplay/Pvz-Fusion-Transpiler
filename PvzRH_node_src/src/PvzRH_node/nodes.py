@@ -1,5 +1,5 @@
 from .node_base import BaseNode
-from .typing import enforce_int, enforce_float, enforce_bool, enforce_string
+from .typing import _enforce_int, _enforce_float, _enforce_bool, _enforce_string
 from .core import ctx
 
 FLOAT_OUTPUT_NODES = {
@@ -36,13 +36,13 @@ def wire(val, target_id, target_port, enforce_func=None):
         )
         is_int = (node_type in INT_OUTPUT_NODES) or not is_float
 
-        if enforce_func == enforce_float:
+        if enforce_func == _enforce_float:
             if is_int and node_type != "IntToFloatNode":
                 from .nodes import int_to_float
                 conv = int_to_float(int_val=val)
                 src_id, src_port = conv.id, "浮点数"
 
-        elif enforce_func == enforce_int:
+        elif enforce_func == _enforce_int:
             if is_float and node_type != "FloatToIntNode":
                 from .nodes import float_to_int
                 conv = float_to_int(float_val=val)
@@ -77,7 +77,7 @@ class on_board_start(BaseNode):
 class on_wave(BaseNode):
     def __init__(self, wave=None):
         super().__init__("WaveEventNode", trigger_PortName="触发", wave_PortName="波次")
-        wire(wave, self.id, "波次", enforce_int)
+        wire(wave, self.id, "波次", _enforce_int)
 
 class on_mouse_click(BaseNode):
     def __init__(self): super().__init__("OnMouseClickNode", trigger_PortName="触发", row_PortName="行", column_PortName="列", item_PortName="手上的物品", isLeftButton_PortName="是左键")
@@ -107,48 +107,48 @@ class on_zombie_spawn(BaseNode):
 class set_plant(BaseNode):
     def __init__(self, column=None, row=None, plant_type=None, force_plant=None):
         super().__init__("SetPlantNode", trigger_PortName="触发", column_PortName="列", row_PortName="行", plantType_PortName="植物编号", forcePlant_PortName="强制种植", onCreated_PortName="创建成功", onCreateFailed_PortName="创建失败", plant_PortName="植物")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(plant_type, self.id, "植物编号", enforce_int)
-        wire(force_plant, self.id, "强制种植", enforce_bool)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(plant_type, self.id, "植物编号", _enforce_int)
+        wire(force_plant, self.id, "强制种植", _enforce_bool)
 
 class move_plant(BaseNode):
     def __init__(self, plant=None, column=None, row=None, force=None):
         super().__init__("MovePlantNode", trigger_PortName="触发", plant_PortName="植物", column_PortName="列", row_PortName="行", force_PortName="强制", onMoved_PortName="移动成功", movedPlant_PortName="植物")
         wire(plant, self.id, "植物")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(force, self.id, "强制", enforce_bool)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(force, self.id, "强制", _enforce_bool)
 
 class heal_plant(BaseNode):
     def __init__(self, plant=None, heal_amount=None):
         super().__init__("HealPlantNode", trigger_PortName="触发", plant_PortName="植物", healAmount_PortName="回血量", onHealed_PortName="回血成功")
         wire(plant, self.id, "植物")
-        wire(heal_amount, self.id, "回血量", enforce_float)
+        wire(heal_amount, self.id, "回血量", _enforce_float)
 
 class damage_plant(BaseNode):
     def __init__(self, plant=None, damage=None):
         super().__init__("DamagePlantNode", trigger_PortName="触发", plant_PortName="植物", damage_PortName="伤害值")
         wire(plant, self.id, "植物")
-        wire(damage, self.id, "伤害值", enforce_float)
+        wire(damage, self.id, "伤害值", _enforce_float)
 
 class give_plant_shield(BaseNode):
     def __init__(self, plant=None, shield=None):
         super().__init__("GivePlantShieldNode", trigger_PortName="触发", plant_PortName="植物", shieldAmount_PortName="护盾值")
         wire(plant, self.id, "植物")
-        wire(shield, self.id, "护盾值", enforce_float)
+        wire(shield, self.id, "护盾值", _enforce_float)
 
 class modify_plant_attack(BaseNode):
     def __init__(self, plant=None, multiplier=None):
         super().__init__("ModifyPlantAttackNode", trigger_PortName="触发", plant_PortName="植物", multiplier_PortName="攻击力加成x100%", onModified_PortName="修改成功", plantOut_PortName="植物")
         wire(plant, self.id, "植物")
-        wire(multiplier, self.id, "攻击力加成x100%", enforce_float)
+        wire(multiplier, self.id, "攻击力加成x100%", _enforce_float)
 
 class modify_plant_health(BaseNode):
     def __init__(self, plant=None, multiplier=None):
         super().__init__("ModifyPlantHealthNode", trigger_PortName="触发", plant_PortName="植物", multiplier_PortName="血量加成x100%", onModified_PortName="修改成功", plantOut_PortName="植物")
         wire(plant, self.id, "植物")
-        wire(multiplier, self.id, "血量加成x100%", enforce_float)
+        wire(multiplier, self.id, "血量加成x100%", _enforce_float)
 
 class plant_split(BaseNode):
     def __init__(self, plant=None):
@@ -159,8 +159,8 @@ class plant_split(BaseNode):
 class get_plants_in_cell(BaseNode):
     def __init__(self, row=None, column=None):
         super().__init__("GetPlantsInCellNode", row_PortName="行", column_PortName="列", plants_PortName="植物列表")
-        wire(row, self.id, "行", enforce_int)
-        wire(column, self.id, "列", enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(column, self.id, "列", _enforce_int)
 
 
 # ==========================================
@@ -192,7 +192,7 @@ class plant_type_list_storage(BaseNode):
     def __init__(self, list_in=None, plant_type=None, op=0, init_empty=True):
         super().__init__("PlantTypeListStorageNode", trigger_PortName="触发", list_PortName="列表", plantType_PortName="植物类型", currentList_PortName="当前列表", count_PortName="列表长度", onComplete_PortName="完成", operation=op, initializeEmpty=init_empty)
         wire(list_in, self.id, "列表")
-        wire(plant_type, self.id, "植物类型", enforce_int)
+        wire(plant_type, self.id, "植物类型", _enforce_int)
 
 class merge_plant_type_lists(BaseNode):
     def __init__(self, list_a=None, list_b=None):
@@ -209,7 +209,7 @@ class remove_plant_type(BaseNode):
     def __init__(self, list_in=None, plant_type=None):
         super().__init__("RemovePlantTypeNode", list_PortName="植物类型列表", plantType_PortName="要删除的类型", resultList_PortName="结果列表", success_PortName="是否成功")
         wire(list_in, self.id, "植物类型列表")
-        wire(plant_type, self.id, "要删除的类型", enforce_int)
+        wire(plant_type, self.id, "要删除的类型", _enforce_int)
 
 
 # ==========================================
@@ -218,16 +218,16 @@ class remove_plant_type(BaseNode):
 class create_zombie(BaseNode):
     def __init__(self, row=None, column=None, zombie_type=None, mind_controlled=None):
         super().__init__("CreateZombieNode", trigger_PortName="触发", row_PortName="行", column_PortName="列", zombieType_PortName="僵尸类型", isMindControlled_PortName="是否魅惑", onCreated_PortName="创建成功", zombie_PortName="僵尸")
-        wire(row, self.id, "行", enforce_int)
-        wire(column, self.id, "列", enforce_int)
-        wire(zombie_type, self.id, "僵尸类型", enforce_int)
-        wire(mind_controlled, self.id, "是否魅惑", enforce_bool)
+        wire(row, self.id, "行", _enforce_int)
+        wire(column, self.id, "列", _enforce_int)
+        wire(zombie_type, self.id, "僵尸类型", _enforce_int)
+        wire(mind_controlled, self.id, "是否魅惑", _enforce_bool)
 
 class damage_zombie(BaseNode):
     def __init__(self, zombie=None, damage=None):
         super().__init__("DamageZombieNode", trigger_PortName="触发", zombie_PortName="僵尸", damage_PortName="伤害值")
         wire(zombie, self.id, "僵尸")
-        wire(damage, self.id, "伤害值", enforce_int)
+        wire(damage, self.id, "伤害值", _enforce_int)
 
 class set_zombie_mind_controlled(BaseNode):
     def __init__(self, zombie=None):
@@ -237,14 +237,14 @@ class set_zombie_mind_controlled(BaseNode):
 class get_nearest_zombie(BaseNode):
     def __init__(self, row=None, column=None):
         super().__init__("GetNearestZombieNode", row_PortName="行", column_PortName="列", zombie_PortName="僵尸")
-        wire(row, self.id, "行", enforce_int)
-        wire(column, self.id, "列", enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(column, self.id, "列", _enforce_int)
 
 class modify_zombie_health(BaseNode):
     def __init__(self, zombie=None, ratio=None):
         super().__init__("ModifyZombieHealthNode", trigger_PortName="触发", zombie_PortName="僵尸", ratio_PortName="血量倍率", onModified_PortName="修改成功", zombieOut_PortName="僵尸")
         wire(zombie, self.id, "僵尸")
-        wire(ratio, self.id, "血量倍率", enforce_float)
+        wire(ratio, self.id, "血量倍率", _enforce_float)
 
 class zombie_split(BaseNode):
     def __init__(self, zombie=None):
@@ -267,8 +267,8 @@ class compare_zombie_type(BaseNode):
 class show_text(BaseNode):
     def __init__(self, text=None, duration=None, display_text="示例文本", def_duration=3.0):
         super().__init__("ShowTextNode", trigger_PortName="触发", text_PortName="文本", duration_PortName="持续时间", displayText=display_text, duration=def_duration)
-        wire(text, self.id, "文本", enforce_string)
-        wire(duration, self.id, "持续时间", enforce_float)
+        wire(text, self.id, "文本", _enforce_string)
+        wire(duration, self.id, "持续时间", _enforce_float)
 
 class get_travel_entry(BaseNode):
     """Deprecated"""
@@ -277,33 +277,33 @@ class get_travel_entry(BaseNode):
 class create_grave(BaseNode):
     def __init__(self, column=None, row=None):
         super().__init__("CreateGraveNode", trigger_PortName="触发", column_PortName="列", row_PortName="行")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
 
 class add_sun(BaseNode):
     def __init__(self, amount=None):
         super().__init__("GetSunNode", trigger_PortName="触发", sunAmount_PortName="阳光数量")
-        wire(amount, self.id, "阳光数量", enforce_int)
+        wire(amount, self.id, "阳光数量", _enforce_int)
 
 class use_sun(BaseNode):
     def __init__(self, amount=None):
         super().__init__("UseSunNode", trigger_PortName="触发", sunAmount_PortName="阳光数量", onSuccess_PortName="消耗成功", onFailed_PortName="阳光不足")
-        wire(amount, self.id, "阳光数量", enforce_int)
+        wire(amount, self.id, "阳光数量", _enforce_int)
 
 class add_money(BaseNode):
     def __init__(self, amount=None):
         super().__init__("GetMoneyNode", trigger_PortName="触发", moneyAmount_PortName="金币数量")
-        wire(amount, self.id, "金币数量", enforce_int)
+        wire(amount, self.id, "金币数量", _enforce_int)
 
 class use_money(BaseNode):
     def __init__(self, amount=None):
         super().__init__("UseMoneyNode", trigger_PortName="触发", moneyAmount_PortName="金币数量", onSuccess_PortName="消耗成功", onFailed_PortName="金币不足")
-        wire(amount, self.id, "金币数量", enforce_int)
+        wire(amount, self.id, "金币数量", _enforce_int)
 
 class game_over(BaseNode):
     def __init__(self, reason=None):
         super().__init__("GameOverNode", trigger_PortName="触发", reason_PortName="失败原因")
-        wire(reason, self.id, "失败原因", enforce_string)
+        wire(reason, self.id, "失败原因", _enforce_string)
 
 class game_win(BaseNode):
     def __init__(self): super().__init__("GameWinNode", trigger_PortName="触发")
@@ -339,22 +339,22 @@ class merge_multiple_choice_option_lists(BaseNode):
 class delete_card_by_type(BaseNode):
     def __init__(self, plant_type=None, type_val=0):
         super().__init__("DeleteCardByTypeNode", trigger_PortName="触发", plantType_PortName="植物类型", completed_PortName="完成", plantType=type_val)
-        wire(plant_type, self.id, "植物类型", enforce_int)
+        wire(plant_type, self.id, "植物类型", _enforce_int)
 
 class create_plant_card(BaseNode):
     def __init__(self, column=None, row=None, plant_type=None):
         super().__init__("CreatePlantCardNode", trigger_PortName="触发", column_PortName="列", row_PortName="行", plantType_PortName="植物类型", onCreated_PortName="创建成功", outPlantType_PortName="植物类型")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(plant_type, self.id, "植物类型", enforce_int)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(plant_type, self.id, "植物类型", _enforce_int)
 
 class add_plant_card(BaseNode):
     def __init__(self, p_type=None, cd=None, cost=None, default_data=None, type_val=0, cd_val=7.5, cost_val=100, def_val=True):
         super().__init__("AddPlantCardNode", trigger_PortName="触发", plantType_PortName="植物类型", cooldown_PortName="冷却时间", cost_PortName="价格", useDefaultData_PortName="使用默认数据", success_PortName="添加成功", failed_PortName="添加失败", onPlant_PortName="种植时触发", plantedPlant_PortName="种植的植物", plantType=type_val, cooldown=cd_val, cost=cost_val, useDefaultData=def_val)
-        wire(p_type, self.id, "植物类型", enforce_int)
-        wire(cd, self.id, "冷却时间", enforce_float)
-        wire(cost, self.id, "价格", enforce_int)
-        wire(default_data, self.id, "使用默认数据", enforce_bool)
+        wire(p_type, self.id, "植物类型", _enforce_int)
+        wire(cd, self.id, "冷却时间", _enforce_float)
+        wire(cost, self.id, "价格", _enforce_int)
+        wire(default_data, self.id, "使用默认数据", _enforce_bool)
 
 
 # ==========================================
@@ -363,53 +363,53 @@ class add_plant_card(BaseNode):
 class create_ice_shroom_effect(BaseNode):
     def __init__(self, duration=None):
         super().__init__("CreateIceShroomEffectNode", trigger_PortName="触发", duration_PortName="冻结时间")
-        wire(duration, self.id, "冻结时间", enforce_float)
+        wire(duration, self.id, "冻结时间", _enforce_float)
 
 class create_jalapeno_effect(BaseNode):
     def __init__(self, row=None, damage=None):
         super().__init__("CreateJalapenoEffectNode", trigger_PortName="触发", row_PortName="行", damage_PortName="伤害值")
-        wire(row, self.id, "行", enforce_int)
-        wire(damage, self.id, "伤害值", enforce_float)
+        wire(row, self.id, "行", _enforce_int)
+        wire(damage, self.id, "伤害值", _enforce_float)
 
 class create_doom_shroom_effect(BaseNode):
     def __init__(self, column=None, row=None, damage=None, set_pit=None):
         super().__init__("CreateDoomShroomEffectNode", trigger_PortName="触发", column_PortName="列", row_PortName="行", damage_PortName="伤害值", setPit_PortName="创建弹坑")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(damage, self.id, "伤害值", enforce_float)
-        wire(set_pit, self.id, "创建弹坑", enforce_bool)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(damage, self.id, "伤害值", _enforce_float)
+        wire(set_pit, self.id, "创建弹坑", _enforce_bool)
 
 class create_cherry_explode(BaseNode):
     def __init__(self, column=None, row=None, damage=None):
         super().__init__("CreateCherryExplodeNode", trigger_PortName="触发", column_PortName="列", row_PortName="行", damage_PortName="伤害值")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(damage, self.id, "伤害值", enforce_float)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(damage, self.id, "伤害值", _enforce_float)
 
 class create_ladder(BaseNode):
     def __init__(self, column=None, row=None):
         super().__init__("CreateLadderNode", trigger_PortName="触发", column_PortName="列", row_PortName="行")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
 
 class create_crater(BaseNode):
     def __init__(self, column=None, row=None):
         super().__init__("CreateCraterNode", trigger_PortName="触发", column_PortName="列", row_PortName="行")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
 
 class create_ice_block(BaseNode):
     def __init__(self, column=None, row=None, plant_type=None):
         super().__init__("CreateIceBlockNode", trigger_PortName="触发", column_PortName="列", row_PortName="行", plantType_PortName="冻住的植物")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
-        wire(plant_type, self.id, "冻住的植物", enforce_int)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(plant_type, self.id, "冻住的植物", _enforce_int)
 
 class create_zombie_explode(BaseNode):
     def __init__(self, column=None, row=None):
         super().__init__("CreateZombieExplodeNode", trigger_PortName="触发", column_PortName="列", row_PortName="行")
-        wire(column, self.id, "列", enforce_int)
-        wire(row, self.id, "行", enforce_int)
+        wire(column, self.id, "列", _enforce_int)
+        wire(row, self.id, "行", _enforce_int)
 
 
 # ==========================================
@@ -418,22 +418,22 @@ class create_zombie_explode(BaseNode):
 class branch_node(BaseNode):
     def __init__(self, condition=None):
         super().__init__("BranchNode", trigger_PortName="触发", condition_PortName="条件", then_PortName="真（触发）", else_PortName="假（停止）")
-        wire(condition, self.id, "条件", enforce_bool)
+        wire(condition, self.id, "条件", _enforce_bool)
 
 class wait_node(BaseNode):
     def __init__(self, duration=None):
         super().__init__("WaitNode", trigger_PortName="触发", duration_PortName="等待时间", output_PortName="触发")
-        wire(duration, self.id, "等待时间", enforce_float)
+        wire(duration, self.id, "等待时间", _enforce_float)
 
 class for_loop_node(BaseNode):
     def __init__(self, count=None):
         super().__init__("ForLoopNode", trigger_PortName="触发", count_PortName="循环次数", output_PortName="循环体", index_PortName="当前索引")
-        wire(count, self.id, "循环次数", enforce_int)
+        wire(count, self.id, "循环次数", _enforce_int)
 
 class toggle_cycle_node(BaseNode):
     def __init__(self, interval=None):
         super().__init__("ToggleCycleNode", trigger_PortName="触发", interval_PortName="周期间隔", cycle_PortName="周期事件", onEnable_PortName="切换开始时", onDisable_PortName="切换关闭时")
-        wire(interval, self.id, "周期间隔", enforce_float)
+        wire(interval, self.id, "周期间隔", _enforce_float)
 
 class toggle_node(BaseNode):
     def __init__(self, initial_state=False):
@@ -448,12 +448,12 @@ class toggle_node(BaseNode):
 class pulse_node(BaseNode):
     def __init__(self, state=None):
         super().__init__("PulseNode", trigger_PortName="触发", state_PortName="状态", onPulse_PortName="脉冲触发时")
-        wire(state, self.id, "状态", enforce_bool)
+        wire(state, self.id, "状态", _enforce_bool)
 
 class counter_node(BaseNode):
     def __init__(self, reset=None, start_val=0):
         super().__init__("CounterNode", trigger_PortName="触发", shouldReset_PortName="是否重置", count_PortName="计数", onCount_PortName="计数完成", startValue=start_val)
-        wire(reset, self.id, "是否重置", enforce_bool)
+        wire(reset, self.id, "是否重置", _enforce_bool)
 
 
 # ==========================================
@@ -462,31 +462,31 @@ class counter_node(BaseNode):
 class not_node(BaseNode):
     def __init__(self, inp=None):
         super().__init__("NotNode", input_PortName="输入", output_PortName="输出")
-        wire(inp, self.id, "输入", enforce_bool)
+        wire(inp, self.id, "输入", _enforce_bool)
 
 class and_node(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("AndNode", a_PortName="条件A", b_PortName="条件B", output_PortName="结果")
-        wire(a, self.id, "条件A", enforce_bool)
-        wire(b, self.id, "条件B", enforce_bool)
+        wire(a, self.id, "条件A", _enforce_bool)
+        wire(b, self.id, "条件B", _enforce_bool)
 
 class or_node(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("OrNode", a_PortName="条件A", b_PortName="条件B", output_PortName="结果")
-        wire(a, self.id, "条件A", enforce_bool)
-        wire(b, self.id, "条件B", enforce_bool)
+        wire(a, self.id, "条件A", _enforce_bool)
+        wire(b, self.id, "条件B", _enforce_bool)
 
 class compare_int(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("CompareIntNode", valueA_PortName="值A", valueB_PortName="值B", greater_PortName="大于", less_PortName="小于", equal_PortName="等于")
-        wire(a, self.id, "值A", enforce_int)
-        wire(b, self.id, "值B", enforce_int)
+        wire(a, self.id, "值A", _enforce_int)
+        wire(b, self.id, "值B", _enforce_int)
 
 class compare_float(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("CompareFloatNode", valueA_PortName="值A", valueB_PortName="值B", greater_PortName="大于", less_PortName="小于", equal_PortName="等于")
-        wire(a, self.id, "值A", enforce_float)
-        wire(b, self.id, "值B", enforce_float)
+        wire(a, self.id, "值A", _enforce_float)
+        wire(b, self.id, "值B", _enforce_float)
 
 class compare_game_object(BaseNode):
     def __init__(self, a=None, b=None):
@@ -497,74 +497,74 @@ class compare_game_object(BaseNode):
 class add_node(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("AddNode", a_PortName="A", b_PortName="B", result_PortName="结果")
-        wire(a, self.id, "A", enforce_float)
-        wire(b, self.id, "B", enforce_float)
+        wire(a, self.id, "A", _enforce_float)
+        wire(b, self.id, "B", _enforce_float)
 
 class subtract_node(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("SubtractNode", a_PortName="被减数", b_PortName="减数", result_PortName="差")
-        wire(a, self.id, "被减数", enforce_float)
-        wire(b, self.id, "减数", enforce_float)
+        wire(a, self.id, "被减数", _enforce_float)
+        wire(b, self.id, "减数", _enforce_float)
 
 class multiply_node(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("MultiplyNode", a_PortName="A", b_PortName="B", result_PortName="积")
-        wire(a, self.id, "A", enforce_float)
-        wire(b, self.id, "B", enforce_float)
+        wire(a, self.id, "A", _enforce_float)
+        wire(b, self.id, "B", _enforce_float)
 
 class divide_node(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("DivideNode", a_PortName="被除数", b_PortName="除数", result_PortName="商")
-        wire(a, self.id, "被除数", enforce_float)
-        wire(b, self.id, "除数", enforce_float)
+        wire(a, self.id, "被除数", _enforce_float)
+        wire(b, self.id, "除数", _enforce_float)
 
 class int_add(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("IntAddNode", a_PortName="A", b_PortName="B", result_PortName="和")
-        wire(a, self.id, "A", enforce_int)
-        wire(b, self.id, "B", enforce_int)
+        wire(a, self.id, "A", _enforce_int)
+        wire(b, self.id, "B", _enforce_int)
 
 class int_subtract(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("IntSubtractNode", a_PortName="被减数", b_PortName="减数", result_PortName="差")
-        wire(a, self.id, "被减数", enforce_int)
-        wire(b, self.id, "减数", enforce_int)
+        wire(a, self.id, "被减数", _enforce_int)
+        wire(b, self.id, "减数", _enforce_int)
 
 class int_multiply(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("IntMultiplyNode", a_PortName="A", b_PortName="B", result_PortName="积")
-        wire(a, self.id, "A", enforce_int)
-        wire(b, self.id, "B", enforce_int)
+        wire(a, self.id, "A", _enforce_int)
+        wire(b, self.id, "B", _enforce_int)
 
 class int_divide(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("IntDivideNode", a_PortName="被除数", b_PortName="除数", result_PortName="商")
-        wire(a, self.id, "被除数", enforce_int)
-        wire(b, self.id, "除数", enforce_int)
+        wire(a, self.id, "被除数", _enforce_int)
+        wire(b, self.id, "除数", _enforce_int)
 
 class int_modulo(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("IntModuloNode", a_PortName="被除数", b_PortName="除数", result_PortName="余数")
-        wire(a, self.id, "被除数", enforce_int)
-        wire(b, self.id, "除数", enforce_int)
+        wire(a, self.id, "被除数", _enforce_int)
+        wire(b, self.id, "除数", _enforce_int)
 
 class string_concat(BaseNode):
     def __init__(self, a=None, b=None):
         super().__init__("StringConcatNode", a_PortName="A", b_PortName="B", result_PortName="结果")
-        wire(a, self.id, "A", enforce_string)
-        wire(b, self.id, "B", enforce_string)
+        wire(a, self.id, "A", _enforce_string)
+        wire(b, self.id, "B", _enforce_string)
 
 class random_int(BaseNode):
     def __init__(self, min_val=None, max_val=None):
         super().__init__("RandomIntNode", min_PortName="最小值", max_PortName="最大值", result_PortName="随机整数")
-        wire(min_val, self.id, "最小值", enforce_int)
-        wire(max_val, self.id, "最大值", enforce_int)
+        wire(min_val, self.id, "最小值", _enforce_int)
+        wire(max_val, self.id, "最大值", _enforce_int)
 
 class random_float(BaseNode):
     def __init__(self, min_val=None, max_val=None):
         super().__init__("RandomFloatNode", min_PortName="最小值", max_PortName="最大值", result_PortName="随机浮点数")
-        wire(min_val, self.id, "最小值", enforce_float)
-        wire(max_val, self.id, "最大值", enforce_float)
+        wire(min_val, self.id, "最小值", _enforce_float)
+        wire(max_val, self.id, "最大值", _enforce_float)
 
 class int_to_float(BaseNode):
     def __init__(self, int_val=None):
@@ -579,8 +579,8 @@ class float_to_int(BaseNode):
 class float_to_string(BaseNode):
     def __init__(self, float_val=None, decimals=None):
         super().__init__("FloatToStringNode", value_PortName="数值", decimals_PortName="小数位数", result_PortName="字符串")
-        wire(float_val, self.id, "数值", enforce_float)
-        wire(decimals, self.id, "小数位数", enforce_int)
+        wire(float_val, self.id, "数值", _enforce_float)
+        wire(decimals, self.id, "小数位数", _enforce_int)
 
 # ==========================================
 # VALUES
@@ -625,8 +625,8 @@ class move_zombie(BaseNode):
     def __init__(self, zombie=None, column=None, row=None):
         super().__init__("MoveZombieNode", trigger_PortName="触发", zombie_PortName="僵尸", column_PortName="目标列", row_PortName="目标行", onMoved_PortName="移动成功", movedZombie_PortName="僵尸")
         wire(zombie, self.id, "僵尸")
-        wire(column, self.id, "目标列", enforce_int)
-        wire(row, self.id, "目标行", enforce_int)
+        wire(column, self.id, "目标列", _enforce_int)
+        wire(row, self.id, "目标行", _enforce_int)
 
 class play_zombie_anim(BaseNode):
     def __init__(self, zombie=None, animation_name="idle"):
@@ -638,25 +638,25 @@ class play_sound(BaseNode):
     def __init__(self, sound_id=None):
         # soundId is stored as a default internal property, but can also be driven by a port.
         super().__init__("PlaySoundNode", soundId=0, trigger_PortName="触发", soundId_PortName="音效ID")
-        wire(sound_id, self.id, "音效ID", enforce_int)
+        wire(sound_id, self.id, "音效ID", _enforce_int)
 
 class create_particle(BaseNode):
     def __init__(self, row=None, column=None):
         super().__init__("CreateParticleNode", trigger_PortName="触发", row_PortName="行", column_PortName="列")
-        wire(row, self.id, "行", enforce_int)
-        wire(column, self.id, "列", enforce_int)
+        wire(row, self.id, "行", _enforce_int)
+        wire(column, self.id, "列", _enforce_int)
 
 class create_info_card(BaseNode):
     def __init__(self, big_title=None, small_title=None):
         super().__init__("CreateInfoCardNode", trigger_PortName="触发", bigTitle_PortName="大标题", smallTitle_PortName="小标题", onCardClicked_PortName="点击卡牌时触发")
-        wire(big_title, self.id, "大标题", enforce_string)
-        wire(small_title, self.id, "小标题", enforce_string)
+        wire(big_title, self.id, "大标题", _enforce_string)
+        wire(small_title, self.id, "小标题", _enforce_string)
 
 class random_trigger(BaseNode):
     def __init__(self, count=None, allow_repeat=None):
         super().__init__("RandomTriggerNode", trigger_PortName="触发", count_PortName="触发数量", allowRepeat_PortName="重复触发", output_PortName="触发")
-        wire(count, self.id, "触发数量", enforce_int)
-        wire(allow_repeat, self.id, "重复触发", enforce_bool)
+        wire(count, self.id, "触发数量", _enforce_int)
+        wire(allow_repeat, self.id, "重复触发", _enforce_bool)
 
 class get_travel_buff(BaseNode):
     def __init__(self, buff_enum):
@@ -700,7 +700,7 @@ class set_int_variable_value(BaseNode):
     def __init__(self, variable=None, value=None):
         super().__init__("SetIntVariableValueNode", trigger_PortName="触发", variable_PortName="变量", value_PortName="新值", variableOut_PortName="变量", onComplete_PortName="完成")
         wire(variable, self.id, "变量")
-        wire(value, self.id, "新值", enforce_int)
+        wire(value, self.id, "新值", _enforce_int)
 
 # --- FLOAT VARIABLES ---
 class get_float_variable_value(BaseNode):
@@ -712,7 +712,7 @@ class set_float_variable_value(BaseNode):
     def __init__(self, variable=None, value=None):
         super().__init__("SetFloatVariableValueNode", trigger_PortName="触发", variable_PortName="变量", value_PortName="新值", variableOut_PortName="变量", onComplete_PortName="完成")
         wire(variable, self.id, "变量")
-        wire(value, self.id, "新值", enforce_float)
+        wire(value, self.id, "新值", _enforce_float)
 
 # --- BOOL VARIABLES ---
 class get_bool_variable_value(BaseNode):
@@ -724,7 +724,7 @@ class set_bool_variable_value(BaseNode):
     def __init__(self, variable=None, value=None):
         super().__init__("SetBoolVariableValueNode", trigger_PortName="触发", variable_PortName="变量", value_PortName="新值", variableOut_PortName="变量", onComplete_PortName="完成")
         wire(variable, self.id, "变量")
-        wire(value, self.id, "新值", enforce_bool)
+        wire(value, self.id, "新值", _enforce_bool)
 
 # --- VARIABLE ASSETS ---
 class int_variable(BaseNode):

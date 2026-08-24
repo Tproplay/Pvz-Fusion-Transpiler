@@ -22,7 +22,7 @@ from ..nodes import (
     multiply_node,
     string_value,
 )
-from ..typing import staticproperty, to_int_port, to_bool_port, to_float_port
+from ..typing import _staticproperty, to_int_port, to_bool_port, to_float_port
 
 __all__ = [
     "If",
@@ -1872,7 +1872,7 @@ class Random:
     def randf(min_val : float, max_val : float) -> float:
         return nodes.random_float(min_val=min_val, max_val=max_val).result  # type: ignore
 
-    @staticproperty
+    @_staticproperty
     def value():
         """Return a random float between 0.0 and 1.0."""
         return Random.randf(0.0, 1.0)

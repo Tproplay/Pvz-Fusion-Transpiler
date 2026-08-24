@@ -1,7 +1,7 @@
 """Commonly used math functions"""
 
 import math
-from typing import Final
+from typing import Final, Any
 
 from .. import nodes
 from ..core import ctx
@@ -273,18 +273,39 @@ def clamp(value, min_value, max_value):
     return max(min_value, min(value, max_value))
 
 
-def floor(value):
-
+def floor(value: Any) -> int | IntVar:
+    """Calculates floor (largest integer <= value)"""
     if isinstance(value, (int, float)):
-        return int(value)
-    return nodes.float_to_int(float_val=value).int
+        return math.floor(value)
+
+    truncated = nodes.float_to_int(float_val=value).int
+    trunc_as_float = nodes.int_to_float(int_val=truncated).result
+
+    res = IntVar(name="Floor_Result")
+    res.set(truncated)
+    
+    with If(value < trunc_as_float):
+        res -= 1
+
+    return res
 
 
-def ceil(value):
-
+def ceil(value: Any) -> int | IntVar:
+    """Calculates ceil (smallest integer >= value)"""
     if isinstance(value, (int, float)):
-        return int(-(-value // 1))  # Ceiling for numeric types
-    return nodes.float_to_int(float_val=value).int + 1  # Ceiling for node references
+        return math.ceil(value)
+
+    truncated = nodes.float_to_int(float_val=value).int
+    trunc_as_float = nodes.int_to_float(int_val=truncated).result
+
+    res = IntVar(name="Ceil_Result")
+    res.set(truncated)
+
+
+    with If(value > trunc_as_float):
+        res += 1
+
+    return res
 
 
 def clamp01(value):
