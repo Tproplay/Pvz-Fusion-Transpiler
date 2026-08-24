@@ -6,8 +6,6 @@ from . import nodes as nodes
 from .api import Board, InGameUI, Lawnf, Mouse, Spawner, Trigger
 from .core import (
     IsolatedTriggerScope,
-    OrderedSpawn,
-    PlantEntry,
     restore_trigger_stack,
     save_trigger_stack,
     settings,
@@ -17,6 +15,11 @@ from .Data.PlantData import PlantData
 from .Data.TypeMgr import (
     PlantType,
     ZombieType,
+)
+from .Data.DataFactory import(
+    PlantEntry,
+    OrderedSpawn,
+    GodPlant
 )
 
 
@@ -101,6 +104,7 @@ __all__ = [  # noqa: RUF022
     "PlantData",
     "PlantEntry",
     "OrderedSpawn",
+    "GodPlant",
 
     # Types
     "PlantType",

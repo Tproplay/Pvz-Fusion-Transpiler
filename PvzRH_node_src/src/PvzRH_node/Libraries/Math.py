@@ -1,55 +1,13 @@
 """Commonly used math functions"""
 
 import math
+import builtins
 from typing import Final, Any
 
 from .. import nodes
 from ..core import ctx
 from ..node_base import ExecutionPath, PortReference
 from .extensions import BoolVar, If, IntVar
-
-__all__ = [
-    "PI",
-    "HALF_PI",
-    "E",
-    "TAU",
-    "abs",
-    "max",
-    "min",
-    "clamp",
-    "floor",
-    "ceil",
-    "clamp01",
-    "lerp",
-    "lerp_unclamped",
-    "sign",
-    "round",
-    "copy_sign",
-    "sqrt",
-    "cbrt",
-    "natural_pow",
-    "is_prime",
-    "rad2deg",
-    "deg2rad",
-    "normalize_angle_360",
-    "normalize_angle_180",
-    "delta_angle",
-    "lerp_angle",
-    "sin",
-    "cos",
-    "tan",
-    "cosec",
-    "sec",
-    "cot",
-    "asin",
-    "acos",
-    "atan",
-    "acot",
-    "asec",
-    "acosec",
-    "perlin_noise",
-    "Vector2"
-]
 
 
 
@@ -72,7 +30,7 @@ def abs(val):
     """
 
     if isinstance(val, (int, float)) and not isinstance(val, PortReference):
-        return abs(val)
+        return builtins.abs(val)
 
     saved_stack = ctx.trigger_stack[:]
     ctx.trigger_stack.clear()
@@ -279,7 +237,7 @@ def floor(value: Any) -> int | IntVar:
         return math.floor(value)
 
     truncated = nodes.float_to_int(float_val=value).int
-    trunc_as_float = nodes.int_to_float(int_val=truncated).result
+    trunc_as_float = nodes.int_to_float(int_val=truncated).float
 
     res = IntVar(name="Floor_Result")
     res.set(truncated)
@@ -296,7 +254,7 @@ def ceil(value: Any) -> int | IntVar:
         return math.ceil(value)
 
     truncated = nodes.float_to_int(float_val=value).int
-    trunc_as_float = nodes.int_to_float(int_val=truncated).result
+    trunc_as_float = nodes.int_to_float(int_val=truncated).float
 
     res = IntVar(name="Ceil_Result")
     res.set(truncated)
