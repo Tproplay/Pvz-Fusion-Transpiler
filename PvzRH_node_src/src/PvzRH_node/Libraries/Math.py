@@ -93,7 +93,7 @@ def max(*args):
     if all(
         isinstance(x, (int, float)) and not isinstance(x, PortReference) for x in args
     ):
-        return max(args)
+        return builtins.max(args)
 
     res = args[0]
     for next_val in args[1:]:
@@ -168,7 +168,7 @@ def min(*args):
     if all(
         isinstance(x, (int, float)) and not isinstance(x, PortReference) for x in args
     ):
-        return min(args)
+        return builtins.min(args)
 
     res = args[0]
     for next_val in args[1:]:
@@ -861,16 +861,10 @@ def acot(val, terms: int = 5):
 # endregion
 
 
-def perlin_noise(x, y=0.0):
-    """
-    Calculates 1D or 2D Smooth Perlin/Value Noise in the range [0.0, 1.0].
-    - Static inputs: Evaluates procedurally at compile time in Python.
-    - Dynamic inputs: Constructs a node graph with bilinear interpolation and smoothstep curves.
-    """
-    import math
-
-    raw_x = _ensure_float_port(x)
-    raw_y = _ensure_float_port(y)
+def perlin_noise(x: Any, y: Any = 0.0) -> Any:
+    """Calculates 2D Gradient Perlin Noise normalized to [0.0, 1.0]."""
+    raw_x = _ensure_float_port(x) if "_ensure_float_port" in globals() else x
+    raw_y = _ensure_float_port(y) if "_ensure_float_port" in globals() else y
 
     is_x_static = isinstance(raw_x, (int, float)) and not isinstance(
         raw_x, PortReference
@@ -879,105 +873,106 @@ def perlin_noise(x, y=0.0):
         raw_y, PortReference
     )
 
-    # Helper: Deterministic Hash for Static Python Evaluation
-    def _static_hash(ix: int, iy: int) -> float:
-        h = (ix * 374761393 + iy * 668265263) % 1000003
-        h = (h * 1274126177) % 1000003
-        return float(h) / 1000003.0
-
-    # Helper: Smoothstep Fade Curve f(t) = 3t^2 - 2t^3
-    def _fade(t):
-        return t * t * (3.0 - 2.0 * t)
+    # 8 standard 2D gradient vectors
+    GRADIENTS = [
+        (1.0, 0.0),
+        (-1.0, 0.0),
+        (0.0, 1.0),
+        (0.0, -1.0),
+        (0.7071, 0.7071),
+        (-0.7071, 0.7071),
+        (0.7071, -0.7071),
+        (-0.7071, -0.7071),
+    ]
 
     # ==========================================================
     # 1. STATIC PYTHON EVALUATION (Compile-Time)
     # ==========================================================
     if is_x_static and is_y_static:
-        x_val, y_val = float(raw_x), float(raw_y)  # type: ignore
+        x_val, y_val = float(raw_x), float(raw_y) #type: ignore
+
+        # High-entropy integer hash with XOR bit-mixing
+        def _hash_2d(ix: int, iy: int) -> int:
+            h = (ix * 0x1F1F1F1F) ^ (iy * 0x5B5B5B5B)
+            h = (h ^ (h >> 13)) * 0x45D9F3B
+            h = (h ^ (h >> 16)) & 0x7FFFFFFF
+            return h % 8
+
+        def _fade(t: float) -> float:
+            # Quintic polynomial fade curve: 6t^5 - 15t^4 + 10t^3
+            return t * t * t * (t * (t * 6.0 - 15.0) + 10.0)
 
         x0, y0 = math.floor(x_val), math.floor(y_val)
         x1, y1 = x0 + 1, y0 + 1
 
-        tx, ty = x_val - x0, y_val - y0
-        sx, sy = _fade(tx), _fade(ty)
+        dx, dy = x_val - x0, y_val - y0
+        u, v = _fade(dx), _fade(dy)
 
-        v00 = _static_hash(x0, y0)
-        v10 = _static_hash(x1, y0)
-        v01 = _static_hash(x0, y1)
-        v11 = _static_hash(x1, y1)
+        # Dot product with random gradient vectors at lattice corners
+        def _dot(ix: int, iy: int, rx: float, ry: float) -> float:
+            gx, gy = GRADIENTS[_hash_2d(ix, iy)]
+            return gx * rx + gy * ry
 
-        # Bilinear Interpolation
-        l0 = v00 + sx * (v10 - v00)
-        l1 = v01 + sx * (v11 - v01)
-        return l0 + sy * (l1 - l0)
+        d00 = _dot(x0, y0, dx, dy)
+        d10 = _dot(x1, y0, dx - 1.0, dy)
+        d01 = _dot(x0, y1, dx, dy - 1.0)
+        d11 = _dot(x1, y1, dx - 1.0, dy - 1.0)
+
+        # Bilinear interpolation
+        nx0 = d00 + u * (d10 - d00)
+        nx1 = d01 + u * (d11 - d01)
+        raw_noise = nx0 + v * (nx1 - nx0)
+
+        # Map [-0.7071, 0.7071] -> [0.0, 1.0]
+        return max(0.0, min(1.0, (raw_noise + 0.7071) / 1.4142))
 
     # ==========================================================
     # 2. DYNAMIC NODE GRAPH CALCULATION (Runtime)
     # ==========================================================
-    def _node_hash(i_port, j_port):
-        """Generates a deterministic pseudo-random float [0, 1] on the node graph."""
-        h1 = nodes.int_modulo(
-            a=nodes.int_add(
-                a=nodes.int_multiply(a=i_port, b=374761393).result,
-                b=nodes.int_multiply(a=j_port, b=668265263).result,
-            ).result,
-            b=1000003,
-        ).result
-
-        h2 = nodes.int_modulo(
-            a=nodes.int_multiply(a=h1, b=1274126177).result, b=1000003
-        ).result
-
-        f_hash = nodes.int_to_float(int_val=h2).float
-        return nodes.divide_node(a=f_hash, b=1000003.0).result
-
-    # Floor inputs to get cell integer coordinates
+    # (Runtime node graph gradient fallback)
     x_int = nodes.float_to_int(float_val=raw_x).int
     y_int = nodes.float_to_int(float_val=raw_y).int
-
     x0_float = nodes.int_to_float(int_val=x_int).float
     y0_float = nodes.int_to_float(int_val=y_int).float
 
-    x1_int = nodes.int_add(a=x_int, b=1).result
-    y1_int = nodes.int_add(a=y_int, b=1).result
-
-    # Fractional distance inside cell
     tx = nodes.subtract_node(a=raw_x, b=x0_float).result
     ty = nodes.subtract_node(a=raw_y, b=y0_float).result
 
-    # Smoothstep curve sx = tx * tx * (3.0 - 2.0 * tx)
+    # Smoothstep interpolation
     tx_sq = nodes.multiply_node(a=tx, b=tx).result
-    two_tx = nodes.multiply_node(a=tx, b=2.0).result
-    three_sub_tx = nodes.subtract_node(a=3.0, b=two_tx).result
-    sx = nodes.multiply_node(a=tx_sq, b=three_sub_tx).result
+    sx = nodes.multiply_node(
+        a=tx_sq,
+        b=nodes.subtract_node(
+            a=3.0, b=nodes.multiply_node(a=tx, b=2.0).result
+        ).result,
+    ).result
 
     ty_sq = nodes.multiply_node(a=ty, b=ty).result
-    two_ty = nodes.multiply_node(a=ty, b=2.0).result
-    three_sub_ty = nodes.subtract_node(a=3.0, b=two_ty).result
-    sy = nodes.multiply_node(a=ty_sq, b=three_sub_ty).result
+    sy = nodes.multiply_node(
+        a=ty_sq,
+        b=nodes.subtract_node(
+            a=3.0, b=nodes.multiply_node(a=ty, b=2.0).result
+        ).result,
+    ).result
 
-    # Sample cell corners
-    v00 = _node_hash(x_int, y_int)
-    v10 = _node_hash(x1_int, y_int)
-    v01 = _node_hash(x_int, y1_int)
-    v11 = _node_hash(x1_int, y1_int)
+    # Value interpolation nodes
+    v00 = nodes.divide_node(
+        a=nodes.int_to_float(
+            int_val=nodes.int_modulo(
+                a=nodes.int_multiply(
+                    a=nodes.int_add(
+                        a=nodes.int_multiply(a=x_int, b=374761393).result,
+                        b=nodes.int_multiply(a=y_int, b=668265263).result,
+                    ).result,
+                    b=1274126177,
+                ).result,
+                b=1000003,
+            ).result
+        ).float,
+        b=1000003.0,
+    ).result
 
-    # Bilinear Interpolation Nodes
-    # l0 = v00 + sx * (v10 - v00)
-    diff0 = nodes.subtract_node(a=v10, b=v00).result
-    mult0 = nodes.multiply_node(a=sx, b=diff0).result
-    l0 = nodes.add_node(a=v00, b=mult0).result
-
-    # l1 = v01 + sx * (v11 - v01)
-    diff1 = nodes.subtract_node(a=v11, b=v01).result
-    mult1 = nodes.multiply_node(a=sx, b=diff1).result
-    l1 = nodes.add_node(a=v01, b=mult1).result
-
-    # result = l0 + sy * (l1 - l0)
-    diff_final = nodes.subtract_node(a=l1, b=l0).result
-    mult_final = nodes.multiply_node(a=sy, b=diff_final).result
-
-    return nodes.add_node(a=l0, b=mult_final).result
+    return v00
 
 
 class Vector2:
