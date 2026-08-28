@@ -6,8 +6,8 @@ from . import nodes as nodes
 from .api import Board, InGameUI, Lawnf, Mouse, Spawner, Trigger
 from .core import (
     IsolatedTriggerScope,
-    restore_trigger_stack,
-    save_trigger_stack,
+    _restore_trigger_stack,
+    _save_trigger_stack,
     settings,
 )
 from .core import ctx as _ctx
@@ -97,8 +97,8 @@ __all__ = [  # noqa: RUF022
     "Time",
     "Option",
     "IsolatedTriggerScope",
-    "save_trigger_stack",
-    "restore_trigger_stack",
+    "_save_trigger_stack",
+    "_restore_trigger_stack",
 
     # Level Data Helpers
     "PlantData",

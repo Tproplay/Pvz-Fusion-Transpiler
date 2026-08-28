@@ -5,28 +5,33 @@ import json
 import math
 import os
 import uuid
+from functools import wraps
 from typing import Any, List, Optional
 
 from .Data.DataFactory import _to_json_val
 
+
 class CompilerSetting:
     group_level: int = 0
+    fold_all_groups: bool = False  # Set to True to fold all code groups by default
     spacing_x: float = 220.0
     spacing_y: float = 170.0
     hierarchical_spacing_x: float = 240.0
     hierarchical_spacing_y: float = 180.0
 
+
 settings = CompilerSetting()
+
 
 class CompilerState:
     def __init__(self) -> None:
-        from .Data.DataFactory import LevelConfig, BoardConfig, BoardTag
-        
+        from .Data.DataFactory import BoardConfig, BoardTag, LevelConfig
+
         self.config = {"output": "./", "name": "exported level"}
         self.nodes = []
         self.connections = []
-        self.trigger_stack = [] 
-        self.registry = {}      
+        self.trigger_stack = []
+        self.registry = {}
         self.variables = []
 
         self.group_level = settings.group_level
@@ -69,36 +74,44 @@ class CompilerState:
         return str(uuid.uuid4())
 
     def add_connection(self, source_id: str, source_port: str, target_id: str, target_port: str) -> None:
-        self.connections.append({
-            "sourceNodeId": source_id,
-            "sourcePortName": source_port,
-            "targetNodeId": target_id,
-            "targetPortName": target_port
-        })
+        self.connections.append(
+            {
+                "sourceNodeId": source_id,
+                "sourcePortName": source_port,
+                "targetNodeId": target_id,
+                "targetPortName": target_port,
+            }
+        )
 
-    def remove_connection(self, source_id: str = None, source_port: str = None, #type: ignore
-                          target_id: str = None, target_port: str = None): #type: ignore
+    def remove_connection(
+        self,
+        source_id: str = None,  # type: ignore
+        source_port: str = None,  # type: ignore
+        target_id: str = None,  # type: ignore
+        target_port: str = None,  # type: ignore
+    ):
         original_count = len(self.connections)
         self.connections = [
-            conn for conn in self.connections
+            conn
+            for conn in self.connections
             if not (
-                (source_id is None or conn["sourceNodeId"] == source_id) and
-                (source_port is None or conn["sourcePortName"] == source_port) and
-                (target_id is None or conn["targetNodeId"] == target_id) and
-                (target_port is None or conn["targetPortName"] == target_port)
+                (source_id is None or conn["sourceNodeId"] == source_id)
+                and (source_port is None or conn["sourcePortName"] == source_port)
+                and (target_id is None or conn["targetNodeId"] == target_id)
+                and (target_port is None or conn["targetPortName"] == target_port)
             )
         ]
         return original_count - len(self.connections)
 
     def export(self) -> None:
         from .Data.DataFactory import DEFAULT_LEVEL_TEMPLATE
-        
+
         self.group_level = settings.group_level
         self.spacing_x = settings.spacing_x
         self.spacing_y = settings.spacing_y
         self.hierarchical_spacing_x = settings.hierarchical_spacing_x
         self.hierarchical_spacing_y = settings.hierarchical_spacing_y
-        
+
         file_name = self.config.get("name", "exported level")
         file_path = os.path.join(self.config["output"], f"{file_name}.json")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -144,7 +157,6 @@ class CompilerState:
         if self.victory_type is not None:
             level_data["victoryType"] = self.victory_type
 
-        # Merge BoardConfig & BoardTag keys selectively
         if not is_new_file and "boardConfig" in level_data:
             for k in self.board_config._dirty_keys:
                 level_data["boardConfig"][k] = getattr(self.board_config, k)
@@ -157,7 +169,6 @@ class CompilerState:
         elif self.board_tag._dirty or is_new_file:
             level_data["boardTag"] = self.board_tag.to_dict()
 
-        # List Overwrites (Only applied when explicitly configured)
         if self.plant_datas is not None:
             level_data["plantDatas"] = _to_json_val(self.plant_datas)
         if self.plants is not None:
@@ -182,30 +193,28 @@ class CompilerState:
         if self.ordered_spawns is not None:
             level_data["orderedSpawns"] = _to_json_val(self.ordered_spawns)
         if self.god_plants is not None:
-            level_data["GodShootingConfig"] = {
-                "plants": _to_json_val(self.god_plants)
-            }
-            
+            level_data["GodShootingConfig"] = {"plants": _to_json_val(self.god_plants)}
+
         # =====================================================================
         # PASS 1: GRAPH OPTIMIZATION (DEDUPLICATION)
         # =====================================================================
         if self.group_level == 0:
             DEDUPE_TYPES = {
                 "IntValueNode", "FloatValueNode", "BoolValueNode", "StringValueNode",
-                "OnBoardStartNode", "OnPlantCreateNode", "OnPlantClickNode", 
+                "OnBoardStartNode", "OnPlantCreateNode", "OnPlantClickNode",
                 "OnPlantDieNode", "OnZombieDieNode", "OnZombieSpawnNode", "WaveEventNode",
-                "OnMouseClickNode", "OnKeyPressNode", "OnPlantDeathCompleteNode"
+                "OnMouseClickNode", "OnKeyPressNode", "OnPlantDeathCompleteNode",
             }
 
-            unique_nodes = {} 
-            remap_dict = {}   
+            unique_nodes = {}
+            remap_dict = {}
             optimized_nodes = []
 
             for node in self.nodes:
                 if node["type"] in DEDUPE_TYPES:
                     kwargs_signature = json.dumps(node.get("kwargs", {}), sort_keys=True)
                     signature = f"{node['type']}_{kwargs_signature}"
-                    
+
                     if signature in unique_nodes:
                         remap_dict[node["id"]] = unique_nodes[signature]
                     else:
@@ -213,31 +222,34 @@ class CompilerState:
                         optimized_nodes.append(node)
                 else:
                     optimized_nodes.append(node)
-                    
+
             self.nodes = optimized_nodes
 
             optimized_conns = []
             unique_conn_signatures = set()
-            
+
             for conn in self.connections:
                 src = remap_dict.get(conn["sourceNodeId"], conn["sourceNodeId"])
                 tgt = remap_dict.get(conn["targetNodeId"], conn["targetNodeId"])
-                
+
                 conn_signature = f"{src}:{conn['sourcePortName']}->{tgt}:{conn['targetPortName']}"
-                
+
                 if conn_signature not in unique_conn_signatures:
                     unique_conn_signatures.add(conn_signature)
-                    optimized_conns.append({
-                        "sourceNodeId": src,
-                        "sourcePortName": conn["sourcePortName"],
-                        "targetNodeId": tgt,
-                        "targetPortName": conn["targetPortName"]
-                    })
+                    optimized_conns.append(
+                        {
+                            "sourceNodeId": src,
+                            "sourcePortName": conn["sourcePortName"],
+                            "targetNodeId": tgt,
+                            "targetPortName": conn["targetPortName"],
+                        }
+                    )
             self.connections = optimized_conns
 
         # =====================================================================
-        # PASS 2: LAYOUT ENGINE
+        # PASS 2: LAYOUT ENGINE (SQUARE GRID & FOLDED FOOTPRINT AWARE)
         # =====================================================================
+        
         node_positions = {}
 
         if self.group_level == 0:
@@ -245,20 +257,20 @@ class CompilerState:
             grid_size = int(math.ceil(math.sqrt(N))) if N > 0 else 1
             X_SPACING = self.spacing_x
             Y_SPACING = self.spacing_y
-            
+
             in_degree = {node["id"]: 0 for node in self.nodes}
             adj = {node["id"]: [] for node in self.nodes}
-            
+
             for conn in self.connections:
                 src = conn["sourceNodeId"]
                 tgt = conn["targetNodeId"]
                 if src in in_degree and tgt in in_degree:
                     adj[src].append(tgt)
                     in_degree[tgt] += 1
-                    
+
             queue = [n_id for n_id, deg in in_degree.items() if deg == 0]
             sorted_nodes = []
-            
+
             while queue:
                 curr = queue.pop(0)
                 sorted_nodes.append(curr)
@@ -266,86 +278,105 @@ class CompilerState:
                     in_degree[neighbor] -= 1
                     if in_degree[neighbor] == 0:
                         queue.append(neighbor)
-                        
+
             visited = set(sorted_nodes)
             for node in self.nodes:
                 if node["id"] not in visited:
                     sorted_nodes.append(node["id"])
-                    
+
             for index, n_id in enumerate(sorted_nodes):
                 col = index % grid_size
                 row = index // grid_size
                 node_positions[n_id] = {"x": col * X_SPACING, "y": row * Y_SPACING}
+
         else:
-            current_x = 0.0
-            current_y = 120.0
-            
             X_SPACING = self.hierarchical_spacing_x
             Y_SPACING = self.hierarchical_spacing_y
-            ROW_RESET_LIMIT = 3.0
-            
-            group_index = 0
-            max_row_height = 0.0
-            
-            for code_line, grp in self.groups_map.items():
-                num_nodes = len(grp["nodeIds"])
-                if num_nodes == 0:
-                    continue
-                
-                if group_index > 0 and group_index % ROW_RESET_LIMIT == 0:
-                    current_x = 0.0
-                    current_y += max_row_height + 150.0 
-                    max_row_height = 0.0
-                
-                group_grid_size = int(math.ceil(math.sqrt(num_nodes)))
-                
-                for index, n_id in enumerate(grp["nodeIds"]):
-                    col = index % group_grid_size
-                    row = index // group_grid_size
-                    
-                    node_positions[n_id] = {
-                        "x": current_x + (col * X_SPACING),
-                        "y": current_y + 80.0 + (row * Y_SPACING)
-                    }
-                    
-                    node_height = 80.0 + (row * Y_SPACING)
-                    max_row_height = max(max_row_height, node_height)
-                
-                grp["position"] = {"x": current_x - 30.0, "y": current_y}
-                
-                actual_cols = min(num_nodes, group_grid_size)
-                group_width = actual_cols * X_SPACING
-                current_x += group_width + 120.0
-                
-                group_index += 1
+            GAP_X = 80.0
+            GAP_Y = 80.0
 
-            positioned_node_ids = set(node_positions.keys())
-            orphaned_node_ids = [n["id"] for n in self.nodes if n["id"] not in positioned_node_ids]
+            # 1. Collect all explicit groups that have nodes
+            all_groups: list[dict[str, Any]] = [
+                grp for grp in self.groups_map.values() if grp.get("nodeIds")
+            ]
 
+            # 2. Collect any orphaned nodes into the Global Constants group
+            grouped_node_ids = set()
+            for grp in all_groups:
+                grouped_node_ids.update(grp["nodeIds"])
+
+            orphaned_node_ids = [n["id"] for n in self.nodes if n["id"] not in grouped_node_ids]
             if orphaned_node_ids:
-                if current_x > 0.0:
-                    current_x = 0.0
-                    current_y += max_row_height + 150.0
-
-                num_orphans = len(orphaned_node_ids)
-                orphan_grid_size = int(math.ceil(math.sqrt(num_orphans)))
-
                 orphan_group = {
                     "groupId": self._generate_uuid(),
                     "title": "Global Constants & Variables",
                     "nodeIds": orphaned_node_ids,
-                    "position": {"x": current_x - 30.0, "y": current_y}
+                    "position": {"x": 0.0, "y": 0.0},
+                    "isFolded": settings.fold_all_groups,
                 }
                 self.groups_map["Global Constants & Variables"] = orphan_group
+                all_groups.insert(0, orphan_group)
 
-                for index, n_id in enumerate(orphaned_node_ids):
-                    col = index % orphan_grid_size
-                    row = index // orphan_grid_size
+            # 3. Compute bounding dimensions and internal columns for every group
+            for grp in all_groups:
+                num_nodes = len(grp["nodeIds"])
+                is_folded = grp.get("isFolded", settings.fold_all_groups)
+                grp["_is_folded"] = is_folded
 
-                    node_positions[n_id] = {
-                        "x": current_x + (col * X_SPACING),
-                        "y": current_y + 80.0 + (row * Y_SPACING)
-                    }
+                # Calculate internal grid layout dimensions
+                cols = int(math.ceil(math.sqrt(num_nodes))) if num_nodes > 0 else 1
+                rows = int(math.ceil(num_nodes / cols)) if num_nodes > 0 else 1
+                grp["_cols"] = cols
+
+                if is_folded:
+                    # Canvas spacing allocates 1 compact node slot
+                    grp["_layout_w"] = X_SPACING
+                    grp["_layout_h"] = 90.0
+                else:
+                    # Open groups allocate full width and height
+                    grp["_layout_w"] = (cols * X_SPACING) + 40.0
+                    grp["_layout_h"] = (rows * Y_SPACING) + 70.0
+
+            # 4. Arrange groups in a balanced Square Grid
+            total_groups = len(all_groups)
+            grid_cols_count = max(1, int(math.ceil(math.sqrt(total_groups))))
+
+            group_rows: list[list[dict[str, Any]]] = []
+            current_row: list[dict[str, Any]] = []
+
+            for grp in all_groups:
+                current_row.append(grp)
+                if len(current_row) >= grid_cols_count:
+                    group_rows.append(current_row)
+                    current_row = []
+            if current_row:
+                group_rows.append(current_row)
+
+            # 5. Position groups and place internal nodes in an organized sub-grid
+            current_y = 100.0
+            for row in group_rows:
+                row_max_h = max(g["_layout_h"] for g in row)
+                current_x = 100.0
+
+                for grp in row:
+                    grp_x = current_x
+                    grp_y = current_y
+                    grp["position"] = {"x": grp_x, "y": grp_y}
+
+                    cols = grp["_cols"]
+
+                    # Position all child nodes in a clean sub-grid relative to the group
+                    for n_idx, n_id in enumerate(grp["nodeIds"]):
+                        c = n_idx % cols
+                        r = n_idx // cols
+                        node_positions[n_id] = {
+                            "x": grp_x + 20.0 + (c * X_SPACING),
+                            "y": grp_y + 50.0 + (r * Y_SPACING),
+                        }
+
+                    current_x += grp["_layout_w"] + GAP_X
+
+                current_y += row_max_h + GAP_Y
 
         # =====================================================================
         # PASS 3: NATIVE SCHEMA EXPORT STITCHING
@@ -354,18 +385,18 @@ class CompilerState:
             "nodes": [],
             "connections": self.connections,
             "variables": [],
-            "groups": []
+            "groups": [],
         }
         level_data["references"] = {"version": 2, "RefIds": []}
 
         num_nodes = len(self.nodes)
         active_groups = [grp for grp in self.groups_map.values() if grp["nodeIds"]] if self.group_level >= 1 else []
         num_groups = len(active_groups)
-        
+
         asset_rid_map = {}
         variables_list = getattr(self, "variables", [])
         next_asset_rid = 1000 + num_nodes + num_groups
-        
+
         for var_asset in variables_list:
             old_rid = var_asset["rid"]
             asset_rid_map[old_rid] = next_asset_rid
@@ -381,7 +412,7 @@ class CompilerState:
                 "nodeId": node["id"],
                 "nodeType": node["type"],
                 "position": pos,
-                "nodeName": node["type"]
+                "nodeName": node["type"],
             }
             for key, value in node.get("kwargs", {}).items():
                 node_data[key] = value
@@ -391,30 +422,34 @@ class CompilerState:
                 if old_rid in asset_rid_map:
                     node_data["asset"]["rid"] = asset_rid_map[old_rid]
 
-            level_data["references"]["RefIds"].append({
-                "rid": current_rid,
-                "type": {"class": node["type"], "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp"},
-                "data": node_data
-            })
+            level_data["references"]["RefIds"].append(
+                {
+                    "rid": current_rid,
+                    "type": {"class": node["type"], "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp"},
+                    "data": node_data,
+                }
+            )
             current_rid += 1
 
         if self.group_level >= 1:
             for code_line, grp in self.groups_map.items():
                 if not grp["nodeIds"]:
                     continue
-                
+
                 level_data["eventNodeGraph"]["groups"].append({"rid": current_rid})
-                level_data["references"]["RefIds"].append({
-                    "rid": current_rid,
-                    "type": {"class": "NodeGroup", "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp"},
-                    "data": {
-                        "groupId": grp["groupId"],
-                        "title": grp.get("title", code_line),
-                        "nodeIds": grp["nodeIds"],
-                        "position": grp["position"],
-                        "isFolded": False
+                level_data["references"]["RefIds"].append(
+                    {
+                        "rid": current_rid,
+                        "type": {"class": "NodeGroup", "ns": "GameLevel.EventNodes", "asm": "Assembly-CSharp"},
+                        "data": {
+                            "groupId": grp["groupId"],
+                            "title": grp.get("title", code_line),
+                            "nodeIds": grp["nodeIds"],
+                            "position": grp["position"],
+                            "isFolded": grp.get("isFolded", settings.fold_all_groups),
+                        },
                     }
-                })
+                )
                 current_rid += 1
 
         for var_asset in variables_list:
@@ -423,39 +458,83 @@ class CompilerState:
 
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(level_data, f, indent=4, ensure_ascii=False)
-            
+
         print(f"Successfully Packed and Exported to: {file_path}")
 
 
 ctx = CompilerState()
 
-def save_trigger_stack(clear: bool = True) -> list[Any]:
-    """
-    Saves a shallow copy of the active compiler trigger stack.
-    If clear=True (default), clears ctx.trigger_stack to start an isolated execution tree.
-    """
+
+def _save_trigger_stack(clear: bool = True) -> list[Any]:
     saved_stack = ctx.trigger_stack[:]
     if clear:
         ctx.trigger_stack.clear()
     return saved_stack
 
 
-def restore_trigger_stack(saved_stack: list[Any]) -> None:
-    """
-    Restores a previously saved trigger stack back into compiler context.
-    """
+def _restore_trigger_stack(saved_stack: list[Any]) -> None:
     ctx.trigger_stack.clear()
     ctx.trigger_stack.extend(saved_stack)
 
 
 class IsolatedTriggerScope:
-    """
-    Context manager that automatically saves/clears the trigger stack on entry
-    and restores it on exit.
-    """
     def __enter__(self):
-        self.saved_stack = save_trigger_stack(clear=True)
+        self.saved_stack = _save_trigger_stack(clear=True)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        restore_trigger_stack(self.saved_stack)
+        _restore_trigger_stack(self.saved_stack)
+
+
+# =====================================================================
+# LIBRARY & FUNCTION GROUP DECORATOR
+# =====================================================================
+def node_group(name: Optional[str] = None, folded: Optional[bool] = None):
+    """
+    Decorator to wrap all nodes generated inside a library function into an isolated, closed group.
+    
+    Usage:
+        @node_group("Custom Math Function", folded=True)
+        def complex_math_routine():
+            ...
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Record number of nodes before function runs
+            start_node_count = len(ctx.nodes)
+            
+            result = func(*args, **kwargs)
+            
+            end_node_count = len(ctx.nodes)
+            
+            # If nodes were generated, retroactively group them together
+            if end_node_count > start_node_count:
+                group_name = name or func.__name__
+                is_folded = folded if folded is not None else settings.fold_all_groups
+                
+                # Initialize group if it doesn't exist yet
+                if group_name not in ctx.groups_map:
+                    ctx.groups_map[group_name] = {
+                        "groupId": ctx._generate_uuid(),
+                        "title": group_name,
+                        "nodeIds": [],
+                        "position": {"x": 0.0, "y": 0.0},
+                        "isFolded": is_folded
+                    }
+                else:
+                    ctx.groups_map[group_name]["isFolded"] = is_folded
+                    
+                new_node_ids = [n["id"] for n in ctx.nodes[start_node_count:end_node_count]]
+                
+                # Strip these nodes from any default trace-based groups
+                for g_name, grp in ctx.groups_map.items():
+                    if g_name != group_name:
+                        grp["nodeIds"] = [nid for nid in grp["nodeIds"] if nid not in new_node_ids]
+                        
+                # Attach to our isolated function group
+                ctx.groups_map[group_name]["nodeIds"].extend(new_node_ids)
+                
+            return result
+        return wrapper
+    return decorator
