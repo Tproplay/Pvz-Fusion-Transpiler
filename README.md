@@ -2,7 +2,7 @@
 
 An advanced scripting compiler designed to convert logic directly into complex visual node graphs for the **Plants vs. Zombies Fusion Custom Level Editor**.
 
-This python library allows map designers, content creators, and modders to construct highly intricate custom levels, minigames, and interactive events using sequential text scripting instead of manually connecting hundreds of messy visual nodes inside the in-game editor interface 🎮.
+This python library allows level designers, content creators, and modders to construct highly intricate custom levels, minigames, and interactive events using sequential text scripting instead of manually connecting hundreds of messy visual nodes inside the in-game editor interface 🎮.
 
 ---
 
@@ -12,7 +12,7 @@ This python library allows map designers, content creators, and modders to const
 * **📐 Smart Layout Engine**: Automatically organizes node positioning, maps group structures, and links frame execution lines flawlessly on the editor grid canvas.
 * **⚡ Built-in Circuit Optimizations**: Includes automatic wire deduplication to keep custom levels memory-safe and prevent the game from lagging or freezing.
 * **🔄 Advanced Control Flow**: Seamlessly handles loop architectures, complex if/else decision trees, and timed update behaviors.
-* **🎯 Interactive UI Capabilities**: Supports generating multi-choice dynamic item selector menus natively inside your level loops.
+* **📚 Built-in libraries**: Have built-in libraries for performing advance mathematics functions.
 
 ---
 
