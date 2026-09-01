@@ -34,7 +34,7 @@ General-purpose mathematical and comparative functions.
 * **`abs(val)`**: Returns the absolute value of an integer or float.
 
 
-* **`max(*args)` / `min(*args)**`: Returns the largest or smallest value from a sequence or multiple arguments.
+* **`max(*args)` / `min(*args)`**: Returns the largest or smallest value from a sequence or multiple arguments.
 
 
 * **`floor(value)`**: Returns the largest integer less than or equal to the value.
