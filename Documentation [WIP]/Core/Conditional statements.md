@@ -2,6 +2,11 @@
 
 Conditional constructs allow you to branch execution flow based on runtime variable states, entity types, or mathematical conditions.
 
+```python
+import PvzRH_node as pvn
+from PvzRH_node import If, Switch
+```
+
 ## 1. The `If / Elif / Else` Construct
 
 The `pvn.If` construct transpiles Python condition checks into visual `BranchNode` elements.

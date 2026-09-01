@@ -2,6 +2,10 @@
 
 Triggers are context managers that listen to in-game lifecycle events, input actions, and entity state changes to execute custom node graphs.
 
+```python
+import PvzRH_node as pvn
+from PvzRH_node import Trigger
+```
 
 ## Lifecycle Triggers
 
