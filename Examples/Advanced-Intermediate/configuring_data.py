@@ -4,7 +4,7 @@ from PvzRH_node import (
 )
 
 from PvzRH_node.Types import (
-    SceneType, LevelType, KeyCode, TravelBuffType
+    SceneType, LevelType, TravelBuffType
 )
 
 # =====================================================================
@@ -176,32 +176,3 @@ pvn.level_config.add_ordered_spawn(
         ]
     )
 )
-
-# =====================================================================
-# 8. GLOBAL VARIABLES & GRAPH EVENT LOGIC
-# =====================================================================
-rng = pvn.Random.Seeded(seed=12345, name="Demo_PRNG")
-spawn_counter = pvn.IntVar(start_val=0, name="Spawns_Count")
-
-def main():
-    global rng, spawn_counter
-    # Board start event
-    with pvn.Trigger.OnBoardStart():
-        pvn.InGameUI.display_text("Level Loaded! Press [SPACE] to spawn random plant, [R] to add Sun.", duration=5.0)
-
-    # Key [SPACE]: Spawn seeded random plant
-    with pvn.Trigger.OnKeyDown(KeyCode.Space):
-        rand_row = rng.randint(1, 5)
-        rand_col = rng.randint(1, 8)
-        
-        pvn.Spawner.Set_Plant(row=rand_row, col=rand_col, plant_type=PlantType.Peashooter)
-        spawn_counter += 1
-        pvn.InGameUI.display_text("Spawned Peashooter #", spawn_counter, " at (", rand_row, ", ", rand_col, ")")
-
-    # Key [R]: Add 500 Sun
-    with pvn.Trigger.OnKeyDown(KeyCode.R):
-        pvn.Board.Sun += 500
-        pvn.InGameUI.display_text("Added +500 Sun!", duration=2.0)
-
-# Register the logic graph to automatically export JSON on exit
-pvn.add_graph(main)

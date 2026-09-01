@@ -14,6 +14,6 @@ def format_time(time_in_seconds):
 def main():
     with pvn.Trigger.OnPlantCreate():
         with pvn.Time.OnFixedUpdate(0.5):  # Update every 0.5 seconds
-            pvn.InGameUI.display_text("Time since start: ", format_time(pvn.Time.time_since_start), duration=0.5)
+            pvn.Print("Time since start: ", format_time(pvn.Time.time_since_start), duration=0.5)
             
 pvn.add_graph(main)

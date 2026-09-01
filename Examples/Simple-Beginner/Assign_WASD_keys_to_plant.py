@@ -11,6 +11,6 @@ pvn.Config(output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombi
 def main():
     with pvn.Trigger.OnPlantClicked() as plant:
         WASDPlant(plant).Start()
-        pvn.InGameUI.display_text("You selected the plant: <color=blue>", plant.plantType, "</color>!")
+        pvn.Print("You selected the plant: <color=blue>", plant.plantType, "</color>!")
     
 pvn.add_graph(main)

@@ -10,6 +10,6 @@ def main():
         with pvn.Time.OnFixedUpdate(1):
             with pvn.If(pvn.Board.Sun < 500):
                 pvn.Board.Sun += 25
-                pvn.InGameUI.display_text("You have received 25 sun!")
+                pvn.Print("You have received 25 sun!")
     
 pvn.add_graph(main)
