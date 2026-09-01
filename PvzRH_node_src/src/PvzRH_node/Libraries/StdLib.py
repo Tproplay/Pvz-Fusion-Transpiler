@@ -24,7 +24,7 @@ def format_string(*args):
     Example:
         ```python
         msg = pvn.StdLib.format_string("Wave ", wave_num, " has arrived!")
-        pvn.InGameUI.display_text(msg)
+        pvn.Print(msg)
         ```
     """
     if not args:
@@ -75,13 +75,13 @@ class ZombieTypeList:
     set and dynamically generates an OR-chained comparison graph at transpilation time.
 
     Example:
-        ```python
-        bosses = pvn.StdLib.ZombieTypeList([ZombieType.Gargantuar, ZombieType.BungeeZombie])
-        
-        with pvn.Trigger.OnZombieSpawn() as zombie:
-            with pvn.If(bosses.contains(zombie.zombieType)):
-                pvn.Print("A boss has appeared!")
-        ```
+    ```python
+    bosses = pvn.StdLib.ZombieTypeList([ZombieType.Gargantuar, ZombieType.BungeeZombie])
+    
+    with pvn.Trigger.OnZombieSpawn() as zombie:
+        with pvn.If(bosses.contains(zombie.zombieType)):
+            pvn.Print("A boss has appeared!")
+    ```
     """
 
     def __init__(self, initial: Any | None = None):
@@ -176,11 +176,11 @@ class WASDPlant:
     """Assigns WASD keyboard inputs to control the grid movement of a specific Plant entity.
 
     Example:
-        ```python
-        with pvn.Trigger.OnGameStart():
-            hero = pvn.Spawner.Set_Plant(row=2, col=2, plant_type=pvn.PlantType.Peashooter)
-            pvn.StdLib.WASDPlant(hero).Start()
-        ```
+    ```python
+    with pvn.Trigger.OnGameStart():
+        hero = pvn.Spawner.Set_Plant(row=2, col=2, plant_type=pvn.PlantType.Peashooter)
+        pvn.StdLib.WASDPlant(hero).Start()
+    ```
     """
 
     def __init__(self, plant: Plant | Any):
@@ -210,16 +210,16 @@ class Dictionary:
     Int, Float, and Bool variable nodes on the visual canvas.
 
     Example:
-        ```python
-        player_stats = pvn.StdLib.Dictionary({
-            "kills": 0,
-            "speed": 1.5,
-            "is_poisoned": False
-        })
-        
-        with pvn.Trigger.OnZombieDeath():
-            player_stats.kills += 1
-        ```
+    ```python
+    player_stats = pvn.StdLib.Dictionary({
+        "kills": 0,
+        "speed": 1.5,
+        "is_poisoned": False
+    })
+    
+    with pvn.Trigger.OnZombieDeath():
+        player_stats.kills += 1
+    ```
     """
 
     def __init__(self, schema: dict | None = None):  # type: ignore
@@ -265,12 +265,12 @@ class Array:
     or written to via index ports at runtime.
 
     Example:
-        ```python
-        lane_health = pvn.StdLib.Array(size=5, default_val=100)
-        
-        with pvn.Trigger.OnZombieSpawn() as zombie:
-            lane_health.write(zombie.row, 50)
-        ```
+    ```python
+    lane_health = pvn.StdLib.Array(size=5, default_val=100)
+    
+    with pvn.Trigger.OnZombieSpawn() as zombie:
+        lane_health.write(zombie.row, 50)
+    ```
     """
 
     def __init__(self, size: int, default_val=0):
@@ -324,14 +324,14 @@ class Counter:
     acting as an objective tracker or multi-hit trigger.
 
     Example:
-        ```python
-        zombie_counter = pvn.StdLib.Counter(start_val=0)
+    ```python
+    zombie_counter = pvn.StdLib.Counter(start_val=0)
 
-        with pvn.Trigger.OnZombieDeath():
-            zombie_counter.up()
-            
-        with zombie_counter.on_count:
-            pvn.Print("Objective complete!")
+    with pvn.Trigger.OnZombieDeath():
+        zombie_counter.up()
+        
+    with zombie_counter.on_count:
+        pvn.Print("Objective complete!")
         ```
     """
 
@@ -374,16 +374,16 @@ class StatManager:
     and Zombie HP, abstracting complex math and loops.
 
     Example:
-        ```python
-        stats = pvn.StdLib.StatManager(base_plant_stat=1.0)
-        stats.create_tag("FirePlants", [PlantType.CherryBomb, PlantType.Jalapeno])
-        
-        # Add a 50% damage buff to all fire plants
-        stats.add_tag_atk("FirePlants", 0.5)
-        
-        with pvn.Trigger.OnPlantCreate() as plant:
-            stats.apply_stats_to_plant(plant)
-        ```
+    ```python
+    stats = pvn.StdLib.StatManager(base_plant_stat=1.0)
+    stats.create_tag("FirePlants", [PlantType.CherryBomb, PlantType.Jalapeno])
+    
+    # Add a 50% damage buff to all fire plants
+    stats.add_tag_atk("FirePlants", 0.5)
+    
+    with pvn.Trigger.OnPlantCreate() as plant:
+        stats.apply_stats_to_plant(plant)
+    ```
     """
     def __init__(self, base_plant_stat: float = 0, base_zombie_hp_mult: float = 1):
         self.base_plant_stat = base_plant_stat
