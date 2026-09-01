@@ -15,8 +15,10 @@ This import contains everything you will need for creating most simple levels.
 
 ## Exporting the level
 
-You can easily export the level by running the python script.
-Running the script, looks for the json file at the location as entered in `pvn.Config` and modifies (or create a new file if it doesn't exists) its content overwriting its contents.
+Exporting your level is fully automated. You do not need to manually create JSON files or format strings.
+
+- **The Process**: Simply execute your Python script file.
+- **The Output**: The compiler looks for the specific JSON path configured in your script. It will **either overwrite the existing file** with your updated graph data or **create a brand-new file** if it does not yet exist.
 
 ## Export settings
 
