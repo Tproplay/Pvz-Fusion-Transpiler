@@ -13,6 +13,11 @@ This import contains everything you will need for creating most simple levels.
 
 ---
 
+## Exporting the level
+
+You can easily export the level by running the python script.
+Running the script, looks for the json file at the location as entered in `pvn.Config` and modifies (or create a new file if it doesn't exists) its content overwriting its contents.
+
 ## Export settings
 
 ### Output folder
