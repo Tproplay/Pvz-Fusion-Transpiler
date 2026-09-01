@@ -11,7 +11,7 @@ from PvzRH_node import MultiSelectMenu, Option, PlantType, ZombieType
 
 ## 1. Quick Start: Using Decorators
 
-The easiest way to define selection choices is using `@menu.option` decorator syntax:
+The easiest way to define selection choices is using the `@menu.option` decorator syntax:
 
 ```python
 menu = MultiSelectMenu(
@@ -37,8 +37,9 @@ def choose_bomb():
 with pvn.Trigger.OnWave() as wave_num:
     with pvn.If(wave_num == 5):
         menu.show()
-
 ```
+
+> **Note:** A menu can carry a `plant_type` *or* a `zombie_type` icon, never both — if both are set, the plant icon takes priority and the zombie type is dropped with a warning.
 
 ---
 
@@ -63,14 +64,20 @@ menu_b = MultiSelectMenu()
 menu_b.add_option(speed_boost)
 ```
 
+`add_option` also accepts the same inline arguments as `Option(...)` directly, so `menu.add_option(title=..., description=..., callback=..., plant_type=...)` works without constructing an `Option` first.
+
 ---
 
 ## 3. Menu Exit & Refresh Events
 
-You can hook additional logic to fire when a player closes or rerolls a menu using `.Output`:
+You can hook additional logic to fire when a player closes or rerolls a menu using `.Output`. These must be accessed **after** `menu.show()` has run, since the underlying node isn't created until then:
 
 ```python
 menu = MultiSelectMenu(is_rerollable=True, reroll_count=2)
+
+with pvn.Trigger.OnWave() as wave_num:
+    with pvn.If(wave_num == 5):
+        menu.show()
 
 # Trigger logic when the window finishes closing
 with menu.Output.OnExit:

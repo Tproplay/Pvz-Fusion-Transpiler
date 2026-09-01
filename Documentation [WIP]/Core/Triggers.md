@@ -5,6 +5,7 @@ Triggers are context managers that listen to in-game lifecycle events, input act
 ```python
 import PvzRH_node as pvn
 from PvzRH_node import Trigger
+from PvzRH_node.Types import KeyCode
 ```
 
 ## Lifecycle Triggers
@@ -29,7 +30,7 @@ with pvn.Trigger.OnGameStart():
 
 ### `OnWave`
 
-Fires on every wave arrival. Yields the current wave number index as a reference value.
+Fires on every wave arrival. Yields the current wave number as a reference port.
 
 ```python
 with pvn.Trigger.OnWave() as wave_num:
@@ -52,7 +53,7 @@ with pvn.Trigger.OnMouseClick() as mouse:
 
 ### `OnKeyDown`
 
-Fires when the specified key is pressed down.
+Fires when the specified key is pressed down. Accepts a `KeyCode` enum member (or a raw int/`Enum` value).
 
 ```python
 with pvn.Trigger.OnKeyDown(KeyCode.Space):

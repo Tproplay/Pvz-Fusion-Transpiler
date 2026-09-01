@@ -2,6 +2,11 @@
 
 The `pvn.Board` interface gives direct access to game resources (Sun, Money) and runtime board state without manually constructing resource nodes.
 
+```python
+import PvzRH_node as pvn
+from PvzRH_node.Types import KeyCode
+```
+
 ---
 
 ## 1. Sun Management (`Board.Sun`)
@@ -44,7 +49,7 @@ with pvn.Trigger.OnWave() as wave_num:
 Use the `SpendSun` context manager to check Sun before executing an action:
 
 ```python
-with pvn.Trigger.OnKeyDown(pvn.KeyCode.Space):
+with pvn.Trigger.OnKeyDown(KeyCode.Space):
     with pvn.Board.Sun.SpendSun(100) as tx:
         ...
         
@@ -75,7 +80,7 @@ with pvn.Trigger.OnKeyDown(KeyCode.B):
 Ensures sufficient balance before running purchase logic:
 
 ```python
-with pvn.Trigger.OnKeyDown(pvn.KeyCode.B):
+with pvn.Trigger.OnKeyDown(KeyCode.B):
     with pvn.Board.Money.SpendMoney(100) as purchase:
         pvn.Board.Sun += 300
         

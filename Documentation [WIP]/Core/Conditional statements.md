@@ -4,7 +4,7 @@ Conditional constructs allow you to branch execution flow based on runtime varia
 
 ```python
 import PvzRH_node as pvn
-from PvzRH_node import If, Switch
+from PvzRH_node import If, Switch, PlantType, ZombieType
 ```
 
 ## 1. The `If / Elif / Else` Construct
@@ -58,7 +58,7 @@ with pvn.Trigger.OnPlantCreate() as plant:
 
 ### Matching Multiple Values (OR Logic)
 
-Pass multiple values or tuples into a single `.case()` to trigger the same logic for any matching input:
+Pass multiple values, or a single list/tuple/set of values, into `.case()` to trigger the same logic for any matching input:
 
 ```python
 with pvn.Trigger.OnPlantCreate() as plant:

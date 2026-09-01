@@ -5,6 +5,7 @@ Variables represent stateful runtime values that persist and update across game 
 ```python
 import PvzRH_node as pvn
 from PvzRH_node import BoolVar, FloatVar, IntVar
+from PvzRH_node.Types import KeyCode
 ```
 
 ---
@@ -40,7 +41,6 @@ kills = IntVar(start_val=0, name="ZombieKills")
 
 # Initialized from a dynamic expression (auto-evaluated on level load)
 offset = IntVar(start_val=pvn.Random.randint(1, 10), name="WaveOffset")
-
 ```
 
 ### Arithmetic & Modifiers
@@ -104,7 +104,6 @@ is_boss_spawned = BoolVar(start_val=False, name="BossActive")
 with pvn.Trigger.OnWave() as wave_num:
     with pvn.If(wave_num == 10):
         is_boss_spawned.set(True)
-
 ```
 
 ### Toggling & Logical Operators
@@ -127,7 +126,6 @@ with pvn.Trigger.OnWave():
     
     with pvn.If(combined_flag):
         pvn.Board.Sun += 50
-
 ```
 
 ---
@@ -145,7 +143,6 @@ with pvn.Trigger.OnPlantCreate():
 
 with pvn.Trigger.OnZombieDeath():
     shared_counter += 1
-
 ```
 
 ---
