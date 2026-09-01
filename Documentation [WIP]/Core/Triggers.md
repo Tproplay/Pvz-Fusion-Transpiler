@@ -126,6 +126,26 @@ with pvn.Trigger.OnZombieDeath() as zombie:
 
 ---
 
+## Utility: Isolating Trigger Context
+
+### `IsolatedTriggerScope`
+
+Unlike the triggers above, `IsolatedTriggerScope` doesn't listen for a game event — it's a utility context manager for controlling how the *compiler's* trigger stack behaves. Entering it temporarily saves and clears the active trigger stack, so any nodes created inside won't auto-wire to whatever execution chain was active outside the scope. On exit, the original trigger stack is restored exactly as it was.
+
+This is mainly useful when writing helper functions or small libraries: it lets you build self-contained node setups (e.g. registering your own background trigger) without accidentally splicing them into the caller's current execution flow.
+
+```python
+with pvn.IsolatedTriggerScope():
+    with pvn.Trigger.OnBoardStart():
+        # This trigger and its nodes are fully self-contained —
+        # they won't connect to any trigger active before this block.
+        ...
+
+# Execution here resumes exactly where it left off before the isolated scope.
+```
+
+---
+
 ## Quick Reference
 
 | Trigger Class | Returns / Yields | Description |
@@ -141,3 +161,4 @@ with pvn.Trigger.OnZombieDeath() as zombie:
 | `OnPlantDeathComplete` | `Plant` | Fires after plant death animation ends |
 | `OnZombieSpawn` | `Zombie` | Fires when a zombie spawns |
 | `OnZombieDeath` | `Zombie` | Fires when a zombie dies |
+| `IsolatedTriggerScope` | `self` (not a game event) | Isolates the compiler trigger stack for self-contained node setups |
