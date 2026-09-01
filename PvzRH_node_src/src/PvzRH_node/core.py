@@ -12,12 +12,33 @@ from .Data.DataFactory import _to_json_val
 
 
 class CompilerSetting:
+    """Configures layout, spacing, and grouping behavior for exported node graphs."""
+
     group_level: int = 0
-    fold_all_groups: bool = False  # Set to True to fold all code groups by default
+    """Controls how nodes are visually organized into groups on the canvas:
+    
+    0: Disabled (default). Nodes are arranged in a flat, topological grid.
+    
+    1+: Enabled. Groups nodes by code statements, scopes, and decorators in a square grid layout.
+    """
+
+    fold_all_groups: bool = False
+    """When True, all visual node groups are collapsed/folded by default in the editor.
+    
+    Folded groups occupy a compact 1-node footprint on the global layout grid.
+    """
+
     spacing_x: float = 220.0
+    """Horizontal grid spacing between adjacent nodes when group_level = 0."""
+
     spacing_y: float = 170.0
+    """Vertical grid spacing between adjacent nodes when group_level = 0."""
+
     hierarchical_spacing_x: float = 240.0
+    """Horizontal grid spacing between nodes inside visual groups when group_level >= 1."""
+
     hierarchical_spacing_y: float = 180.0
+    """Vertical grid spacing between nodes inside visual groups when group_level >= 1."""
 
 
 settings = CompilerSetting()
@@ -478,6 +499,12 @@ def _restore_trigger_stack(saved_stack: list[Any]) -> None:
 
 
 class IsolatedTriggerScope:
+    """Context manager that temporarily isolates the compiler trigger stack.
+
+    Saves and clears the active trigger stack upon entry, allowing internal nodes
+    to be registered independently of parent execution chains. Restores the original
+    trigger stack upon exiting the scope.
+    """
     def __enter__(self):
         self.saved_stack = _save_trigger_stack(clear=True)
         return self
@@ -489,12 +516,12 @@ class IsolatedTriggerScope:
 # =====================================================================
 # LIBRARY & FUNCTION GROUP DECORATOR
 # =====================================================================
-def node_group(name: Optional[str] = None, folded: Optional[bool] = None):
+def single_group(name: Optional[str] = None, folded: Optional[bool] = None):
     """
     Decorator to wrap all nodes generated inside a library function into an isolated, closed group.
     
     Usage:
-        @node_group("Custom Math Function", folded=True)
+        @single_group("Custom Math Function", folded=True)
         def complex_math_routine():
             ...
     """

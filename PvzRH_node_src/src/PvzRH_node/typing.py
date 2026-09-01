@@ -1,11 +1,11 @@
-from .core import ctx, node_group
+from .core import ctx, single_group
 
 __all__ =[
     # For users
     "to_float_port",
     "to_int_port",
     "to_bool_port",
-    "node_group"
+    "single_group"
 ]
 
 def _enforce_int(value) -> str:

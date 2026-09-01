@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 from enum import Enum
-from typing import Any, overload, Optional, Union
+from typing import Any, TypeAlias, overload, Optional, Union
 
 from typing_extensions import Self
 
@@ -47,7 +47,23 @@ __all__ = [
 ]
 
 class If:
-    """Syntactic sugar that acts as a safe visual scripting 'if/elif/else' block."""
+    """Syntactic sugar that acts as a safe visual scripting 'if/elif/else' branching block.
+
+    Instantiates a conditional branch node and scopes child execution logic to its
+    'True' branch. Allows chaining alternative paths via `.Elif()` and `.Else`.
+
+    Example:
+        ```python
+        with pvn.If(wave_num==1) as branch:
+            ...
+
+        with branch.Elif(wave_num==2) as branch:
+            ...
+
+        with branch.Else:
+            ...
+        ```
+    """
 
     def __init__(self, condition):
         self.node = nodes.branch_node(condition=condition)
@@ -61,9 +77,18 @@ class If:
 
     @property
     def Else(self):
+        """Execution path target corresponding to the 'False' branch of this condition."""
         return self.node.Output.Else
 
     def Elif(self, condition):
+        """Constructs an alternative conditional branch connected to the 'False' output of this block.
+
+        Args:
+            condition: A boolean expression, condition port, or comparison to evaluate.
+
+        Returns:
+            If: A new conditional block scoped to the alternate path.
+        """
         ctx.trigger_stack.append(self.node.Output.Else)
         new_branch = If(condition)
         ctx.trigger_stack.pop()
@@ -71,25 +96,32 @@ class If:
 
 
 class Switch:
-    """
-    Syntactic sugar for transpiling 'switch-case' branching statements.
+    """Syntactic sugar for transpiling 'switch-case' branching statements into chained branch nodes.
 
-    Usage:
+    Sequential `.case()` blocks evaluate target values sequentially. If a case matches,
+    execution enters that block; otherwise, it passes down the chain to subsequent cases
+    or the fallback `.default` block.
+
+    Example:
+        ```python
         with pvn.Switch(plant.plantType) as sw:
-            with sw.case(PlantType.SunFlower):
-                pvn.nodes.add_sun(100)
+            with sw.case(PlantType.TwinFlower):
+                pvn.Board.Sun+=100
 
-            with sw.case(PlantType.Peashooter, PlantType.GatlingPea):
-                pvn.nodes.add_sun(50)
+            with sw.case(PlantType.SunFlower):
+                pvn.Board.Sun+=50
 
             with sw.default:
-                pvn.nodes.add_sun(10)
+                pvn.Board.Sun+=10
+        ```
     """
 
     def __init__(self, target):
         self.target = target
         self.last_false_path = None
-        self.parent_trigger = ctx.trigger_stack[-1] if ctx.trigger_stack else None
+        self.parent_trigger = (
+            ctx.trigger_stack[-1] if ctx.trigger_stack else None
+        )
 
     def __enter__(self):
         return self
@@ -98,16 +130,27 @@ class Switch:
         pass
 
     def case(self, *values):
+        """Defines a case block evaluated against one or more possible matching values.
+
+        Args:
+            *values: Values or enums to check against the switch target.
+
+        Returns:
+            _SwitchCase: Context manager handling the execution branch for this case.
+        """
         if len(values) == 1 and isinstance(values[0], (list, tuple, set)):
             values = tuple(values[0])
         return _SwitchCase(self, values)
 
     @property
     def default(self):
+        """Fallback context block executed when no preceding `.case()` conditions match."""
         return _SwitchDefault(self)
 
 
 class _SwitchCase:
+    """Context manager representing a single evaluated case branch in a Switch construct."""
+
     def __init__(self, switch_obj, values):
         self.switch = switch_obj
         self.values = values
@@ -118,7 +161,7 @@ class _SwitchCase:
         for val in self.values[1:]:
             condition = condition | (self.switch.target == val)
 
-        # 🎯 THE FIX: Temporarily hide the stack to prevent parallel auto-wiring!
+        # Temporarily hide the stack to prevent parallel auto-wiring
         saved_stack = ctx.trigger_stack[:]
         ctx.trigger_stack.clear()
 
@@ -126,7 +169,7 @@ class _SwitchCase:
 
         ctx.trigger_stack.extend(saved_stack)
 
-        # Now explicitly wire it in a sequential chain (False -> Next Case)
+        # Explicitly wire in a sequential chain (False -> Next Case)
         if self.switch.last_false_path is not None:
             ctx.add_connection(
                 self.switch.last_false_path.id,
@@ -136,13 +179,19 @@ class _SwitchCase:
             )
         elif ctx.trigger_stack:
             curr = ctx.trigger_stack[-1]
-            ctx.add_connection(curr.id, curr.out_trigger, self.branch_node.id, "触发")
+            ctx.add_connection(
+                curr.id, curr.out_trigger, self.branch_node.id, "触发"
+            )
 
         # Update the False path chain for the next case or default block
-        self.switch.last_false_path = ExecutionPath(self.branch_node.id, "假（停止）")
+        self.switch.last_false_path = ExecutionPath(
+            self.branch_node.id, "假（停止）"
+        )
 
         # Push the True branch onto trigger stack for statements inside this case
-        ctx.trigger_stack.append(ExecutionPath(self.branch_node.id, "真（触发）"))
+        ctx.trigger_stack.append(
+            ExecutionPath(self.branch_node.id, "真（触发）")
+        )
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -150,6 +199,8 @@ class _SwitchCase:
 
 
 class _SwitchDefault:
+    """Context manager representing the fallback branch of a Switch construct."""
+
     def __init__(self, switch_obj):
         self.switch = switch_obj
 
@@ -162,7 +213,6 @@ class _SwitchDefault:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         ctx.trigger_stack.pop()
-
 
 # region Variables
 
@@ -860,9 +910,27 @@ class BoolVar:
 
 
 class Option:
-    """
-    Standalone multiple choice option card.
-    Instantiates its node and compiles its callback graph once for reuse across multiple menus.
+    """Standalone multiple-choice option card.
+
+    Instantiates an option node and compiles its callback graph once for reuse
+    across multiple menus.
+
+    Args:
+        title (str): Header title displayed on the option card.
+        description (str): Explanatory text or perk details displayed on the card.
+        callback (Callable[[], None] | None): Function executed when the option is selected.
+        plant_type (int | PlantType): Plant icon ID or PlantType enum. Defaults to 254 (None).
+        zombie_type (int | ZombieType): Zombie icon ID or ZombieType enum. Defaults to -1 (None).
+
+    Example:
+        ```python
+        heal_perk = Option(
+            title="Field Repair",
+            description="Restore all active plants to full health",
+            callback=lambda: pvn.Print("Repaired all plants!"),
+            plant_type=PlantType.WallNut,
+        )
+        ```
     """
 
     def __init__(
@@ -873,9 +941,13 @@ class Option:
         plant_type: int | PlantType = 254,
         zombie_type: int | ZombieType = -1,
     ) -> None:
-        p_val = plant_type.value if isinstance(plant_type, PlantType) else plant_type
+        p_val = (
+            plant_type.value if isinstance(plant_type, PlantType) else plant_type
+        )
         z_val = (
-            zombie_type.value if isinstance(zombie_type, ZombieType) else zombie_type
+            zombie_type.value
+            if isinstance(zombie_type, ZombieType)
+            else zombie_type
         )
 
         if p_val != -1 and p_val != 254 and z_val != -1:
@@ -919,7 +991,6 @@ class Option:
             }
         )
 
-        # Compile option callback logic once
         if self.callback:
             saved_stack = ctx.trigger_stack[:]
             ctx.trigger_stack.clear()
@@ -932,6 +1003,7 @@ class Option:
 
     @property
     def output_port(self) -> tuple[str, str]:
+        """Node ID and output port name tuple for this option card."""
         return (self.node_id, "选项列表")
 
     def _get_primary_port(self) -> tuple[str, str]:
@@ -939,11 +1011,34 @@ class Option:
 
 
 class MultiSelectMenu:
-    """
-    Deferred UI Builder for Multiple Choice Menus.
-    Supports sharing Option instances across menus using merge nodes.
+    """Deferred UI builder for pop-up selection windows.
+
+    Collects multiple `Option` cards, merges them into an option list graph, and displays
+    a selection window during gameplay.
+
+    Args:
+        is_rerollable (bool): Whether players can roll for different options. Defaults to True.
+        reroll_count (int): Maximum number of allowed rerolls. Defaults to 3.
+        is_skippable (bool): Whether the selection menu can be closed without choosing. Defaults to False.
+        window_count (int): Total number of option cards presented simultaneously. Defaults to 3.
+
+    Example:
+        ```python
+        menu = MultiSelectMenu(is_rerollable=True, reroll_count=2, window_count=3)
+
+        @menu.option(title="Solar Surge", description="Gain +200 Sun immediately", plant_type=PlantType.SunFlower)
+        def sun_surge():
+            ... # Logic for granting sun bonus
+
+        with pvn.Trigger.OnWave() as wave_num:
+            with pvn.If(wave_num == 5):
+                menu.show()
+        ```
     """
 
+    _Callback: TypeAlias = Callable[[], None]
+    _OptionDecorator: TypeAlias = Callable[[_Callback], Option]
+    
     def __init__(
         self,
         is_rerollable: bool = True,
@@ -976,7 +1071,7 @@ class MultiSelectMenu:
 
     @overload
     def add_option(self, option: Option) -> Option:
-        """Add a pre-instantiated Option object."""
+        """Adds a pre-instantiated Option object to the menu."""
 
     @overload
     def add_option(
@@ -987,20 +1082,28 @@ class MultiSelectMenu:
         plant_type: int | PlantType = 254,
         zombie_type: int | ZombieType = -1,
     ) -> Option:
-        """Create and register an Option card inline."""
+        """Creates and registers an option card inline."""
 
     def add_option(self, *args: Any, **kwargs: Any) -> Option:
+        """Registers an option card to the menu, supporting both pre-made Option instances and inline configurations."""
         if args and isinstance(args[0], Option):
             opt = args[0]
         elif "option" in kwargs and isinstance(kwargs["option"], Option):
             opt = kwargs["option"]
         else:
-            # Extract arguments for inline Option creation
             title = args[0] if len(args) > 0 else kwargs.get("title", "")
-            description = args[1] if len(args) > 1 else kwargs.get("description", "")
-            callback = args[2] if len(args) > 2 else kwargs.get("callback", None)
-            plant_type = args[3] if len(args) > 3 else kwargs.get("plant_type", 254)
-            zombie_type = args[4] if len(args) > 4 else kwargs.get("zombie_type", -1)
+            description = (
+                args[1] if len(args) > 1 else kwargs.get("description", "")
+            )
+            callback = (
+                args[2] if len(args) > 2 else kwargs.get("callback", None)
+            )
+            plant_type = (
+                args[3] if len(args) > 3 else kwargs.get("plant_type", 254)
+            )
+            zombie_type = (
+                args[4] if len(args) > 4 else kwargs.get("zombie_type", -1)
+            )
 
             opt = Option(
                 title=title,
@@ -1019,8 +1122,18 @@ class MultiSelectMenu:
         description: str,
         plant_type: int | PlantType = 254,
         zombie_type: int | ZombieType = -1,
-    ) -> Callable[[Callable[[], None]], Option]:
-        """Decorator syntax to register a choice callback cleanly inline."""
+    ) -> _OptionDecorator:
+        """Decorator to register a choice callback function inline onto the menu.
+
+        Args:
+            title (str): Header title of the option card.
+            description (str): Description text of the option card.
+            plant_type (int | PlantType): Optional plant icon ID or enum. Defaults to 254.
+            zombie_type (int | ZombieType): Optional zombie icon ID or enum. Defaults to -1.
+
+        Returns:
+            Callable[[Callable[[], None]], Option]: Decorator capturing the choice logic.
+        """
 
         def decorator(func: Callable[[], None]) -> Option:
             opt = Option(
@@ -1036,11 +1149,7 @@ class MultiSelectMenu:
         return decorator
 
     def show(self) -> None:
-        """
-        Merges all registered Option lists, links them to ShowMultipleChoiceMenuNode,
-        and connects execution triggers into the compiler graph.
-        """
-
+        """Transpiles all option merge nodes, links the menu window, and attaches it to the execution stream."""
         self._show_node_id = ctx._generate_uuid()
         show_kwargs = {
             "class": "ShowMultipleChoiceMenuNode",
@@ -1067,7 +1176,6 @@ class MultiSelectMenu:
             }
         )
 
-        # Connect execution trigger into menu display node
         current_execution = ctx.trigger_stack[-1]
         ctx.add_connection(
             current_execution.id,
@@ -1076,14 +1184,15 @@ class MultiSelectMenu:
             "触发",
         )
 
-        # Merge and wire option lists
         if self._options:
             if len(self._options) == 1:
                 ctx.add_connection(
-                    self._options[0].node_id, "选项列表", self._show_node_id, "选项列表"
+                    self._options[0].node_id,
+                    "选项列表",
+                    self._show_node_id,
+                    "选项列表",
                 )
             else:
-                # 1. Merge first two Option nodes
                 first_merge = nodes.merge_multiple_choice_option_lists(
                     list1=(self._options[0].node_id, "选项列表"),
                     list2=(self._options[1].node_id, "选项列表"),
@@ -1091,7 +1200,6 @@ class MultiSelectMenu:
 
                 prev_node_id = first_merge.id
 
-                # 2. Chain subsequent options one by one
                 for next_opt in self._options[2:]:
                     next_merge = nodes.merge_multiple_choice_option_lists(
                         list1=(prev_node_id, "合并列表"),
@@ -1099,39 +1207,58 @@ class MultiSelectMenu:
                     )
                     prev_node_id = next_merge.id
 
-                # 3. Connect the final merge node's merged list to the menu
                 ctx.add_connection(
                     prev_node_id, "合并列表", self._show_node_id, "选项列表"
-                )
+                )\
 
-        # Advance trigger stack past the menu window
         ctx.trigger_stack[-1] = ExecutionPath(self._show_node_id, "退出时触发")
 
     class _Outputs:
+        """Execution path outputs from the menu window."""
+
         def __init__(self, parent: MultiSelectMenu) -> None:
             self._parent = parent
 
         @property
         def OnExit(self) -> ExecutionPath:
+            """Execution path triggered immediately after the menu window closes."""
             return ExecutionPath(self._parent._get_show_node_id, "退出时触发")
 
         @property
         def OnRefresh(self) -> ExecutionPath:
+            """Execution path triggered whenever the player rerolls the option list."""
             return ExecutionPath(self._parent._get_show_node_id, "刷新时触发")
 
         def on_exit(self) -> ExecutionPath:
+            """Execution path triggered immediately after the menu window closes."""
             return self.OnExit
 
         def on_refresh(self) -> ExecutionPath:
+            """Execution path triggered whenever the player rerolls the option list."""
             return self.OnRefresh
 
 
+from typing import Any, Iterable
+from enum import Enum
+
 class ForEachPlant:
-    """Safely loops through plants and acts as a direct proxy to the current Plant object."""
+    """Context manager that loops through a collection of Plant entities on the node canvas.
+
+    Acts as a transparent proxy to the current `Plant` object, allowing direct calls to
+    plant methods (e.g., `loop.die()`, `loop.heal()`) without explicitly accessing `.plant`.
+
+    Example:
+        ```python
+        with pvn.ForEachPlant(target_plants) as plant:
+            ...
+            
+        with plant.on_complete:
+            ...
+        ```
+    """
 
     def __init__(self, plant_list_port):
 
-        # Unpack list wrappers if passed directly
         if hasattr(plant_list_port, "list_port"):
             plant_list_port = plant_list_port.list_port
         elif hasattr(plant_list_port, "value"):
@@ -1149,12 +1276,12 @@ class ForEachPlant:
 
     @property
     def on_complete(self):
-        """Returns an execution path context manager for post-loop logic."""
+        """Execution path context manager triggered after the loop finishes all iterations."""
         return ExecutionPath(self.node.id, "循环完成")
 
     @property
     def plant(self):
-        """Returns the current iterated plant wrapped in a Plant helper object."""
+        """The current iterated plant wrapped in a smart Plant helper object."""
         from .extensions import Plant
 
         if self._plant_cache is None:
@@ -1163,7 +1290,7 @@ class ForEachPlant:
 
     @property
     def index(self):
-        """The index of the current iteration."""
+        """Output port representing the 0-based index of the current iteration."""
         return self.node.currentIndex
 
     # ==========================================================
@@ -1175,11 +1302,17 @@ class ForEachPlant:
 
 
 class ForEachPlantType:
-    """Safely loops through a list of Plant Types natively on the node canvas."""
+    """Context manager that safely loops through a list of Plant Types natively on the canvas.
+
+    Example:
+        ```python
+        with pvn.ForEachPlantType(allowed_plants) as loop:
+            ...
+        ```
+    """
 
     def __init__(self, type_list_port):
 
-        # Unpack list wrappers if passed directly
         if hasattr(type_list_port, "list_port"):
             type_list_port = type_list_port.list_port
         elif hasattr(type_list_port, "value"):
@@ -1196,12 +1329,12 @@ class ForEachPlantType:
 
     @property
     def on_complete(self):
-        """Returns an execution path context manager for post-loop logic."""
+        """Execution path context manager triggered after the loop finishes all iterations."""
         return ExecutionPath(self.node.id, "循环完成")
 
     @property
     def plant_type(self):
-        """The plant type of the current iteration."""
+        """Output port representing the plant type enum ID of the current iteration."""
         return self.node.currentPlantType
 
     # Aliases
@@ -1210,7 +1343,7 @@ class ForEachPlantType:
 
     @property
     def index(self):
-        """The index of the current iteration."""
+        """Output port representing the 0-based index of the current iteration."""
         return self.node.currentIndex
 
     # ==========================================================
@@ -1227,8 +1360,20 @@ class ForEachPlantType:
 
 
 class PlantTypeList:
-    """
-    A smart wrapper representing a dynamic or static list of Plant Types on the node canvas.
+    """A smart wrapper representing a dynamic or static list of Plant Types on the node canvas.
+
+    Supports native collection operations (addition, subtraction, merging) and conditional 
+    checks directly translated into graph nodes.
+
+    Example:
+    ```python
+    # Create a list
+    pool = pvn.PlantTypeList([PlantType.Peashooter, PlantType.WallNut])
+    
+    # Add and remove types dynamically
+    pool += PlantType.CherryBomb
+    pool -= PlantType.Peashooter
+    ```
     """
 
     def __init__(self, initial: Any | None = None, initialize_empty: bool = True):
@@ -1247,7 +1392,6 @@ class PlantTypeList:
             self._current_port = multi_node.plantTypeList
             self._count_port = nodes.int_value(val=1).value
 
-        # Guard: check list/set while strictly excluding PortReference (which is a tuple subclass)
         elif isinstance(initial, (list, tuple, set)) and not isinstance(
             initial, PortReference
         ):
@@ -1277,15 +1421,18 @@ class PlantTypeList:
 
     @property
     def list_port(self):
+        """The underlying visual script output port for this list array."""
         return self._current_port
 
     @property
     def count(self):
+        """Output port representing the number of items currently in the list."""
         if self._count_port is not None:
             return self._count_port
         return self._current_port
 
     def set(self, other: PlantTypeList | Iterable | Enum | int | Any):
+        """Overwrites this list's contents with another list or collection."""
         new_list = PlantTypeList(other)
         self._current_port = new_list.list_port
         self._count_port = new_list.count
@@ -1297,7 +1444,6 @@ class PlantTypeList:
         Strictly prevents duplicate trigger wiring by isolating BaseNode.__init__.
         """
 
-        # 1. Resolve target port reference safely
         raw_target = target_type.value if hasattr(target_type, "value") else target_type
         if isinstance(raw_target, int) and not isinstance(raw_target, PortReference):
             target_port = nodes.plant_type_value(val=raw_target).value
@@ -1310,12 +1456,9 @@ class PlantTypeList:
 
         parent_trigger = ctx.trigger_stack[-1] if ctx.trigger_stack else None
 
-        # 🎯 CRITICAL: Keep trigger stack empty during node construction
-        # to prevent BaseNode from auto-connecting parent_trigger in parallel!
         saved_stack = ctx.trigger_stack[:]
         ctx.trigger_stack.clear()
 
-        # 2. Instantiate search nodes cleanly with zero auto-wires
         match_toggle = nodes.toggle_node(initial_state=False)
         reset_branch = nodes.branch_node(condition=match_toggle.state)
         loop = nodes.for_each_plant_type(type_list=self._current_port)
@@ -1325,30 +1468,29 @@ class PlantTypeList:
         match_branch = nodes.branch_node(condition=is_equal)
         state_guard = nodes.branch_node(condition=match_toggle.state)
 
-        # 3. Explicit Single-Track Execution Wiring
         if parent_trigger:
             ctx.add_connection(
                 parent_trigger.id, parent_trigger.out_trigger, reset_branch.id, "触发"
             )
 
-        # Reset toggle if True, otherwise continue directly into loop
         ctx.add_connection(reset_branch.id, "真（触发）", match_toggle.id, "触发")
         ctx.add_connection(reset_branch.id, "真（触发）", loop.id, "触发")
         ctx.add_connection(reset_branch.id, "假（停止）", loop.id, "触发")
 
-        # Loop body -> match check -> state guard -> toggle
         ctx.add_connection(loop.id, "循环体", match_branch.id, "触发")
         ctx.add_connection(match_branch.id, "真（触发）", state_guard.id, "触发")
         ctx.add_connection(state_guard.id, "假（停止）", match_toggle.id, "触发")
 
-        # 4. Restore stack and forward execution strictly through loop's OnComplete
         ctx.trigger_stack.extend(saved_stack)
         ctx.trigger_stack[-1] = ExecutionPath(loop.id, "循环完成")
 
         return match_toggle.state
 
     def contains(self, plant_type: Enum | int | Iterable | Any):
+        """Checks if the given plant type(s) exist within the list.
 
+        Returns a boolean output port representing the evaluation result.
+        """
         if isinstance(plant_type, (list, set)) and not isinstance(
             plant_type, PortReference
         ):
@@ -1438,36 +1580,50 @@ class PlantTypeList:
         copy_list -= other
         return copy_list
 
-    def __eq__(self, other: PlantTypeList | Any):  # type: ignore
+    def __eq__(self, other: 'PlantTypeList' | Any):  # type: ignore
         if isinstance(other, PlantTypeList):
             return nodes.compare_int(a=self.count, b=other.count).equal
         return False
 
     def add(self, plant_type: Enum | int | Any):
+        """Adds a plant type to the list (chainable)."""
         self += plant_type
         return self
 
     def remove(self, plant_type: Enum | int | Any):
+        """Removes a plant type from the list (chainable)."""
         self -= plant_type
         return self
 
     def get_random(self):
+        """Retrieves a random PlantType port from the current contents of the list."""
         return nodes.get_random_plant_type(list_in=self._current_port).result
 
-    def merge(self, other: PlantTypeList | Any):
+    def merge(self, other: 'PlantTypeList' | Any):
+        """Merges another PlantTypeList into this list (chainable)."""
         self += other
         return self
 
     def for_each(self):
+        """Returns a `ForEachPlantType` context manager to loop over this list."""
         from .extensions import ForEachPlantType
 
         return ForEachPlantType(self._current_port)
 
 
 class Plant:
-    """A smart wrapper for a Plant pointer that exposes built-in actions and properties."""
+    """Smart wrapper around a runtime Plant entity pointer.
+
+    Provides high-level actions, stat modifications, grid movement, and lazy-loaded
+    properties via destructuring nodes.
+    """
 
     def __init__(self, plant_ref):
+        """Initializes a Plant wrapper referencing an existing plant port or pointer.
+
+        Args:
+            plant_ref: A raw node output reference port or an existing Plant instance.
+        """
         if isinstance(plant_ref, Plant):
             self.ref = plant_ref.ref
         else:
@@ -1479,30 +1635,44 @@ class Plant:
     # ACTIONS & METHODS
     # ==========================================================
     def die(self):
-        """Instantly destroys the plant."""
+        """Instantly kills and removes the plant from the lawn."""
         return nodes.die_plant(plant=self.ref)
 
     def damage(self, amount):
-        """Damages the plant by a specified amount."""
+        """Inflicts a specified amount of damage to the plant.
 
+        Args:
+            amount (float | int | Any): Damage value or numeric node output port.
+        """
         float_amount = to_float_port(amount)
         return nodes.damage_plant(plant=self.ref, damage=float_amount)
 
     def heal(self, amount):
-        """Heals the plant by a specified amount."""
+        """Restores health to the plant by a specified amount.
 
+        Args:
+            amount (float | int | Any): Healing amount or numeric node output port.
+        """
         float_amount = to_float_port(amount)
         return nodes.heal_plant(plant=self.ref, heal_amount=float_amount)
 
     def add_shield(self, amount):
-        """Adds shield to the plant."""
+        """Grants a protective shield value to the plant.
 
+        Args:
+            amount (float | int | Any): Shield amount or numeric node output port.
+        """
         float_amount = to_float_port(amount)
         return nodes.give_plant_shield(plant=self.ref, shield=float_amount)
 
     def move(self, col, row, force=False):
-        """Moves the plant to a new grid cell. `force` bypasses all in-game placement checks."""
+        """Teleports the plant to absolute lawn grid coordinates.
 
+        Args:
+            col (int | Any): Target column index (0-based).
+            row (int | Any): Target row index (0-based).
+            force (bool | Any): When True, bypasses tile occupancy checks.
+        """
         int_col = to_int_port(col)
         int_row = to_int_port(row)
         bool_force = to_bool_port(force)
@@ -1511,51 +1681,83 @@ class Plant:
         )
 
     def move_relative(self, col_diff, row_diff, force=False):
-        """Moves the plant relative to its current grid position."""
-        return self.move(col=self.col + col_diff, row=self.row + row_diff, force=force)
+        """Moves the plant relative to its current board tile position.
+
+        Args:
+            col_diff (int | Any): Column offset from current position.
+            row_diff (int | Any): Row offset from current position.
+            force (bool | Any): When True, bypasses tile occupancy checks.
+        """
+        return self.move(
+            col=self.col + col_diff, row=self.row + row_diff, force=force
+        )
 
     def modify_attack(self, multiplier):
-        """Modifies attack multiplier."""
+        """Scales the plant's attack power.
 
+        Args:
+            multiplier (float | int | Any): Attack scaling multiplier (e.g. 1.5 = +50%).
+        """
         float_multiplier = to_float_port(multiplier)
-        return nodes.modify_plant_attack(plant=self.ref, multiplier=float_multiplier)
+        return nodes.modify_plant_attack(
+            plant=self.ref, multiplier=float_multiplier
+        )
 
     def modify_health(self, multiplier):
-        """Modifies health multiplier."""
+        """Scales the plant's maximum and current health.
 
+        Args:
+            multiplier (float | int | Any): Health scaling multiplier (e.g. 2.0 = double HP).
+        """
         float_multiplier = to_float_port(multiplier)
-        return nodes.modify_plant_health(plant=self.ref, multiplier=float_multiplier)
+        return nodes.modify_plant_health(
+            plant=self.ref, multiplier=float_multiplier
+        )
 
     # ==========================================================
     # LAZY DESTRUCTURED PROPERTIES (via plant_split)
     # ==========================================================
     @property
     def _split(self):
+        """Lazy-loaded destructuring node decomposing the plant reference."""
         if self._split_cache is None:
             self._split_cache = nodes.plant_split(plant=self.ref)
         return self._split_cache
 
     @property
     def plantType(self):
+        """Output port representing the plant's type enum ID."""
         return self._split.plantType
 
     @property
     def row(self):
+        """Output port representing the plant's current row coordinate."""
         return self._split.row
 
     @property
     def col(self):
+        """Output port representing the plant's current column coordinate."""
         return self._split.column
 
     @property
     def attributeCD(self):
+        """Output port representing the plant's internal ability cooldown counter."""
         return self._split.attributeCountdown
 
 
 class Zombie:
-    """A smart wrapper for a Zombie pointer that exposes built-in actions and properties."""
+    """Smart wrapper around a runtime Zombie entity pointer.
+
+    Provides combat actions, mind control overrides, position shifts, animation triggers,
+    and destructuring properties.
+    """
 
     def __init__(self, zombie_ref):
+        """Initializes a Zombie wrapper referencing an existing zombie port or pointer.
+
+        Args:
+            zombie_ref: A raw node output reference port or an existing Zombie instance.
+        """
         if isinstance(zombie_ref, Zombie):
             self.ref = zombie_ref.ref
         else:
@@ -1567,35 +1769,52 @@ class Zombie:
     # ACTIONS & METHODS
     # ==========================================================
     def damage(self, amount):
-        """Damages the zombie by a specified amount."""
+        """Deals damage to the zombie.
 
+        Args:
+            amount (float | int | Any): Damage value or numeric node output port.
+        """
         return nodes.damage_zombie(zombie=self.ref, damage=amount)
 
     def set_health_multiplier(self, ratio):
-        """Modifies zombie health multiplier (ensures float/Single input to avoid C# cast crashes)."""
+        """Modifies the zombie's health ratio.
 
+        Args:
+            ratio (float | int | Any): Health scaling ratio (e.g. 0.5 = half health).
+        """
         float_ratio = to_float_port(ratio)
         return nodes.modify_zombie_health(zombie=self.ref, ratio=float_ratio)
 
     def hypnotize(self):
-        """Mind-controls/hypnotizes the zombie to fight for the player."""
-
+        """Mind-controls/hypnotizes the zombie to turn back and fight against other zombies."""
         return nodes.set_zombie_mind_controlled(zombie=self.ref)
 
     def move(self, row, col):
-        """Moves the zombie to a specific grid row and column."""
+        """Teleports the zombie to specific grid coordinates.
 
+        Args:
+            row (int | Any): Target row index.
+            col (int | Any): Target column index.
+        """
         int_row = to_int_port(row)
         int_col = to_int_port(col)
         return nodes.move_zombie(zombie=self.ref, row=int_row, column=int_col)
 
     def move_relative(self, row_diff=0, col_diff=0):
-        """Moves the zombie relative to its current position."""
+        """Shifts the zombie relative to its current grid position.
+
+        Args:
+            row_diff (int | Any): Row offset from current position. Defaults to 0.
+            col_diff (int | Any): Column offset from current position. Defaults to 0.
+        """
         return self.move(row=self.row + row_diff, col=self.col + col_diff)
 
     def play_animation(self, anim_name: str | Enum | Any = "idle"):
-        """Plays a named animation clip on the zombie."""
+        """Plays a specific animation clip on the zombie model.
 
+        Args:
+            anim_name (str | Enum | Any): Name or Enum representing the target animation clip.
+        """
         if isinstance(anim_name, Enum):
             anim_name = anim_name.value
         return nodes.play_zombie_anim(zombie=self.ref, animation_name=anim_name)
@@ -1605,30 +1824,41 @@ class Zombie:
     # ==========================================================
     @property
     def split(self):
+        """Lazy-loaded destructuring node decomposing the zombie reference."""
         if self._split_cache is None:
             self._split_cache = nodes.zombie_split(zombie=self.ref)
         return self._split_cache
 
     @property
     def zombieType(self):
+        """Output port representing the zombie's type enum ID."""
         return self.split.zombieType
 
     @property
     def row(self):
+        """Output port representing the zombie's current row coordinate."""
         return self.split.row
 
     @property
     def col(self):
+        """Output port representing the zombie's current column coordinate."""
         return self.split.column
 
 
 class While:
-    """
-    A continuous execution loop that runs as long as a condition port evaluates to True.
+    """A continuous execution loop that runs as long as a condition evaluates to True.
 
-    Usage:
-        with pvn.While(sun_boost < 500):
-            sun_boost += 10
+    Creates a cyclic branch node in the execution graph that repeatedly triggers its 
+    own input until the provided condition port evaluates to False.
+
+    Args:
+        condition (Any): A boolean expression, variable, or condition port to evaluate.
+
+    Example:
+        ```python
+        with pvn.While(pvn.Board.Sun < 500):
+            ...
+        ```
     """
 
     def __init__(self, condition):
@@ -1644,13 +1874,18 @@ class While:
 
 
 class For:
-    """
-    A fixed-count loop structure that runs an execution block a specified number of times.
-    Exposes the current loop index port dynamically.
+    """A fixed-count loop structure that executes a block a specified number of times.
+    
+    Yields a context object that dynamically exposes the current loop iteration index.
 
-    Usage:
+    Args:
+        count (int | Any): The total number of iterations to execute, or a numeric output port.
+
+    Example:
+        ```python
         with pvn.For(5) as loop:
-            pvn.Zombie.spawn(row=loop.index, column=10, zombie_type=0)
+            ...
+        ```
     """
 
     def __init__(self, count):
@@ -1662,7 +1897,7 @@ class For:
 
     @property
     def index(self):
-        """Allows access to the loop index tracking output port directly inside scripts."""
+        """Output port representing the 0-based index of the current loop iteration."""
         return (self.loop_node, "当前索引")
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -1835,8 +2070,20 @@ class Mouse:
 
 
 class Random:
+    """Namespace for standard and deterministic random number generation and probability triggers."""
+
     class TriggerChance:
-        """Fires its contents based on a random probability (e.g. TriggerChance(0.5) is 50%)."""
+        """Context manager that executes its block based on a random probability.
+
+        Args:
+            probability (float | Any): A float between 0.0 and 1.0 (e.g., 0.5 for 50%).
+
+        Example:
+            ```python
+            with pvn.Random.TriggerChance(0.25):
+                ...
+            ```
+        """
 
         def __init__(self, probability):
             rand = Random.randf(0.0, 1.0)
@@ -1850,8 +2097,17 @@ class Random:
             self.flow.__exit__(*args)
 
     class RandomTrigger:
-        """
-        Triggers a random connected event.
+        """Branches execution to one or more random connected paths.
+
+        Args:
+            count (int): Number of paths to trigger simultaneously.
+            allow_repeat (bool): If True, the same path can be selected multiple times.
+
+        Example:
+            ```python
+            with pvn.Random.RandomTrigger():
+                ...
+            ```
         """
 
         def __init__(self, count=1, allow_repeat=False):
@@ -1865,43 +2121,47 @@ class Random:
             ctx.trigger_stack.pop()
 
     @staticmethod
-    def randint(min_val : int, max_val : int) -> int:
+    def randint(min_val: int, max_val: int) -> int:
+        """Returns a random integer output port between min_val and max_val (inclusive)."""
         return nodes.random_int(min_val=min_val, max_val=max_val).result  # type: ignore
 
     @staticmethod
-    def randf(min_val : float, max_val : float) -> float:
+    def randf(min_val: float, max_val: float) -> float:
+        """Returns a random float output port between min_val and max_val."""
         return nodes.random_float(min_val=min_val, max_val=max_val).result  # type: ignore
 
     @_staticproperty
     def value():
-        """Return a random float between 0.0 and 1.0."""
+        """Returns a random float output port between 0.0 and 1.0."""
         return Random.randf(0.0, 1.0)
 
     class Seeded:
-        """
-        A deterministic, graph-compatible pseudo-random number generator (LCG).
-        Uses overflow-safe LCG constants (a=75, c=74, m=65537) to prevent C# 32-bit integer wrapping.
+        """Deterministic pseudo-random number generator (LCG) built on visual script nodes.
+
+        Uses overflow-safe LCG constants (a=75, c=74, m=65537) ensuring mathematical
+        safety against 32-bit integer wrapping in the C# backend.
+
+        Args:
+            seed (int): Initial state value.
+            name (str): The persistent variable name for the LCG state.
         """
 
         def __init__(self, seed: int = 12345, name: str = "PRNG_State"):
             from .extensions import IntVar
 
-            # Clamp seed into valid positive range
             safe_seed = (abs(seed) % 65537) or 1
             self.state = IntVar(start_val=safe_seed, name=name)
 
-            # Overflow-safe LCG constants: Max math is (75 * 65536 + 74) = 4,915,274 << 2,147,483,647
             self.a = 75
             self.c = 74
             self.m = 65537
 
         def set_seed(self, seed_value):
-            """Manually update or reset the active random seed at runtime."""
+            """Re-initializes the active random seed dynamically during gameplay."""
             safe_seed = (abs(seed_value) % self.m) or 1
             return self.state.set(safe_seed)
 
         def _next(self):
-            """Advances LCG state. Guaranteed strictly positive without overflow or BranchNodes."""
             next_state = ((self.state * self.a) + self.c) % self.m
             self.state.set(next_state)
             return self.state.value
@@ -1919,9 +2179,9 @@ class Random:
             return min_val + (normalized * (max_val - min_val))
 
         class TriggerChance:
-            """Context manager that fires based on seeded probability (0.0 to 1.0)."""
+            """Context manager that fires based on a seeded probability."""
 
-            def __init__(self, rng: Seeded, probability: float):  # type: ignore  # noqa: F821
+            def __init__(self, rng: 'Random.Seeded', probability: float):  # type: ignore  # noqa: F821
                 roll = rng.randf(0.0, 1.0)
                 self.flow = If(roll <= probability)
 
