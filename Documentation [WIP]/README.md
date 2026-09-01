@@ -9,7 +9,7 @@ import PvzRH_node as pvn
 
 This import contains everything you will need for creating most simple levels.
 
-> All of the methods/classes from this library are listed [here](https://github.com/Tproplay/Pvz-Fusion-Transpiler/tree/main/Documentation/Core)
+> All of the methods/classes from this library are listed [here](https://github.com/Tproplay/Pvz-Fusion-Transpiler/tree/main/Documentation%20%5BWIP%5D/Core)
 
 ---
 
