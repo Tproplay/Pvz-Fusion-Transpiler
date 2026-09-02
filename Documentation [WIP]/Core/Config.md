@@ -33,10 +33,10 @@ The `CompilerSetting` class controls how the node graph is arranged in the visua
 * **`fold_all_groups`**: When `True`, generated groups collapse into a compact 1-node footprint.
 
 
-* **`spacing_x` / `spacing_y**`: The horizontal/vertical padding between ungrouped nodes (defaults: 220.0, 170.0).
+* **`spacing_x` / `spacing_y`**: The horizontal/vertical padding between ungrouped nodes (defaults: 220.0, 170.0).
 
 
-* **`hierarchical_spacing_x` / `hierarchical_spacing_y**`: The spacing between nodes inside visual groups (defaults: 240.0, 180.0).
+* **`hierarchical_spacing_x` / `hierarchical_spacing_y`**: The spacing between nodes inside visual groups (defaults: 240.0, 180.0).
 
 
 
