@@ -30,6 +30,11 @@ Open Powershell/terminal and run the following:
 pip install "git+https://github.com/Tproplay/Pvz-Fusion-Transpiler.git#subdirectory=PvzRH_node_src"                  
 ```
 
+To update, run the following:
+```bash
+pip install --upgrade "git+https://github.com/Tproplay/Pvz-Fusion-Transpiler.git#subdirectory=PvzRH_node_src"
+```
+
 ### How to use
 
 There are several examples available on our [github](https://github.com/Tproplay/Pvz-Fusion-Transpiler/tree/main/Examples)
