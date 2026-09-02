@@ -82,7 +82,19 @@ from . import nodes
 
 @staticmethod
 def to_float_port(val):
+    """Converts a raw value, variable, or node port into a valid float output port.
 
+    Handles literal numeric values by instantiating a `float_value` node, promotes
+    integer ports via an `int_to_float` conversion node, and unwraps variable
+    wrappers (such as `FloatVar` or `IntVar`) down to their underlying port reference.
+
+    Args:
+        val (int | float | PortReference | FloatVar | IntVar | Any): The value or port
+            reference to standardize into a float port.
+
+    Returns:
+        PortReference: A node output port guaranteed to produce a float value.
+    """
     if isinstance(val, (int, float)) and not isinstance(val, PortReference):
         return nodes.float_value(val=float(val)).value
     if hasattr(val, "_is_float_port") and not val._is_float_port():
@@ -91,9 +103,22 @@ def to_float_port(val):
         return val.value  # type: ignore
     return val
 
+
 @staticmethod
 def to_int_port(val):
+    """Converts a raw value, variable, or node port into a valid integer output port.
 
+    Handles literal numeric values by instantiating an `int_value` node, truncates
+    float ports via a `float_to_int` conversion node, and unwraps variable
+    wrappers (such as `IntVar` or `FloatVar`) down to their underlying port reference.
+
+    Args:
+        val (int | float | PortReference | IntVar | FloatVar | Any): The value or port
+            reference to standardize into an integer port.
+
+    Returns:
+        PortReference: A node output port guaranteed to produce an integer value.
+    """
     if isinstance(val, (int, float)) and not isinstance(val, PortReference):
         return nodes.int_value(val=int(val)).value
     if hasattr(val, "_is_float_port") and val._is_float_port():
@@ -102,12 +127,23 @@ def to_int_port(val):
         return val.value  # type: ignore
     return val
 
+
 @staticmethod
 def to_bool_port(val):
+    """Converts a literal boolean, condition expression, or variable into a boolean output port.
 
+    Converts Python `True`/`False` literals into a static `bool_value` graph node,
+    and unwraps higher-level `BoolVar` instances to retrieve their active port reference.
+
+    Args:
+        val (bool | PortReference | BoolVar | Any): The boolean literal, conditional port,
+            or variable wrapper to convert.
+
+    Returns:
+        PortReference: A node output port representing a boolean condition wire.
+    """
     if isinstance(val, bool) and not isinstance(val, PortReference):
         return nodes.bool_value(val=val).value
     if hasattr(val, "value"):
         return val.value
     return val
-

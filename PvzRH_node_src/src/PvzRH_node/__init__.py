@@ -1,3 +1,7 @@
+"""A high-level Python API and transpilation engine that compiles Python code
+into visual event node graphs and JSON level definitions for Plants vs. Zombies
+Fusion (PvZRH)."""
+
 import atexit  # noqa: N999
 
 from . import nodes as nodes

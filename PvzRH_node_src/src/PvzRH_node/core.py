@@ -42,7 +42,7 @@ class CompilerSetting:
 
 
 settings = CompilerSetting()
-
+"""Configures layout, spacing, and grouping behavior for exported node graphs."""
 
 class CompilerState:
     def __init__(self) -> None:
