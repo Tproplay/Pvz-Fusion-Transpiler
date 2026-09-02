@@ -624,8 +624,8 @@ class InGameUI:
 
         Example:
             ```python
-            pvn.Print("Wave ", wave_num, " incoming!")
-            pvn.Print("Hard mode: ", hard_mode)  # hard_mode: BoolVar -> "True"/"False"
+            pvn.InGameUI.display_text("Wave ", wave_num, " incoming!")
+            pvn.InGameUI.display_text("Hard mode: ", hard_mode)  # hard_mode: BoolVar -> "True"/"False"
             ```
         """
         from .Libraries.extensions import BoolVar, If
@@ -940,6 +940,28 @@ class Lawnf:
             ctx.trigger_stack.pop()
 
     
-Print = InGameUI.display_text
+def Print(*args, duration=3.0):
+    """Alias for InGameUI.display_text.
+    
+    Formats and displays a mix of text, variables, and node ports on screen.
+
+    If any argument is a boolean expression (`BoolVar` or a comparison/logic
+    node port), the message is compiled into two branches — one text string
+    rendered if the condition is `True`, another if `False` — so the correct
+    wording shows up at runtime without you having to branch manually.
+
+    Args:
+        *args: Any mix of strings, numbers, `IntVar`/`FloatVar`/`BoolVar`,
+            or raw node output ports. All arguments are concatenated in order.
+        duration (float): How long the text stays on screen, in seconds.
+            Defaults to `3.0`.
+
+    Example:
+        ```python
+        pvn.Print("Wave ", wave_num, " incoming!")
+        pvn.Print("Hard mode: ", hard_mode)  # hard_mode: BoolVar -> "True"/"False"
+        ```
+        """
+    return InGameUI.display_text(*args, duration=duration)
 
 
