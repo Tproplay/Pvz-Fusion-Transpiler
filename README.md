@@ -27,7 +27,12 @@ This python library allows level designers, content creators, and modders to con
 
 Open Powershell/terminal and run the following:
 ```bash
-pip install "git+https://github.com/Tproplay/Pvz-Fusion-Transpiler.git#subdirectory=PvzRH_node_src"                  
+pip install "git+https://github.com/Tproplay/Pvz-Fusion-Transpiler.git#subdirectory=PvzRH_node_src"
+```
+
+To update, run the following:
+```bash
+pip install --upgrade "git+https://github.com/Tproplay/Pvz-Fusion-Transpiler.git#subdirectory=PvzRH_node_src"
 ```
 
 ### How to use
