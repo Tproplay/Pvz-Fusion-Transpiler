@@ -1904,18 +1904,22 @@ class For:
         ctx.trigger_stack.pop()
 
 
-class _Time:
+class Time:
+    """Namespace for time manipulation, delays, and loop tracking."""
+
+    _time_since_start_var = None
+    _time_since_game_start_var = None
+
     class OnFixedUpdate:
-        """
-        High-frequency/timed event loop driven natively by ToggleCycleNode.
-        Runs 10 times a second by default.
-        Features a lazy-loaded frame tracker.
+        """High-frequency/timed event loop driven natively by ToggleCycleNode.
+        
+        Runs 10 times a second by default. Features a lazy-loaded frame tracker.
 
         ### Usage:
             with pvn.Time.OnFixedUpdate(interval=0.1) as update:
                 pvn.Board.Sun += 1
                 with pvn.If(update.tick == 100):
-                    pvn.show_message("100 ticks have passed!")
+                    pvn.Print("100 ticks have passed!")
         """
 
         def __init__(self, interval: float | Any = 0.1):
@@ -1953,8 +1957,7 @@ class _Time:
 
         @property
         def tick(self):
-            """
-            Lazy getter. Spawns and wires an active CounterNode tracking the loop
+            """Lazy getter. Spawns and wires an active CounterNode tracking the loop
             the very first time this property is read in a level script.
             """
             if self._counter is None:
@@ -1997,53 +2000,45 @@ class _Time:
         def __exit__(self, exc_type, exc_val, exc_tb):
             ctx.trigger_stack.pop()
 
-    def __init__(self):
-        self._global_time_var = None
-
-    @property
-    def time_since_start(self):
-        """
-        Returns the time in seconds since the level started.
-        """
-        if self._global_time_var is None:
-            # 1. Preserve active compiler context stack
+    @_staticproperty
+    def time_since_start():
+        """Returns the time in seconds since the level started (from `OnBoardStart`)."""
+        if Time._time_since_start_var is None:
             saved_stack = ctx.trigger_stack[:]
             ctx.trigger_stack.clear()
 
-            # 2. Instantiate global float tracking register
-            self._global_time_var = FloatVar(start_val=0.0)
+            Time._time_since_start_var = FloatVar(
+                start_val=0.0, name="TimeSinceBoardStart"
+            )
 
-            # 3. Clean background loop driven by high-level trigger context managers
             with api.Trigger.OnBoardStart():
-                with self.OnFixedUpdate(interval=0.1):
-                    self._global_time_var += 0.1
+                with Time.OnFixedUpdate(interval=0.1):
+                    Time._time_since_start_var += 0.1
 
-            # 4. Restore the user's active compilation stack
             ctx.trigger_stack.extend(saved_stack)
 
-        return self._global_time_var.value
+        return Time._time_since_start_var.value
 
-    @property
-    def time_since_game_start(self):
+    @_staticproperty
+    def time_since_game_start():
+        """Returns the time in seconds since the game started (from `OnGameStart`,
+        i.e. after the 'Ready, Set, Plant!' sequence).
         """
-        Returns the time in seconds since the game started.
-        """
-        if self._global_time_var is None:
+        if Time._time_since_game_start_var is None:
             saved_stack = ctx.trigger_stack[:]
             ctx.trigger_stack.clear()
 
-            self._global_time_var = FloatVar(start_val=0.0)
+            Time._time_since_game_start_var = FloatVar(
+                start_val=0.0, name="TimeSinceGameStart"
+            )
 
             with api.Trigger.OnGameStart():
-                with self.OnFixedUpdate(interval=0.1):
-                    self._global_time_var += 0.1
+                with Time.OnFixedUpdate(interval=0.1):
+                    Time._time_since_game_start_var += 0.1
 
             ctx.trigger_stack.extend(saved_stack)
 
-        return self._global_time_var.value
-
-
-Time = _Time()
+        return Time._time_since_game_start_var.value
 
 
 class Mouse:

@@ -83,17 +83,19 @@ def max(*args):
     Usage:
         max(val1, val2, val3) or max([val1, val2, val3])
     """
-
     if len(args) == 1 and isinstance(args[0], (list, tuple)):
         args = args[0]
 
     if not args:
         raise ValueError("max() requires at least one argument.")
 
-    if all(
-        isinstance(x, (int, float)) and not isinstance(x, PortReference) for x in args
-    ):
-        return builtins.max(args)
+    def _is_static(x):
+        raw = x.value if hasattr(x, "value") else x
+        return isinstance(raw, (int, float)) and not hasattr(raw, "node")
+
+    if all(_is_static(x) for x in args):
+        raw_args = [x.value if hasattr(x, "value") else x for x in args]
+        return builtins.max(raw_args)
 
     res = args[0]
     for next_val in args[1:]:
@@ -103,51 +105,47 @@ def max(*args):
 
 def _binary_max(a, b):
     """Internal helper to compare exactly two values inside the node graph."""
+    a_raw = a.value if hasattr(a, "value") else a
+    b_raw = b.value if hasattr(b, "value") else b
 
     saved_stack = ctx.trigger_stack[:]
     ctx.trigger_stack.clear()
 
-    branch = nodes.branch_node(condition=(a > b))
+    branch = nodes.branch_node(condition=(a_raw > b_raw))
 
-    is_float = (hasattr(a, "_is_float_port") and a._is_float_port()) or (
-        hasattr(b, "_is_float_port") and b._is_float_port()
-    )
+    a_is_float = isinstance(a_raw, float) or (hasattr(a_raw, "_is_float_port") and a_raw._is_float_port())
+    b_is_float = isinstance(b_raw, float) or (hasattr(b_raw, "_is_float_port") and b_raw._is_float_port())
+    is_float = a_is_float or b_is_float
+    
     if is_float:
+        if not a_is_float:
+            a_raw = float(a_raw) if isinstance(a_raw, int) else nodes.int_to_float(int_val=a_raw).float
+        if not b_is_float:
+            b_raw = float(b_raw) if isinstance(b_raw, int) else nodes.int_to_float(int_val=b_raw).float
+
         reg = nodes.float_variable(var_name="max_temp_f")
-        ctx.add_connection(
-            branch.id,
-            "真（触发）",
-            nodes.set_float_variable_value(variable=reg.variable, value=a).id,
-            "触发",
-        )
-        ctx.add_connection(
-            branch.id,
-            "假（停止）",
-            nodes.set_float_variable_value(variable=reg.variable, value=b).id,
-            "触发",
-        )
+        set_true = nodes.set_float_variable_value(variable=reg.variable, value=a_raw)
+        set_false = nodes.set_float_variable_value(variable=reg.variable, value=b_raw)
         final_port = nodes.get_float_variable_value(variable=reg.variable).value
     else:
         reg = nodes.int_variable(var_name="max_temp_i")
-        ctx.add_connection(
-            branch.id,
-            "真（触发）",
-            nodes.set_int_variable_value(variable=reg.variable, value=a).id,
-            "触发",
-        )
-        ctx.add_connection(
-            branch.id,
-            "假（停止）",
-            nodes.set_int_variable_value(variable=reg.variable, value=b).id,
-            "触发",
-        )
+        set_true = nodes.set_int_variable_value(variable=reg.variable, value=a_raw)
+        set_false = nodes.set_int_variable_value(variable=reg.variable, value=b_raw)
         final_port = nodes.get_int_variable_value(variable=reg.variable).value
+
+    ctx.add_connection(branch.id, "真（触发）", set_true.id, "触发")
+    ctx.add_connection(branch.id, "假（停止）", set_false.id, "触发")
+
+    merge_node = nodes.pulse_node()
+    ctx.add_connection(set_true.id, "完成", merge_node.id, "触发")
+    ctx.add_connection(set_false.id, "完成", merge_node.id, "触发")
 
     ctx.trigger_stack.extend(saved_stack)
     if ctx.trigger_stack:
         prev_node = ctx.trigger_stack[-1]
         ctx.add_connection(prev_node.id, prev_node.out_trigger, branch.id, "触发")
-        ctx.trigger_stack[-1] = ExecutionPath(branch.id, "真（触发）")
+        
+        ctx.trigger_stack[-1] = ExecutionPath(merge_node.id, "脉冲触发时")
 
     return final_port
 
@@ -158,17 +156,19 @@ def min(*args):
     Usage:
         min(val1, val2, val3) or min([val1, val2, val3])
     """
-
     if len(args) == 1 and isinstance(args[0], (list, tuple)):
         args = args[0]
 
     if not args:
         raise ValueError("min() requires at least one argument.")
 
-    if all(
-        isinstance(x, (int, float)) and not isinstance(x, PortReference) for x in args
-    ):
-        return builtins.min(args)
+    def _is_static(x):
+        raw = x.value if hasattr(x, "value") else x
+        return isinstance(raw, (int, float)) and not hasattr(raw, "node")
+
+    if all(_is_static(x) for x in args):
+        raw_args = [x.value if hasattr(x, "value") else x for x in args]
+        return builtins.min(raw_args)
 
     res = args[0]
     for next_val in args[1:]:
@@ -178,51 +178,47 @@ def min(*args):
 
 def _binary_min(a, b):
     """Internal helper to compare exactly two values inside the node graph."""
+    a_raw = a.value if hasattr(a, "value") else a
+    b_raw = b.value if hasattr(b, "value") else b
 
     saved_stack = ctx.trigger_stack[:]
     ctx.trigger_stack.clear()
 
-    branch = nodes.branch_node(condition=(a < b))
+    branch = nodes.branch_node(condition=(a_raw < b_raw))
 
-    is_float = (hasattr(a, "_is_float_port") and a._is_float_port()) or (
-        hasattr(b, "_is_float_port") and b._is_float_port()
-    )
+    a_is_float = isinstance(a_raw, float) or (hasattr(a_raw, "_is_float_port") and a_raw._is_float_port())
+    b_is_float = isinstance(b_raw, float) or (hasattr(b_raw, "_is_float_port") and b_raw._is_float_port())
+    is_float = a_is_float or b_is_float
+    
     if is_float:
+        if not a_is_float:
+            a_raw = float(a_raw) if isinstance(a_raw, int) else nodes.int_to_float(int_val=a_raw).float
+        if not b_is_float:
+            b_raw = float(b_raw) if isinstance(b_raw, int) else nodes.int_to_float(int_val=b_raw).float
+
         reg = nodes.float_variable(var_name="min_temp_f")
-        ctx.add_connection(
-            branch.id,
-            "真（触发）",
-            nodes.set_float_variable_value(variable=reg.variable, value=a).id,
-            "触发",
-        )
-        ctx.add_connection(
-            branch.id,
-            "假（停止）",
-            nodes.set_float_variable_value(variable=reg.variable, value=b).id,
-            "触发",
-        )
+        set_true = nodes.set_float_variable_value(variable=reg.variable, value=a_raw)
+        set_false = nodes.set_float_variable_value(variable=reg.variable, value=b_raw)
         final_port = nodes.get_float_variable_value(variable=reg.variable).value
     else:
         reg = nodes.int_variable(var_name="min_temp_i")
-        ctx.add_connection(
-            branch.id,
-            "真（触发）",
-            nodes.set_int_variable_value(variable=reg.variable, value=a).id,
-            "触发",
-        )
-        ctx.add_connection(
-            branch.id,
-            "假（停止）",
-            nodes.set_int_variable_value(variable=reg.variable, value=b).id,
-            "触发",
-        )
+        set_true = nodes.set_int_variable_value(variable=reg.variable, value=a_raw)
+        set_false = nodes.set_int_variable_value(variable=reg.variable, value=b_raw)
         final_port = nodes.get_int_variable_value(variable=reg.variable).value
+
+    ctx.add_connection(branch.id, "真（触发）", set_true.id, "触发")
+    ctx.add_connection(branch.id, "假（停止）", set_false.id, "触发")
+
+    merge_node = nodes.pulse_node()
+    ctx.add_connection(set_true.id, "完成", merge_node.id, "触发")
+    ctx.add_connection(set_false.id, "完成", merge_node.id, "触发")
 
     ctx.trigger_stack.extend(saved_stack)
     if ctx.trigger_stack:
         prev_node = ctx.trigger_stack[-1]
         ctx.add_connection(prev_node.id, prev_node.out_trigger, branch.id, "触发")
-        ctx.trigger_stack[-1] = ExecutionPath(branch.id, "真（触发）")
+        
+        ctx.trigger_stack[-1] = ExecutionPath(merge_node.id, "脉冲触发时")
 
     return final_port
 
