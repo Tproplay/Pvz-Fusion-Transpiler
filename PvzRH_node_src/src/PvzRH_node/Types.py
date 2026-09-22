@@ -24,3 +24,4 @@ from .Data.DataFactory import (
     OrderedSpawn,
     GodPlant,
 )
+from .Data.Recipes import RecipeData as RecipeData

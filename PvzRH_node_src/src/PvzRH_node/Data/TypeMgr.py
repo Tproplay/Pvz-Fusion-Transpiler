@@ -1,7 +1,5 @@
 from enum import Enum
 
-from .Recipes import RecipeData as RecipeData
-
 class SceneType(Enum):
     Day = 0
     Night = 1
@@ -106,6 +104,11 @@ class PlantType(Enum):
     WaterAloes = 38
     Bamboo = 39
     Thorns = 40
+    TumbleSnow = 41
+    Swordshroom = 42
+    Shieldshroom = 43
+    Lichen = 44
+    CoffeeBean = 211
     JackboxPlant = 212
     PickaxePlant = 213
     PortalPlant = 214
@@ -162,6 +165,7 @@ class PlantType(Enum):
     BedRockTallNut = 308
     UltimateSniperGatling = 309
     UltimateMachineNut = 310
+    UltimateHolyStar = 311
     Tower_peasunflower = 350
     Tower_BigSunShroom = 351
     Tower_cherryShooter = 352
@@ -743,12 +747,40 @@ class PlantType(Enum):
     PuffChomper = 1459
     SeaPot = 1460
     GarlicStar = 1461
+    IceChomper = 1462
+    CactusSquash = 1463
+    CaltropPumpkin = 1464
+    TumbleSword = 1465
+    TumbleShield = 1466
+    SwordShieldshroom = 1467
+    TumbleWater = 1468
+    WaterSwordshroom = 1469
+    WaterShieldshroom = 1470
+    SuperGatlingBlover = 1471
+    ThreeFume = 1472
+    SniperLily = 1473
+    JalaPot = 1474
+    TumbleLichen = 1475
+    SwordLichen = 1476
+    ShieldLichen = 1477
+    SniperCattail = 1478
+    WaterLichen = 1479
+    ThornsFurnace = 1480
+    TumbleFurnace = 1481
+    SwordFurnace = 1482
+    ShieldFurnace = 1483
     Ulti_cherryGatling = 3000
+    Curse_Peashooter = 3500
+    Curse_Sunflower = 3501
+    Curse_Pumpkin = 3502
+    Legion = 4000
+    SnowBird = 4001
     FlyingThreePeater_sp = 5000
     MagicSnowPea2 = 5001
     EndPumpiner = 5002
     UltimatePresentKelp = 5003
     UltimateFurnace = 5004
+    DragonPot = 5005
 
 class Plant_DieReason(Enum):
     Default = 0
@@ -1996,6 +2028,56 @@ class ZombieAnimation:
         WALK = "walk"
         WALK2 = "walk2"
 
+    class LostMachine(Enum):
+        ATTACK = "attack"
+        DIE = "die"
+        IDLE = "idle"
+        WALK = "walk"
+
+    class LostMachineII(Enum):
+        ATTACK = "attack"
+        DIE = "die"
+        IDLE = "idle"
+        WALK = "walk"
+
+    class LostMachineIII(Enum):
+        ATTACK = "attack"
+        DIE = "die"
+        IDLE = "idle"
+        WALK = "walk"
+
+    class LostPenguin(Enum):
+        ATTACK = "attack"
+        IDLE = "idle"
+        SKATING = "skating"
+        WALK = "walk"
+
+    class LostSnowMonster(Enum):
+        ATTACK = "attack"
+        CHANGECOLOR = "changeColor"
+        IDLE = "idle"
+        TAIL = "tail"
+        WALK = "walk"
+        WALK2 = "walk2"
+
+    class SnowCrab(Enum):
+        DIE = "die"
+        IDLE = "idle"
+        WALK = "walk"
+
+    class SnowBirdZombie(Enum):
+        DIE = "die"
+        IDLE = "idle"
+        SHOOT = "shoot"
+        WALK = "walk"
+
+    class LostMachineIV(Enum):
+        ATTACK = "attack"
+        DIE = "die"
+        IDLE = "idle"
+        SHOOT = "shoot"
+        WALK = "walk"
+
     class PeaShooterZombie(Enum):
         ATTACK = "attack"
         DIE = "die"
@@ -2687,6 +2769,14 @@ class ZombieAnimation:
     class JacksonDriverBoss(Enum):
         IDLE = "idle"
         WALK = "walk"
+
+    class SnowFootballDrown(Enum):
+        ATTACK = "attack"
+        DIE = "die"
+        IDLE = "idle"
+        RUN = "run"
+        RUN2 = "run2"
+        THROW = "throw"
 
     class GatlingPaper_a(Enum):
         ATTACK = "attack"

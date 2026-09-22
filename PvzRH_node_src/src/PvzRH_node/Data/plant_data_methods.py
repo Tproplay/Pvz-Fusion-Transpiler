@@ -531,14 +531,14 @@ class PlantDataMethodsMixin:
     def PineFurnace(
         cls,
         cost: int = 25,
-        cd: float = 7.5,
+        cd: float = 30.0,
         max_health: int = 300,
         attack_damage: int = 0,
         attack_interval: float = 0.0,
         produce_interval: float = 0.0,
     ) -> Dict[str, Any]:
         """PlantType.PineFurnace (35)
-        Defaults: Cost=25 | CD=7.5s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        Defaults: Cost=25 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
         """
         return cls.create(35, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
@@ -616,6 +616,156 @@ class PlantDataMethodsMixin:
         Defaults: Cost=100 | CD=30.0s | HP=300 | DMG=600 | AtkInt=0.0s | ProdInt=0.0s
         """
         return cls.create(40, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def TumbleSnow(
+        cls,
+        cost: int = 25,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 50,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.TumbleSnow (41)
+        Defaults: Cost=25 | CD=7.5s | HP=500 | DMG=50 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(41, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def Swordshroom(
+        cls,
+        cost: int = 150,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 40,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.Swordshroom (42)
+        Defaults: Cost=150 | CD=7.5s | HP=500 | DMG=40 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(42, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def Shieldshroom(
+        cls,
+        cost: int = 150,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 20,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.Shieldshroom (43)
+        Defaults: Cost=150 | CD=7.5s | HP=500 | DMG=20 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(43, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def Lichen(
+        cls,
+        cost: int = 125,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 20,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.Lichen (44)
+        Defaults: Cost=125 | CD=7.5s | HP=300 | DMG=20 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(44, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def CoffeeBean(
+        cls,
+        cost: int = 75,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.CoffeeBean (211)
+        Defaults: Cost=75 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(211, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def JackboxPlant(
+        cls,
+        cost: int = 200,
+        cd: float = 50.0,
+        max_health: int = 1000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.JackboxPlant (212)
+        Defaults: Cost=200 | CD=50.0s | HP=1000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(212, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def PickaxePlant(
+        cls,
+        cost: int = 50,
+        cd: float = 7.5,
+        max_health: int = 1000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.PickaxePlant (213)
+        Defaults: Cost=50 | CD=7.5s | HP=1000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(213, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def PortalPlant(
+        cls,
+        cost: int = 200,
+        cd: float = 50.0,
+        max_health: int = 1000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.PortalPlant (214)
+        Defaults: Cost=200 | CD=50.0s | HP=1000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(214, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def MachineShardPlant(
+        cls,
+        cost: int = 200,
+        cd: float = 50.0,
+        max_health: int = 1000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.MachineShardPlant (215)
+        Defaults: Cost=200 | CD=50.0s | HP=1000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(215, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SuperMachineShardPlant(
+        cls,
+        cost: int = 300,
+        cd: float = 90.0,
+        max_health: int = 1000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SuperMachineShardPlant (216)
+        Defaults: Cost=300 | CD=90.0s | HP=1000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(216, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
     @classmethod
     def HolographicPlant(
@@ -1368,6 +1518,36 @@ class PlantDataMethodsMixin:
         return cls.create(309, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
     @classmethod
+    def UltimateMachineNut(
+        cls,
+        cost: int = 750,
+        cd: float = 90.0,
+        max_health: int = 64000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.UltimateMachineNut (310)
+        Defaults: Cost=750 | CD=90.0s | HP=64000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(310, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def UltimateHolyStar(
+        cls,
+        cost: int = 1000,
+        cd: float = 90.0,
+        max_health: int = 300,
+        attack_damage: int = 300,
+        attack_interval: float = 1.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.UltimateHolyStar (311)
+        Defaults: Cost=1000 | CD=90.0s | HP=300 | DMG=300 | AtkInt=1.0s | ProdInt=0.0s
+        """
+        return cls.create(311, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
     def Tower_peasunflower(
         cls,
         cost: int = 200,
@@ -2018,12 +2198,12 @@ class PlantDataMethodsMixin:
         cost: int = 350,
         cd: float = 90.0,
         max_health: int = 300,
-        attack_damage: int = 120,
-        attack_interval: float = 2.0,
+        attack_damage: int = 80,
+        attack_interval: float = 1.5,
         produce_interval: float = 0.0,
     ) -> Dict[str, Any]:
         """PlantType.UltimateHypno (924)
-        Defaults: Cost=350 | CD=90.0s | HP=300 | DMG=120 | AtkInt=2.0s | ProdInt=0.0s
+        Defaults: Cost=350 | CD=90.0s | HP=300 | DMG=80 | AtkInt=1.5s | ProdInt=0.0s
         """
         return cls.create(924, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
@@ -3548,12 +3728,12 @@ class PlantDataMethodsMixin:
         cost: int = 175,
         cd: float = 30.0,
         max_health: int = 300,
-        attack_damage: int = 120,
-        attack_interval: float = 3.0,
+        attack_damage: int = 80,
+        attack_interval: float = 1.5,
         produce_interval: float = 0.0,
     ) -> Dict[str, Any]:
         """PlantType.SuperHypno (1026)
-        Defaults: Cost=175 | CD=30.0s | HP=300 | DMG=120 | AtkInt=3.0s | ProdInt=0.0s
+        Defaults: Cost=175 | CD=30.0s | HP=300 | DMG=80 | AtkInt=1.5s | ProdInt=0.0s
         """
         return cls.create(1026, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
@@ -9681,14 +9861,14 @@ class PlantDataMethodsMixin:
     def ThreePumpkin(
         cls,
         cost: int = 400,
-        cd: float = 0.0,
+        cd: float = 30.0,
         max_health: int = 4000,
         attack_damage: int = 0,
         attack_interval: float = 0.0,
         produce_interval: float = 0.0,
     ) -> Dict[str, Any]:
         """PlantType.ThreePumpkin (1435)
-        Defaults: Cost=400 | CD=0.0s | HP=4000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        Defaults: Cost=400 | CD=30.0s | HP=4000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
         """
         return cls.create(1435, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
@@ -9798,6 +9978,621 @@ class PlantDataMethodsMixin:
         return cls.create(1442, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
     @classmethod
+    def MagicSnowPea(
+        cls,
+        cost: int = 275,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.MagicSnowPea (1443)
+        Defaults: Cost=275 | CD=7.5s | HP=300 | DMG=40 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1443, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def EnderPumpkin(
+        cls,
+        cost: int = 125,
+        cd: float = 30.0,
+        max_health: int = 4000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.EnderPumpkin (1444)
+        Defaults: Cost=125 | CD=30.0s | HP=4000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1444, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SuperGatlingFume(
+        cls,
+        cost: int = 675,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 20,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SuperGatlingFume (1445)
+        Defaults: Cost=675 | CD=7.5s | HP=300 | DMG=20 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1445, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def CoinShroom(
+        cls,
+        cost: int = 25,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 25.0,
+    ) -> Dict[str, Any]:
+        """PlantType.CoinShroom (1446)
+        Defaults: Cost=25 | CD=7.5s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=25.0s
+        """
+        return cls.create(1446, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def BigCoinShroom(
+        cls,
+        cost: int = 100,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 50.0,
+    ) -> Dict[str, Any]:
+        """PlantType.BigCoinShroom (1447)
+        Defaults: Cost=100 | CD=7.5s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=50.0s
+        """
+        return cls.create(1447, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SniperScaredy(
+        cls,
+        cost: int = 625,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 500,
+        attack_interval: float = 3.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SniperScaredy (1448)
+        Defaults: Cost=625 | CD=30.0s | HP=300 | DMG=500 | AtkInt=3.0s | ProdInt=0.0s
+        """
+        return cls.create(1448, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SilverHypnoShroom(
+        cls,
+        cost: int = 100,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SilverHypnoShroom (1449)
+        Defaults: Cost=100 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1449, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def GoldHypnoShroom(
+        cls,
+        cost: int = 200,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.GoldHypnoShroom (1450)
+        Defaults: Cost=200 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1450, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def CherryPuff(
+        cls,
+        cost: int = 50,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 900,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.CherryPuff (1451)
+        Defaults: Cost=50 | CD=30.0s | HP=300 | DMG=900 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1451, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def ChomperScaredy(
+        cls,
+        cost: int = 175,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.ChomperScaredy (1452)
+        Defaults: Cost=175 | CD=7.5s | HP=300 | DMG=40 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1452, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def UmbrellaFume(
+        cls,
+        cost: int = 175,
+        cd: float = 7.5,
+        max_health: int = 1000,
+        attack_damage: int = 40,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.UmbrellaFume (1453)
+        Defaults: Cost=175 | CD=7.5s | HP=1000 | DMG=40 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1453, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def DoomPot(
+        cls,
+        cost: int = 150,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.DoomPot (1454)
+        Defaults: Cost=150 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1454, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def DoomUmbrella(
+        cls,
+        cost: int = 225,
+        cd: float = 7.5,
+        max_health: int = 1000,
+        attack_damage: int = 80,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.DoomUmbrella (1455)
+        Defaults: Cost=225 | CD=7.5s | HP=1000 | DMG=80 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1455, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SeaChomper(
+        cls,
+        cost: int = 150,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SeaChomper (1456)
+        Defaults: Cost=150 | CD=7.5s | HP=300 | DMG=40 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1456, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def IceStar(
+        cls,
+        cost: int = 200,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 20,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.IceStar (1457)
+        Defaults: Cost=200 | CD=7.5s | HP=300 | DMG=20 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1457, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def FumeChomper(
+        cls,
+        cost: int = 225,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 20,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.FumeChomper (1458)
+        Defaults: Cost=225 | CD=7.5s | HP=300 | DMG=20 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1458, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def PuffChomper(
+        cls,
+        cost: int = 50,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 200,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.PuffChomper (1459)
+        Defaults: Cost=50 | CD=7.5s | HP=300 | DMG=200 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1459, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SeaPot(
+        cls,
+        cost: int = 25,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SeaPot (1460)
+        Defaults: Cost=25 | CD=7.5s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1460, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def GarlicStar(
+        cls,
+        cost: int = 150,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 30,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.GarlicStar (1461)
+        Defaults: Cost=150 | CD=7.5s | HP=300 | DMG=30 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1461, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def IceChomper(
+        cls,
+        cost: int = 225,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.IceChomper (1462)
+        Defaults: Cost=225 | CD=7.5s | HP=300 | DMG=40 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1462, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def CactusSquash(
+        cls,
+        cost: int = 225,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 1800,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.CactusSquash (1463)
+        Defaults: Cost=225 | CD=30.0s | HP=300 | DMG=1800 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1463, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def CaltropPumpkin(
+        cls,
+        cost: int = 225,
+        cd: float = 30.0,
+        max_health: int = 4000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.CaltropPumpkin (1464)
+        Defaults: Cost=225 | CD=30.0s | HP=4000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1464, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def TumbleSword(
+        cls,
+        cost: int = 175,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 150,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.TumbleSword (1465)
+        Defaults: Cost=175 | CD=7.5s | HP=500 | DMG=150 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1465, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def TumbleShield(
+        cls,
+        cost: int = 175,
+        cd: float = 7.5,
+        max_health: int = 1500,
+        attack_damage: int = 50,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.TumbleShield (1466)
+        Defaults: Cost=175 | CD=7.5s | HP=1500 | DMG=50 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1466, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SwordShieldshroom(
+        cls,
+        cost: int = 300,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 20,
+        attack_interval: float = 0.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SwordShieldshroom (1467)
+        Defaults: Cost=300 | CD=7.5s | HP=500 | DMG=20 | AtkInt=0.5s | ProdInt=0.0s
+        """
+        return cls.create(1467, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def TumbleWater(
+        cls,
+        cost: int = 100,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 80,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.TumbleWater (1468)
+        Defaults: Cost=100 | CD=7.5s | HP=500 | DMG=80 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1468, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def WaterSwordshroom(
+        cls,
+        cost: int = 225,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 40,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.WaterSwordshroom (1469)
+        Defaults: Cost=225 | CD=7.5s | HP=500 | DMG=40 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1469, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def WaterShieldshroom(
+        cls,
+        cost: int = 225,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 30,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.WaterShieldshroom (1470)
+        Defaults: Cost=225 | CD=7.5s | HP=500 | DMG=30 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1470, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SuperGatlingBlover(
+        cls,
+        cost: int = 600,
+        cd: float = 50.0,
+        max_health: int = 300,
+        attack_damage: int = 20,
+        attack_interval: float = 3.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SuperGatlingBlover (1471)
+        Defaults: Cost=600 | CD=50.0s | HP=300 | DMG=20 | AtkInt=3.0s | ProdInt=0.0s
+        """
+        return cls.create(1471, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def ThreeFume(
+        cls,
+        cost: int = 350,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.ThreeFume (1472)
+        Defaults: Cost=350 | CD=7.5s | HP=300 | DMG=40 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1472, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SniperLily(
+        cls,
+        cost: int = 625,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SniperLily (1473)
+        Defaults: Cost=625 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1473, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def JalaPot(
+        cls,
+        cost: int = 150,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.JalaPot (1474)
+        Defaults: Cost=150 | CD=7.5s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1474, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def TumbleLichen(
+        cls,
+        cost: int = 150,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 50,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.TumbleLichen (1475)
+        Defaults: Cost=150 | CD=7.5s | HP=500 | DMG=50 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1475, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SwordLichen(
+        cls,
+        cost: int = 275,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SwordLichen (1476)
+        Defaults: Cost=275 | CD=7.5s | HP=300 | DMG=40 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1476, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def ShieldLichen(
+        cls,
+        cost: int = 275,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.ShieldLichen (1477)
+        Defaults: Cost=275 | CD=7.5s | HP=300 | DMG=40 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1477, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SniperCattail(
+        cls,
+        cost: int = 600,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 500,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SniperCattail (1478)
+        Defaults: Cost=600 | CD=7.5s | HP=300 | DMG=500 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(1478, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def WaterLichen(
+        cls,
+        cost: int = 175,
+        cd: float = 7.5,
+        max_health: int = 300,
+        attack_damage: int = 30,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.WaterLichen (1479)
+        Defaults: Cost=175 | CD=7.5s | HP=300 | DMG=30 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1479, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def ThornsFurnace(
+        cls,
+        cost: int = 125,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.ThornsFurnace (1480)
+        Defaults: Cost=125 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1480, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def TumbleFurnace(
+        cls,
+        cost: int = 50,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.TumbleFurnace (1481)
+        Defaults: Cost=50 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1481, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SwordFurnace(
+        cls,
+        cost: int = 175,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SwordFurnace (1482)
+        Defaults: Cost=175 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1482, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def ShieldFurnace(
+        cls,
+        cost: int = 175,
+        cd: float = 30.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.ShieldFurnace (1483)
+        Defaults: Cost=175 | CD=30.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(1483, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
     def Ulti_cherryGatling(
         cls,
         cost: int = 950,
@@ -9813,6 +10608,81 @@ class PlantDataMethodsMixin:
         return cls.create(3000, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
 
     @classmethod
+    def Curse_Peashooter(
+        cls,
+        cost: int = 0,
+        cd: float = 0.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 9.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.Curse_Peashooter (3500)
+        Defaults: Cost=0 | CD=0.0s | HP=300 | DMG=0 | AtkInt=9.0s | ProdInt=0.0s
+        """
+        return cls.create(3500, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def Curse_Sunflower(
+        cls,
+        cost: int = 0,
+        cd: float = 0.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.Curse_Sunflower (3501)
+        Defaults: Cost=0 | CD=0.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(3501, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def Curse_Pumpkin(
+        cls,
+        cost: int = 0,
+        cd: float = 0.0,
+        max_health: int = 4000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.Curse_Pumpkin (3502)
+        Defaults: Cost=0 | CD=0.0s | HP=4000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(3502, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def Legion(
+        cls,
+        cost: int = 50,
+        cd: float = 7.5,
+        max_health: int = 500,
+        attack_damage: int = 50,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.Legion (4000)
+        Defaults: Cost=50 | CD=7.5s | HP=500 | DMG=50 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(4000, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def SnowBird(
+        cls,
+        cost: int = 300,
+        cd: float = 30.0,
+        max_health: int = 4000,
+        attack_damage: int = 200,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.SnowBird (4001)
+        Defaults: Cost=300 | CD=30.0s | HP=4000 | DMG=200 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(4001, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
     def FlyingThreePeater_sp(
         cls,
         cost: int = 775,
@@ -9826,3 +10696,78 @@ class PlantDataMethodsMixin:
         Defaults: Cost=775 | CD=50.0s | HP=300 | DMG=180 | AtkInt=3.0s | ProdInt=0.0s
         """
         return cls.create(5000, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def MagicSnowPea2(
+        cls,
+        cost: int = 275,
+        cd: float = 50.0,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 1.5,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.MagicSnowPea2 (5001)
+        Defaults: Cost=275 | CD=50.0s | HP=300 | DMG=40 | AtkInt=1.5s | ProdInt=0.0s
+        """
+        return cls.create(5001, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def EndPumpiner(
+        cls,
+        cost: int = 400,
+        cd: float = 50.0,
+        max_health: int = 16000,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.EndPumpiner (5002)
+        Defaults: Cost=400 | CD=50.0s | HP=16000 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(5002, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def UltimatePresentKelp(
+        cls,
+        cost: int = 400,
+        cd: float = 90.0,
+        max_health: int = 300,
+        attack_damage: int = 40,
+        attack_interval: float = 5.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.UltimatePresentKelp (5003)
+        Defaults: Cost=400 | CD=90.0s | HP=300 | DMG=40 | AtkInt=5.0s | ProdInt=0.0s
+        """
+        return cls.create(5003, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def UltimateFurnace(
+        cls,
+        cost: int = 325,
+        cd: float = 50.0,
+        max_health: int = 300,
+        attack_damage: int = 0,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.UltimateFurnace (5004)
+        Defaults: Cost=325 | CD=50.0s | HP=300 | DMG=0 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(5004, cost, cd, max_health, attack_damage, attack_interval, produce_interval)
+
+    @classmethod
+    def DragonPot(
+        cls,
+        cost: int = 550,
+        cd: float = 90.0,
+        max_health: int = 300,
+        attack_damage: int = 1800,
+        attack_interval: float = 0.0,
+        produce_interval: float = 0.0,
+    ) -> Dict[str, Any]:
+        """PlantType.DragonPot (5005)
+        Defaults: Cost=550 | CD=90.0s | HP=300 | DMG=1800 | AtkInt=0.0s | ProdInt=0.0s
+        """
+        return cls.create(5005, cost, cd, max_health, attack_damage, attack_interval, produce_interval)

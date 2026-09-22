@@ -1,6 +1,6 @@
 import re
 
-def generate_enum_file(log_path=r"C:\Users\Tproplay\Games\Pvz\Fusion RH\English 3.9\MelonLoader\Latest.log", output_path="zombie_animations.py"):
+def generate_enum_file(log_path=r"C:\Users\Tproplay\Games\Pvz\Fusion RH\English 4.0\MelonLoader\Latest.log", output_path="zombie_animations.py"):
     try:
         with open(log_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
