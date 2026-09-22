@@ -892,6 +892,14 @@ class ZombieType(Enum):
     ZombieLoonNut = 89
     RedZombieLoonNut = 90
     PolFootballZombie = 91
+    LostMachine = 92
+    LostMachineII = 93
+    LostMachineIII = 94
+    LostPenguin = 95
+    LostSnowMonster = 96
+    SnowCrab = 97
+    SnowBirdZombie = 98
+    LostMachineIV = 99
     PeaShooterZombie = 100
     CherryShooterZombie = 101
     SuperCherryShooterZombie = 102
@@ -988,6 +996,7 @@ class ZombieType(Enum):
     UltimateEndoflameZombie = 259
     FootballBoss = 260
     JacksonDriverBoss = 261
+    SnowFootballDrown = 262
     GatlingPaper_a = 300
     GatlingPaper_b = 301
     GatlingPaper_c = 302
@@ -1174,6 +1183,7 @@ class SoundType(Enum):
     HypnoCattail1 = 152
     HypnoCattail2 = 153
     HypnoCattail3 = 154
+    ThunderLightning = 155
 
 class KeyCode(Enum):
     None_ = 0
