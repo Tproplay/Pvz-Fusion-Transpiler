@@ -35,6 +35,20 @@ To update, run the following:
 pip install --upgrade "git+https://github.com/Tproplay/Pvz-Fusion-Transpiler.git#subdirectory=PvzRH_node_src"
 ```
 
-### How to use
+## 🚀 Getting Started
 
-There are several examples available on our [github](https://github.com/Tproplay/Pvz-Fusion-Transpiler/tree/main/Examples)
+Follow this curated reading path to quickly get up to speed with the framework, from fundamental compiler mechanics to advanced gameplay systems.
+
+---
+
+### Recommended Reading Order
+
+| Step | Topic | Guide | What You Will Learn |
+| :--- | :--- | :--- | :--- |
+| **1** | **Level Setup** | [`README.md`](Documentation%20[WIP]/README.md) | Initializing compiler configurations, save directories, and level metadata. |
+| **2** | **State Management** | [`Variables.md`](Documentation%20[WIP]/Core/Variables.md) | Working with persistent canvas state nodes (`IntVar`, `FloatVar`, `BoolVar`). |
+| **3** | **Event Lifecycle** | [`Triggers.md`](Documentation%20[WIP]/Core/Triggers.md) | Hooking into game lifecycle events (`OnGameStart`, `OnZombieSpawn`, key presses). |
+| **4** | **Flow Control** | [`Conditional statements.md`](Documentation%20[WIP]/Core/Conditional%20statements.md) | Routing logic via timeline-safe branching constructs (`If`, `Elif`, `Else`). |
+| **5** | **Board & Spawning** | [`Board.md`](Documentation%20[WIP]/Core/Board.md) & [`Spawning.md`](Documentation%20[WIP]/Core/Spawning.md) | Modifying resources, lane conditions, and generating custom wave queues. |
+
+---
