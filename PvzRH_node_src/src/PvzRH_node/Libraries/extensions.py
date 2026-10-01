@@ -1879,30 +1879,36 @@ class For:
     Yields a context object that dynamically exposes the current loop iteration index.
 
     Args:
-        count (int | Any): The total number of iterations to execute, or a numeric output port.
+        count (int | Any): The total number of iterations to execute, or a numeric output port[cite: 5].
 
     Example:
         ```python
-        with pvn.For(5) as loop:
-            ...
+        with pvn.For(10) as loop:
+            with pvn.Time.Wait(10 * loop.index):
+                spawn_zombie()
         ```
     """
 
     def __init__(self, count):
-        self.loop_node = nodes.for_loop_node(count=count)
+        int_count = to_int_port(count)
+        self.loop_node = nodes.for_loop_node(count=int_count)
 
     def __enter__(self):
         ctx.trigger_stack.append(ExecutionPath(self.loop_node.id, "循环体"))
         return self
 
     @property
-    def index(self):
-        """Output port representing the 0-based index of the current loop iteration."""
-        return (self.loop_node, "当前索引")
+    def index(self) -> PortReference:
+        """Output port representing the 0-based index of the current loop iteration[cite: 5]."""
+        if hasattr(self.loop_node, "index") and isinstance(self.loop_node.index, PortReference):
+            return self.loop_node.index
+        return PortReference(self.loop_node, "当前索引")
+
+    def _get_primary_port(self) -> PortReference:
+        return self.index
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         ctx.trigger_stack.pop()
-
 
 class Time:
     """Namespace for time manipulation, delays, and loop tracking."""
