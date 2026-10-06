@@ -53,9 +53,9 @@ class BoolVar(ExtensionNode):
         return self.get()
 
     def _create_logical_op_node(self, op: str, other: Any) -> Any:
-        from ...Original.Calculate.and_node import AndNode
-        from ...Original.Calculate.or_node import OrNode
-        from ...Original.Calculate.not_node import NotNode
+        from ...Original.Logic.and_node import AndNode
+        from ...Original.Logic.or_node import OrNode
+        from ...Original.Logic.not_node import NotNode
         if op == "not":
             n = NotNode()
         elif op == "and":

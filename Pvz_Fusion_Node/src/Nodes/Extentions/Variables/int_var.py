@@ -105,7 +105,7 @@ class IntVar(ExtensionNode):
         return n
 
     def _create_comparison_node(self, op: str, other: Any) -> Any:
-        from ...Original.Calculate.compare_int_node import CompareIntNode
+        from ...Original.Comparison.compare_int_node import CompareIntNode
         cmp_node = CompareIntNode()
         self.attach_node(cmp_node)
         return cmp_node

@@ -93,7 +93,7 @@ class FloatVar(ExtensionNode):
         return n
 
     def _create_comparison_node(self, op: str, other: Any) -> Any:
-        from ....Original.Calculate.compare_float_node import CompareFloatNode
+        from ...Original.Comparison.compare_float_node import CompareFloatNode
         cmp_node = CompareFloatNode()
         self.attach_node(cmp_node)
         return cmp_node
