@@ -1,4 +1,5 @@
-from .Node import Node, Port, PortDef, PortDirection, PortType, ListStorageOperation
+from .Node import Node, Port, PortDef, PortDirection, PortType
+from .Variables.List.list_storage_operation import ListStorageOperation
 from .VariableAsset import VariableAsset
 from .Calculate import (
     AddNode,

@@ -4,7 +4,7 @@ Supports Int, Float, Bool, String, PlantType, ZombieType, and Object lists.
 """
 
 from typing import Optional
-from ....Node import Node, PortDef, PortDirection, PortType
+from ...Node import Node, PortDef, PortDirection, PortType
 
 
 # =============================================================================

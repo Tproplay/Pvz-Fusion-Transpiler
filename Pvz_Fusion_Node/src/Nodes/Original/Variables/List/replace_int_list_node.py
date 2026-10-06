@@ -1,8 +1,5 @@
 from typing import Optional
-try:
-    from ...Node import Node, PortDef, PortDirection, PortType
-except (ImportError, ValueError):
-    from ....Node import Node, PortDef, PortDirection, PortType
+from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class ReplaceIntListNode(Node):

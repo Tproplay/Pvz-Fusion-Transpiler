@@ -1,5 +1,5 @@
 from typing import Optional, Union
-from ....Node import Node, PortDef, PortDirection, PortType, ListStorageOperation
+from ...Node import Node, PortDef, PortDirection, PortType, ListStorageOperation
 
 
 class PlantTypeListStorageNode(Node):
