@@ -10,5 +10,6 @@ output/
 Levels/
 
 # Python pip editable metadata folder
-PvZRH_node.egg-info/
+
+*.egg-info/
 __pycache__/

@@ -1,6 +1,6 @@
 from typing import Optional, Union
-from ..Node import Node, PortDef, PortDirection, PortType, ListStorageOperation
-
+from ..Node import Node, PortDef, PortDirection, PortType
+from ..Variables.List.list_storage_operation import ListStorageOperation
 
 class PlantTypeListStorageNode(Node):
     node_type = "PlantTypeListStorageNode"
