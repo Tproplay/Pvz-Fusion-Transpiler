@@ -8,6 +8,7 @@ output/
 
 # Project levels data
 Levels/
+bin/
 
 # Python pip editable metadata folder
 
