@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ObjectToStringNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ObjectToStringNode"
     _class_ports = {
         "对象": PortDef("对象", PortDirection.Input, PortType.GameObject),
         "字符串": PortDef("字符串", PortDirection.Output, PortType.String),
     }
+
+    # Port name constants
+    GameObject_input_gameobject : str = "对象"
+    String_output_string : str = "字符串"
 
     def __init__(
         self,

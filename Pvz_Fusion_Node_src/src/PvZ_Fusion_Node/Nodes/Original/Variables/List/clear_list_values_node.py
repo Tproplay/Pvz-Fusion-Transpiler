@@ -3,12 +3,18 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class ClearListValuesNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ClearListValuesNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "列表": PortDef("列表", PortDirection.Input, PortType.ListVariable),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    List_input_listvariable : str = "列表"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

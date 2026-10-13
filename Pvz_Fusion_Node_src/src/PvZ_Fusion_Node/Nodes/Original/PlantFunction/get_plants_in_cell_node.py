@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetPlantsInCellNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetPlantsInCellNode"
     _class_ports = {
         "行": PortDef("行", PortDirection.Input, PortType.Int),
         "列": PortDef("列", PortDirection.Input, PortType.Int),
         "植物列表": PortDef("植物列表", PortDirection.Output, PortType.PlantList),
     }
+
+    # Port name constants
+    Row_input_int : str = "行"
+    Col_input_int : str = "列"
+    PlantList_output_plantlist : str = "植物列表"
 
     def __init__(
         self,

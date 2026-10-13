@@ -3,12 +3,18 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class GetBoolListItemNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetBoolListItemNode"
     _class_ports = {
         "列表": PortDef("列表", PortDirection.Input, PortType.ListVariable),
         "索引": PortDef("索引", PortDirection.Input, PortType.Int),
         "值": PortDef("值", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    List_input_listvariable : str = "列表"
+    Index_input_int : str = "索引"
+    Value_output_bool : str = "值"
 
     def __init__(
         self,

@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import Any, Optional
-from .extension_node import ExtensionNode
-from ... import nodes
-from ...Core.context import ctx, ExecutionPath
-from ...typing import _staticproperty
-from .branching import If
+from ..extension_node import ExtensionNode
+from .... import nodes
+from ....Core.context import ctx, ExecutionPath
+from ....typing import _staticproperty
+from ..Branching.branching import If
 
 
 class Random(ExtensionNode):
@@ -89,7 +89,7 @@ class Random(ExtensionNode):
 
         def __init__(self, seed: int = 12345, name: str = "PRNG_State") -> None:
             super().__init__()
-            from .variables import IntVar
+            from ..Variables.variables import IntVar
 
             safe_seed = (abs(seed) % 65537) or 1
             self.state = IntVar(start_val=safe_seed, name=name)

@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class SetBoolVariableValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "SetBoolVariableValueNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class SetBoolVariableValueNode(Node):
         "变量Out": PortDef("变量", PortDirection.Output, PortType.BoolVariable),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Variable_input_boolvariable : str = "变量"
+    NewValue_input_bool : str = "新值"
+    VariableOut_output_boolvariable : str = "变量Out"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

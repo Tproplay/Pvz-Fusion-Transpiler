@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class BoolValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "BoolValueNode"
     _class_ports = {
         "值": PortDef("值", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Value_output_bool : str = "值"
 
     def __init__(
         self,

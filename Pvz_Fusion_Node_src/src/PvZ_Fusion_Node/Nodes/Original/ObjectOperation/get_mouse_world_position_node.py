@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetMouseWorldPositionNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetMouseWorldPositionNode"
     _class_ports = {
         "位置": PortDef("位置", PortDirection.Output, PortType.Vector3),
     }
+
+    # Port name constants
+    Position_output_vector3 : str = "位置"
 
     def __init__(
         self,

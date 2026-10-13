@@ -3,11 +3,16 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class GetFloatVariableValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetFloatVariableValueNode"
     _class_ports = {
         "变量": PortDef("变量", PortDirection.Input, PortType.FloatVariable),
         "值": PortDef("值", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Variable_input_floatvariable : str = "变量"
+    Value_output_float : str = "值"
 
     def __init__(
         self,

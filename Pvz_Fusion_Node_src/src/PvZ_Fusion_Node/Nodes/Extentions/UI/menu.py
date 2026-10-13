@@ -4,10 +4,10 @@ try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
-from .extension_node import ExtensionNode
-from ... import nodes
-from ...Core.context import ctx, ExecutionPath
-from ...Extras.TypeMgr import PlantType, ZombieType
+from ..extension_node import ExtensionNode
+from .... import nodes
+from ....Core.context import ctx, ExecutionPath
+from ....Extras.TypeMgr import PlantType, ZombieType
 
 class Option(ExtensionNode):
     """Standalone multiple-choice option card.
@@ -311,7 +311,106 @@ class MultiSelectMenu(ExtensionNode):
             return self.OnRefresh
 
 
+class TypedChoiceOption(ExtensionNode):
+    """Multiple-choice option card with typed plant/zombie icons."""
+
+    def __init__(
+        self,
+        title: str = "选项",
+        description: str = "",
+        plant_type: int | PlantType = 254,
+        zombie_type: int | ZombieType = -1,
+        callback: Optional[Callable[[], None]] = None,
+    ) -> None:
+        from ...Original.RewardOption.typed_choice_option_node import TypedChoiceOptionNode
+        p_val = plant_type.value if isinstance(plant_type, PlantType) else plant_type
+        z_val = zombie_type.value if isinstance(zombie_type, ZombieType) else zombie_type
+
+        self.node = TypedChoiceOptionNode(
+            title=title,
+            description=description,
+            plant_type=p_val,
+            zombie_type=z_val,
+        )
+        super().__init__(root_node=self.node)
+        self.output_port = self.node.get_output(TypedChoiceOptionNode.OptionList_output_choiceoptions)
+        self.on_clicked = ExecutionPath(self.node.node_id, TypedChoiceOptionNode.OnOptionClicked_output_trigger)
+
+        if callback is not None:
+            ctx.trigger_stack.append(self.on_clicked)
+            try:
+                callback()
+            finally:
+                ctx.trigger_stack.pop()
+
+
+class TypedChoiceMenu(ExtensionNode):
+    """Multiple-choice popup menu rendering typed choices."""
+
+    def __init__(
+        self,
+        refreshable: bool = False,
+        refresh_count: int = 3,
+        cancelable: bool = True,
+        window_count: int = 3,
+    ) -> None:
+        super().__init__()
+        self.refreshable = refreshable
+        self.refresh_count = refresh_count
+        self.cancelable = cancelable
+        self.window_count = window_count
+        self._options: list[TypedChoiceOption] = []
+        self._node_id: Optional[str] = None
+
+    def add_option(self, option: TypedChoiceOption) -> TypedChoiceOption:
+        self._options.append(option)
+        return option
+
+    def show(self) -> None:
+        from ...Original.RewardOption.typed_choice_menu_node import TypedChoiceMenuNode
+        from ...Original.RewardOption.typed_choice_merge_node import TypedChoiceMergeNode
+        self._node_id = ctx._generate_uuid()
+        menu_node = TypedChoiceMenuNode(
+            refreshable=self.refreshable,
+            refresh_count=self.refresh_count,
+            cancelable=self.cancelable,
+            window_count=self.window_count,
+            node_id=self._node_id,
+        )
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, self._node_id, TypedChoiceMenuNode.Trigger_input_trigger)
+
+        if self._options:
+            if len(self._options) == 1:
+                self._options[0].output_port.connect(menu_node.get_input(TypedChoiceMenuNode.OptionList_input_choiceoptions))
+            else:
+                prev_port = self._options[0].output_port
+                for opt in self._options[1:]:
+                    merge_node = TypedChoiceMergeNode()
+                    prev_port.connect(merge_node.get_input(TypedChoiceMergeNode.List1_input_choiceoptions))
+                    opt.output_port.connect(merge_node.get_input(TypedChoiceMergeNode.List2_input_choiceoptions))
+                    prev_port = merge_node.get_output(TypedChoiceMergeNode.MergedList_output_choiceoptions)
+                prev_port.connect(menu_node.get_input(TypedChoiceMenuNode.OptionList_input_choiceoptions))
+
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(self._node_id, TypedChoiceMenuNode.OnExit_output_trigger)
+
+    @property
+    def OnExit(self) -> ExecutionPath:
+        from ...Original.RewardOption.typed_choice_menu_node import TypedChoiceMenuNode
+        return ExecutionPath(self._node_id or "", TypedChoiceMenuNode.OnExit_output_trigger)
+
+    @property
+    def OnRefresh(self) -> ExecutionPath:
+        from ...Original.RewardOption.typed_choice_menu_node import TypedChoiceMenuNode
+        return ExecutionPath(self._node_id or "", TypedChoiceMenuNode.OnRefresh_output_trigger)
+
+
 __all__ = [
     "Option",
     "MultiSelectMenu",
+    "TypedChoiceOption",
+    "TypedChoiceMenu",
 ]
+

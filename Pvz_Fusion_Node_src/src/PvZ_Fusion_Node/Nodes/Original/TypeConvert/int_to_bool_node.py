@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class IntToBoolNode(Node):
+    # Status in Extensions: Implemented
     node_type = "IntToBoolNode"
     _class_ports = {
         "整数": PortDef("整数", PortDirection.Input, PortType.Int),
         "布尔": PortDef("布尔", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Int_input_int : str = "整数"
+    Bool_output_bool : str = "布尔"
 
     def __init__(
         self,

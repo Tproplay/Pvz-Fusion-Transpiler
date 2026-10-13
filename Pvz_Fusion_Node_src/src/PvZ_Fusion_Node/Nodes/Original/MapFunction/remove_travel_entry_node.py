@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class RemoveTravelEntryNode(Node):
+    # Status in Extensions: Implemented
     node_type = "RemoveTravelEntryNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

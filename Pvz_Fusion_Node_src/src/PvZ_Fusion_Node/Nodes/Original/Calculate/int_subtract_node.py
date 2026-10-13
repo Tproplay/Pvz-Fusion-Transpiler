@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class IntSubtractNode(Node):
+    # Status in Extensions: Implemented
     node_type = "IntSubtractNode"
     _class_ports = {
         "被减数": PortDef("被减数", PortDirection.Input, PortType.Int),
         "减数": PortDef("减数", PortDirection.Input, PortType.Int),
         "差": PortDef("差", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    Minuend_input_int : str = "被减数"
+    Subtrahend_input_int : str = "减数"
+    Diff_output_int : str = "差"
 
     def __init__(
         self,

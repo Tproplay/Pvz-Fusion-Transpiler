@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class PlantTypeToStringNode(Node):
+    # Status in Extensions: Implemented
     node_type = "PlantTypeToStringNode"
     _class_ports = {
         "植物类型": PortDef("植物类型", PortDirection.Input, PortType.PlantType),
         "字符串": PortDef("字符串", PortDirection.Output, PortType.String),
     }
+
+    # Port name constants
+    PlantType_input_planttype : str = "植物类型"
+    String_output_string : str = "字符串"
 
     def __init__(
         self,

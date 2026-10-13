@@ -3,11 +3,16 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class GetIntVariableValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetIntVariableValueNode"
     _class_ports = {
         "变量": PortDef("变量", PortDirection.Input, PortType.IntVariable),
         "值": PortDef("值", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    Variable_input_intvariable : str = "变量"
+    Value_output_int : str = "值"
 
     def __init__(
         self,

@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ForEachPlantNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ForEachPlantNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -12,6 +13,14 @@ class ForEachPlantNode(Node):
         "当前索引": PortDef("当前索引", PortDirection.Output, PortType.Int),
         "循环完成": PortDef("循环完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    PlantList_input_plantlist : str = "植物列表"
+    LoopBody_output_trigger : str = "循环体"
+    CurrentPlant_output_plant : str = "当前植物"
+    Index_output_int : str = "当前索引"
+    LoopComplete_output_trigger : str = "循环完成"
 
     def __init__(
         self,

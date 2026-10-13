@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class BranchNode(Node):
+    # Status in Extensions: Implemented
     node_type = "BranchNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class BranchNode(Node):
         "真（触发）": PortDef("真（触发）", PortDirection.Output, PortType.Trigger),
         "假（停止）": PortDef("假（停止）", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Condition_input_bool : str = "条件"
+    Then_output_trigger : str = "真（触发）"
+    Else_output_trigger : str = "假（停止）"
 
     def __init__(
         self,

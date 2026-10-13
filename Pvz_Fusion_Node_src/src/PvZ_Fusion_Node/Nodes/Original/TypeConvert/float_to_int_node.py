@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class FloatToIntNode(Node):
+    # Status in Extensions: Implemented
     node_type = "FloatToIntNode"
     _class_ports = {
         "浮点数": PortDef("浮点数", PortDirection.Input, PortType.Float),
         "整数": PortDef("整数", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    Float_input_float : str = "浮点数"
+    Int_output_int : str = "整数"
 
     def __init__(
         self,

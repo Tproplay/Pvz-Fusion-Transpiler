@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class StringValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "StringValueNode"
     _class_ports = {
         "值": PortDef("值", PortDirection.Output, PortType.String),
     }
+
+    # Port name constants
+    Value_output_string : str = "值"
 
     def __init__(
         self,

@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CreateEventObjectNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CreateEventObjectNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class CreateEventObjectNode(Node):
         "对象": PortDef("对象", PortDirection.Output, PortType.GameObject),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    GameObjectName_input_string : str = "对象名称"
+    Position_input_vector3 : str = "位置"
+    GameObject_output_gameobject : str = "对象"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

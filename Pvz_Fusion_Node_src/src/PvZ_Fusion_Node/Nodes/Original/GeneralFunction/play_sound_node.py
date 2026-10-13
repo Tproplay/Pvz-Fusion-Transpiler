@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class PlaySoundNode(Node):
+    # Status in Extensions: Implemented
     node_type = "PlaySoundNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "音效ID": PortDef("音效ID", PortDirection.Input, PortType.Int),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    SoundId_input_int : str = "音效ID"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

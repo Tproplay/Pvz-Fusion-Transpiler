@@ -538,3 +538,211 @@ class StatManager:
         """Iterates through all active plants on the lawn and updates their stats."""
         with Lawnf.for_each_plant_on_lawn() as plant:
             self.apply_stats_to_plant(plant)
+
+
+# =============================================================================
+# TYPE CONVERSION UTILITIES
+# =============================================================================
+
+def ascii_to_string(ascii_code: Any) -> Any:
+    """Converts an ASCII integer code to its single-character string representation."""
+    from ..Nodes.Original.TypeConvert.ascii_to_string_node import AsciiToStringNode
+    from ..Nodes.Original.Node import to_port
+    node = AsciiToStringNode()
+    to_port(ascii_code).connect(node.get_input("ASCII"))
+    return node.get_output("字符串")
+
+
+def string_to_ascii(string_val: Any) -> Any:
+    """Converts a character string to its ASCII integer value."""
+    from ..Nodes.Original.TypeConvert.string_to_ascii_node import StringToAsciiNode
+    from ..Nodes.Original.Node import to_port
+    node = StringToAsciiNode()
+    to_port(string_val).connect(node.get_input("字符串"))
+    return node.get_output("ASCII")
+
+
+def int_to_float(val: Any) -> Any:
+    """Converts an integer to a floating-point number."""
+    from ..Nodes.Original.TypeConvert.int_to_float_node import IntToFloatNode
+    from ..Nodes.Original.Node import to_port
+    node = IntToFloatNode()
+    to_port(val).connect(node.get_input("整数"))
+    return node.get_output("浮点数")
+
+
+def float_to_int(val: Any) -> Any:
+    """Converts a floating-point number to an integer."""
+    from ..Nodes.Original.TypeConvert.float_to_int_node import FloatToIntNode
+    from ..Nodes.Original.Node import to_port
+    node = FloatToIntNode()
+    to_port(val).connect(node.get_input("浮点数"))
+    return node.get_output("整数")
+
+
+def int_to_string(val: Any) -> Any:
+    """Converts an integer to a string representation."""
+    from ..Nodes.Original.TypeConvert.int_to_string_node import IntToStringNode
+    from ..Nodes.Original.Node import to_port
+    node = IntToStringNode()
+    to_port(val).connect(node.get_input("整数"))
+    return node.get_output("字符串")
+
+
+def string_to_int(val: Any) -> Any:
+    """Parses a string into an integer."""
+    from ..Nodes.Original.TypeConvert.string_to_int_node import StringToIntNode
+    from ..Nodes.Original.Node import to_port
+    node = StringToIntNode()
+    to_port(val).connect(node.get_input("字符串"))
+    return node.get_output("整数")
+
+
+def float_to_string(val: Any, decimals: int = 2) -> Any:
+    """Converts a floating-point number to a string formatted to specified decimal places."""
+    from ..Nodes.Original.TypeConvert.float_to_string_node import FloatToStringNode
+    from ..Nodes.Original.Node import to_port
+    node = FloatToStringNode()
+    to_port(val).connect(node.get_input("数值"))
+    to_port(decimals).connect(node.get_input("小数位数"))
+    return node.get_output("字符串")
+
+
+def string_to_float(val: Any) -> Any:
+    """Parses a string into a floating-point number."""
+    from ..Nodes.Original.TypeConvert.string_to_float_node import StringToFloatNode
+    from ..Nodes.Original.Node import to_port
+    node = StringToFloatNode()
+    to_port(val).connect(node.get_input("字符串"))
+    return node.get_output("浮点数")
+
+
+def int_to_bool(val: Any) -> Any:
+    """Converts an integer to a boolean."""
+    from ..Nodes.Original.TypeConvert.int_to_bool_node import IntToBoolNode
+    from ..Nodes.Original.Node import to_port
+    node = IntToBoolNode()
+    to_port(val).connect(node.get_input("整数"))
+    return node.get_output("布尔")
+
+
+def float_to_bool(val: Any) -> Any:
+    """Converts a floating-point number to a boolean."""
+    from ..Nodes.Original.TypeConvert.float_to_bool_node import FloatToBoolNode
+    from ..Nodes.Original.Node import to_port
+    node = FloatToBoolNode()
+    to_port(val).connect(node.get_input("浮点数"))
+    return node.get_output("布尔")
+
+
+def object_to_string(val: Any) -> Any:
+    """Converts a GameObject reference to string."""
+    from ..Nodes.Original.TypeConvert.object_to_string_node import ObjectToStringNode
+    from ..Nodes.Original.Node import to_port
+    node = ObjectToStringNode()
+    to_port(val).connect(node.get_input("对象"))
+    return node.get_output("字符串")
+
+
+def string_to_object(val: Any) -> Any:
+    """Parses a GameObject reference from string."""
+    from ..Nodes.Original.TypeConvert.string_to_object_node import StringToObjectNode
+    from ..Nodes.Original.Node import to_port
+    node = StringToObjectNode()
+    to_port(val).connect(node.get_input("字符串"))
+    return node.get_output("对象")
+
+
+def object_to_plant(val: Any) -> Any:
+    """Casts a generic GameObject to a Plant reference."""
+    from ..Nodes.Original.TypeConvert.object_to_plant_node import ObjectToPlantNode
+    from ..Nodes.Original.Node import to_port
+    node = ObjectToPlantNode()
+    to_port(val).connect(node.get_input("对象"))
+    return node.get_output("植物")
+
+
+def plant_to_object(val: Any) -> Any:
+    """Casts a Plant reference to a generic GameObject."""
+    from ..Nodes.Original.TypeConvert.plant_to_object_node import PlantToObjectNode
+    from ..Nodes.Original.Node import to_port
+    node = PlantToObjectNode()
+    to_port(val).connect(node.get_input("植物"))
+    return node.get_output("对象")
+
+
+def object_to_zombie(val: Any) -> Any:
+    """Casts a generic GameObject to a Zombie reference."""
+    from ..Nodes.Original.TypeConvert.object_to_zombie_node import ObjectToZombieNode
+    from ..Nodes.Original.Node import to_port
+    node = ObjectToZombieNode()
+    to_port(val).connect(node.get_input("对象"))
+    return node.get_output("僵尸")
+
+
+def zombie_to_object(val: Any) -> Any:
+    """Casts a Zombie reference to a generic GameObject."""
+    from ..Nodes.Original.TypeConvert.zombie_to_object_node import ZombieToObjectNode
+    from ..Nodes.Original.Node import to_port
+    node = ZombieToObjectNode()
+    to_port(val).connect(node.get_input("僵尸"))
+    return node.get_output("对象")
+
+
+def plant_type_to_string(val: Any) -> Any:
+    """Converts a PlantType value or port to its string name."""
+    from ..Nodes.Original.TypeConvert.plant_type_to_string_node import PlantTypeToStringNode
+    from ..Nodes.Original.Node import to_port
+    node = PlantTypeToStringNode()
+    to_port(val).connect(node.get_input("植物类型"))
+    return node.get_output("字符串")
+
+
+def string_to_plant_type(val: Any) -> Any:
+    """Parses a string into a PlantType value."""
+    from ..Nodes.Original.TypeConvert.string_to_plant_type_node import StringToPlantTypeNode
+    from ..Nodes.Original.Node import to_port
+    node = StringToPlantTypeNode()
+    to_port(val).connect(node.get_input("字符串"))
+    return node.get_output("植物类型")
+
+
+def zombie_type_to_string(val: Any) -> Any:
+    """Converts a ZombieType value or port to its string name."""
+    from ..Nodes.Original.TypeConvert.zombie_type_to_string_node import ZombieTypeToStringNode
+    from ..Nodes.Original.Node import to_port
+    node = ZombieTypeToStringNode()
+    to_port(val).connect(node.get_input("僵尸类型"))
+    return node.get_output("字符串")
+
+
+def string_to_zombie_type(val: Any) -> Any:
+    """Parses a string into a ZombieType value."""
+    from ..Nodes.Original.TypeConvert.string_to_zombie_type_node import StringToZombieTypeNode
+    from ..Nodes.Original.Node import to_port
+    node = StringToZombieTypeNode()
+    to_port(val).connect(node.get_input("字符串"))
+    return node.get_output("僵尸类型")
+
+
+def compare_tool_type(a: Any, b: Any) -> Any:
+    """Compares two ToolType values or ports for equality."""
+    from ..Nodes.Original.GeneralFunction.compare_tool_type_node import CompareToolTypeNode
+    from ..Nodes.Original.GeneralFunction.tool_type_value_node import ToolTypeValueNode
+    from ..Nodes.Original.Node import to_port
+    def _to_tool(v):
+        if hasattr(v, "value") and not hasattr(v, "node"):
+            v = v.value
+        if isinstance(v, int):
+            return ToolTypeValueNode(tool_type=v).outputs["工具类型"]
+        return to_port(v)
+    node = CompareToolTypeNode()
+    _to_tool(a).connect(node.get_input("工具类型A"))
+    _to_tool(b).connect(node.get_input("工具类型B"))
+    return node.get_output("相同")
+
+
+def get_event_position() -> Any:
+    """Returns the Vector3 position port of the current trigger event."""
+    from ..Nodes.Original.GeneralFunction.get_event_position_node import GetEventPositionNode
+    return GetEventPositionNode().outputs["位置"]

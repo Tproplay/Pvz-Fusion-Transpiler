@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetNearestZombieNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetNearestZombieNode"
     _class_ports = {
         "行": PortDef("行", PortDirection.Input, PortType.Int),
         "列": PortDef("列", PortDirection.Input, PortType.Int),
         "僵尸": PortDef("僵尸", PortDirection.Output, PortType.Zombie),
     }
+
+    # Port name constants
+    Row_input_int : str = "行"
+    Col_input_int : str = "列"
+    Zombie_output_zombie : str = "僵尸"
 
     def __init__(
         self,

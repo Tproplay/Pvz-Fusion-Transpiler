@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class FloatToStringNode(Node):
+    # Status in Extensions: Implemented
     node_type = "FloatToStringNode"
     _class_ports = {
         "数值": PortDef("数值", PortDirection.Input, PortType.Float),
         "小数位数": PortDef("小数位数", PortDirection.Input, PortType.Int),
         "字符串": PortDef("字符串", PortDirection.Output, PortType.String),
     }
+
+    # Port name constants
+    Value_input_float : str = "数值"
+    Decimals_input_int : str = "小数位数"
+    String_output_string : str = "字符串"
 
     def __init__(
         self,

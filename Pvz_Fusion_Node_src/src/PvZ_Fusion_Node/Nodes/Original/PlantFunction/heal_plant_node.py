@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class HealPlantNode(Node):
+    # Status in Extensions: Implemented
     node_type = "HealPlantNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class HealPlantNode(Node):
         "回血量": PortDef("回血量", PortDirection.Input, PortType.Float),
         "回血成功": PortDef("回血成功", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Plant_input_plant : str = "植物"
+    HealAmount_input_float : str = "回血量"
+    HealSuccess_output_trigger : str = "回血成功"
 
     def __init__(
         self,

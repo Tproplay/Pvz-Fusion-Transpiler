@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ObjectToPlantNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ObjectToPlantNode"
     _class_ports = {
         "对象": PortDef("对象", PortDirection.Input, PortType.GameObject),
         "植物": PortDef("植物", PortDirection.Output, PortType.Plant),
     }
+
+    # Port name constants
+    GameObject_input_gameobject : str = "对象"
+    Plant_output_plant : str = "植物"
 
     def __init__(
         self,

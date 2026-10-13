@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ForEachAllZombiesNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ForEachAllZombiesNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class ForEachAllZombiesNode(Node):
         "当前索引": PortDef("当前索引", PortDirection.Output, PortType.Int),
         "循环完成": PortDef("循环完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    LoopBody_output_trigger : str = "循环体"
+    CurrentZombie_output_zombie : str = "当前僵尸"
+    Index_output_int : str = "当前索引"
+    LoopComplete_output_trigger : str = "循环完成"
 
     def __init__(
         self,

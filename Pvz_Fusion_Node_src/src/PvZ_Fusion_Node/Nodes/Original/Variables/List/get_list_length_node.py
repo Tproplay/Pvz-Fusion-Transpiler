@@ -3,11 +3,16 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class GetListLengthNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetListLengthNode"
     _class_ports = {
         "列表": PortDef("列表", PortDirection.Input, PortType.ListVariable),
         "长度": PortDef("长度", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    List_input_listvariable : str = "列表"
+    Length_output_int : str = "长度"
 
     def __init__(
         self,

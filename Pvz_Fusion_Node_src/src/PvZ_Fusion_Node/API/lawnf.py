@@ -165,3 +165,34 @@ class Lawnf:
 
         def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
             ctx.trigger_stack.pop()
+
+    @staticmethod
+    def delete_grid_items(item_type: int = 0) -> None:
+        """Deletes grid items of specified kind."""
+        nodes.DeleteGridItemsNode(kind=item_type)
+
+    @staticmethod
+    def get_plants_on_layer(layer: int = 0) -> Any:
+        """Returns the plant-list output port for a specific layer."""
+        return nodes.GetPlantsOnLayerNode(layer=layer).plant_list
+
+    @staticmethod
+    def get_all_zombies() -> Any:
+        """Returns the zombie-list output port for every zombie on the board."""
+        return nodes.GetAllZombiesNode().outputs["全部僵尸"]
+
+    @staticmethod
+    def shoot_bullet(
+        bullet_type: Any,
+        position: Any = None,
+        x: float = 0.0,
+        y: float = 0.0,
+        z: float = 0.0,
+    ) -> Any:
+        """Shoots a bullet of specified type at given position."""
+        from ..Nodes.Extentions.Bullet.bullet_ext import Bullet
+        return Bullet.shoot(bullet_type=bullet_type, position=position, x=x, y=y, z=z)
+
+    from ..Nodes.Extentions.Entity.entities import ForEachZombie as for_each_zombie
+    from ..Nodes.Extentions.Entity.entities import ForEachAllZombies as for_each_all_zombies
+    from ..Nodes.Extentions.Entity.entities import ForEachAllZombies as for_each_zombie_on_lawn

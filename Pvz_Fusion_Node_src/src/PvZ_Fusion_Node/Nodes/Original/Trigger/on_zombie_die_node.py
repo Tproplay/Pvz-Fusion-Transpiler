@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class OnZombieDieNode(Node):
+    # Status in Extensions: Implemented
     node_type = "OnZombieDieNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Output, PortType.Trigger),
         "僵尸": PortDef("僵尸", PortDirection.Output, PortType.Zombie),
     }
+
+    # Port name constants
+    Trigger_output_trigger : str = "触发"
+    Zombie_output_zombie : str = "僵尸"
 
     def __init__(
         self,

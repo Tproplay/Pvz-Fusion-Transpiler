@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ZombieTypeValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ZombieTypeValueNode"
     _class_ports = {
         "僵尸类型": PortDef("僵尸类型", PortDirection.Output, PortType.ZombieType),
     }
+
+    # Port name constants
+    ZombieType_output_zombietype : str = "僵尸类型"
 
     def __init__(
         self,

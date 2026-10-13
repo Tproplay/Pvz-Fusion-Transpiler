@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class TypedChoiceMergeNode(Node):
+    # Status in Extensions: Implemented
     node_type = "TypedChoiceMergeNode"
     _class_ports = {
         "列表1": PortDef("列表1", PortDirection.Input, PortType.ChoiceOptions),
         "列表2": PortDef("列表2", PortDirection.Input, PortType.ChoiceOptions),
         "合并列表": PortDef("合并列表", PortDirection.Output, PortType.ChoiceOptions),
     }
+
+    # Port name constants
+    List1_input_choiceoptions : str = "列表1"
+    List2_input_choiceoptions : str = "列表2"
+    MergedList_output_choiceoptions : str = "合并列表"
 
     def __init__(
         self,

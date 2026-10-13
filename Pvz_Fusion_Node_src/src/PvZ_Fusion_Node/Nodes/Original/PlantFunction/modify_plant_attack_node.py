@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ModifyPlantAttackNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ModifyPlantAttackNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class ModifyPlantAttackNode(Node):
         "修改成功": PortDef("修改成功", PortDirection.Output, PortType.Trigger),
         "植物Out": PortDef("植物", PortDirection.Output, PortType.Plant),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Plant_input_plant : str = "植物"
+    AttackBonus_input_float : str = "攻击力加成x100%"
+    ModifySuccess_output_trigger : str = "修改成功"
+    Out_output_plant : str = "植物Out"
 
     def __init__(
         self,

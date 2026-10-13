@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GivePlantShieldNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GivePlantShieldNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class GivePlantShieldNode(Node):
         "护盾值": PortDef("护盾值", PortDirection.Input, PortType.Float),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Plant_input_plant : str = "植物"
+    ShieldValue_input_float : str = "护盾值"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

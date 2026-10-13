@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class NotNode(Node):
+    # Status in Extensions: Implemented
     node_type = "NotNode"
     _class_ports = {
         "输入": PortDef("输入", PortDirection.Input, PortType.Bool),
         "输出": PortDef("输出", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Input_input_bool : str = "输入"
+    Output_output_bool : str = "输出"
 
     def __init__(
         self,

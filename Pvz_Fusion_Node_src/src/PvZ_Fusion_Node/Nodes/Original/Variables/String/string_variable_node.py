@@ -4,10 +4,14 @@ from .string_variable_asset import StringVariableAsset
 
 
 class StringVariableNode(Node):
+    # Status in Extensions: Implemented
     node_type = "StringVariableNode"
     _class_ports = {
         "变量": PortDef("变量", PortDirection.Output, PortType.StringVariable),
     }
+
+    # Port name constants
+    Variable_output_stringvariable : str = "变量"
 
     def __init__(
         self,

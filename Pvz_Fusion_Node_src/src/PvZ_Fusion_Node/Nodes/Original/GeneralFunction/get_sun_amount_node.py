@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetSunAmountNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetSunAmountNode"
     _class_ports = {
         "阳光数量": PortDef("阳光数量", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    SunAmount_output_int : str = "阳光数量"
 
     def __init__(
         self,

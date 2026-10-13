@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class SetPlantAttackSpeedNode(Node):
+    # Status in Extensions: Implemented
     node_type = "SetPlantAttackSpeedNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class SetPlantAttackSpeedNode(Node):
         "攻速": PortDef("攻速", PortDirection.Input, PortType.Float),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Plant_input_plant : str = "植物"
+    AttackSpeed_input_float : str = "攻速"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

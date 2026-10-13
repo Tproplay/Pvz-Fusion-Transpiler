@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class CopyListValuesNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CopyListValuesNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class CopyListValuesNode(Node):
         "目标列表": PortDef("目标列表", PortDirection.Input, PortType.ListVariable),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    SourceList_input_listvariable : str = "源列表"
+    TargetList_input_listvariable : str = "目标列表"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

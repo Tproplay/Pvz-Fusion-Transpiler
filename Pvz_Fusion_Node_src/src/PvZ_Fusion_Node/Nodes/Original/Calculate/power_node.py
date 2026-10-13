@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class PowerNode(Node):
+    # Status in Extensions: Implemented
     node_type = "PowerNode"
     _class_ports = {
         "底数": PortDef("底数", PortDirection.Input, PortType.Float),
         "指数": PortDef("指数", PortDirection.Input, PortType.Float),
         "结果": PortDef("结果", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Base_input_float : str = "底数"
+    Exponent_input_float : str = "指数"
+    Result_output_float : str = "结果"
 
     def __init__(
         self,

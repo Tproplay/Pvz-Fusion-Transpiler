@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetPlantAttackSpeedNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetPlantAttackSpeedNode"
     _class_ports = {
         "植物": PortDef("植物", PortDirection.Input, PortType.Plant),
         "攻速": PortDef("攻速", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Plant_input_plant : str = "植物"
+    AttackSpeed_output_float : str = "攻速"
 
     def __init__(
         self,

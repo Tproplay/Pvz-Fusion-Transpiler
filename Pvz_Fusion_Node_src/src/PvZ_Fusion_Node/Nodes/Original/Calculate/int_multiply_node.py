@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class IntMultiplyNode(Node):
+    # Status in Extensions: Implemented
     node_type = "IntMultiplyNode"
     _class_ports = {
         "A": PortDef("A", PortDirection.Input, PortType.Int),
         "B": PortDef("B", PortDirection.Input, PortType.Int),
         "积": PortDef("积", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    A_input_int : str = "A"
+    B_input_int : str = "B"
+    Product_output_int : str = "积"
 
     def __init__(
         self,

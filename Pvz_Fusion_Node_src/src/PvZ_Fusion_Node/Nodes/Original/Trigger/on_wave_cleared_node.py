@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class OnWaveClearedNode(Node):
+    # Status in Extensions: Implemented
     node_type = "OnWaveClearedNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Output, PortType.Trigger),
         "波次": PortDef("波次", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    Trigger_output_trigger : str = "触发"
+    Wave_output_int : str = "波次"
 
     def __init__(
         self,

@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GameOverNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GameOverNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "失败原因": PortDef("失败原因", PortDirection.Input, PortType.String),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    FailureReason_input_string : str = "失败原因"
 
     def __init__(
         self,

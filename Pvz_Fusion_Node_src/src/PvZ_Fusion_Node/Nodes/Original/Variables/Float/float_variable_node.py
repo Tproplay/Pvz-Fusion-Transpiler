@@ -4,10 +4,14 @@ from .float_variable_asset import FloatVariableAsset
 
 
 class FloatVariableNode(Node):
+    # Status in Extensions: Implemented
     node_type = "FloatVariableNode"
     _class_ports = {
         "变量": PortDef("变量", PortDirection.Output, PortType.FloatVariable),
     }
+
+    # Port name constants
+    Variable_output_floatvariable : str = "变量"
 
     def __init__(
         self,

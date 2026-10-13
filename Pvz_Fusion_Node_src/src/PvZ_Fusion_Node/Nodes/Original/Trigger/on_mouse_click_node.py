@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class OnMouseClickNode(Node):
+    # Status in Extensions: Implemented
     node_type = "OnMouseClickNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Output, PortType.Trigger),
@@ -11,6 +12,13 @@ class OnMouseClickNode(Node):
         "手上的物品": PortDef("手上的物品", PortDirection.Output, PortType.ToolType),
         "是左键": PortDef("是左键", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Trigger_output_trigger : str = "触发"
+    Row_output_int : str = "行"
+    Col_output_int : str = "列"
+    HeldItem_output_tooltype : str = "手上的物品"
+    IsLeftButton_output_bool : str = "是左键"
 
     def __init__(
         self,

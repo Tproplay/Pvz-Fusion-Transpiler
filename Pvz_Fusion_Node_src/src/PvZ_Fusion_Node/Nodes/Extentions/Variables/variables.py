@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import Any, Optional, Union
-from ... import nodes
-from ...nodes import (
+from typing import Any, Iterable, Optional, Union
+from .... import nodes
+from ....nodes import (
     divide_node,
     float_to_int,
     float_to_string,
@@ -12,11 +12,19 @@ from ...nodes import (
     multiply_node,
     string_value,
 )
-from ...Core.context import ctx, ExecutionPath
-from ...typing import to_int_port, to_float_port, to_bool_port
-from .branching import If
-from .extension_node import ExtensionNode
-from .Variables.list_var import ListVar
+from ....Core.context import ctx, ExecutionPath
+from ....typing import to_int_port, to_float_port, to_bool_port
+from ..extension_node import ExtensionNode
+from ..Branching.branching import If
+from ...Original.Node import Node, Port, PortType, PortDirection, to_port
+from ...Original.Variables.List.list_variable_asset import ListVariableAsset, ListElementType
+from ...Original.Variables.List.list_nodes import (
+    AppendIntListNode, AppendFloatListNode, AppendBoolListNode, AppendStringListNode,
+    AppendPlantTypeListNode, AppendZombieTypeListNode, AppendObjectListNode,
+    GetIntListItemNode, GetFloatListItemNode, GetBoolListItemNode, GetStringListItemNode,
+    GetPlantTypeListItemNode, GetZombieTypeListItemNode, GetObjectListItemNode,
+    ClearListValuesNode, RemoveListItemNode, GetListLengthNode
+)
 
 class IntVar(ExtensionNode):
     """Use to create a Variable Int Value. Don't use = to set the value, use .set() instead."""
@@ -50,6 +58,10 @@ class IntVar(ExtensionNode):
                 ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
+
+    @property
+    def asset(self):
+        return getattr(self._node, "asset", None)
 
     def _get_current_node(self):
         scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
@@ -429,6 +441,10 @@ class FloatVar(ExtensionNode):
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
 
+    @property
+    def asset(self):
+        return getattr(self._node, "asset", None)
+
     def _get_current_node(self):
         scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
         if scope_key not in self._nodes_by_scope:
@@ -597,6 +613,10 @@ class BoolVar(ExtensionNode):
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
 
+    @property
+    def asset(self):
+        return getattr(self._node, "asset", None)
+
     def _get_current_node(self):
         scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
         if scope_key not in self._nodes_by_scope:
@@ -750,6 +770,10 @@ class StrVar(ExtensionNode):
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
 
+    @property
+    def asset(self):
+        return getattr(self._node, "asset", None)
+
     def _get_current_node(self):
         scope_key = ctx.trigger_stack[-1].id if ctx.trigger_stack else "global"
         if scope_key not in self._nodes_by_scope:
@@ -807,6 +831,194 @@ class StrVar(ExtensionNode):
     def __iadd__(self, other):
         self.set(nodes.string_concat(a=self.value, b=self._cast_to_str(other)).result)
         return self
+
+
+class ListVar(ExtensionNode):
+    """High-level unified List Variable for runtime visual scripting."""
+
+    def __init__(
+        self,
+        name: str = "列表",
+        element_type: Union[ListElementType, int] = ListElementType.Integer,
+        initial_values: Optional[Iterable[Any]] = None,
+        variable_id: Optional[str] = None,
+        rid: Optional[int] = None,
+    ):
+        self.element_type = ListElementType(element_type)
+        self.asset = ListVariableAsset(
+            name=name,
+            element_type=self.element_type,
+            initial_values=list(initial_values) if initial_values is not None else [],
+            variable_id=variable_id,
+            rid=rid,
+        )
+        super().__init__()
+        self._name = name
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    def get(self) -> Optional[Port]:
+        return None
+
+    def set(self, value: Any) -> Node:
+        from ...Original.Variables.List.copy_list_values_node import CopyListValuesNode
+        cp = CopyListValuesNode()
+        self.attach_node(cp)
+        return cp
+
+    def append(self, value: Any) -> Node:
+        if self.element_type == ListElementType.Integer:
+            n = AppendIntListNode()
+        elif self.element_type == ListElementType.Float:
+            n = AppendFloatListNode()
+        elif self.element_type == ListElementType.Bool:
+            n = AppendBoolListNode()
+        elif self.element_type == ListElementType.String:
+            n = AppendStringListNode()
+        elif self.element_type == ListElementType.PlantType:
+            n = AppendPlantTypeListNode()
+        elif self.element_type == ListElementType.ZombieType:
+            n = AppendZombieTypeListNode()
+        else:
+            n = AppendObjectListNode()
+        self.attach_node(n)
+        return n
+
+    def get_at(self, index: Any) -> Node:
+        if self.element_type == ListElementType.Integer:
+            n = GetIntListItemNode()
+        elif self.element_type == ListElementType.Float:
+            n = GetFloatListItemNode()
+        elif self.element_type == ListElementType.Bool:
+            n = GetBoolListItemNode()
+        elif self.element_type == ListElementType.String:
+            n = GetStringListItemNode()
+        elif self.element_type == ListElementType.PlantType:
+            n = GetPlantTypeListItemNode()
+        elif self.element_type == ListElementType.ZombieType:
+            n = GetZombieTypeListItemNode()
+        else:
+            n = GetObjectListItemNode()
+        self.attach_node(n)
+        return n
+
+    def clear(self) -> Node:
+        n = ClearListValuesNode()
+        self.attach_node(n)
+        return n
+
+    def remove_at(self, index: Any) -> Node:
+        n = RemoveListItemNode()
+        self.attach_node(n)
+        return n
+
+    def length(self) -> Node:
+        n = GetListLengthNode()
+        self.attach_node(n)
+        return n
+
+    def insert(self, index: Any, value: Any) -> Node:
+        """Inserts an element into the list at the given index."""
+        from ...Original.Variables.List.insert_int_list_node import InsertIntListNode
+        from ...Original.Variables.List.insert_float_list_node import InsertFloatListNode
+        from ...Original.Variables.List.insert_bool_list_node import InsertBoolListNode
+        from ...Original.Variables.List.insert_string_list_node import InsertStringListNode
+        from ...Original.Variables.List.insert_plant_type_list_node import InsertPlantTypeListNode
+        from ...Original.Variables.List.insert_zombie_type_list_node import InsertZombieTypeListNode
+        from ...Original.Variables.List.insert_object_list_node import InsertObjectListNode
+
+        if self.element_type == ListElementType.Integer:
+            n = InsertIntListNode()
+        elif self.element_type == ListElementType.Float:
+            n = InsertFloatListNode()
+        elif self.element_type == ListElementType.Bool:
+            n = InsertBoolListNode()
+        elif self.element_type == ListElementType.String:
+            n = InsertStringListNode()
+        elif self.element_type == ListElementType.PlantType:
+            n = InsertPlantTypeListNode()
+        elif self.element_type == ListElementType.ZombieType:
+            n = InsertZombieTypeListNode()
+        else:
+            n = InsertObjectListNode()
+
+        to_port(index).connect(n.get_input("索引"))
+        to_port(value).connect(n.get_input("值"))
+        self.attach_node(n)
+        return n
+
+    def replace(self, index: Any, value: Any) -> Node:
+        """Replaces the element at the specified index with a new value."""
+        from ...Original.Variables.List.replace_int_list_node import ReplaceIntListNode
+        from ...Original.Variables.List.replace_float_list_node import ReplaceFloatListNode
+        from ...Original.Variables.List.replace_bool_list_node import ReplaceBoolListNode
+        from ...Original.Variables.List.replace_string_list_node import ReplaceStringListNode
+        from ...Original.Variables.List.replace_plant_type_list_node import ReplacePlantTypeListNode
+        from ...Original.Variables.List.replace_zombie_type_list_node import ReplaceZombieTypeListNode
+        from ...Original.Variables.List.replace_object_list_node import ReplaceObjectListNode
+
+        if self.element_type == ListElementType.Integer:
+            n = ReplaceIntListNode()
+        elif self.element_type == ListElementType.Float:
+            n = ReplaceFloatListNode()
+        elif self.element_type == ListElementType.Bool:
+            n = ReplaceBoolListNode()
+        elif self.element_type == ListElementType.String:
+            n = ReplaceStringListNode()
+        elif self.element_type == ListElementType.PlantType:
+            n = ReplacePlantTypeListNode()
+        elif self.element_type == ListElementType.ZombieType:
+            n = ReplaceZombieTypeListNode()
+        else:
+            n = ReplaceObjectListNode()
+
+        to_port(index).connect(n.get_input("索引"))
+        to_port(value).connect(n.get_input("值"))
+        self.attach_node(n)
+        return n
+
+    def find(self, value: Any) -> dict[str, Any]:
+        """Searches for a value in the list and returns its index and existence boolean."""
+        from ...Original.Variables.List.find_int_list_value_node import FindIntListValueNode
+        from ...Original.Variables.List.find_float_list_value_node import FindFloatListValueNode
+        from ...Original.Variables.List.find_bool_list_value_node import FindBoolListValueNode
+        from ...Original.Variables.List.find_string_list_value_node import FindStringListValueNode
+        from ...Original.Variables.List.find_plant_type_list_value_node import FindPlantTypeListValueNode
+        from ...Original.Variables.List.find_zombie_type_list_value_node import FindZombieTypeListValueNode
+        from ...Original.Variables.List.find_object_list_value_node import FindObjectListValueNode
+
+        if self.element_type == ListElementType.Integer:
+            n = FindIntListValueNode()
+        elif self.element_type == ListElementType.Float:
+            n = FindFloatListValueNode()
+        elif self.element_type == ListElementType.Bool:
+            n = FindBoolListValueNode()
+        elif self.element_type == ListElementType.String:
+            n = FindStringListValueNode()
+        elif self.element_type == ListElementType.PlantType:
+            n = FindPlantTypeListValueNode()
+        elif self.element_type == ListElementType.ZombieType:
+            n = FindZombieTypeListValueNode()
+        else:
+            n = FindObjectListValueNode()
+
+        to_port(value).connect(n.get_input("值"))
+        self.attach_node(n)
+        return {
+            "index": n.get_output("索引"),
+            "exists": n.get_output("存在"),
+        }
+
+    def contains(self, value: Any) -> Any:
+        """Returns a boolean port indicating whether the value exists in this list."""
+        return self.find(value)["exists"]
+
+    def index_of(self, value: Any) -> Any:
+        """Returns an integer port for the index of the first occurrence of value."""
+        return self.find(value)["index"]
+
 
 
 __all__ = [

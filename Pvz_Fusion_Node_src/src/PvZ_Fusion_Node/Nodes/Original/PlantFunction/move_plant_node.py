@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class MovePlantNode(Node):
+    # Status in Extensions: Implemented
     node_type = "MovePlantNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -13,6 +14,15 @@ class MovePlantNode(Node):
         "移动成功": PortDef("移动成功", PortDirection.Output, PortType.Trigger),
         "植物Out": PortDef("植物", PortDirection.Output, PortType.Plant),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Plant_input_plant : str = "植物"
+    Col_input_int : str = "列"
+    Row_input_int : str = "行"
+    Force_input_bool : str = "强制"
+    MoveSuccess_output_trigger : str = "移动成功"
+    Out_output_plant : str = "植物Out"
 
     def __init__(
         self,

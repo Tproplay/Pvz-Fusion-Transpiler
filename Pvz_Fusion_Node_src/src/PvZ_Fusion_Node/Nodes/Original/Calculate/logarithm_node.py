@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class LogarithmNode(Node):
+    # Status in Extensions: Implemented
     node_type = "LogarithmNode"
     _class_ports = {
         "真数": PortDef("真数", PortDirection.Input, PortType.Float),
         "底数": PortDef("底数", PortDirection.Input, PortType.Float),
         "结果": PortDef("结果", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Number_input_float : str = "真数"
+    Base_input_float : str = "底数"
+    Result_output_float : str = "结果"
 
     def __init__(
         self,

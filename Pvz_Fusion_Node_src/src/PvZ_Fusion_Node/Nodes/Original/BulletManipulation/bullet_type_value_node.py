@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class BulletTypeValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "BulletTypeValueNode"
     _class_ports = {
         "子弹类型": PortDef("子弹类型", PortDirection.Output, PortType.BulletType),
     }
+
+    # Port name constants
+    BulletType_output_bullettype : str = "子弹类型"
 
     def __init__(
         self,

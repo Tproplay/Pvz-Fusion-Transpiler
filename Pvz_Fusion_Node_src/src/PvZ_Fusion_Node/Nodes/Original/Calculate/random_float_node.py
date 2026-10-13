@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class RandomFloatNode(Node):
+    # Status in Extensions: Implemented
     node_type = "RandomFloatNode"
     _class_ports = {
         "最小值": PortDef("最小值", PortDirection.Input, PortType.Float),
         "最大值": PortDef("最大值", PortDirection.Input, PortType.Float),
         "随机浮点数": PortDef("随机浮点数", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Min_input_float : str = "最小值"
+    Max_input_float : str = "最大值"
+    RandomFloat_output_float : str = "随机浮点数"
 
     def __init__(
         self,

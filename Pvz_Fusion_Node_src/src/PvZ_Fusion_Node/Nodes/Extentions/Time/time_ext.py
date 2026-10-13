@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import Any, Optional
-from .extension_node import ExtensionNode
-from ... import nodes, api
-from ...Core.context import ctx, ExecutionPath
-from ...typing import _staticproperty
-from .branching import If
-from .variables import FloatVar
+from ..extension_node import ExtensionNode
+from .... import nodes, api
+from ....Core.context import ctx, ExecutionPath
+from ....typing import _staticproperty
+from ..Branching.branching import If
+from ..Variables.variables import FloatVar
 
 
 class Time(ExtensionNode):

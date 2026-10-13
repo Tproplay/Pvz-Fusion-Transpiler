@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class RemovePlantTypeNode(Node):
+    # Status in Extensions: Implemented
     node_type = "RemovePlantTypeNode"
     _class_ports = {
         "植物类型列表": PortDef("植物类型列表", PortDirection.Input, PortType.PlantTypeList),
@@ -10,6 +11,12 @@ class RemovePlantTypeNode(Node):
         "结果列表": PortDef("结果列表", PortDirection.Output, PortType.PlantTypeList),
         "是否成功": PortDef("是否成功", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    PlantTypeList_input_planttypelist : str = "植物类型列表"
+    TypeToRemove_input_planttype : str = "要删除的类型"
+    ResultList_output_planttypelist : str = "结果列表"
+    IsSuccess_output_bool : str = "是否成功"
 
     def __init__(
         self,

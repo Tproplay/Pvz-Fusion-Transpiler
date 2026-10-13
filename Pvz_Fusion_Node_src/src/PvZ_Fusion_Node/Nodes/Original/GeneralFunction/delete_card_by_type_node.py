@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class DeleteCardByTypeNode(Node):
+    # Status in Extensions: Implemented
     node_type = "DeleteCardByTypeNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "植物类型": PortDef("植物类型", PortDirection.Input, PortType.PlantType),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    PlantType_input_planttype : str = "植物类型"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

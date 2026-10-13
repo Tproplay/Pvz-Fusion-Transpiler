@@ -148,6 +148,18 @@ class _SunManager:
 class _MoneyManager:
     """Manages the level's persistent coin balance."""
 
+    @property
+    def value(self) -> Any:
+        """Primary output port representing the current Money/Coin balance."""
+        return nodes.get_money_amount().money_amount
+
+    def _get_primary_port(self) -> Any:
+        return self.value
+
+    def get(self) -> Any:
+        """Returns the current Money port."""
+        return self.value
+
     @staticmethod
     def check_money(
         amount: Any,
@@ -235,3 +247,38 @@ class Board(metaclass=_BoardMeta):
 
     def __new__(cls, *args: Any, **kwargs: Any) -> None:
         raise TypeError("Board is a static interface and cannot be instantiated.")
+
+    @staticmethod
+    def change_stage(stage_name: str = "战斗") -> None:
+        """Switches the game stage (e.g. '战斗', '准备')."""
+        nodes.ChangeStageNode(stage_name=stage_name)
+
+    @staticmethod
+    def get_stage() -> Any:
+        """Returns the output port for the current game stage name."""
+        return nodes.GetStageNode().stage_name
+
+    @staticmethod
+    def change_map(scene: int = 1) -> None:
+        """Switches the background map scene."""
+        nodes.ChangeEventMapNode(scene=scene)
+
+    @staticmethod
+    def change_music(music: int = 0) -> None:
+        """Switches the background music track."""
+        nodes.ChangeEventMusicNode(music=music)
+
+    @staticmethod
+    def pause_wave_countdown() -> None:
+        """Pauses the countdown timer between zombie waves."""
+        nodes.SetWaveCountdownPausedNode()
+
+    @staticmethod
+    def set_zombie_house_rule() -> None:
+        """Applies zombie house entry rules."""
+        nodes.SetZombieHouseRuleNode()
+
+    @staticmethod
+    def remove_travel_entry(kind: int = 0) -> None:
+        """Removes a travel entry/buff."""
+        nodes.RemoveTravelEntryNode(kind=kind)

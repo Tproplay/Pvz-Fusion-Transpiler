@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class MergePlantTypeListsNode(Node):
+    # Status in Extensions: Implemented
     node_type = "MergePlantTypeListsNode"
     _class_ports = {
         "列表A": PortDef("列表A", PortDirection.Input, PortType.PlantTypeList),
@@ -10,6 +11,12 @@ class MergePlantTypeListsNode(Node):
         "合并列表": PortDef("合并列表", PortDirection.Output, PortType.PlantTypeList),
         "列表长度": PortDef("列表长度", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    ListA_input_planttypelist : str = "列表A"
+    ListB_input_planttypelist : str = "列表B"
+    MergedList_output_planttypelist : str = "合并列表"
+    ListLength_output_int : str = "列表长度"
 
     def __init__(
         self,

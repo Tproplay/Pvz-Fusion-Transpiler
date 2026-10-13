@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ModifyZombieHealthNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ModifyZombieHealthNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class ModifyZombieHealthNode(Node):
         "修改成功": PortDef("修改成功", PortDirection.Output, PortType.Trigger),
         "僵尸Out": PortDef("僵尸", PortDirection.Output, PortType.Zombie),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Zombie_input_zombie : str = "僵尸"
+    HealthMultiplier_input_float : str = "血量倍率"
+    ModifySuccess_output_trigger : str = "修改成功"
+    Out_output_zombie : str = "僵尸Out"
 
     def __init__(
         self,

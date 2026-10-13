@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import Any, Iterable, Optional, Union
 from enum import Enum
-from ... import nodes
-from ...Core.context import ctx, ExecutionPath
-from ...Extras.TypeMgr import PlantType, ZombieType
-from .extension_node import ExtensionNode
-from ..Original.Node import Port, to_port
-from ...typing import _staticproperty, to_int_port, to_float_port, to_bool_port
+from .... import nodes
+from ....Core.context import ctx, ExecutionPath
+from ....Extras.TypeMgr import PlantType, ZombieType
+from ..extension_node import ExtensionNode
+from ...Original.Node import Port, to_port
+from ....typing import _staticproperty, to_int_port, to_float_port, to_bool_port
 
 class ForEachPlant(ExtensionNode):
     """Context manager that loops through a collection of Plant entities on the node canvas.
@@ -489,6 +489,154 @@ class Plant(ExtensionNode):
             plant=self.ref, multiplier=float_multiplier
         )
 
+    def curse(self):
+        """Curses the plant entity."""
+        from ...Original.PlantFunction.curse_plant_node import CursePlantNode
+        node = CursePlantNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, CursePlantNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(CursePlantNode.Plant_input_plant))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, CursePlantNode.Complete_output_trigger)
+        return self
+
+    def silence(self):
+        """Silences the plant entity, disabling ability triggers."""
+        from ...Original.PlantFunction.silence_plant_node import SilencePlantNode
+        node = SilencePlantNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, SilencePlantNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(SilencePlantNode.Plant_input_plant))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, SilencePlantNode.Complete_output_trigger)
+        return self
+
+    def feed_golden_bean(self):
+        """Feeds a golden bean to the plant entity."""
+        from ...Original.PlantFunction.feed_golden_bean_node import FeedGoldenBeanNode
+        node = FeedGoldenBeanNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, FeedGoldenBeanNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(FeedGoldenBeanNode.Plant_input_plant))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, FeedGoldenBeanNode.Complete_output_trigger)
+        return self
+
+    def super_skill(self):
+        """Attempts to trigger the plant's ultimate/super skill."""
+        from ...Original.PlantFunction.try_plant_super_skill_node import TryPlantSuperSkillNode
+        node = TryPlantSuperSkillNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, TryPlantSuperSkillNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(TryPlantSuperSkillNode.Plant_input_plant))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, TryPlantSuperSkillNode.Complete_output_trigger)
+        return self
+
+    def upgrade(self):
+        """Upgrades the event plant entity."""
+        from ...Original.PlantFunction.upgrade_event_plant_node import UpgradeEventPlantNode
+        node = UpgradeEventPlantNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, UpgradeEventPlantNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(UpgradeEventPlantNode.Plant_input_plant))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, UpgradeEventPlantNode.Complete_output_trigger)
+        return self
+
+    def set_attack_speed(self, speed):
+        """Sets the attack speed of the plant."""
+        from ...Original.PlantFunction.set_plant_attack_speed_node import SetPlantAttackSpeedNode
+        node = SetPlantAttackSpeedNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, SetPlantAttackSpeedNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(SetPlantAttackSpeedNode.Plant_input_plant))
+        to_port(to_float_port(speed)).connect(node.get_input(SetPlantAttackSpeedNode.AttackSpeed_input_float))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, SetPlantAttackSpeedNode.Complete_output_trigger)
+        return self
+
+    def get_attack_speed(self):
+        """Gets the attack speed port of the plant."""
+        from ...Original.PlantFunction.get_plant_attack_speed_node import GetPlantAttackSpeedNode
+        node = GetPlantAttackSpeedNode()
+        to_port(self.ref).connect(node.get_input(GetPlantAttackSpeedNode.Plant_input_plant))
+        return node.get_output(GetPlantAttackSpeedNode.AttackSpeed_output_float)
+
+    def set_attack_interval(self, interval):
+        """Sets the attack interval duration for the plant."""
+        from ...Original.PlantFunction.set_plant_attack_interval_node import SetPlantAttackIntervalNode
+        node = SetPlantAttackIntervalNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, SetPlantAttackIntervalNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(SetPlantAttackIntervalNode.Plant_input_plant))
+        to_port(to_float_port(interval)).connect(node.get_input(SetPlantAttackIntervalNode.AttackInterval_input_float))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, SetPlantAttackIntervalNode.Complete_output_trigger)
+        return self
+
+    def set_attribute_countdown(self, cd):
+        """Sets the plant's attribute countdown."""
+        from ...Original.PlantFunction.set_plant_attribute_countdown_node import SetPlantAttributeCountdownNode
+        node = SetPlantAttributeCountdownNode()
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, SetPlantAttributeCountdownNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(SetPlantAttributeCountdownNode.Plant_input_plant))
+        to_port(to_float_port(cd)).connect(node.get_input(SetPlantAttributeCountdownNode.Countdown_input_float))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, SetPlantAttributeCountdownNode.Complete_output_trigger)
+        return self
+
+    def get_attribute_countdown(self):
+        """Gets the plant's attribute countdown port."""
+        from ...Original.PlantFunction.get_plant_attribute_countdown_node import GetPlantAttributeCountdownNode
+        node = GetPlantAttributeCountdownNode()
+        to_port(self.ref).connect(node.get_input(GetPlantAttributeCountdownNode.Plant_input_plant))
+        return node.get_output(GetPlantAttributeCountdownNode.PropertyCountdown_output_float)
+
+    def get_components(self):
+        """Returns the primary components GameObject reference of this plant."""
+        from ...Original.PlantFunction.get_plant_basic_components_node import GetPlantBasicComponentsNode
+        node = GetPlantBasicComponentsNode()
+        to_port(self.ref).connect(node.get_input(GetPlantBasicComponentsNode.Plant_input_plant))
+        return node.get_output(GetPlantBasicComponentsNode.Component_output_gameobject)
+
+    def bind(self, name: str = "守护目标"):
+        """Binds this plant under a given key in ObjectBinding."""
+        from ...Original.ObjectBinding.bind_plant_node import BindPlantNode
+        node = BindPlantNode(binding_name=name)
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, BindPlantNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(BindPlantNode.Plant_input_plant))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, BindPlantNode.Complete_output_trigger)
+        return self
+
+    @classmethod
+    def get_bound(cls, name: str = "守护目标") -> Plant:
+        """Retrieves a previously bound plant instance by name."""
+        from ...Original.ObjectBinding.get_bound_plant_node import GetBoundPlantNode
+        node = GetBoundPlantNode(binding_name=name)
+        return cls(node.get_output(GetBoundPlantNode.Plant_output_plant))
+
+    def to_object(self):
+        """Converts this Plant into an engine GameObject."""
+        from ...Original.TypeConvert.plant_to_object_node import PlantToObjectNode
+        from ..GameObject.game_object import GameObject
+        node = PlantToObjectNode()
+        to_port(self.ref).connect(node.get_input(PlantToObjectNode.Plant_input_plant))
+        return GameObject(node.get_output(PlantToObjectNode.GameObject_output_gameobject))
+
+
     # ==========================================================
     # LAZY DESTRUCTURED PROPERTIES (via plant_split)
     # ==========================================================
@@ -626,6 +774,136 @@ class Zombie(ExtensionNode):
         """Output port representing the zombie's current column coordinate."""
         return self.split.column
 
+    def get_stats(self, stat: int = 0):
+        """Queries a stat value from the zombie."""
+        from ...Original.ZombieFunction.get_zombie_stats_node import GetZombieStatsNode
+        node = GetZombieStatsNode(stat=stat)
+        to_port(self.ref).connect(node.get_input(GetZombieStatsNode.Zombie_input_zombie))
+        return node.get_output(GetZombieStatsNode.Value_output_float)
+
+    def set_stats(self, value: Any, stat: int = 0):
+        """Sets a stat value on the zombie."""
+        from ...Original.ZombieFunction.set_zombie_stats_node import SetZombieStatsNode
+        node = SetZombieStatsNode(stat=stat)
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, SetZombieStatsNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(SetZombieStatsNode.Zombie_input_zombie))
+        to_port(to_float_port(value)).connect(node.get_input(SetZombieStatsNode.Value_input_float))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, SetZombieStatsNode.Complete_output_trigger)
+        return self
+
+    def get_status(self, status: int = 0):
+        """Queries whether this zombie has a specific status flag active."""
+        from ...Original.ZombieFunction.get_zombie_status_node import GetZombieStatusNode
+        node = GetZombieStatusNode(status=status)
+        to_port(self.ref).connect(node.get_input(GetZombieStatusNode.Zombie_input_zombie))
+        return node.get_output(GetZombieStatusNode.HasState_output_bool)
+
+    def set_status(self, state: Any, status: int = 0):
+        """Toggles or sets a status flag on this zombie."""
+        from ...Original.ZombieFunction.set_zombie_status_node import SetZombieStatusNode
+        node = SetZombieStatusNode(status=status)
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, SetZombieStatusNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(SetZombieStatusNode.Zombie_input_zombie))
+        to_port(to_bool_port(state)).connect(node.get_input(SetZombieStatusNode.State_input_bool))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, SetZombieStatusNode.Complete_output_trigger)
+        return self
+
+    def bind(self, name: str = "守护目标"):
+        """Binds this zombie under a named key in ObjectBinding."""
+        from ...Original.ObjectBinding.bind_zombie_node import BindZombieNode
+        node = BindZombieNode(binding_name=name)
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, node.node_id, BindZombieNode.Trigger_input_trigger)
+        to_port(self.ref).connect(node.get_input(BindZombieNode.Zombie_input_zombie))
+        if ctx.trigger_stack:
+            ctx.trigger_stack[-1] = ExecutionPath(node.node_id, BindZombieNode.Complete_output_trigger)
+        return self
+
+    @classmethod
+    def get_bound(cls, name: str = "守护目标") -> Zombie:
+        """Retrieves a previously bound zombie instance by name."""
+        from ...Original.ObjectBinding.get_bound_zombie_node import GetBoundZombieNode
+        node = GetBoundZombieNode(binding_name=name)
+        return cls(node.get_output(GetBoundZombieNode.Zombie_output_zombie))
+
+    def to_object(self):
+        """Converts this Zombie into an engine GameObject."""
+        from ...Original.TypeConvert.zombie_to_object_node import ZombieToObjectNode
+        from ..GameObject.game_object import GameObject
+        node = ZombieToObjectNode()
+        to_port(self.ref).connect(node.get_input(ZombieToObjectNode.Zombie_input_zombie))
+        return GameObject(node.get_output(ZombieToObjectNode.GameObject_output_gameobject))
+
+
+class ForEachZombie(ExtensionNode):
+    """Context manager looping over a collection of Zombie entities."""
+
+    def __init__(self, zombie_list_port: Any) -> None:
+        from ...Original.ZombieFunction.for_each_zombie_node import ForEachZombieNode
+        self.node = ForEachZombieNode()
+        super().__init__(root_node=self.node)
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, self.node.node_id, ForEachZombieNode.Trigger_input_trigger)
+        to_port(zombie_list_port).connect(self.node.get_input(ForEachZombieNode.ZombieList_input_zombielist))
+        self._zombie_cache = None
+
+    def __enter__(self) -> Zombie:
+        from ...Original.ZombieFunction.for_each_zombie_node import ForEachZombieNode
+        ctx.trigger_stack.append(ExecutionPath(self.node.node_id, ForEachZombieNode.LoopBody_output_trigger))
+        if self._zombie_cache is None:
+            self._zombie_cache = Zombie(self.node.get_output(ForEachZombieNode.CurrentZombie_output_zombie))
+        return self._zombie_cache
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        from ...Original.ZombieFunction.for_each_zombie_node import ForEachZombieNode
+        if ctx.trigger_stack:
+            ctx.trigger_stack.pop()
+        ctx.trigger_stack.append(ExecutionPath(self.node.node_id, ForEachZombieNode.LoopComplete_output_trigger))
+
+    @property
+    def on_complete(self) -> ExecutionPath:
+        from ...Original.ZombieFunction.for_each_zombie_node import ForEachZombieNode
+        return ExecutionPath(self.node.node_id, ForEachZombieNode.LoopComplete_output_trigger)
+
+
+class ForEachAllZombies(ExtensionNode):
+    """Context manager looping over all Zombie entities currently on the lawn."""
+
+    def __init__(self) -> None:
+        from ...Original.ZombieFunction.for_each_all_zombies_node import ForEachAllZombiesNode
+        self.node = ForEachAllZombiesNode()
+        super().__init__(root_node=self.node)
+        if ctx.trigger_stack:
+            prev = ctx.trigger_stack[-1]
+            ctx.add_connection(prev.id, prev.out_trigger, self.node.node_id, ForEachAllZombiesNode.Trigger_input_trigger)
+        self._zombie_cache = None
+
+    def __enter__(self) -> Zombie:
+        from ...Original.ZombieFunction.for_each_all_zombies_node import ForEachAllZombiesNode
+        ctx.trigger_stack.append(ExecutionPath(self.node.node_id, ForEachAllZombiesNode.LoopBody_output_trigger))
+        if self._zombie_cache is None:
+            self._zombie_cache = Zombie(self.node.get_output(ForEachAllZombiesNode.CurrentZombie_output_zombie))
+        return self._zombie_cache
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        from ...Original.ZombieFunction.for_each_all_zombies_node import ForEachAllZombiesNode
+        if ctx.trigger_stack:
+            ctx.trigger_stack.pop()
+        ctx.trigger_stack.append(ExecutionPath(self.node.node_id, ForEachAllZombiesNode.LoopComplete_output_trigger))
+
+    @property
+    def on_complete(self) -> ExecutionPath:
+        from ...Original.ZombieFunction.for_each_all_zombies_node import ForEachAllZombiesNode
+        return ExecutionPath(self.node.node_id, ForEachAllZombiesNode.LoopComplete_output_trigger)
+
 
 __all__ = [
     "ForEachPlant",
@@ -633,5 +911,7 @@ __all__ = [
     "PlantTypeList",
     "Plant",
     "Zombie",
+    "ForEachZombie",
+    "ForEachAllZombies",
 ]
 

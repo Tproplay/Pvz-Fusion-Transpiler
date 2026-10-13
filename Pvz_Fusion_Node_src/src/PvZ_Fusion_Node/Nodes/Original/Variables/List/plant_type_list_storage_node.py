@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 from .list_storage_operation import ListStorageOperation
 
 class PlantTypeListStorageNode(Node):
+    # Status in Extensions: Implemented
     node_type = "PlantTypeListStorageNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -12,6 +13,14 @@ class PlantTypeListStorageNode(Node):
         "列表长度": PortDef("列表长度", PortDirection.Output, PortType.Int),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    List_input_planttypelist : str = "列表"
+    PlantType_input_planttype : str = "植物类型"
+    CurrentList_output_planttypelist : str = "当前列表"
+    ListLength_output_int : str = "列表长度"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

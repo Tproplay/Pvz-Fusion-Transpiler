@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class PlantSplitNode(Node):
+    # Status in Extensions: Implemented
     node_type = "PlantSplitNode"
     _class_ports = {
         "植物": PortDef("植物", PortDirection.Input, PortType.Plant),
@@ -12,6 +13,14 @@ class PlantSplitNode(Node):
         "植物血量": PortDef("植物血量", PortDirection.Output, PortType.Float),
         "属性倒计时": PortDef("属性倒计时", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Plant_input_plant : str = "植物"
+    Col_output_int : str = "列"
+    Row_output_int : str = "行"
+    PlantType_output_planttype : str = "植物类型"
+    PlantHealth_output_float : str = "植物血量"
+    PropertyCountdown_output_float : str = "属性倒计时"
 
     def __init__(
         self,

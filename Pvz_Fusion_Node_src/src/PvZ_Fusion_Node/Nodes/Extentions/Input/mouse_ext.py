@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Any, Optional
-from .extension_node import ExtensionNode
-from ... import nodes
+from ..extension_node import ExtensionNode
+from .... import nodes
 
 
 class Mouse(ExtensionNode):
@@ -29,5 +29,12 @@ class Mouse(ExtensionNode):
     def isLeftClick(self) -> Any:
         return self.node.isLeftButton
 
+    @property
+    def world_position(self) -> Any:
+        from ...Original.ObjectOperation.get_mouse_world_position_node import GetMouseWorldPositionNode
+        node = GetMouseWorldPositionNode()
+        return node.get_output(GetMouseWorldPositionNode.Position_output_vector3)
+
 
 __all__ = ["Mouse"]
+

@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class IntModuloNode(Node):
+    # Status in Extensions: Implemented
     node_type = "IntModuloNode"
     _class_ports = {
         "被除数": PortDef("被除数", PortDirection.Input, PortType.Int),
         "除数": PortDef("除数", PortDirection.Input, PortType.Int),
         "余数": PortDef("余数", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    Dividend_input_int : str = "被除数"
+    Divisor_input_int : str = "除数"
+    Remainder_output_int : str = "余数"
 
     def __init__(
         self,

@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetMoneyNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetMoneyNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "金币数量": PortDef("金币数量", PortDirection.Input, PortType.Int),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    MoneyAmount_input_int : str = "金币数量"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

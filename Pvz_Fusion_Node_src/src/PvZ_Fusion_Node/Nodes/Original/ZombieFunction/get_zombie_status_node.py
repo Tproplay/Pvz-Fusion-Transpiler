@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetZombieStatusNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetZombieStatusNode"
     _class_ports = {
         "僵尸": PortDef("僵尸", PortDirection.Input, PortType.Zombie),
         "具有状态": PortDef("具有状态", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Zombie_input_zombie : str = "僵尸"
+    HasState_output_bool : str = "具有状态"
 
     def __init__(
         self,

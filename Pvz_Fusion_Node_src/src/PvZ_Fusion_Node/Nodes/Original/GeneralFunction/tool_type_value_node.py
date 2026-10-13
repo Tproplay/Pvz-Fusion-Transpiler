@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ToolTypeValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ToolTypeValueNode"
     _class_ports = {
         "工具类型": PortDef("工具类型", PortDirection.Output, PortType.ToolType),
     }
+
+    # Port name constants
+    ToolType_output_tooltype : str = "工具类型"
 
     def __init__(
         self,

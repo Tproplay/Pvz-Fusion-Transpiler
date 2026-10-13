@@ -128,6 +128,87 @@ class InGameUI:
                 duration=duration,
             )
 
+    @staticmethod
+    def delete_all_info_cards() -> None:
+        """Deletes all active info cards from the screen."""
+        nodes.DeleteInfoCardsNode()
+
+    @staticmethod
+    def get_held_tool() -> Any:
+        """Returns the output port representing the player's currently held tool type."""
+        return nodes.GetHeldToolNode().outputs["工具类型"]
+
+    @staticmethod
+    def get_tool_cooldown(tool_type: Any) -> Any:
+        """Returns the cooldown duration port for the specified tool type."""
+        from ..Nodes.Original.Node import to_port
+        if hasattr(tool_type, "value") and not hasattr(tool_type, "node"):
+            tool_type = tool_type.value
+        if isinstance(tool_type, int):
+            t_port = nodes.ToolTypeValueNode(tool_type=tool_type).outputs["工具类型"]
+        else:
+            t_port = to_port(tool_type)
+        node = nodes.GetToolCooldownNode()
+        t_port.connect(node.get_input("工具类型"))
+        return node.outputs["冷却时间"]
+
+    @staticmethod
+    def set_tool_cooldown(tool_type: Any, cooldown: Any) -> None:
+        """Sets the cooldown duration for a specific tool type."""
+        from ..Nodes.Original.Node import to_port
+        if hasattr(tool_type, "value") and not hasattr(tool_type, "node"):
+            tool_type = tool_type.value
+        if isinstance(tool_type, int):
+            t_port = nodes.ToolTypeValueNode(tool_type=tool_type).outputs["工具类型"]
+        else:
+            t_port = to_port(tool_type)
+        node = nodes.SetToolCooldownNode()
+        t_port.connect(node.get_input("工具类型"))
+        to_port(cooldown).connect(node.get_input("冷却时间"))
+
+    @staticmethod
+    def give_zombie_card(zombie_type: Any) -> None:
+        """Adds a zombie card of specified type to the player's selection."""
+        from ..Nodes.Original.Node import to_port
+        if hasattr(zombie_type, "value") and not hasattr(zombie_type, "node"):
+            zombie_type = zombie_type.value
+        if isinstance(zombie_type, int):
+            z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).outputs["僵尸类型"]
+        else:
+            z_port = to_port(zombie_type)
+        node = nodes.AddZombieCardNode()
+        z_port.connect(node.get_input("僵尸类型"))
+
+    @staticmethod
+    def remove_all_zombie_cards(zombie_type: Any = None) -> None:
+        """Removes zombie card(s) of specified type from the player's selection."""
+        from ..Nodes.Original.Node import to_port
+        node = nodes.DeleteZombieCardsNode()
+        if zombie_type is not None:
+            if hasattr(zombie_type, "value") and not hasattr(zombie_type, "node"):
+                zombie_type = zombie_type.value
+            if isinstance(zombie_type, int):
+                z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).outputs["僵尸类型"]
+            else:
+                z_port = to_port(zombie_type)
+            z_port.connect(node.get_input("僵尸类型"))
+
+    @staticmethod
+    def set_zombie_card_cooldown(zombie_type: Any, cooldown: Any) -> None:
+        """Sets the cooldown for a specific zombie card."""
+        from ..Nodes.Original.Node import to_port
+        if hasattr(zombie_type, "value") and not hasattr(zombie_type, "node"):
+            zombie_type = zombie_type.value
+        if isinstance(zombie_type, int):
+            z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).outputs["僵尸类型"]
+        else:
+            z_port = to_port(zombie_type)
+        node = nodes.SetZombieCardCooldownNode()
+        z_port.connect(node.get_input("僵尸类型"))
+        to_port(cooldown).connect(node.get_input("冷却时间"))
+
+    show_text = display_text
+
     class InfoCard:
         """Context manager style for displaying an in-game Info Card popup.
 

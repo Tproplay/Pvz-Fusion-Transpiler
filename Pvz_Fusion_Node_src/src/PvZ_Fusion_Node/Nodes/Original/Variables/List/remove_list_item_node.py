@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class RemoveListItemNode(Node):
+    # Status in Extensions: Implemented
     node_type = "RemoveListItemNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class RemoveListItemNode(Node):
         "索引": PortDef("索引", PortDirection.Input, PortType.Int),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    List_input_listvariable : str = "列表"
+    Index_input_int : str = "索引"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

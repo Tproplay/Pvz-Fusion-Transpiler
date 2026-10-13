@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class OnPlantDeathCompleteNode(Node):
+    # Status in Extensions: Implemented
     node_type = "OnPlantDeathCompleteNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Output, PortType.Trigger),
         "植物": PortDef("植物", PortDirection.Output, PortType.Plant),
         "死亡原因": PortDef("死亡原因", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    Trigger_output_trigger : str = "触发"
+    Plant_output_plant : str = "植物"
+    DeathReason_output_int : str = "死亡原因"
 
     def __init__(
         self,

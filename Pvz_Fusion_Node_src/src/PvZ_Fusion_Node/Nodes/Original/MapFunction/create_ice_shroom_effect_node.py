@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CreateIceShroomEffectNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CreateIceShroomEffectNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "冻结时间": PortDef("冻结时间", PortDirection.Input, PortType.Float),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    FreezeTime_input_float : str = "冻结时间"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

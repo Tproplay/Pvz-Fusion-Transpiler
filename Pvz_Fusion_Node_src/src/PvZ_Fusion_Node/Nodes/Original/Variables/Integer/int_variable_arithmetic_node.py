@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class IntVariableArithmeticNode(Node):
+    # Status in Extensions: Implemented
     node_type = "IntVariableArithmeticNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class IntVariableArithmeticNode(Node):
         "变量Out": PortDef("变量", PortDirection.Output, PortType.IntVariable),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Variable_input_intvariable : str = "变量"
+    Operand_input_int : str = "操作数"
+    VariableOut_output_intvariable : str = "变量Out"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

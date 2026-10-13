@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class DamagePlantNode(Node):
+    # Status in Extensions: Implemented
     node_type = "DamagePlantNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class DamagePlantNode(Node):
         "伤害值": PortDef("伤害值", PortDirection.Input, PortType.Float),
         "伤害完成": PortDef("伤害完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Plant_input_plant : str = "植物"
+    Damage_input_float : str = "伤害值"
+    DamageComplete_output_trigger : str = "伤害完成"
 
     def __init__(
         self,

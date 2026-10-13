@@ -4,10 +4,14 @@ from .int_variable_asset import IntVariableAsset
 
 
 class IntVariableNode(Node):
+    # Status in Extensions: Implemented
     node_type = "IntVariableNode"
     _class_ports = {
         "变量": PortDef("变量", PortDirection.Output, PortType.IntVariable),
     }
+
+    # Port name constants
+    Variable_output_intvariable : str = "变量"
 
     def __init__(
         self,

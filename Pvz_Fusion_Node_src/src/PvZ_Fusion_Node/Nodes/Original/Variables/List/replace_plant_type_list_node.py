@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class ReplacePlantTypeListNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ReplacePlantTypeListNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class ReplacePlantTypeListNode(Node):
         "值": PortDef("值", PortDirection.Input, PortType.PlantType),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    List_input_listvariable : str = "列表"
+    Index_input_int : str = "索引"
+    Value_input_planttype : str = "值"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

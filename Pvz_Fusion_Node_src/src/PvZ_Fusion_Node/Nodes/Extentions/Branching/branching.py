@@ -7,9 +7,9 @@ from __future__ import annotations
 
 from typing import Any, Tuple, Union
 
-from .extension_node import ExtensionNode
-from ... import nodes
-from ...Core.context import ctx, ExecutionPath
+from ..extension_node import ExtensionNode
+from .... import nodes
+from ....Core.context import ctx, ExecutionPath
 
 
 class If(ExtensionNode):
@@ -184,3 +184,6 @@ class _SwitchDefault(ExtensionNode):
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         ctx.trigger_stack.pop()
+
+
+__all__ = ["If", "Switch"]

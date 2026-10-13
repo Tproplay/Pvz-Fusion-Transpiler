@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ToggleCycleNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ToggleCycleNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class ToggleCycleNode(Node):
         "切换开始时": PortDef("切换开始时", PortDirection.Output, PortType.Trigger),
         "切换关闭时": PortDef("切换关闭时", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    CycleInterval_input_float : str = "周期间隔"
+    OnCycle_output_trigger : str = "周期事件"
+    OnEnable_output_trigger : str = "切换开始时"
+    OnDisable_output_trigger : str = "切换关闭时"
 
     def __init__(
         self,

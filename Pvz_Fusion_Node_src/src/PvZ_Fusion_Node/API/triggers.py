@@ -200,3 +200,128 @@ class Trigger:
 
         def __exit__(self, *args: Any) -> None:
             ctx.trigger_stack.pop()
+
+    class OnPlantMixed:
+        """Triggers when a plant is mixed (fused).
+
+        Returns:
+            Plant: An accessor object for inspecting the mixed plant.
+        """
+
+        def __init__(self) -> None:
+            self.node = nodes.OnPlantMixedNode()
+
+        def __enter__(self) -> Plant:
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            return Plant(self.node.plant)
+
+        def __exit__(self, *args: Any) -> None:
+            ctx.trigger_stack.pop()
+
+    class OnWaveCleared:
+        """Triggers when all zombies in a wave are cleared.
+
+        Returns:
+            Any: The wave index reference port.
+        """
+
+        def __init__(self) -> None:
+            self.node = nodes.OnWaveClearedNode()
+
+        def __enter__(self) -> Any:
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            return self.node.wave
+
+        def __exit__(self, *args: Any) -> None:
+            ctx.trigger_stack.pop()
+
+    class OnWorldPlantEffect:
+        """Triggers on full-screen / world plant effects (e.g. Doom-shroom, Ice-shroom).
+
+        Args:
+            effect (int): The target effect identifier.
+
+        Returns:
+            Plant: An accessor object for inspecting the effect-triggering plant.
+        """
+
+        def __init__(self, effect: int = 0) -> None:
+            self.node = nodes.OnWorldPlantEffectNode(effect=effect)
+
+        def __enter__(self) -> Plant:
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            return Plant(self.node.plant)
+
+        def __exit__(self, *args: Any) -> None:
+            ctx.trigger_stack.pop()
+
+    class OnZombieClick:
+        """Triggers when a zombie is clicked by the player.
+
+        Returns:
+            Zombie: An accessor object for inspecting or modifying the clicked zombie.
+        """
+
+        def __init__(self) -> None:
+            self.node = nodes.OnZombieClickNode()
+
+        def __enter__(self) -> Zombie:
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            return Zombie(self.node.zombie)
+
+        def __exit__(self, *args: Any) -> None:
+            ctx.trigger_stack.pop()
+
+    class OnZombieHealthBelow:
+        """Triggers when a zombie's health drops below a specified threshold.
+
+        Returns:
+            Zombie: An accessor object for inspecting the zombie.
+        """
+
+        def __init__(self) -> None:
+            self.node = nodes.OnZombieHealthBelowNode()
+
+        def __enter__(self) -> Zombie:
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            return Zombie(self.node.zombie)
+
+        def __exit__(self, *args: Any) -> None:
+            ctx.trigger_stack.pop()
+
+    class WaveEvent:
+        """Triggers when a specific wave spawns.
+
+        Args:
+            wave (int): The target wave number.
+
+        Returns:
+            Any: The wave index reference port.
+        """
+
+        def __init__(self, wave: int = 0) -> None:
+            self.node = nodes.WaveEventNode(wave_value=wave)
+
+        def __enter__(self) -> Any:
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            return self.node.wave
+
+        def __exit__(self, *args: Any) -> None:
+            ctx.trigger_stack.pop()
+
+    class OnStageEnter:
+        """Triggers when entering a specific game stage.
+
+        Args:
+            stage_name (str): Name of the stage (e.g. '战斗', '准备').
+        """
+
+        def __init__(self, stage_name: str = "战斗") -> None:
+            self.node = nodes.OnStageEnterNode(stage_name=stage_name)
+
+        def __enter__(self) -> "Trigger.OnStageEnter":
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            return self
+
+        def __exit__(self, *args: Any) -> None:
+            ctx.trigger_stack.pop()

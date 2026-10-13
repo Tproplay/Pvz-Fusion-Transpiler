@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class SinglePlantTypeListNode(Node):
+    # Status in Extensions: Implemented
     node_type = "SinglePlantTypeListNode"
     _class_ports = {
         "植物类型列表": PortDef("植物类型列表", PortDirection.Output, PortType.PlantTypeList),
     }
+
+    # Port name constants
+    PlantTypeList_output_planttypelist : str = "植物类型列表"
 
     def __init__(
         self,

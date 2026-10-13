@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class InsertZombieTypeListNode(Node):
+    # Status in Extensions: Implemented
     node_type = "InsertZombieTypeListNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class InsertZombieTypeListNode(Node):
         "值": PortDef("值", PortDirection.Input, PortType.ZombieType),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    List_input_listvariable : str = "列表"
+    Index_input_int : str = "索引"
+    Value_input_zombietype : str = "值"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

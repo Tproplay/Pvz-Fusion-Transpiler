@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetMoneyAmountNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetMoneyAmountNode"
     _class_ports = {
         "金钱数量": PortDef("金钱数量", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    MoneyAmount_output_int : str = "金钱数量"
 
     def __init__(
         self,

@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CreateIceBlockNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CreateIceBlockNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class CreateIceBlockNode(Node):
         "冻住的植物": PortDef("冻住的植物", PortDirection.Input, PortType.PlantType),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Col_input_int : str = "列"
+    Row_input_int : str = "行"
+    FrozenPlant_input_planttype : str = "冻住的植物"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

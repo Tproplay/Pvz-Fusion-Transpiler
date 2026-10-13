@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class AddNode(Node):
+    # Status in Extensions: Implemented
     node_type = "AddNode"
     _class_ports = {
         "A": PortDef("A", PortDirection.Input, PortType.Float),

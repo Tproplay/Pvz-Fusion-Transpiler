@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class DivideNode(Node):
+    # Status in Extensions: Implemented
     node_type = "DivideNode"
     _class_ports = {
         "被除数": PortDef("被除数", PortDirection.Input, PortType.Float),
         "除数": PortDef("除数", PortDirection.Input, PortType.Float),
         "商": PortDef("商", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Dividend_input_float : str = "被除数"
+    Divisor_input_float : str = "除数"
+    Quotient_output_float : str = "商"
 
     def __init__(
         self,

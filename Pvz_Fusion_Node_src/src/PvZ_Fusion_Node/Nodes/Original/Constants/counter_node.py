@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CounterNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CounterNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class CounterNode(Node):
         "计数": PortDef("计数", PortDirection.Output, PortType.Int),
         "计数完成": PortDef("计数完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    IsReset_input_bool : str = "是否重置"
+    Count_output_int : str = "计数"
+    CountComplete_output_trigger : str = "计数完成"
 
     def __init__(
         self,

@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CreatePlantCardNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CreatePlantCardNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -12,6 +13,14 @@ class CreatePlantCardNode(Node):
         "创建成功": PortDef("创建成功", PortDirection.Output, PortType.Trigger),
         "植物类型Out": PortDef("植物类型", PortDirection.Output, PortType.PlantType),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Col_input_int : str = "列"
+    Row_input_int : str = "行"
+    PlantType_input_planttype : str = "植物类型"
+    OnCreated_output_trigger : str = "创建成功"
+    Out_output_planttype : str = "植物类型Out"
 
     def __init__(
         self,

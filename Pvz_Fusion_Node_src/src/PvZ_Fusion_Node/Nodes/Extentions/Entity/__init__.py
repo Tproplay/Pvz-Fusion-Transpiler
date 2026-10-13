@@ -1,4 +1,20 @@
-from .Plant import Plant
-from .Zombie import Zombie
+from .entities import (
+    Plant,
+    Zombie,
+    ForEachPlant,
+    ForEachPlantType,
+    PlantTypeList,
+    ForEachZombie,
+    ForEachAllZombies,
+)
 
-__all__ = ["Plant", "Zombie"]
+__all__ = [
+    "Plant",
+    "Zombie",
+    "ForEachPlant",
+    "ForEachPlantType",
+    "PlantTypeList",
+    "ForEachZombie",
+    "ForEachAllZombies",
+]
+

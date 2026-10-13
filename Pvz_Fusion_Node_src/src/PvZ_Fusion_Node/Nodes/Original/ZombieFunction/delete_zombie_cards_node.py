@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class DeleteZombieCardsNode(Node):
+    # Status in Extensions: Implemented
     node_type = "DeleteZombieCardsNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "僵尸类型": PortDef("僵尸类型", PortDirection.Input, PortType.ZombieType),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    ZombieType_input_zombietype : str = "僵尸类型"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

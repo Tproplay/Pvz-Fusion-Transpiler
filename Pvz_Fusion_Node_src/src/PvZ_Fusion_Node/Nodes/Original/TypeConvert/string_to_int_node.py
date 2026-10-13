@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class StringToIntNode(Node):
+    # Status in Extensions: Implemented
     node_type = "StringToIntNode"
     _class_ports = {
         "字符串": PortDef("字符串", PortDirection.Input, PortType.String),
         "整数": PortDef("整数", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    String_input_string : str = "字符串"
+    Int_output_int : str = "整数"
 
     def __init__(
         self,

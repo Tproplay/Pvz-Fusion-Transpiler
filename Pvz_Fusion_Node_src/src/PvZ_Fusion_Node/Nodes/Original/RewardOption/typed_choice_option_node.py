@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class TypedChoiceOptionNode(Node):
+    # Status in Extensions: Implemented
     node_type = "TypedChoiceOptionNode"
     _class_ports = {
         "选项列表": PortDef("选项列表", PortDirection.Output, PortType.ChoiceOptions),
@@ -12,6 +13,14 @@ class TypedChoiceOptionNode(Node):
         "僵尸类型": PortDef("僵尸类型", PortDirection.Input, PortType.ZombieType),
         "选项被点击": PortDef("选项被点击", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    OptionList_output_choiceoptions : str = "选项列表"
+    Title_input_string : str = "标题"
+    Description_input_string : str = "描述"
+    PlantType_input_planttype : str = "植物类型"
+    ZombieType_input_zombietype : str = "僵尸类型"
+    OnOptionClicked_output_trigger : str = "选项被点击"
 
     def __init__(
         self,

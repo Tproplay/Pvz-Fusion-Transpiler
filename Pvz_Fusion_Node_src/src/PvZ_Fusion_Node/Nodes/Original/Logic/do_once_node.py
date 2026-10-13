@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class DoOnceNode(Node):
+    # Status in Extensions: Implemented
     node_type = "DoOnceNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "重置": PortDef("重置", PortDirection.Input, PortType.Trigger),
         "已触发": PortDef("触发", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Reset_input_trigger : str = "重置"
+    Port_output_trigger : str = "已触发"
 
     def __init__(
         self,

@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ObjectToZombieNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ObjectToZombieNode"
     _class_ports = {
         "对象": PortDef("对象", PortDirection.Input, PortType.GameObject),
         "僵尸": PortDef("僵尸", PortDirection.Output, PortType.Zombie),
     }
+
+    # Port name constants
+    GameObject_input_gameobject : str = "对象"
+    Zombie_output_zombie : str = "僵尸"
 
     def __init__(
         self,

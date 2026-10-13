@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CompareGameObjectNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CompareGameObjectNode"
     _class_ports = {
         "对象A": PortDef("对象A", PortDirection.Input, PortType.GameObject),
         "对象B": PortDef("对象B", PortDirection.Input, PortType.GameObject),
         "相同": PortDef("相同", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    GameObjectA_input_gameobject : str = "对象A"
+    GameObjectB_input_gameobject : str = "对象B"
+    Same_output_bool : str = "相同"
 
     def __init__(
         self,

@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class UseSunNode(Node):
+    # Status in Extensions: Implemented
     node_type = "UseSunNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class UseSunNode(Node):
         "消耗成功": PortDef("消耗成功", PortDirection.Output, PortType.Trigger),
         "阳光不足": PortDef("阳光不足", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    SunAmount_input_int : str = "阳光数量"
+    OnSuccess_output_trigger : str = "消耗成功"
+    OnFailed_output_trigger : str = "阳光不足"
 
     def __init__(
         self,

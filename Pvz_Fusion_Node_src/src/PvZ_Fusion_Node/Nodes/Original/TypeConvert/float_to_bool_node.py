@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class FloatToBoolNode(Node):
+    # Status in Extensions: Implemented
     node_type = "FloatToBoolNode"
     _class_ports = {
         "浮点数": PortDef("浮点数", PortDirection.Input, PortType.Float),
         "布尔": PortDef("布尔", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Float_input_float : str = "浮点数"
+    Bool_output_bool : str = "布尔"
 
     def __init__(
         self,

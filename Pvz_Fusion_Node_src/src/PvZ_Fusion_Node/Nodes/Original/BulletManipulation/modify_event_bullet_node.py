@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ModifyEventBulletNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ModifyEventBulletNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class ModifyEventBulletNode(Node):
         "数值": PortDef("数值", PortDirection.Input, PortType.Float),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Bullet_input_bullet : str = "子弹"
+    Value_input_float : str = "数值"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

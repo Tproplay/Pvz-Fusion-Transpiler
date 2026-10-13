@@ -4,10 +4,14 @@ from .bool_variable_asset import BoolVariableAsset
 
 
 class BoolVariableNode(Node):
+    # Status in Extensions: Implemented
     node_type = "BoolVariableNode"
     _class_ports = {
         "变量": PortDef("变量", PortDirection.Output, PortType.BoolVariable),
     }
+
+    # Port name constants
+    Variable_output_boolvariable : str = "变量"
 
     def __init__(
         self,

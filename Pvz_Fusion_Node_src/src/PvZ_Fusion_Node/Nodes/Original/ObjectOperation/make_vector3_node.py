@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class MakeVector3Node(Node):
+    # Status in Extensions: Implemented
     node_type = "MakeVector3Node"
     _class_ports = {
         "X": PortDef("X", PortDirection.Input, PortType.Float),
@@ -10,6 +11,12 @@ class MakeVector3Node(Node):
         "Z": PortDef("Z", PortDirection.Input, PortType.Float),
         "向量": PortDef("向量", PortDirection.Output, PortType.Vector3),
     }
+
+    # Port name constants
+    X_input_float : str = "X"
+    Y_input_float : str = "Y"
+    Z_input_float : str = "Z"
+    Vector_output_vector3 : str = "向量"
 
     def __init__(
         self,

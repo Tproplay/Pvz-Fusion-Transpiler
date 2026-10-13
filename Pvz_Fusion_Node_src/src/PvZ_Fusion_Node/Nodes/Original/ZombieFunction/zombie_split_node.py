@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ZombieSplitNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ZombieSplitNode"
     _class_ports = {
         "僵尸": PortDef("僵尸", PortDirection.Input, PortType.Zombie),
@@ -11,6 +12,13 @@ class ZombieSplitNode(Node):
         "僵尸类型": PortDef("僵尸类型", PortDirection.Output, PortType.ZombieType),
         "是否被魅惑": PortDef("是否被魅惑", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Zombie_input_zombie : str = "僵尸"
+    Col_output_int : str = "列"
+    Row_output_int : str = "行"
+    ZombieType_output_zombietype : str = "僵尸类型"
+    IsHypnotized_output_bool : str = "是否被魅惑"
 
     def __init__(
         self,

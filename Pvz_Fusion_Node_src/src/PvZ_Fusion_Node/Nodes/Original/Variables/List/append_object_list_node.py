@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class AppendObjectListNode(Node):
+    # Status in Extensions: Implemented
     node_type = "AppendObjectListNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class AppendObjectListNode(Node):
         "值": PortDef("值", PortDirection.Input, PortType.GameObject),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    List_input_listvariable : str = "列表"
+    Value_input_gameobject : str = "值"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

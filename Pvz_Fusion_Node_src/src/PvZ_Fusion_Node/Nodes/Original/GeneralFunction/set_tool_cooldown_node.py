@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class SetToolCooldownNode(Node):
+    # Status in Extensions: Implemented
     node_type = "SetToolCooldownNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class SetToolCooldownNode(Node):
         "冷却时间": PortDef("冷却时间", PortDirection.Input, PortType.Float),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    ToolType_input_tooltype : str = "工具类型"
+    Cooldown_input_float : str = "冷却时间"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

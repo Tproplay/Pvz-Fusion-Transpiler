@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class ZombieTypeToStringNode(Node):
+    # Status in Extensions: Implemented
     node_type = "ZombieTypeToStringNode"
     _class_ports = {
         "僵尸类型": PortDef("僵尸类型", PortDirection.Input, PortType.ZombieType),
         "字符串": PortDef("字符串", PortDirection.Output, PortType.String),
     }
+
+    # Port name constants
+    ZombieType_input_zombietype : str = "僵尸类型"
+    String_output_string : str = "字符串"
 
     def __init__(
         self,

@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CompareToolTypeNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CompareToolTypeNode"
     _class_ports = {
         "工具类型A": PortDef("工具类型A", PortDirection.Input, PortType.ToolType),
         "工具类型B": PortDef("工具类型B", PortDirection.Input, PortType.ToolType),
         "相同": PortDef("相同", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    ToolTypeA_input_tooltype : str = "工具类型A"
+    ToolTypeB_input_tooltype : str = "工具类型B"
+    Same_output_bool : str = "相同"
 
     def __init__(
         self,

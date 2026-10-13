@@ -3,11 +3,16 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class GetBoolVariableValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetBoolVariableValueNode"
     _class_ports = {
         "变量": PortDef("变量", PortDirection.Input, PortType.BoolVariable),
         "值": PortDef("值", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    Variable_input_boolvariable : str = "变量"
+    Value_output_bool : str = "值"
 
     def __init__(
         self,

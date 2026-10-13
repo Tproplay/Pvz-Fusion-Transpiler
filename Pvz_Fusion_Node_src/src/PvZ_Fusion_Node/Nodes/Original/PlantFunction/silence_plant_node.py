@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class SilencePlantNode(Node):
+    # Status in Extensions: Implemented
     node_type = "SilencePlantNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "植物": PortDef("植物", PortDirection.Input, PortType.Plant),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Plant_input_plant : str = "植物"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CreateParticleNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CreateParticleNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class CreateParticleNode(Node):
         "列": PortDef("列", PortDirection.Input, PortType.Int),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Row_input_int : str = "行"
+    Col_input_int : str = "列"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class TypedChoiceMenuNode(Node):
+    # Status in Extensions: Implemented
     node_type = "TypedChoiceMenuNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -14,6 +15,16 @@ class TypedChoiceMenuNode(Node):
         "退出时触发": PortDef("退出时触发", PortDirection.Output, PortType.Trigger),
         "刷新时触发": PortDef("刷新时触发", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    OptionList_input_choiceoptions : str = "选项列表"
+    CanRefresh_input_bool : str = "可刷新"
+    RefreshCount_input_int : str = "刷新次数"
+    CanCancel_input_bool : str = "可取消"
+    WindowCount_input_int : str = "窗口数量"
+    OnExit_output_trigger : str = "退出时触发"
+    OnRefresh_output_trigger : str = "刷新时触发"
 
     def __init__(
         self,

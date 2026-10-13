@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetAllZombiesNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetAllZombiesNode"
     _class_ports = {
         "全部僵尸": PortDef("全部僵尸", PortDirection.Output, PortType.ZombieList),
     }
+
+    # Port name constants
+    AllZombies_output_zombielist : str = "全部僵尸"
 
     def __init__(
         self,

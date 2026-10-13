@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class UseMoneyNode(Node):
+    # Status in Extensions: Implemented
     node_type = "UseMoneyNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -10,6 +11,12 @@ class UseMoneyNode(Node):
         "消耗成功": PortDef("消耗成功", PortDirection.Output, PortType.Trigger),
         "金币不足": PortDef("金币不足", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    MoneyAmount_input_int : str = "金币数量"
+    OnSuccess_output_trigger : str = "消耗成功"
+    OnFailed_output_trigger : str = "金币不足"
 
     def __init__(
         self,

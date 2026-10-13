@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class FloatValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "FloatValueNode"
     _class_ports = {
         "值": PortDef("值", PortDirection.Output, PortType.Float),
     }
+
+    # Port name constants
+    Value_output_float : str = "值"
 
     def __init__(
         self,

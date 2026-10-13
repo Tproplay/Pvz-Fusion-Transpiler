@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class BindObjectNode(Node):
+    # Status in Extensions: Implemented
     node_type = "BindObjectNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "对象": PortDef("对象", PortDirection.Input, PortType.GameObject),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    GameObject_input_gameobject : str = "对象"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

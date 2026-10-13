@@ -346,128 +346,112 @@ def _ensure_float_port(val):
     return raw_val
 
 
-def sqrt(val, precision: int = 6):
-    """
-    Calculates the square root of val using Newton-Raphson iteration.
-    - precision: Number of iterative refinement steps (default 6).
-    """
-    import math
+def pow(base: Any, exp: Any) -> Any:
+    """Calculates base raised to the power of exp using native PowerNode."""
+    from ..Nodes.Original.Calculate.power_node import PowerNode
+    from ..Nodes.Original.Node import to_port
+    raw_base = base.value if hasattr(base, "value") else base
+    raw_exp = exp.value if hasattr(exp, "value") else exp
 
-    raw_val = _ensure_float_port(val)
-    is_static = isinstance(raw_val, (int, float)) and not isinstance(
-        raw_val, PortReference
-    )
+    if (
+        isinstance(raw_base, (int, float))
+        and isinstance(raw_exp, (int, float))
+        and not hasattr(raw_base, "node")
+        and not hasattr(raw_exp, "node")
+        and not isinstance(raw_base, PortReference)
+        and not isinstance(raw_exp, PortReference)
+    ):
+        return builtins.pow(raw_base, raw_exp)
 
-    # 1. Static Python Evaluation
-    if is_static:
+    node = PowerNode()
+    to_port(base).connect(node.get_input("底数"))
+    to_port(exp).connect(node.get_input("指数"))
+    return node.get_output("结果")
+
+
+def sqrt(val: Any, precision: int = 6) -> Any:
+    """Calculates the square root of val natively using PowerNode."""
+    raw_val = val.value if hasattr(val, "value") else val
+    if (
+        isinstance(raw_val, (int, float))
+        and not hasattr(raw_val, "node")
+        and not isinstance(raw_val, PortReference)
+    ):
         if raw_val < 0:
             raise ValueError(
                 f"❌ Error: Cannot calculate square root of negative number '{raw_val}'."
             )
-        return math.sqrt(raw_val)  # type: ignore
+        return math.sqrt(raw_val)
 
-    # 2. Dynamic Node Graph Calculation
-    guess = raw_val
-    for _ in range(precision):
-        div = nodes.divide_node(a=raw_val, b=guess).result
-        add = nodes.add_node(a=guess, b=div).result
-        guess = nodes.multiply_node(a=add, b=0.5).result
-
-    return guess
+    return pow(val, 0.5)
 
 
-def cbrt(val, precision: int = 6):
-    """
-    Calculates the cube root of val using Newton-Raphson iteration.
-    - precision: Number of iterative refinement steps (default 6).
-    """
-
-    raw_val = _ensure_float_port(val)
-    is_static = isinstance(raw_val, (int, float)) and not isinstance(
-        raw_val, PortReference
-    )
-
-    # 1. Static Python Evaluation
-    if is_static:
+def cbrt(val: Any, precision: int = 6) -> Any:
+    """Calculates the cube root of val natively using PowerNode."""
+    raw_val = val.value if hasattr(val, "value") else val
+    if (
+        isinstance(raw_val, (int, float))
+        and not hasattr(raw_val, "node")
+        and not isinstance(raw_val, PortReference)
+    ):
         return (
-            math.cbrt(raw_val) # type: ignore
+            math.cbrt(raw_val)
             if hasattr(math, "cbrt")
-            else (raw_val ** (1 / 3) if raw_val >= 0 else -((-raw_val) ** (1 / 3))) # type: ignore
-        )  # type: ignore
+            else (raw_val ** (1 / 3) if raw_val >= 0 else -((-raw_val) ** (1 / 3)))
+        )
 
-    # 2. Dynamic Node Graph Calculation
-    guess = raw_val
-    for _ in range(precision):
-        guess_sq = nodes.multiply_node(a=guess, b=guess).result
-        div = nodes.divide_node(a=raw_val, b=guess_sq).result
-        two_guess = nodes.multiply_node(a=guess, b=2.0).result
-        sum_val = nodes.add_node(a=two_guess, b=div).result
-        guess = nodes.divide_node(a=sum_val, b=3.0).result
-
-    return guess
+    return pow(val, 1.0 / 3.0)
 
 
-def natural_pow(base, exp):
-    """
-    Calculates base raised to a natural number exponent (exp >= 1).
-    - Static exponents: Throws ValueError if non-natural (negative or decimal).
-    - Dynamic exponents: Auto-casts float ports to int; evaluates to 0.0 if exp < 1 at runtime.
-    """
+def natural_pow(base: Any, exp: Any) -> Any:
+    """Calculates base raised to an exponent using native PowerNode."""
+    return pow(base, exp)
 
-    from .extensions import FloatVar, If
 
+def log(val: Any, base: Any = E) -> Any:
+    """Calculates logarithm of val with base using native LogarithmNode."""
+    from ..Nodes.Original.Calculate.logarithm_node import LogarithmNode
+    from ..Nodes.Original.Node import to_port
+    raw_val = val.value if hasattr(val, "value") else val
     raw_base = base.value if hasattr(base, "value") else base
-    raw_exp = exp.value if hasattr(exp, "value") else exp
 
-    is_base_static = isinstance(raw_base, (int, float)) and not isinstance(
-        raw_base, PortReference
-    )
-    is_exp_static = isinstance(raw_exp, (int, float)) and not isinstance(
-        raw_exp, PortReference
-    )
+    if (
+        isinstance(raw_val, (int, float))
+        and isinstance(raw_base, (int, float))
+        and not hasattr(raw_val, "node")
+        and not hasattr(raw_base, "node")
+        and not isinstance(raw_val, PortReference)
+        and not isinstance(raw_base, PortReference)
+    ):
+        return math.log(raw_val, raw_base)
 
-    # --- STATIC EXPONENT HANDLING ---
-    if is_exp_static:
-        if isinstance(raw_exp, float) and not raw_exp.is_integer():
-            raise ValueError(
-                f"❌ Error: natural_pow requires a natural number exponent, got float '{raw_exp}'."
-            )
+    node = LogarithmNode()
+    to_port(val).connect(node.get_input("真数"))
+    to_port(base).connect(node.get_input("底数"))
+    return node.get_output("结果")
 
-        exp_int = int(raw_exp)
-        if exp_int < 1:
-            raise ValueError(
-                f"❌ Error: natural_pow exponent must be >= 1, got '{exp_int}'."
-            )
 
-        if is_base_static:
-            return float(raw_base**exp_int)
+def mod(a: Any, b: Any) -> Any:
+    """Calculates integer modulo using native IntModuloNode."""
+    from ..Nodes.Original.Calculate.int_modulo_node import IntModuloNode
+    from ..Nodes.Original.Node import to_port
+    raw_a = a.value if hasattr(a, "value") else a
+    raw_b = b.value if hasattr(b, "value") else b
 
-        # Unroll multiplication chain on node canvas
-        curr_res = raw_base
-        for _ in range(exp_int - 1):
-            curr_res = nodes.multiply_node(a=curr_res, b=raw_base).result
-        return curr_res
+    if (
+        isinstance(raw_a, int)
+        and isinstance(raw_b, int)
+        and not hasattr(raw_a, "node")
+        and not hasattr(raw_b, "node")
+        and not isinstance(raw_a, PortReference)
+        and not isinstance(raw_b, PortReference)
+    ):
+        return raw_a % raw_b
 
-    # --- DYNAMIC EXPONENT HANDLING ---
-    # 1. Cast float port to int port if necessary
-    if hasattr(raw_exp, "_is_float_port") and raw_exp._is_float_port():  # type: ignore
-        exp_int_port = nodes.float_to_int(float_val=raw_exp).int
-    else:
-        exp_int_port = raw_exp
-
-    # 2. Construct runtime condition (exp >= 1 -> base^exp, else -> 0.0)
-    result_var = FloatVar(start_val=0.0, name="nat_pow_res")
-
-    with If(exp_int_port >= 1):
-        result_var.set(1.0)
-        loop_node = nodes.for_loop_node(count=exp_int_port)
-
-        ctx.trigger_stack[:]
-        ctx.trigger_stack.append(ExecutionPath(loop_node.id, "循环体"))
-        result_var *= raw_base
-        ctx.trigger_stack.pop()
-
-    return result_var.value
+    node = IntModuloNode()
+    to_port(a).connect(node.get_input("被除数"))
+    to_port(b).connect(node.get_input("除数"))
+    return node.get_output("余数")
 
 
 def _ensure_int_port(val):

@@ -3,6 +3,7 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class SetFloatVariableValueNode(Node):
+    # Status in Extensions: Implemented
     node_type = "SetFloatVariableValueNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -11,6 +12,13 @@ class SetFloatVariableValueNode(Node):
         "变量Out": PortDef("变量", PortDirection.Output, PortType.FloatVariable),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Variable_input_floatvariable : str = "变量"
+    NewValue_input_float : str = "新值"
+    VariableOut_output_floatvariable : str = "变量Out"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

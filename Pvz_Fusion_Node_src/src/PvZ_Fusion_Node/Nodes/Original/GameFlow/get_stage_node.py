@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetStageNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetStageNode"
     _class_ports = {
         "阶段名": PortDef("阶段名", PortDirection.Output, PortType.String),
     }
+
+    # Port name constants
+    StageName_output_string : str = "阶段名"
 
     def __init__(
         self,

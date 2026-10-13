@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class OrNode(Node):
+    # Status in Extensions: Implemented
     node_type = "OrNode"
     _class_ports = {
         "条件A": PortDef("条件A", PortDirection.Input, PortType.Bool),
         "条件B": PortDef("条件B", PortDirection.Input, PortType.Bool),
         "结果": PortDef("结果", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    ConditionA_input_bool : str = "条件A"
+    ConditionB_input_bool : str = "条件B"
+    Result_output_bool : str = "结果"
 
     def __init__(
         self,

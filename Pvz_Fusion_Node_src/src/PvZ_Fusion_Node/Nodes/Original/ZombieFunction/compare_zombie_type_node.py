@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CompareZombieTypeNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CompareZombieTypeNode"
     _class_ports = {
         "僵尸类型A": PortDef("僵尸类型A", PortDirection.Input, PortType.ZombieType),
         "僵尸类型B": PortDef("僵尸类型B", PortDirection.Input, PortType.ZombieType),
         "相同": PortDef("相同", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    ZombieTypeA_input_zombietype : str = "僵尸类型A"
+    ZombieTypeB_input_zombietype : str = "僵尸类型B"
+    Same_output_bool : str = "相同"
 
     def __init__(
         self,

@@ -3,10 +3,14 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class OnBoardStartNode(Node):
+    # Status in Extensions: Implemented
     node_type = "OnBoardStartNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_output_trigger : str = "触发"
 
     def __init__(
         self,

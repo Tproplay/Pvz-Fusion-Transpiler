@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class CompareIntNode(Node):
+    # Status in Extensions: Implemented
     node_type = "CompareIntNode"
     _class_ports = {
         "值A": PortDef("值A", PortDirection.Input, PortType.Int),
@@ -11,6 +12,13 @@ class CompareIntNode(Node):
         "小于": PortDef("小于", PortDirection.Output, PortType.Bool),
         "等于": PortDef("等于", PortDirection.Output, PortType.Bool),
     }
+
+    # Port name constants
+    ValueA_input_int : str = "值A"
+    ValueB_input_int : str = "值B"
+    Greater_output_bool : str = "大于"
+    Less_output_bool : str = "小于"
+    Equal_output_bool : str = "等于"
 
     def __init__(
         self,

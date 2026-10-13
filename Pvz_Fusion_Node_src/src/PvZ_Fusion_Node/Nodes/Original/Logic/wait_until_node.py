@@ -3,12 +3,18 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class WaitUntilNode(Node):
+    # Status in Extensions: Implemented
     node_type = "WaitUntilNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
         "条件": PortDef("条件", PortDirection.Input, PortType.Bool),
         "完成": PortDef("完成", PortDirection.Output, PortType.Trigger),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Condition_input_bool : str = "条件"
+    Complete_output_trigger : str = "完成"
 
     def __init__(
         self,

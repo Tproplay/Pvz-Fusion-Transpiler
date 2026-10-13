@@ -3,11 +3,16 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class StringToAsciiNode(Node):
+    # Status in Extensions: Implemented
     node_type = "StringToAsciiNode"
     _class_ports = {
         "字符串": PortDef("字符串", PortDirection.Input, PortType.String),
         "ASCII": PortDef("ASCII", PortDirection.Output, PortType.Int),
     }
+
+    # Port name constants
+    String_input_string : str = "字符串"
+    ASCII_output_int : str = "ASCII"
 
     def __init__(
         self,

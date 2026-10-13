@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class GetObjectTransformNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetObjectTransformNode"
     _class_ports = {
         "对象": PortDef("对象", PortDirection.Input, PortType.GameObject),
@@ -10,6 +11,12 @@ class GetObjectTransformNode(Node):
         "旋转": PortDef("旋转", PortDirection.Output, PortType.Vector3),
         "缩放": PortDef("缩放", PortDirection.Output, PortType.Vector3),
     }
+
+    # Port name constants
+    GameObject_input_gameobject : str = "对象"
+    Position_output_vector3 : str = "位置"
+    Rotation_output_vector3 : str = "旋转"
+    Scale_output_vector3 : str = "缩放"
 
     def __init__(
         self,

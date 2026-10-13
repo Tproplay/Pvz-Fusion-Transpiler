@@ -3,12 +3,18 @@ from ...Node import Node, PortDef, PortDirection, PortType
 
 
 class GetObjectListItemNode(Node):
+    # Status in Extensions: Implemented
     node_type = "GetObjectListItemNode"
     _class_ports = {
         "列表": PortDef("列表", PortDirection.Input, PortType.ListVariable),
         "索引": PortDef("索引", PortDirection.Input, PortType.Int),
         "值": PortDef("值", PortDirection.Output, PortType.GameObject),
     }
+
+    # Port name constants
+    List_input_listvariable : str = "列表"
+    Index_input_int : str = "索引"
+    Value_output_gameobject : str = "值"
 
     def __init__(
         self,

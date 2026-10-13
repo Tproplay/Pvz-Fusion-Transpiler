@@ -3,6 +3,7 @@ from ..Node import Node, PortDef, PortDirection, PortType
 
 
 class MoveZombieNode(Node):
+    # Status in Extensions: Implemented
     node_type = "MoveZombieNode"
     _class_ports = {
         "触发": PortDef("触发", PortDirection.Input, PortType.Trigger),
@@ -12,6 +13,14 @@ class MoveZombieNode(Node):
         "移动成功": PortDef("移动成功", PortDirection.Output, PortType.Trigger),
         "僵尸Out": PortDef("僵尸", PortDirection.Output, PortType.Zombie),
     }
+
+    # Port name constants
+    Trigger_input_trigger : str = "触发"
+    Zombie_input_zombie : str = "僵尸"
+    TargetCol_input_int : str = "目标列"
+    TargetRow_input_int : str = "目标行"
+    MoveSuccess_output_trigger : str = "移动成功"
+    Out_output_zombie : str = "僵尸Out"
 
     def __init__(
         self,
