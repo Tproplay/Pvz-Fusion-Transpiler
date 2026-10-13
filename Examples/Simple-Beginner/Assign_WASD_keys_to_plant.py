@@ -1,7 +1,7 @@
-import PvzRH_node as pvn
+import PvZ_Fusion_Node as pvn
 
 # Import the built-in WASDPlant class from the StdLib module
-from PvzRH_node.StdLib import WASDPlant
+from PvZ_Fusion_Node.StdLib import WASDPlant
 
 pvn.settings.group_level = 1
 

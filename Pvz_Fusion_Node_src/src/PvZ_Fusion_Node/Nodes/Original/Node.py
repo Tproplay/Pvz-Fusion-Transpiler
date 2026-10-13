@@ -215,6 +215,24 @@ class Port:
         p.connect(conv.get_input("浮点数"))
         return conv.get_output("整数")
 
+    @staticmethod
+    def _float_modulo(val: Any, mod_val: Any) -> Port:
+        from .TypeConvert.float_to_int_node import FloatToIntNode
+        from .TypeConvert.int_to_float_node import IntToFloatNode
+
+        v_port = to_port(val)
+        m_port = to_port(mod_val)
+        div = v_port / m_port
+
+        f2i = FloatToIntNode()
+        div.connect(f2i.get_input("浮点数"))
+
+        i2f = IntToFloatNode()
+        f2i.get_output("整数").connect(i2f.get_input("整数"))
+
+        mult = i2f.get_output("浮点数") * m_port
+        return v_port - mult
+
     def _to_string_port(self) -> Port:
         if self.port_type == PortType.String:
             return self
@@ -229,6 +247,37 @@ class Port:
             self.connect(f2s.get_input("数值"))
             IntValueNode(val=2).get_output("值").connect(f2s.get_input("小数位数"))
             return f2s.get_output("字符串")
+        elif self.port_type == PortType.PlantType:
+            from .TypeConvert.plant_type_to_string_node import PlantTypeToStringNode
+            p2s = PlantTypeToStringNode()
+            self.connect(p2s.get_input("植物类型"))
+            return p2s.get_output("字符串")
+        elif self.port_type == PortType.ZombieType:
+            from .TypeConvert.zombie_type_to_string_node import ZombieTypeToStringNode
+            z2s = ZombieTypeToStringNode()
+            self.connect(z2s.get_input("僵尸类型"))
+            return z2s.get_output("字符串")
+        elif self.port_type == PortType.GameObject:
+            from .TypeConvert.object_to_string_node import ObjectToStringNode
+            o2s = ObjectToStringNode()
+            self.connect(o2s.get_input("对象"))
+            return o2s.get_output("字符串")
+        elif self.port_type == PortType.Plant:
+            from .TypeConvert.plant_to_object_node import PlantToObjectNode
+            from .TypeConvert.object_to_string_node import ObjectToStringNode
+            p2o = PlantToObjectNode()
+            self.connect(p2o.get_input("植物"))
+            o2s = ObjectToStringNode()
+            p2o.get_output("对象").connect(o2s.get_input("对象"))
+            return o2s.get_output("字符串")
+        elif self.port_type == PortType.Zombie:
+            from .TypeConvert.zombie_to_object_node import ZombieToObjectNode
+            from .TypeConvert.object_to_string_node import ObjectToStringNode
+            z2o = ZombieToObjectNode()
+            self.connect(z2o.get_input("僵尸"))
+            o2s = ObjectToStringNode()
+            z2o.get_output("对象").connect(o2s.get_input("对象"))
+            return o2s.get_output("字符串")
         else:
             from .TypeConvert.int_to_string_node import IntToStringNode
             i2s = IntToStringNode()

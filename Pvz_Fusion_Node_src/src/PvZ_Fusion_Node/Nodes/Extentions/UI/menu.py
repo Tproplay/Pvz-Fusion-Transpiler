@@ -8,6 +8,11 @@ from ..extension_node import ExtensionNode
 from .... import nodes
 from ....Core.context import ctx, ExecutionPath
 from ....Extras.TypeMgr import PlantType, ZombieType
+from ...Original import (
+    AddMultipleChoiceOptionNode,
+    MergeMultipleChoiceOptionListsNode,
+    ShowMultipleChoiceMenuNode,
+)
 
 class Option(ExtensionNode):
     """Standalone multiple-choice option card.
@@ -80,7 +85,7 @@ class Option(ExtensionNode):
         if self.callback:
             saved_stack = ctx.trigger_stack[:]
             ctx.trigger_stack.clear()
-            ctx.trigger_stack.append(ExecutionPath(self.node_id, "选项被点击"))
+            ctx.trigger_stack.append(ExecutionPath(self.node_id, AddMultipleChoiceOptionNode.OnOptionClicked_output_trigger))
             try:
                 self.callback()
             finally:
@@ -90,7 +95,7 @@ class Option(ExtensionNode):
     @property
     def output_port(self) -> Any:
         """Output port for this option card."""
-        return self.node.get_output("选项列表")
+        return self.node.get_output(AddMultipleChoiceOptionNode.OptionList_output_choiceoptions)
 
     def get_primary_port(self) -> Any:
         return self.output_port
@@ -254,16 +259,16 @@ class MultiSelectMenu(ExtensionNode):
             current_execution.id,
             current_execution.out_trigger,
             self._show_node_id,
-            "触发",
+            ShowMultipleChoiceMenuNode.Trigger_input_trigger,
         )
 
         if self._options:
             if len(self._options) == 1:
                 ctx.add_connection(
                     self._options[0].node_id,
-                    "选项列表",
+                    AddMultipleChoiceOptionNode.OptionList_output_choiceoptions,
                     self._show_node_id,
-                    "选项列表",
+                    ShowMultipleChoiceMenuNode.OptionList_input_choiceoptions,
                 )
             else:
                 first_merge = nodes.merge_multiple_choice_option_lists(
@@ -275,16 +280,19 @@ class MultiSelectMenu(ExtensionNode):
 
                 for next_opt in self._options[2:]:
                     next_merge = nodes.merge_multiple_choice_option_lists(
-                        list1=prev_node.get_output("合并列表"),
+                        list1=prev_node.get_output(MergeMultipleChoiceOptionListsNode.MergedList_output_choiceoptions),
                         list2=next_opt.output_port,
                     )
                     prev_node = next_merge
 
                 ctx.add_connection(
-                    prev_node.node_id, "合并列表", self._show_node_id, "选项列表"
+                    prev_node.node_id,
+                    MergeMultipleChoiceOptionListsNode.MergedList_output_choiceoptions,
+                    self._show_node_id,
+                    ShowMultipleChoiceMenuNode.OptionList_input_choiceoptions,
                 )
 
-        ctx.trigger_stack[-1] = ExecutionPath(self._show_node_id, "退出时触发")
+        ctx.trigger_stack[-1] = ExecutionPath(self._show_node_id, ShowMultipleChoiceMenuNode.OnExit_output_trigger)
 
     class _Outputs:
         """Execution path outputs from the menu window."""
@@ -295,12 +303,12 @@ class MultiSelectMenu(ExtensionNode):
         @property
         def OnExit(self) -> ExecutionPath:
             """Execution path triggered immediately after the menu window closes."""
-            return ExecutionPath(self._parent._get_show_node_id, "退出时触发")
+            return ExecutionPath(self._parent._get_show_node_id, ShowMultipleChoiceMenuNode.OnExit_output_trigger)
 
         @property
         def OnRefresh(self) -> ExecutionPath:
             """Execution path triggered whenever the player rerolls the option list."""
-            return ExecutionPath(self._parent._get_show_node_id, "刷新时触发")
+            return ExecutionPath(self._parent._get_show_node_id, ShowMultipleChoiceMenuNode.OnRefresh_output_trigger)
 
         def on_exit(self) -> ExecutionPath:
             """Execution path triggered immediately after the menu window closes."""

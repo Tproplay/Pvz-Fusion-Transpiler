@@ -55,7 +55,8 @@ class Random(ExtensionNode):
             super().__init__(root_node=self.node)
 
         def __enter__(self) -> "Random.RandomTrigger":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            from ...Original.Logic.random_trigger_node import RandomTriggerNode
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, RandomTriggerNode.Output_output_trigger))
             return self
 
         def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:

@@ -81,6 +81,8 @@ from .Data.Recipes import Recipes
 
 from .Libraries import Math, StdLib
 from .Extras import TypeMgr as Types
+from . import TypeMgr
+from .Libraries.StdLib import format_string
 from . import nodes
 
 # AST Transpiler & Utilities
@@ -163,9 +165,11 @@ __all__ = [
     "ZombieAnimation",
     "TravelBuffType",
     "Types",
+    "TypeMgr",
     # Libraries
     "Math",
     "StdLib",
+    "format_string",
     "nodes",
     # Data
     "PlantData",

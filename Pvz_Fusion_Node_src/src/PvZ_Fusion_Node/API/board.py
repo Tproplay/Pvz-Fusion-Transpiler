@@ -12,13 +12,20 @@ from ..Core.context import ctx, ExecutionPath
 from ..Nodes.Extentions.extensions import If
 
 
+from ..Nodes.Original.GeneralFunction.use_sun_node import UseSunNode
+from ..Nodes.Original.GeneralFunction.use_money_node import UseMoneyNode
+from ..Nodes.Original.GeneralFunction.get_sun_amount_node import GetSunAmountNode
+from ..Nodes.Original.GeneralFunction.get_money_amount_node import GetMoneyAmountNode
+from ..Nodes.Original.GameFlow.get_stage_node import GetStageNode
+
+
 class _SunManager:
     """Manages the level's Sun resource with native math and transaction nodes."""
 
     @property
     def value(self) -> Any:
         """Primary output port representing the current Sun count."""
-        return nodes.get_sun_amount().sunAmount
+        return nodes.get_sun_amount().get_output(GetSunAmountNode.SunAmount_output_int)
 
     def _get_primary_port(self) -> Any:
         return self.value
@@ -43,7 +50,7 @@ class _SunManager:
             self.node = nodes.use_sun(amount=amount)
 
         def __enter__(self) -> "_SunManager.SpendSun":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "消耗成功"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, UseSunNode.OnSuccess_output_trigger))
             return self
 
         def __exit__(self, *args: Any) -> None:
@@ -52,7 +59,7 @@ class _SunManager:
         @property
         def Failed(self) -> ExecutionPath:
             """Execution path triggered when the player lacks sufficient Sun."""
-            return ExecutionPath(self.node.id, "阳光不足")
+            return ExecutionPath(self.node.id, UseSunNode.OnFailed_output_trigger)
 
     # Native Math Overloads
     def __add__(self, other: Any) -> Any:
@@ -82,8 +89,20 @@ class _SunManager:
     def __floordiv__(self, other: Any) -> Any:
         return self.value // other
 
+    def __rfloordiv__(self, other: Any) -> Any:
+        return self.value.__rfloordiv__(other)
+
     def __mod__(self, other: Any) -> Any:
         return self.value % other
+
+    def __rmod__(self, other: Any) -> Any:
+        return self.value.__rmod__(other)
+
+    def __pow__(self, other: Any) -> Any:
+        return self.value ** other
+
+    def __rpow__(self, other: Any) -> Any:
+        return self.value.__rpow__(other)
 
     # Comparison Overloads
     def __eq__(self, other: Any) -> Any:
@@ -114,7 +133,7 @@ class _SunManager:
         with flow.Elif(diff < 0):
             abs_diff = diff * -1
             use_node = nodes.use_sun(amount=abs_diff)
-            ctx.trigger_stack[-1] = use_node.path("onSuccess")
+            ctx.trigger_stack[-1] = use_node.path(UseSunNode.OnSuccess_output_trigger)
 
         return self
 
@@ -129,7 +148,7 @@ class _SunManager:
 
     def __isub__(self, other: Any) -> "_SunManager":
         use_node = nodes.use_sun(amount=other)
-        ctx.trigger_stack[-1] = use_node.path("onSuccess")
+        ctx.trigger_stack[-1] = use_node.path(UseSunNode.OnSuccess_output_trigger)
         return self
 
     def __imul__(self, other: Any) -> "_SunManager":
@@ -144,14 +163,22 @@ class _SunManager:
         self.set(self.value // other)
         return self
 
+    def __imod__(self, other: Any) -> "_SunManager":
+        self.set(self.value % other)
+        return self
+
+    def __ipow__(self, other: Any) -> "_SunManager":
+        self.set(self.value ** other)
+        return self
+
 
 class _MoneyManager:
-    """Manages the level's persistent coin balance."""
+    """Manages the level's persistent coin balance with full arithmetic and transaction nodes."""
 
     @property
     def value(self) -> Any:
         """Primary output port representing the current Money/Coin balance."""
-        return nodes.get_money_amount().money_amount
+        return nodes.get_money_amount().get_output(GetMoneyAmountNode.MoneyAmount_output_int)
 
     def _get_primary_port(self) -> Any:
         return self.value
@@ -188,7 +215,7 @@ class _MoneyManager:
             self.node = nodes.use_money(amount=amount)
 
         def __enter__(self) -> "_MoneyManager.SpendMoney":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "消耗成功"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, UseMoneyNode.OnSuccess_output_trigger))
             return self
 
         def __exit__(self, *args: Any) -> None:
@@ -197,14 +224,112 @@ class _MoneyManager:
         @property
         def Failed(self) -> ExecutionPath:
             """Execution path triggered when the player lacks sufficient coins."""
-            return ExecutionPath(self.node.id, "金币不足")
+            return ExecutionPath(self.node.id, UseMoneyNode.OnFailed_output_trigger)
 
+    # Native Math Overloads
+    def __add__(self, other: Any) -> Any:
+        return self.value + other
+
+    def __radd__(self, other: Any) -> Any:
+        return self.value.__radd__(other)
+
+    def __sub__(self, other: Any) -> Any:
+        return self.value - other
+
+    def __rsub__(self, other: Any) -> Any:
+        return self.value.__rsub__(other)
+
+    def __mul__(self, other: Any) -> Any:
+        return self.value * other
+
+    def __rmul__(self, other: Any) -> Any:
+        return self.value.__rmul__(other)
+
+    def __truediv__(self, other: Any) -> Any:
+        return self.value / other
+
+    def __rtruediv__(self, other: Any) -> Any:
+        return self.value.__rtruediv__(other)
+
+    def __floordiv__(self, other: Any) -> Any:
+        return self.value // other
+
+    def __rfloordiv__(self, other: Any) -> Any:
+        return self.value.__rfloordiv__(other)
+
+    def __mod__(self, other: Any) -> Any:
+        return self.value % other
+
+    def __rmod__(self, other: Any) -> Any:
+        return self.value.__rmod__(other)
+
+    def __pow__(self, other: Any) -> Any:
+        return self.value ** other
+
+    def __rpow__(self, other: Any) -> Any:
+        return self.value.__rpow__(other)
+
+    # Comparison Overloads
+    def __eq__(self, other: Any) -> Any:
+        return self.value == other
+
+    def __ne__(self, other: Any) -> Any:
+        return self.value != other
+
+    def __lt__(self, other: Any) -> Any:
+        return self.value < other
+
+    def __le__(self, other: Any) -> Any:
+        return self.value <= other
+
+    def __gt__(self, other: Any) -> Any:
+        return self.value > other
+
+    def __ge__(self, other: Any) -> Any:
+        return self.value >= other
+
+    def set(self, target_value: Any) -> "_MoneyManager":
+        """Calculates difference and emits add/use money nodes to match target value."""
+        diff = target_value - self.value
+
+        with If(diff > 0) as flow:
+            nodes.add_money(amount=diff)
+
+        with flow.Elif(diff < 0):
+            abs_diff = diff * -1
+            use_node = nodes.use_money(amount=abs_diff)
+            ctx.trigger_stack[-1] = use_node.path(UseMoneyNode.OnSuccess_output_trigger)
+
+        return self
+
+    # In-Place Overloads
     def __iadd__(self, other: Any) -> "_MoneyManager":
         nodes.add_money(amount=other)
         return self
 
     def __isub__(self, other: Any) -> "_MoneyManager":
-        nodes.use_money(amount=other)
+        use_node = nodes.use_money(amount=other)
+        ctx.trigger_stack[-1] = use_node.path(UseMoneyNode.OnSuccess_output_trigger)
+        return self
+
+    def __imul__(self, other: Any) -> "_MoneyManager":
+        self.set(self.value * other)
+        return self
+
+    def __itruediv__(self, other: Any) -> "_MoneyManager":
+        self.set(self.value / other)
+        return self
+
+    def __ifloordiv__(self, other: Any) -> "_MoneyManager":
+        self.set(self.value // other)
+        return self
+
+    def __imod__(self, other: Any) -> "_MoneyManager":
+        self.set(self.value % other)
+        return self
+
+    def __ipow__(self, other: Any) -> "_MoneyManager":
+        self.set(self.value ** other)
         return self
 
 
@@ -231,10 +356,7 @@ class _BoardMeta(type):
     def Money(cls, value: Any) -> None:
         if isinstance(value, _MoneyManager):
             return
-        raise NotImplementedError(
-            "Direct assignment `Board.Money = X` is not supported by the game engine. "
-            "Use `Board.Money += amount` or `Board.Money -= amount` instead."
-        )
+        _MoneyManager().set(value)
 
     @property
     def Wave(cls) -> Any:
@@ -256,7 +378,7 @@ class Board(metaclass=_BoardMeta):
     @staticmethod
     def get_stage() -> Any:
         """Returns the output port for the current game stage name."""
-        return nodes.GetStageNode().stage_name
+        return nodes.GetStageNode().get_output(GetStageNode.StageName_output_string)
 
     @staticmethod
     def change_map(scene: int = 1) -> None:

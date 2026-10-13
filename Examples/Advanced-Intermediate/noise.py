@@ -1,6 +1,6 @@
-import PvzRH_node as pvn
-from PvzRH_node.Types import SceneType, PlantType
-from PvzRH_node.Math import perlin_noise
+import PvZ_Fusion_Node as pvn
+from PvZ_Fusion_Node.TypeMgr import SceneType, PlantType
+from PvZ_Fusion_Node.Math import perlin_noise
 
 pvn.Config(output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH\Saves\Custm Lvl\LevelData\Levels",
            name="Test")

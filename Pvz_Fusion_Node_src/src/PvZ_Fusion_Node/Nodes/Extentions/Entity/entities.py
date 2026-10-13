@@ -6,6 +6,7 @@ from ....Core.context import ctx, ExecutionPath
 from ....Extras.TypeMgr import PlantType, ZombieType
 from ..extension_node import ExtensionNode
 from ...Original.Node import Port, to_port
+from ....node_base import PortReference
 from ....typing import _staticproperty, to_int_port, to_float_port, to_bool_port
 
 class ForEachPlant(ExtensionNode):
@@ -36,7 +37,8 @@ class ForEachPlant(ExtensionNode):
         self._plant_cache = None
 
     def __enter__(self):
-        ctx.trigger_stack.append(ExecutionPath(self.node.id, "循环体"))
+        from ...Original.PlantFunction.for_each_plant_node import ForEachPlantNode
+        ctx.trigger_stack.append(ExecutionPath(self.node.id, ForEachPlantNode.LoopBody_output_trigger))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -45,7 +47,8 @@ class ForEachPlant(ExtensionNode):
     @property
     def on_complete(self):
         """Execution path context manager triggered after the loop finishes all iterations."""
-        return ExecutionPath(self.node.id, "循环完成")
+        from ...Original.PlantFunction.for_each_plant_node import ForEachPlantNode
+        return ExecutionPath(self.node.id, ForEachPlantNode.LoopComplete_output_trigger)
 
     @property
     def plant(self):
@@ -88,7 +91,8 @@ class ForEachPlantType(ExtensionNode):
         super().__init__(root_node=self.node)
 
     def __enter__(self):
-        ctx.trigger_stack.append(ExecutionPath(self.node.id, "循环体"))
+        from ...Original.PlantFunction.for_each_plant_type_node import ForEachPlantTypeNode
+        ctx.trigger_stack.append(ExecutionPath(self.node.id, ForEachPlantTypeNode.LoopBody_output_trigger))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -97,7 +101,8 @@ class ForEachPlantType(ExtensionNode):
     @property
     def on_complete(self):
         """Execution path context manager triggered after the loop finishes all iterations."""
-        return ExecutionPath(self.node.id, "循环完成")
+        from ...Original.PlantFunction.for_each_plant_type_node import ForEachPlantTypeNode
+        return ExecutionPath(self.node.id, ForEachPlantTypeNode.LoopComplete_output_trigger)
 
     @property
     def plant_type(self):
@@ -233,26 +238,30 @@ class PlantTypeList(ExtensionNode):
         reset_branch = nodes.branch_node(condition=match_toggle.state)
         loop = nodes.for_each_plant_type(type_list=self._current_port)
 
-        curr_type = PortReference(loop, "当前类型")
+        from ...Original.PlantFunction.for_each_plant_type_node import ForEachPlantTypeNode
+        from ...Original.Logic.branch_node import BranchNode
+        from ...Original.Logic.toggle_node import ToggleNode
+
+        curr_type = PortReference(loop, ForEachPlantTypeNode.CurrentType_output_planttype)
         is_equal = nodes.compare_plant_type(a=curr_type, b=target_port).equal
         match_branch = nodes.branch_node(condition=is_equal)
         state_guard = nodes.branch_node(condition=match_toggle.state)
 
         if parent_trigger:
             ctx.add_connection(
-                parent_trigger.id, parent_trigger.out_trigger, reset_branch.id, "触发"
+                parent_trigger.id, parent_trigger.out_trigger, reset_branch.id, BranchNode.Trigger_input_trigger
             )
 
-        ctx.add_connection(reset_branch.id, "真（触发）", match_toggle.id, "触发")
-        ctx.add_connection(reset_branch.id, "真（触发）", loop.id, "触发")
-        ctx.add_connection(reset_branch.id, "假（停止）", loop.id, "触发")
+        ctx.add_connection(reset_branch.id, BranchNode.Then_output_trigger, match_toggle.id, ToggleNode.Trigger_input_trigger)
+        ctx.add_connection(reset_branch.id, BranchNode.Then_output_trigger, loop.id, ForEachPlantTypeNode.Trigger_input_trigger)
+        ctx.add_connection(reset_branch.id, BranchNode.Else_output_trigger, loop.id, ForEachPlantTypeNode.Trigger_input_trigger)
 
-        ctx.add_connection(loop.id, "循环体", match_branch.id, "触发")
-        ctx.add_connection(match_branch.id, "真（触发）", state_guard.id, "触发")
-        ctx.add_connection(state_guard.id, "假（停止）", match_toggle.id, "触发")
+        ctx.add_connection(loop.id, ForEachPlantTypeNode.LoopBody_output_trigger, match_branch.id, BranchNode.Trigger_input_trigger)
+        ctx.add_connection(match_branch.id, BranchNode.Then_output_trigger, state_guard.id, BranchNode.Trigger_input_trigger)
+        ctx.add_connection(state_guard.id, BranchNode.Else_output_trigger, match_toggle.id, ToggleNode.Trigger_input_trigger)
 
         ctx.trigger_stack.extend(saved_stack)
-        ctx.trigger_stack[-1] = ExecutionPath(loop.id, "循环完成")
+        ctx.trigger_stack[-1] = ExecutionPath(loop.id, ForEachPlantTypeNode.LoopComplete_output_trigger)
 
         return match_toggle.state
 

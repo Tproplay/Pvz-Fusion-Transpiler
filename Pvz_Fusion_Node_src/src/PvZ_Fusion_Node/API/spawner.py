@@ -14,6 +14,10 @@ from ..Nodes.Extentions.extensions import Plant, Zombie
 from ..Extras.TypeMgr import PlantType, ZombieType
 
 
+from ..Nodes.Original.PlantFunction.set_plant_node import SetPlantNode
+from ..Nodes.Original.ZombieFunction.create_zombie_node import CreateZombieNode
+
+
 class SpawnedPlant(Plant):
     """A `Plant` returned by `Spawner.Set_Plant`, carrying spawn-outcome execution paths."""
     node: Any
@@ -60,8 +64,8 @@ class Spawner:
 
         plant = SpawnedPlant(node.plant)
         plant.node = node
-        plant.on_created = ExecutionPath(node.id, "创建成功")
-        plant.on_failed = ExecutionPath(node.id, "创建失败")
+        plant.on_created = ExecutionPath(node.id, SetPlantNode.OnCreated_output_trigger)
+        plant.on_failed = ExecutionPath(node.id, SetPlantNode.OnFailed_output_trigger)
         return plant
 
     @staticmethod
@@ -94,5 +98,19 @@ class Spawner:
 
         zombie = SpawnedZombie(node.zombie)
         zombie.node = node
-        zombie.on_created = ExecutionPath(node.id, "创建成功")
+        zombie.on_created = ExecutionPath(node.id, CreateZombieNode.OnCreated_output_trigger)
         return zombie
+
+    @staticmethod
+    def set_bullet(
+        bullet_type: Any,
+        position: Any = None,
+        x: float = 0.0,
+        y: float = 0.0,
+        z: float = 0.0,
+    ) -> Any:
+        """Shoots / spawns a bullet of specified type at given position."""
+        from ..Nodes.Extentions.Bullet.bullet_ext import Bullet
+        return Bullet.shoot(bullet_type=bullet_type, position=position, x=x, y=y, z=z)
+
+    Set_Bullet = set_bullet

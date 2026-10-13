@@ -1,5 +1,5 @@
-import PvzRH_node as pvn
-from PvzRH_node.Types import KeyCode, PlantType
+import PvZ_Fusion_Node as pvn
+from PvZ_Fusion_Node.TypeMgr import PlantType, KeyCode
 
 pvn.Config(
     output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH\Saves\Custm Lvl\LevelData\Levels",

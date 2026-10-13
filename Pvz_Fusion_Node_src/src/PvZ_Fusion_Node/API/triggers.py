@@ -24,7 +24,7 @@ class Trigger:
             self.node = nodes.on_game_start()
 
         def __enter__(self) -> "Trigger.OnGameStart":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self
 
         def __exit__(self, *args: Any) -> None:
@@ -37,7 +37,7 @@ class Trigger:
             self.node = nodes.on_board_start()
 
         def __enter__(self) -> "Trigger.OnBoardStart":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self
 
         def __exit__(self, *args: Any) -> None:
@@ -54,7 +54,7 @@ class Trigger:
             self.node = nodes.on_wave()
 
         def __enter__(self) -> Any:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self.node.wave
 
         def __exit__(self, *args: Any) -> None:
@@ -71,7 +71,7 @@ class Trigger:
             self.node = nodes.on_mouse_click()
 
         def __enter__(self) -> Mouse:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Mouse(self.node)
 
         def __exit__(self, *args: Any) -> None:
@@ -90,7 +90,7 @@ class Trigger:
             self.node = nodes.on_key_press(target_key=key_code)
 
         def __enter__(self) -> "Trigger.OnKeyDown":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self
 
         def __exit__(self, *args: Any) -> None:
@@ -107,7 +107,7 @@ class Trigger:
             self.node = nodes.on_plant_create()
 
         def __enter__(self) -> Plant:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Plant(self.node.plant)
 
         def __exit__(self, *args: Any) -> None:
@@ -124,7 +124,7 @@ class Trigger:
             self.node = nodes.on_plant_click()
 
         def __enter__(self) -> Plant:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Plant(self.node.plant)
 
         def __exit__(self, *args: Any) -> None:
@@ -144,7 +144,7 @@ class Trigger:
             self.node = nodes.on_plant_die()
 
         def __enter__(self) -> Plant:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Plant(self.node.plant)
 
         def __exit__(self, *args: Any) -> None:
@@ -161,7 +161,7 @@ class Trigger:
             self.node = nodes.on_zombie_spawn()
 
         def __enter__(self) -> Zombie:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Zombie(self.node.zombie)
 
         def __exit__(self, *args: Any) -> None:
@@ -178,7 +178,7 @@ class Trigger:
             self.node = nodes.on_zombie_die()
 
         def __enter__(self) -> Zombie:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Zombie(self.node.zombie)
 
         def __exit__(self, *args: Any) -> None:
@@ -195,7 +195,7 @@ class Trigger:
             self.node = nodes.on_plant_death_complete()
 
         def __enter__(self) -> Plant:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Plant(self.node.plant)
 
         def __exit__(self, *args: Any) -> None:
@@ -212,7 +212,7 @@ class Trigger:
             self.node = nodes.OnPlantMixedNode()
 
         def __enter__(self) -> Plant:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Plant(self.node.plant)
 
         def __exit__(self, *args: Any) -> None:
@@ -229,7 +229,7 @@ class Trigger:
             self.node = nodes.OnWaveClearedNode()
 
         def __enter__(self) -> Any:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self.node.wave
 
         def __exit__(self, *args: Any) -> None:
@@ -249,7 +249,7 @@ class Trigger:
             self.node = nodes.OnWorldPlantEffectNode(effect=effect)
 
         def __enter__(self) -> Plant:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Plant(self.node.plant)
 
         def __exit__(self, *args: Any) -> None:
@@ -266,7 +266,7 @@ class Trigger:
             self.node = nodes.OnZombieClickNode()
 
         def __enter__(self) -> Zombie:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Zombie(self.node.zombie)
 
         def __exit__(self, *args: Any) -> None:
@@ -283,7 +283,7 @@ class Trigger:
             self.node = nodes.OnZombieHealthBelowNode()
 
         def __enter__(self) -> Zombie:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return Zombie(self.node.zombie)
 
         def __exit__(self, *args: Any) -> None:
@@ -303,7 +303,7 @@ class Trigger:
             self.node = nodes.WaveEventNode(wave_value=wave)
 
         def __enter__(self) -> Any:
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self.node.wave
 
         def __exit__(self, *args: Any) -> None:
@@ -320,7 +320,7 @@ class Trigger:
             self.node = nodes.OnStageEnterNode(stage_name=stage_name)
 
         def __enter__(self) -> "Trigger.OnStageEnter":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self
 
         def __exit__(self, *args: Any) -> None:

@@ -160,7 +160,8 @@ class Lawnf:
             self.loop_node = nodes.for_each_plant(plant_list=self.list_port)
 
         def __enter__(self) -> Plant:
-            ctx.trigger_stack.append(ExecutionPath(self.loop_node.id, "循环体"))
+            from ..Nodes.Original import ForEachPlantNode
+            ctx.trigger_stack.append(ExecutionPath(self.loop_node.id, ForEachPlantNode.LoopBody_output_trigger))
             return Plant(self.loop_node.currentPlant)
 
         def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -179,7 +180,8 @@ class Lawnf:
     @staticmethod
     def get_all_zombies() -> Any:
         """Returns the zombie-list output port for every zombie on the board."""
-        return nodes.GetAllZombiesNode().outputs["全部僵尸"]
+        from ..Nodes.Original.ZombieFunction.get_all_zombies_node import GetAllZombiesNode
+        return nodes.GetAllZombiesNode().get_output(GetAllZombiesNode.AllZombies_output_zombielist)
 
     @staticmethod
     def shoot_bullet(
@@ -189,9 +191,9 @@ class Lawnf:
         y: float = 0.0,
         z: float = 0.0,
     ) -> Any:
-        """Shoots a bullet of specified type at given position."""
-        from ..Nodes.Extentions.Bullet.bullet_ext import Bullet
-        return Bullet.shoot(bullet_type=bullet_type, position=position, x=x, y=y, z=z)
+        """Shoots a bullet of specified type at given position (alias for Spawner.set_bullet)."""
+        from .spawner import Spawner
+        return Spawner.set_bullet(bullet_type=bullet_type, position=position, x=x, y=y, z=z)
 
     from ..Nodes.Extentions.Entity.entities import ForEachZombie as for_each_zombie
     from ..Nodes.Extentions.Entity.entities import ForEachAllZombies as for_each_all_zombies

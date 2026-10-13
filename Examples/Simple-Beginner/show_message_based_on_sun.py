@@ -1,4 +1,4 @@
-import PvzRH_node as pvn
+import PvZ_Fusion_Node as pvn
 
 pvn.Config(output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH\Saves\Custm Lvl\LevelData\Levels",
            name="Test")

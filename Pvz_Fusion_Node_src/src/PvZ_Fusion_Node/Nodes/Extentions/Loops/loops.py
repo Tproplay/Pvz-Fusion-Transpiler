@@ -28,11 +28,13 @@ class While(ExtensionNode):
         super().__init__(root_node=self.branch)
 
     def __enter__(self) -> "While":
-        ctx.trigger_stack.append(ExecutionPath(self.branch.id, "真（触发）"))
+        from ...Original.Logic.branch_node import BranchNode
+        ctx.trigger_stack.append(ExecutionPath(self.branch.id, BranchNode.Then_output_trigger))
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        ctx.add_connection(self.branch.id, "真（触发）", self.branch.id, "触发")
+        from ...Original.Logic.branch_node import BranchNode
+        ctx.add_connection(self.branch.id, BranchNode.Then_output_trigger, self.branch.id, BranchNode.Trigger_input_trigger)
         ctx.trigger_stack.pop()
 
 
@@ -58,7 +60,8 @@ class For(ExtensionNode):
         super().__init__(root_node=self.loop_node)
 
     def __enter__(self) -> "For":
-        ctx.trigger_stack.append(ExecutionPath(self.loop_node.id, "循环体"))
+        from ...Original.Logic.for_loop_node import ForLoopNode
+        ctx.trigger_stack.append(ExecutionPath(self.loop_node.id, ForLoopNode.LoopBody_output_trigger))
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -67,8 +70,9 @@ class For(ExtensionNode):
     @property
     def index(self) -> Port:
         """Output port representing the 0-based index of the current loop iteration."""
+        from ...Original.Logic.for_loop_node import ForLoopNode
         if hasattr(self.loop_node, "get_port"):
-            return self.loop_node.get_port("当前索引")
+            return self.loop_node.get_port(ForLoopNode.Index_output_int)
         return self.loop_node.index
 
     def get_primary_port(self) -> Port:

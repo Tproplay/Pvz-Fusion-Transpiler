@@ -3,7 +3,7 @@ from PvZ_Fusion_Node import (
     PlantType, ZombieType,PlantData, PlantEntry, OrderedSpawn
 )
 
-from PvZ_Fusion_Node.Types import (
+from PvZ_Fusion_Node.TypeMgr import (
     SceneType, LevelType, TravelBuffType
 )
 

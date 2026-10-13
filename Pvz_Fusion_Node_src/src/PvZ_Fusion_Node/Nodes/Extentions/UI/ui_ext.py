@@ -3,6 +3,7 @@ from typing import Any, Callable, Optional
 from ..extension_node import ExtensionNode
 from .... import nodes
 from ....Core.context import ctx, ExecutionPath
+from ...Original import CreateInfoCardNode
 
 
 class InfoCard(ExtensionNode):
@@ -65,7 +66,7 @@ class InfoCard(ExtensionNode):
         @property
         def OnCardClicked(self) -> ExecutionPath:
             """Triggered when the player clicks this card."""
-            return ExecutionPath(self._parent.node_id, "点击卡牌时触发")
+            return ExecutionPath(self._parent.node_id, CreateInfoCardNode.OnCardClicked_output_trigger)
 
         @property
         def on_card_clicked(self) -> ExecutionPath:

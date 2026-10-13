@@ -1,4 +1,4 @@
-import PvzRH_node as pvn
+import PvZ_Fusion_Node as pvn
 
 pvn.settings.group_level = 1
 

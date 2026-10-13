@@ -166,21 +166,21 @@
                 "targetPortName": ""
             },
             {
-                "sourceNodeId": "6da0607e-9aa9-47ea-a6d5-366162658389",
+                "sourceNodeId": "bd9d1c46-f9b0-42bd-b8ce-8a4ba15d8118",
                 "sourcePortName": "触发",
-                "targetNodeId": "52ea8c79-4fd8-4c65-b7e6-73209112f48a",
+                "targetNodeId": "ff1b19ab-2c05-4ad8-8867-2577c23d99e0",
                 "targetPortName": "触发"
             },
             {
-                "sourceNodeId": "cf5778ed-0f0b-48d4-91f3-3c9c5e03b316",
+                "sourceNodeId": "eff44e96-7835-4c23-8b7c-f35c45a5c75d",
                 "sourcePortName": "值",
-                "targetNodeId": "52ea8c79-4fd8-4c65-b7e6-73209112f48a",
+                "targetNodeId": "ff1b19ab-2c05-4ad8-8867-2577c23d99e0",
                 "targetPortName": "文本"
             },
             {
-                "sourceNodeId": "d1234d5f-59b2-4cb9-b993-d9bf0826f0b0",
+                "sourceNodeId": "1577e0eb-61d5-4871-9dc8-62c08f481960",
                 "sourcePortName": "值",
-                "targetNodeId": "52ea8c79-4fd8-4c65-b7e6-73209112f48a",
+                "targetNodeId": "ff1b19ab-2c05-4ad8-8867-2577c23d99e0",
                 "targetPortName": "持续时间"
             }
         ],
@@ -191,7 +191,7 @@
             }
         ],
         "executionVersion": 1,
-        "graphId": "879e9a9e222e4efe848a8555a3544d88"
+        "graphId": "dad242bce06742e8bff286f88f7884b9"
     },
     "plantDatas": [],
     "plants": [],
@@ -226,7 +226,7 @@
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "6da0607e-9aa9-47ea-a6d5-366162658389",
+                    "nodeId": "bd9d1c46-f9b0-42bd-b8ce-8a4ba15d8118",
                     "nodeType": "OnGameStartNode",
                     "position": {
                         "x": -800.0,
@@ -246,7 +246,7 @@
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "cf5778ed-0f0b-48d4-91f3-3c9c5e03b316",
+                    "nodeId": "eff44e96-7835-4c23-8b7c-f35c45a5c75d",
                     "nodeType": "StringValueNode",
                     "position": {
                         "x": -580.0,
@@ -267,7 +267,7 @@
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "52ea8c79-4fd8-4c65-b7e6-73209112f48a",
+                    "nodeId": "ff1b19ab-2c05-4ad8-8867-2577c23d99e0",
                     "nodeType": "ShowTextNode",
                     "position": {
                         "x": -800.0,
@@ -295,7 +295,7 @@
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "d1234d5f-59b2-4cb9-b993-d9bf0826f0b0",
+                    "nodeId": "1577e0eb-61d5-4871-9dc8-62c08f481960",
                     "nodeType": "FloatValueNode",
                     "position": {
                         "x": -580.0,
@@ -315,7 +315,7 @@
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "groupId": "7d97e58d-cf41-4fe1-88ea-33c2bf24ec4a",
+                    "groupId": "cec58452-e18f-4ae6-bd1f-7748693e8175",
                     "title": "result = method()",
                     "backgroundColor": {
                         "r": 0.20000000298023224,
@@ -324,10 +324,10 @@
                         "a": 0.30000001192092896
                     },
                     "nodeIds": [
-                        "6da0607e-9aa9-47ea-a6d5-366162658389",
-                        "cf5778ed-0f0b-48d4-91f3-3c9c5e03b316",
-                        "52ea8c79-4fd8-4c65-b7e6-73209112f48a",
-                        "d1234d5f-59b2-4cb9-b993-d9bf0826f0b0"
+                        "bd9d1c46-f9b0-42bd-b8ce-8a4ba15d8118",
+                        "eff44e96-7835-4c23-8b7c-f35c45a5c75d",
+                        "ff1b19ab-2c05-4ad8-8867-2577c23d99e0",
+                        "1577e0eb-61d5-4871-9dc8-62c08f481960"
                     ],
                     "position": {
                         "x": -580.0,

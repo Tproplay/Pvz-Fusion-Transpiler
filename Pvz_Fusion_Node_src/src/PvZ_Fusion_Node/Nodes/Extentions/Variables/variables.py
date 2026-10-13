@@ -25,12 +25,25 @@ from ...Original.Variables.List.list_nodes import (
     GetPlantTypeListItemNode, GetZombieTypeListItemNode, GetObjectListItemNode,
     ClearListValuesNode, RemoveListItemNode, GetListLengthNode
 )
+from ...Original import (
+    OnBoardStartNode,
+    SetIntVariableValueNode,
+    SetFloatVariableValueNode,
+    SetBoolVariableValueNode,
+    SetStringVariableValueNode,
+    StringVariableNode,
+)
 
 class IntVar(ExtensionNode):
     """Use to create a Variable Int Value. Don't use = to set the value, use .set() instead."""
 
     def __init__(self, start_val=0, node_ref=None, name: str = "整数"):
         self._nodes_by_scope = {}
+
+        if isinstance(start_val, str) and (node_ref is None or not hasattr(node_ref, "get_input")):
+            name = start_val
+            start_val = node_ref if node_ref is not None else 0
+            node_ref = None
 
         if node_ref:
             self._node = node_ref
@@ -55,7 +68,7 @@ class IntVar(ExtensionNode):
                 set_node = nodes.set_int_variable_value(
                     variable=self.variable, value=self._cast_to_int(start_val)
                 )
-                ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
+                ctx.add_connection(init_trigger.id, OnBoardStartNode.Trigger_output_trigger, set_node.id, SetIntVariableValueNode.Trigger_input_trigger)
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
 
@@ -94,7 +107,7 @@ class IntVar(ExtensionNode):
 
         node = nodes.set_int_variable_value(variable=self.variable, value=value)
         if ctx.trigger_stack:
-            ctx.trigger_stack[-1] = ExecutionPath(node.id, "完成")
+            ctx.trigger_stack[-1] = ExecutionPath(node.id, SetIntVariableValueNode.Complete_output_trigger)
         return self
 
     def _cast_to_int(self, val):
@@ -411,6 +424,11 @@ class FloatVar(ExtensionNode):
     def __init__(self, start_val=0.0, node_ref=None, name: str = "浮点数"):
         self._nodes_by_scope = {}
 
+        if isinstance(start_val, str) and (node_ref is None or not hasattr(node_ref, "get_input")):
+            name = start_val
+            start_val = node_ref if node_ref is not None else 0.0
+            node_ref = None
+
         if node_ref:
             self._node = node_ref
             self._asset_dict = getattr(node_ref, "asset_dict", None)
@@ -437,7 +455,7 @@ class FloatVar(ExtensionNode):
                 set_node = nodes.set_float_variable_value(
                     variable=self.variable, value=self._cast_to_float(start_val)
                 )
-                ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
+                ctx.add_connection(init_trigger.id, OnBoardStartNode.Trigger_output_trigger, set_node.id, SetFloatVariableValueNode.Trigger_input_trigger)
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
 
@@ -476,7 +494,7 @@ class FloatVar(ExtensionNode):
 
         node = nodes.set_float_variable_value(variable=self.variable, value=value)
         if ctx.trigger_stack:
-            ctx.trigger_stack[-1] = ExecutionPath(node.id, "完成")
+            ctx.trigger_stack[-1] = ExecutionPath(node.id, SetFloatVariableValueNode.Complete_output_trigger)
         return self
 
     def _cast_to_float(self, val):
@@ -588,6 +606,11 @@ class BoolVar(ExtensionNode):
     def __init__(self, start_val=False, node_ref=None, name: str = "布尔值"):
         self._nodes_by_scope = {}
 
+        if isinstance(start_val, str) and (node_ref is None or not hasattr(node_ref, "get_input")):
+            name = start_val
+            start_val = bool(node_ref) if node_ref is not None else False
+            node_ref = None
+
         if node_ref:
             self._node = node_ref
             self._asset_dict = getattr(node_ref, "asset_dict", None)
@@ -609,7 +632,7 @@ class BoolVar(ExtensionNode):
                 set_node = nodes.set_bool_variable_value(
                     variable=self.variable, value=self._cast_to_bool(start_val)
                 )
-                ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
+                ctx.add_connection(init_trigger.id, OnBoardStartNode.Trigger_output_trigger, set_node.id, SetBoolVariableValueNode.Trigger_input_trigger)
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
 
@@ -649,9 +672,9 @@ class BoolVar(ExtensionNode):
         # Pass variable and value directly
         node = nodes.set_bool_variable_value(variable=self.variable, value=value)
 
-        # Update trigger stack to "完成" (matches onComplete_PortName="完成")
+        # Update trigger stack to complete trigger
         if ctx.trigger_stack:
-            ctx.trigger_stack[-1] = ExecutionPath(node.id, "完成")
+            ctx.trigger_stack[-1] = ExecutionPath(node.id, SetBoolVariableValueNode.Complete_output_trigger)
         return self
 
     def _cast_to_bool(self, val):
@@ -745,6 +768,11 @@ class StrVar(ExtensionNode):
     def __init__(self, start_val="", node_ref=None, name: str = "字符串"):
         self._nodes_by_scope = {}
 
+        if node_ref is not None and not hasattr(node_ref, "get_input"):
+            name = start_val
+            start_val = str(node_ref)
+            node_ref = None
+
         if node_ref:
             self._node = node_ref
             self._asset_dict = getattr(node_ref, "asset_dict", None)
@@ -766,7 +794,7 @@ class StrVar(ExtensionNode):
                 set_node = nodes.set_string_variable_value(
                     variable=self.variable, value=self._cast_to_str(start_val)
                 )
-                ctx.add_connection(init_trigger.id, "触发", set_node.id, "触发")
+                ctx.add_connection(init_trigger.id, OnBoardStartNode.Trigger_output_trigger, set_node.id, SetStringVariableValueNode.Trigger_input_trigger)
                 ctx.trigger_stack.extend(saved_stack)
         super().__init__(root_node=self._node)
 
@@ -795,7 +823,7 @@ class StrVar(ExtensionNode):
 
     @property
     def variable(self):
-        return self._get_current_node().get_output("变量")
+        return self._get_current_node().get_output(StringVariableNode.Variable_output_stringvariable)
 
     @property
     def value(self):
@@ -804,7 +832,7 @@ class StrVar(ExtensionNode):
     def set(self, value):
         node = nodes.set_string_variable_value(variable=self.variable, value=self._cast_to_str(value))
         if ctx.trigger_stack:
-            ctx.trigger_stack[-1] = ExecutionPath(node.id, "完成")
+            ctx.trigger_stack[-1] = ExecutionPath(node.id, SetStringVariableValueNode.Complete_output_trigger)
         return self
 
     def _cast_to_str(self, val):
@@ -944,8 +972,8 @@ class ListVar(ExtensionNode):
         else:
             n = InsertObjectListNode()
 
-        to_port(index).connect(n.get_input("索引"))
-        to_port(value).connect(n.get_input("值"))
+        to_port(index).connect(n.get_input(n.Index_in_port))
+        to_port(value).connect(n.get_input(n.Value_in_port))
         self.attach_node(n)
         return n
 
@@ -974,8 +1002,8 @@ class ListVar(ExtensionNode):
         else:
             n = ReplaceObjectListNode()
 
-        to_port(index).connect(n.get_input("索引"))
-        to_port(value).connect(n.get_input("值"))
+        to_port(index).connect(n.get_input(n.Index_in_port))
+        to_port(value).connect(n.get_input(n.Value_in_port))
         self.attach_node(n)
         return n
 
@@ -1004,11 +1032,11 @@ class ListVar(ExtensionNode):
         else:
             n = FindObjectListValueNode()
 
-        to_port(value).connect(n.get_input("值"))
+        to_port(value).connect(n.get_input(n.Value_in_port))
         self.attach_node(n)
         return {
-            "index": n.get_output("索引"),
-            "exists": n.get_output("存在"),
+            "index": n.get_output(n.Index_out_port),
+            "exists": n.get_output(n.Exists_out_port),
         }
 
     def contains(self, value: Any) -> Any:

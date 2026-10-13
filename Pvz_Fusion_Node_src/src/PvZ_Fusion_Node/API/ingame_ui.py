@@ -136,76 +136,87 @@ class InGameUI:
     @staticmethod
     def get_held_tool() -> Any:
         """Returns the output port representing the player's currently held tool type."""
-        return nodes.GetHeldToolNode().outputs["工具类型"]
+        from ..Nodes.Original.GeneralFunction.get_held_tool_node import GetHeldToolNode
+        return nodes.GetHeldToolNode().get_output(GetHeldToolNode.ToolType_output_tooltype)
 
     @staticmethod
     def get_tool_cooldown(tool_type: Any) -> Any:
         """Returns the cooldown duration port for the specified tool type."""
         from ..Nodes.Original.Node import to_port
+        from ..Nodes.Original.GeneralFunction.get_tool_cooldown_node import GetToolCooldownNode
+        from ..Nodes.Original.GeneralFunction.tool_type_value_node import ToolTypeValueNode
         if hasattr(tool_type, "value") and not hasattr(tool_type, "node"):
             tool_type = tool_type.value
         if isinstance(tool_type, int):
-            t_port = nodes.ToolTypeValueNode(tool_type=tool_type).outputs["工具类型"]
+            t_port = nodes.ToolTypeValueNode(tool_type=tool_type).get_output(ToolTypeValueNode.ToolType_output_tooltype)
         else:
             t_port = to_port(tool_type)
         node = nodes.GetToolCooldownNode()
-        t_port.connect(node.get_input("工具类型"))
-        return node.outputs["冷却时间"]
+        t_port.connect(node.get_input(GetToolCooldownNode.ToolType_input_tooltype))
+        return node.get_output(GetToolCooldownNode.Cooldown_output_float)
 
     @staticmethod
     def set_tool_cooldown(tool_type: Any, cooldown: Any) -> None:
         """Sets the cooldown duration for a specific tool type."""
         from ..Nodes.Original.Node import to_port
+        from ..Nodes.Original.GeneralFunction.set_tool_cooldown_node import SetToolCooldownNode
+        from ..Nodes.Original.GeneralFunction.tool_type_value_node import ToolTypeValueNode
         if hasattr(tool_type, "value") and not hasattr(tool_type, "node"):
             tool_type = tool_type.value
         if isinstance(tool_type, int):
-            t_port = nodes.ToolTypeValueNode(tool_type=tool_type).outputs["工具类型"]
+            t_port = nodes.ToolTypeValueNode(tool_type=tool_type).get_output(ToolTypeValueNode.ToolType_output_tooltype)
         else:
             t_port = to_port(tool_type)
         node = nodes.SetToolCooldownNode()
-        t_port.connect(node.get_input("工具类型"))
-        to_port(cooldown).connect(node.get_input("冷却时间"))
+        t_port.connect(node.get_input(SetToolCooldownNode.ToolType_input_tooltype))
+        to_port(cooldown).connect(node.get_input(SetToolCooldownNode.Cooldown_input_float))
 
     @staticmethod
     def give_zombie_card(zombie_type: Any) -> None:
         """Adds a zombie card of specified type to the player's selection."""
         from ..Nodes.Original.Node import to_port
+        from ..Nodes.Original.ZombieFunction.add_zombie_card_node import AddZombieCardNode
+        from ..Nodes.Original.ZombieFunction.zombie_type_value_node import ZombieTypeValueNode
         if hasattr(zombie_type, "value") and not hasattr(zombie_type, "node"):
             zombie_type = zombie_type.value
         if isinstance(zombie_type, int):
-            z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).outputs["僵尸类型"]
+            z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).get_output(ZombieTypeValueNode.ZombieType_output_zombietype)
         else:
             z_port = to_port(zombie_type)
         node = nodes.AddZombieCardNode()
-        z_port.connect(node.get_input("僵尸类型"))
+        z_port.connect(node.get_input(AddZombieCardNode.ZombieType_input_zombietype))
 
     @staticmethod
     def remove_all_zombie_cards(zombie_type: Any = None) -> None:
         """Removes zombie card(s) of specified type from the player's selection."""
         from ..Nodes.Original.Node import to_port
+        from ..Nodes.Original.ZombieFunction.delete_zombie_cards_node import DeleteZombieCardsNode
+        from ..Nodes.Original.ZombieFunction.zombie_type_value_node import ZombieTypeValueNode
         node = nodes.DeleteZombieCardsNode()
         if zombie_type is not None:
             if hasattr(zombie_type, "value") and not hasattr(zombie_type, "node"):
                 zombie_type = zombie_type.value
             if isinstance(zombie_type, int):
-                z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).outputs["僵尸类型"]
+                z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).get_output(ZombieTypeValueNode.ZombieType_output_zombietype)
             else:
                 z_port = to_port(zombie_type)
-            z_port.connect(node.get_input("僵尸类型"))
+            z_port.connect(node.get_input(DeleteZombieCardsNode.ZombieType_input_zombietype))
 
     @staticmethod
     def set_zombie_card_cooldown(zombie_type: Any, cooldown: Any) -> None:
         """Sets the cooldown for a specific zombie card."""
         from ..Nodes.Original.Node import to_port
+        from ..Nodes.Original.ZombieFunction.set_zombie_card_cooldown_node import SetZombieCardCooldownNode
+        from ..Nodes.Original.ZombieFunction.zombie_type_value_node import ZombieTypeValueNode
         if hasattr(zombie_type, "value") and not hasattr(zombie_type, "node"):
             zombie_type = zombie_type.value
         if isinstance(zombie_type, int):
-            z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).outputs["僵尸类型"]
+            z_port = nodes.ZombieTypeValueNode(zombie_type=zombie_type).get_output(ZombieTypeValueNode.ZombieType_output_zombietype)
         else:
             z_port = to_port(zombie_type)
         node = nodes.SetZombieCardCooldownNode()
-        z_port.connect(node.get_input("僵尸类型"))
-        to_port(cooldown).connect(node.get_input("冷却时间"))
+        z_port.connect(node.get_input(SetZombieCardCooldownNode.ZombieType_input_zombietype))
+        to_port(cooldown).connect(node.get_input(SetZombieCardCooldownNode.Cooldown_input_float))
 
     show_text = display_text
 
@@ -223,7 +234,8 @@ class InGameUI:
             self.node = nodes.create_info_card(big_title=big_title, small_title=small_title)
 
         def __enter__(self) -> "InGameUI.InfoCard":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "点击卡牌时触发"))
+            from ..Nodes.Original.GeneralFunction.create_info_card_node import CreateInfoCardNode
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, CreateInfoCardNode.OnCardClicked_output_trigger))
             return self
 
         def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:

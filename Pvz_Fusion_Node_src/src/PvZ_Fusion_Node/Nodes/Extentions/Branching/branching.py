@@ -139,28 +139,30 @@ class _SwitchCase(ExtensionNode):
 
         ctx.trigger_stack.extend(saved_stack)
 
+        from ....Nodes.Original.Logic.branch_node import BranchNode
+
         # Explicitly wire in a sequential chain (False -> Next Case)
         if self.switch.last_false_path is not None:
             ctx.add_connection(
                 self.switch.last_false_path.id,
                 self.switch.last_false_path.out_trigger,
                 self.branch_node.id,
-                "触发",
+                BranchNode.Trigger_input_trigger,
             )
         elif ctx.trigger_stack:
             curr = ctx.trigger_stack[-1]
             ctx.add_connection(
-                curr.id, curr.out_trigger, self.branch_node.id, "触发"
+                curr.id, curr.out_trigger, self.branch_node.id, BranchNode.Trigger_input_trigger
             )
 
         # Update the False path chain for the next case or default block
         self.switch.last_false_path = ExecutionPath(
-            self.branch_node.id, "假（停止）"
+            self.branch_node.id, BranchNode.Else_output_trigger
         )
 
         # Push the True branch onto trigger stack for statements inside this case
         ctx.trigger_stack.append(
-            ExecutionPath(self.branch_node.id, "真（触发）")
+            ExecutionPath(self.branch_node.id, BranchNode.Then_output_trigger)
         )
         return self
 

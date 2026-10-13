@@ -1,6 +1,6 @@
-import PvzRH_node as pvn
-from PvzRH_node.StdLib import StatManager
-from PvzRH_node.Types import PlantType, ZombieType, KeyCode
+import PvZ_Fusion_Node as pvn
+from PvZ_Fusion_Node.StdLib import StatManager
+from PvZ_Fusion_Node.TypeMgr import PlantType, ZombieType, KeyCode
 
 pvn.Config(output=r"C:\Users\Tproplay\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH\Saves\Custm Lvl\LevelData\Levels",
            name="Test")

@@ -6,6 +6,7 @@ from ....Core.context import ctx, ExecutionPath
 from ....typing import _staticproperty
 from ..Branching.branching import If
 from ..Variables.variables import FloatVar
+from ....Nodes.Original import ToggleCycleNode, CounterNode, WaitNode
 
 
 class Time(ExtensionNode):
@@ -37,7 +38,7 @@ class Time(ExtensionNode):
             if ctx.trigger_stack:
                 previous_exec = ctx.trigger_stack[-1]
                 ctx.add_connection(
-                    previous_exec.id, previous_exec.out_trigger, self.ref.id, "触发"
+                    previous_exec.id, previous_exec.out_trigger, self.ref.id, ToggleCycleNode.Trigger_input_trigger
                 )
 
             super().__init__(root_node=self.ref)
@@ -45,7 +46,7 @@ class Time(ExtensionNode):
 
         def __enter__(self) -> "Time.OnFixedUpdate":
             """Defaults straight into the repeating execution track loop body."""
-            ctx.trigger_stack.append(ExecutionPath(self.ref.id, "周期事件"))
+            ctx.trigger_stack.append(ExecutionPath(self.ref.id, ToggleCycleNode.OnCycle_output_trigger))
             return self
 
         def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -55,9 +56,9 @@ class Time(ExtensionNode):
             if ctx.trigger_stack:
                 current_exec = ctx.trigger_stack[-1]
                 ctx.add_connection(
-                    current_exec.id, current_exec.out_trigger, self.ref.id, "触发"
+                    current_exec.id, current_exec.out_trigger, self.ref.id, ToggleCycleNode.Trigger_input_trigger
                 )
-                ctx.trigger_stack[-1] = ExecutionPath(self.ref.id, "切换开始时")
+                ctx.trigger_stack[-1] = ExecutionPath(self.ref.id, ToggleCycleNode.OnEnable_output_trigger)
             return self
 
         @property
@@ -71,7 +72,7 @@ class Time(ExtensionNode):
 
                 self._counter = nodes.counter_node(start_val=0, reset=None)
 
-                ctx.add_connection(self.ref.id, "周期事件", self._counter.id, "触发")
+                ctx.add_connection(self.ref.id, ToggleCycleNode.OnCycle_output_trigger, self._counter.id, CounterNode.Trigger_input_trigger)
 
                 ctx.trigger_stack.extend(saved_stack)
                 self.attach_node(self._counter)
@@ -81,17 +82,17 @@ class Time(ExtensionNode):
         @property
         def on_cycle(self) -> ExecutionPath:
             """Explicit access to the repeating loop execution track."""
-            return ExecutionPath(self.ref.id, "周期事件")
+            return ExecutionPath(self.ref.id, ToggleCycleNode.OnCycle_output_trigger)
 
         @property
         def on_enable(self) -> ExecutionPath:
             """Timeline track fired the exact instant the loop engine activates."""
-            return ExecutionPath(self.ref.id, "切换开始时")
+            return ExecutionPath(self.ref.id, ToggleCycleNode.OnEnable_output_trigger)
 
         @property
         def on_disable(self) -> ExecutionPath:
             """Timeline track fired when the loop engine is turned off."""
-            return ExecutionPath(self.ref.id, "切换关闭时")
+            return ExecutionPath(self.ref.id, ToggleCycleNode.OnDisable_output_trigger)
 
     class Wait(ExtensionNode):
         """A clean Syntactic Sugar context manager to pause execution timelines."""
@@ -101,7 +102,7 @@ class Time(ExtensionNode):
             super().__init__(root_node=self.node)
 
         def __enter__(self) -> "Time.Wait":
-            ctx.trigger_stack.append(ExecutionPath(self.node.id, "触发"))
+            ctx.trigger_stack.append(ExecutionPath(self.node.id, WaitNode.Trigger_input_trigger))
             return self
 
         def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
