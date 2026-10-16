@@ -17,6 +17,7 @@ from ..Nodes.Original.GeneralFunction.use_money_node import UseMoneyNode
 from ..Nodes.Original.GeneralFunction.get_sun_amount_node import GetSunAmountNode
 from ..Nodes.Original.GeneralFunction.get_money_amount_node import GetMoneyAmountNode
 from ..Nodes.Original.GameFlow.get_stage_node import GetStageNode
+from ..Nodes.Original.Node import Port
 
 
 class _SunManager:
@@ -359,13 +360,17 @@ class _BoardMeta(type):
         _MoneyManager().set(value)
 
     @property
-    def Wave(cls) -> Any:
+    def Wave(cls) -> Port:
         """Output port reference to the current wave index."""
         return nodes.on_wave().wave
 
 
 class Board(metaclass=_BoardMeta):
     """Global level interface for accessing game resources and board properties."""
+
+    Sun: _SunManager
+    Money: _MoneyManager
+    Wave: Port
 
     def __new__(cls, *args: Any, **kwargs: Any) -> None:
         raise TypeError("Board is a static interface and cannot be instantiated.")

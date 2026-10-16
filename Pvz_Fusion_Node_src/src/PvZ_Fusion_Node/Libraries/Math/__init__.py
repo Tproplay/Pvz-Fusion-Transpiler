@@ -89,6 +89,7 @@ from .noise import (
 
 from .geometry import (
     Vector2,
+    Vector3,
     distance,
     dot,
     cross,
@@ -170,6 +171,7 @@ __all__ = [
     "noise1d",
     # Geometry & Vectors
     "Vector2",
+    "Vector3",
     "distance",
     "dot",
     "cross",

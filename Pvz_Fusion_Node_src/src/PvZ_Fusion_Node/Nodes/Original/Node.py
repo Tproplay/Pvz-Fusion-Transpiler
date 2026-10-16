@@ -163,6 +163,12 @@ class Port:
         ):
             return True
 
+        # Unity Object conversions (e.g. Vector3 can be converted via ObjectToStringNode)
+        if (self.port_type == PortType.Vector3 and target.port_type == PortType.GameObject) or (
+            self.port_type == PortType.GameObject and target.port_type == PortType.Vector3
+        ):
+            return True
+
         return False
 
     def __bool__(self) -> bool:
@@ -277,6 +283,11 @@ class Port:
             self.connect(z2o.get_input("僵尸"))
             o2s = ObjectToStringNode()
             z2o.get_output("对象").connect(o2s.get_input("对象"))
+            return o2s.get_output("字符串")
+        elif self.port_type == PortType.Vector3:
+            from .TypeConvert.object_to_string_node import ObjectToStringNode
+            o2s = ObjectToStringNode()
+            self.connect(o2s.get_input("对象"))
             return o2s.get_output("字符串")
         else:
             from .TypeConvert.int_to_string_node import IntToStringNode

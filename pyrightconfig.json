@@ -1,0 +1,11 @@
+{
+  "include": [
+    "Pvz_Fusion_Node_src/src",
+    "Examples"
+  ],
+  "extraPaths": [
+    "Pvz_Fusion_Node_src/src"
+  ],
+  "venvPath": ".",
+  "venv": ".venv"
+}

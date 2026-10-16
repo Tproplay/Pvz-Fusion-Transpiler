@@ -15,13 +15,163 @@ from ...Original.TypeConvert.string_to_object_node import StringToObjectNode
 from ...Original.Node import to_port
 
 
-def Vector3(x: Any = 0.0, y: Any = 0.0, z: Any = 0.0) -> Any:
-    """Creates a 3D vector port in the graph."""
-    node = MakeVector3Node()
-    to_port(x).connect(node.get_input(MakeVector3Node.X_input_float))
-    to_port(y).connect(node.get_input(MakeVector3Node.Y_input_float))
-    to_port(z).connect(node.get_input(MakeVector3Node.Z_input_float))
-    return node.get_output(MakeVector3Node.Vector_output_vector3)
+class Vector3(ExtensionNode):
+    """3D Vector representation supporting engine Vector3 ports, component coordinates, and math operations."""
+
+    def __init__(
+        self,
+        x: Any = 0.0,
+        y: Any = 0.0,
+        z: Any = 0.0,
+        port: Any = None,
+    ) -> None:
+        from ...Original.Node import Port, PortType
+        if port is not None:
+            self._port = to_port(port)
+            self._x = None
+            self._y = None
+            self._z = None
+            super().__init__(root_node=getattr(self._port, "node", None))
+        elif hasattr(x, "port_type") and getattr(x, "port_type", None) == PortType.Vector3:
+            self._port = x
+            self._x = None
+            self._y = None
+            self._z = None
+            super().__init__(root_node=getattr(x, "node", None))
+        elif isinstance(x, Vector3):
+            self._port = x._port
+            self._x = x._x
+            self._y = x._y
+            self._z = x._z
+            super().__init__(root_node=getattr(self._port, "node", None))
+        else:
+            node = MakeVector3Node()
+            to_port(x).connect(node.get_input(MakeVector3Node.X_input_float))
+            to_port(y).connect(node.get_input(MakeVector3Node.Y_input_float))
+            to_port(z).connect(node.get_input(MakeVector3Node.Z_input_float))
+            self._port = node.get_output(MakeVector3Node.Vector_output_vector3)
+            self._x = to_port(x)
+            self._y = to_port(y)
+            self._z = to_port(z)
+            super().__init__(root_node=node)
+
+    @property
+    def port(self) -> Any:
+        """The underlying Vector3 Port in the visual node graph."""
+        return self._port
+
+    def get_primary_port(self) -> Any:
+        return self._port
+
+    def _get_primary_port(self) -> Any:
+        return self._port
+
+    @property
+    def x(self) -> Any:
+        """X coordinate component port or value."""
+        return self._x if self._x is not None else self._port
+
+    @property
+    def y(self) -> Any:
+        """Y coordinate component port or value."""
+        return self._y if self._y is not None else self._port
+
+    @property
+    def z(self) -> Any:
+        """Z coordinate component port or value."""
+        return self._z if self._z is not None else self._port
+
+    # Static Factories
+    @classmethod
+    def zero(cls) -> Vector3:
+        """Shorthand for writing Vector3(0.0, 0.0, 0.0)."""
+        return cls(0.0, 0.0, 0.0)
+
+    @classmethod
+    def one(cls) -> Vector3:
+        """Shorthand for writing Vector3(1.0, 1.0, 1.0)."""
+        return cls(1.0, 1.0, 1.0)
+
+    @classmethod
+    def up(cls) -> Vector3:
+        """Shorthand for writing Vector3(0.0, 1.0, 0.0)."""
+        return cls(0.0, 1.0, 0.0)
+
+    @classmethod
+    def down(cls) -> Vector3:
+        """Shorthand for writing Vector3(0.0, -1.0, 0.0)."""
+        return cls(0.0, -1.0, 0.0)
+
+    @classmethod
+    def left(cls) -> Vector3:
+        """Shorthand for writing Vector3(-1.0, 0.0, 0.0)."""
+        return cls(-1.0, 0.0, 0.0)
+
+    @classmethod
+    def right(cls) -> Vector3:
+        """Shorthand for writing Vector3(1.0, 0.0, 0.0)."""
+        return cls(1.0, 0.0, 0.0)
+
+    @classmethod
+    def forward(cls) -> Vector3:
+        """Shorthand for writing Vector3(0.0, 0.0, 1.0)."""
+        return cls(0.0, 0.0, 1.0)
+
+    @classmethod
+    def back(cls) -> Vector3:
+        """Shorthand for writing Vector3(0.0, 0.0, -1.0)."""
+        return cls(0.0, 0.0, -1.0)
+
+    # Formatting Integration
+    def to_string(self) -> Any:
+        """Formats the vector as string port for display or logging."""
+        if self._x is not None and self._y is not None and self._z is not None:
+            from ....Libraries.StdLib.formatting import format_string
+            return format_string("(", self.x, ", ", self.y, ", ", self.z, ")")
+        from ...Original.TypeConvert.object_to_string_node import ObjectToStringNode
+        o2s = ObjectToStringNode()
+        self.port.connect(o2s.get_input(ObjectToStringNode.GameObject_input_gameobject))
+        return o2s.get_output(ObjectToStringNode.String_output_string)
+
+    def __repr__(self) -> str:
+        if self._x is not None and self._y is not None and self._z is not None:
+            return f"Vector3({self._x}, {self._y}, {self._z})"
+        return f"<Vector3 port={self._port}>"
+
+    # Math operators
+    def __add__(self, other: Any) -> Vector3:
+        if isinstance(other, Vector3):
+            return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
+        return Vector3(self.x + other, self.y + other, self.z + other)
+
+    def __radd__(self, other: Any) -> Vector3:
+        return self.__add__(other)
+
+    def __sub__(self, other: Any) -> Vector3:
+        if isinstance(other, Vector3):
+            return Vector3(self.x - other.x, self.y - other.y, self.z - other.z)
+        return Vector3(self.x - other, self.y - other, self.z - other)
+
+    def __rsub__(self, other: Any) -> Vector3:
+        if isinstance(other, Vector3):
+            return Vector3(other.x - self.x, other.y - self.y, other.z - self.z)
+        return Vector3(other - self.x, other - self.y, other - self.z)
+
+    def __mul__(self, other: Any) -> Vector3:
+        if isinstance(other, Vector3):
+            return Vector3(self.x * other.x, self.y * other.y, self.z * other.z)
+        return Vector3(self.x * other, self.y * other, self.z * other)
+
+    def __rmul__(self, other: Any) -> Vector3:
+        return self.__mul__(other)
+
+    def __truediv__(self, other: Any) -> Vector3:
+        if isinstance(other, Vector3):
+            return Vector3(self.x / other.x, self.y / other.y, self.z / other.z)
+        return Vector3(self.x / other, self.y / other, self.z / other)
+
+    def __neg__(self) -> Vector3:
+        return Vector3(-self.x, -self.y, -self.z)
 
 
 class GameObject(ExtensionNode):

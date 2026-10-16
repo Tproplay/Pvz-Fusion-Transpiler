@@ -7,6 +7,7 @@ from typing import Any
 
 from .powers import sqrt
 from .trigonometry import rad2deg, atan2
+from ...Nodes.Extentions.GameObject.game_object import Vector3
 
 
 class Vector2:
@@ -159,6 +160,7 @@ def reflect(in_direction: Vector2, in_normal: Vector2) -> Vector2:
 
 __all__ = [
     "Vector2",
+    "Vector3",
     "distance",
     "dot",
     "cross",

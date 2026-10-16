@@ -11,6 +11,7 @@ from typing import Any, Union
 from .. import nodes
 from ..Core.context import ctx, ExecutionPath
 from ..Nodes.Extentions.extensions import Mouse, Plant, Zombie
+from ..Nodes.Original.Node import Port
 from ..Extras.TypeMgr import KeyCode
 
 
@@ -53,7 +54,7 @@ class Trigger:
         def __init__(self) -> None:
             self.node = nodes.on_wave()
 
-        def __enter__(self) -> Any:
+        def __enter__(self) -> Port:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self.node.wave
 
@@ -222,13 +223,13 @@ class Trigger:
         """Triggers when all zombies in a wave are cleared.
 
         Returns:
-            Any: The wave index reference port.
+            Port: The wave index reference port.
         """
 
         def __init__(self) -> None:
             self.node = nodes.OnWaveClearedNode()
 
-        def __enter__(self) -> Any:
+        def __enter__(self) -> Port:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self.node.wave
 
@@ -296,13 +297,13 @@ class Trigger:
             wave (int): The target wave number.
 
         Returns:
-            Any: The wave index reference port.
+            Port: The wave index reference port.
         """
 
         def __init__(self, wave: int = 0) -> None:
             self.node = nodes.WaveEventNode(wave_value=wave)
 
-        def __enter__(self) -> Any:
+        def __enter__(self) -> Port:
             ctx.trigger_stack.append(ExecutionPath(self.node.id, self.node.Trigger_output_trigger))
             return self.node.wave
 
