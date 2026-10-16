@@ -45,7 +45,147 @@ class Node(ABC):
     def create_port(self, name : str, direction : PortDirection, port_type : PortType) -> Port:
         port = Port(self, name, direction, port_type)
         self.ports.append(port)
+        if direction == PortDirection.Input and port_type == PortType.Trigger and name == "触发":
+            if _ctx.trigger_stack and not getattr(self, "_skip_auto_wire", False):
+                prev = _ctx.trigger_stack[-1]
+                prev_id = getattr(prev, "id", str(prev))
+                prev_trigger = getattr(prev, "out_trigger", "触发")
+                _ctx.add_connection(prev_id, prev_trigger, self.id, name)
+                from ..Extentions.Abstract.execution_path import ExecutionPath
+                if not isinstance(prev, ExecutionPath):
+                    _ctx.trigger_stack[-1] = self
         return port
+
+    def get_port(self, name: str) -> Port:
+        for p in self.ports:
+            if p.name == name:
+                return p
+        for attr in dir(self):
+            if attr.startswith("port_"):
+                val = getattr(self, attr)
+                if isinstance(val, Port):
+                    parts = attr.split("_")
+                    if len(parts) >= 4 and parts[3].lower() == name.lower():
+                        return val
+        raise KeyError(f"Port '{name}' not found on {self}")
+
+    def get_input(self, name: str) -> Port:
+        for p in self.ports:
+            if p.direction == PortDirection.Input and p.name == name:
+                return p
+        for attr in dir(self):
+            if attr.startswith("port_input_"):
+                val = getattr(self, attr)
+                if isinstance(val, Port):
+                    parts = attr.split("_")
+                    if len(parts) >= 4 and parts[3].lower() == name.lower():
+                        return val
+        for p in self.ports:
+            if p.direction == PortDirection.Input and (
+                p.name.lower() == name.lower() or name.lower() in p.name.lower()
+            ):
+                return p
+        raise KeyError(f"Input port '{name}' not found on {self}")
+
+    def get_output(self, name: str) -> Port:
+        for p in self.ports:
+            if p.direction == PortDirection.Output and p.name == name:
+                return p
+        for attr in dir(self):
+            if attr.startswith("port_output_"):
+                val = getattr(self, attr)
+                if isinstance(val, Port):
+                    parts = attr.split("_")
+                    if len(parts) >= 4 and parts[3].lower() == name.lower():
+                        return val
+        for p in self.ports:
+            if p.direction == PortDirection.Output and (
+                p.name.lower() == name.lower() or name.lower() in p.name.lower()
+            ):
+                return p
+        raise KeyError(f"Output port '{name}' not found on {self}")
+
+    @property
+    def Output(self) -> Any:
+        from ..Extentions.Abstract.execution_path import PathAccessor
+        return PathAccessor(self)
+
+    def path(self, trigger_name: str) -> Any:
+        from ..Extentions.Abstract.execution_path import ExecutionPath
+        return ExecutionPath(self.id, trigger_name)
+
+    def __getattr__(self, name: str) -> Any:
+        if name.startswith("_"):
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+        for p in getattr(self, "ports", []):
+            if p.name == name:
+                return p
+        normalized_name = name.lower().replace("_", "")
+        attr_alias_map = {
+            "sun": "sunamount",
+            "money": "moneyamount",
+            "plants": "plantlist",
+            "allplants": "allplants",
+            "true": "then",
+            "false": "else",
+            "triggerfalse": "else",
+            "triggertrue": "then",
+            "column": "col",
+            "portoutputintcolumn": "col",
+        }
+        target_name = attr_alias_map.get(normalized_name, normalized_name)
+        for attr in dir(self):
+            if attr.startswith("port_"):
+                parts = attr.split("_")
+                if len(parts) >= 4:
+                    p_norm = parts[3].lower().replace("_", "")
+                    if p_norm == target_name or (target_name == "plantlist" and p_norm in ("plantlist", "allplants")):
+                        return getattr(self, attr)
+        alias_map = {
+            "result": ["结果", "和", "差", "积", "商", "余数", "随机整数", "随机浮点数"],
+            "equal": ["等于", "相同"],
+            "not_equal": ["不等于"],
+            "greater": ["大于"],
+            "less": ["小于"],
+            "condition": ["条件"],
+            "count": ["计数", "数量"],
+            "state": ["状态"],
+            "currentplant": ["当前植物"],
+            "currentplanttype": ["当前类型", "当前植物类型"],
+            "currentindex": ["当前索引"],
+            "index": ["当前索引"],
+            "row": ["行"],
+            "col": ["列"],
+            "column": ["列"],
+            "planttype": ["植物类型"],
+            "zombietype": ["僵尸类型"],
+            "attributecd": ["属性倒计时"],
+            "attribute_countdown": ["属性倒计时"],
+            "wave": ["波次"],
+            "item": ["物品", "手上的物品"],
+            "theitemtype": ["手上的物品", "物品"],
+            "isleftbutton": ["是否左键", "是左键"],
+            "isleftclick": ["是否左键", "是左键"],
+            "plant": ["植物", "当前植物"],
+            "zombie": ["僵尸", "当前僵尸"],
+            "currentlist": ["当前列表"],
+            "planttypelist": ["植物类型列表"],
+            "variable": ["变量"],
+            "value": ["值"],
+            "sunamount": ["阳光", "阳光数量"],
+            "sun": ["阳光", "阳光数量"],
+            "moneyamount": ["金币", "金币数量"],
+            "money": ["金币", "金币数量"],
+            "plants": ["植物列表", "所有植物"],
+            "plantedplant": ["种植的植物"],
+        }
+        lower_name = name.lower()
+        if lower_name in alias_map:
+            targets = alias_map[lower_name]
+            for p in getattr(self, "ports", []):
+                if p.name in targets:
+                    return p
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
     def dump_data(self) -> Dict[str, Any]:
         node_type = getattr(self, "node_type", self.__class__.__name__)
@@ -99,7 +239,10 @@ class Node(ABC):
         }
         for k, v in vars(self).items():
             if k not in reserved and not k.startswith("port_") and not k.startswith("_"):
-                data[k] = _sanitize_for_json(v)
+                if hasattr(v, "rid"):
+                    data[k] = {"rid": v.rid}
+                else:
+                    data[k] = _sanitize_for_json(v)
 
         return data
 

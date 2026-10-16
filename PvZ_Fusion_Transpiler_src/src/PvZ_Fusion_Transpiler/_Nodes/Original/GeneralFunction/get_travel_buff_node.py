@@ -1,4 +1,6 @@
+from typing import Any
 from ..node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortType, Port
+
 
 
 class GetTravelBuffNode(EventNodeBase):
@@ -9,6 +11,7 @@ class GetTravelBuffNode(EventNodeBase):
         super().__init__()
         self.port_input_trigger_Trigger : Port = self.create_port("触发", PortDirection.Input, PortType.Trigger)
         self.port_output_trigger_Success : Port = self.create_port("成功", PortDirection.Output, PortType.Trigger)
+        self.buff : Any = None
 
 
 __all__ = ["GetTravelBuffNode"]

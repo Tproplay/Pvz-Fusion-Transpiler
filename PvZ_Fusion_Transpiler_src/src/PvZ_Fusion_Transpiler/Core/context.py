@@ -8,7 +8,7 @@ import sys
 import uuid
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set
 
-from .connection_manager import ConnectionManager, Connection
+from .connection_manager import ConnectionManager, Connection, Port
 
 if TYPE_CHECKING:
     from .._Nodes.Original.node import Node
@@ -48,17 +48,27 @@ class CompilerContext:
         }
         self.nodes: List[Any] = []
         self._node_set: Set[str] = set()
+        self._node_map: Dict[str, Any] = {}
         self.variables: List[Any] = []
         self._variable_set: Set[str] = set()
+        self.trigger_stack: List[Any] = []
         self._configured: bool = False
         self._exported_file: Optional[str] = None
 
+    def _generate_uuid(self) -> str:
+        return uuid.uuid4().hex
+
+    def get_node(self, node_id: str) -> Optional[Any]:
+        return self._node_map.get(node_id)
+
     def add_node(self, node: Any) -> None:
         node_id = getattr(node, "id", None)
-        if node_id and node_id not in self._node_set:
-            self._node_set.add(node_id)
-            self.nodes.append(node)
-        elif not node_id and node not in self.nodes:
+        if node_id:
+            self._node_map[node_id] = node
+            if node_id not in self._node_set:
+                self._node_set.add(node_id)
+                self.nodes.append(node)
+        elif node not in self.nodes:
             self.nodes.append(node)
 
     def add_variable(self, var: Any) -> None:
@@ -69,6 +79,43 @@ class CompilerContext:
         elif not vid and var not in self.variables:
             self.variables.append(var)
 
+    def add_connection(
+        self,
+        source: Any,
+        source_port: Any,
+        target: Any,
+        target_port: Any,
+    ) -> Any:
+        src_node = self._node_map.get(source) if isinstance(source, str) else source
+        tgt_node = self._node_map.get(target) if isinstance(target, str) else target
+
+        if src_node is not None and tgt_node is not None:
+            src_p: Any = source_port
+            tgt_p: Any = target_port
+            if isinstance(source_port, str) and hasattr(src_node, "get_output"):
+                try:
+                    src_p = src_node.get_output(source_port)
+                except Exception:
+                    src_p = src_node.get_port(source_port) if hasattr(src_node, "get_port") else source_port
+
+            if isinstance(target_port, str) and hasattr(tgt_node, "get_input"):
+                try:
+                    tgt_p = tgt_node.get_input(target_port)
+                except Exception:
+                    tgt_p = tgt_node.get_port(target_port) if hasattr(tgt_node, "get_port") else target_port
+
+            if isinstance(src_p, Port) and isinstance(tgt_p, Port):
+                src_p.connect(tgt_p)
+                return
+            elif hasattr(src_p, "connect") and tgt_p is not None:
+                getattr(src_p, "connect")(tgt_p)
+                return
+            elif hasattr(tgt_p, "connect") and src_p is not None:
+                getattr(tgt_p, "connect")(src_p)
+                return
+
+        ConnectionManager.add_connection(src_node or source, source_port, tgt_node or target, target_port)  # type: ignore
+
     def clear(self) -> None:
         self.config = {
             "output": "./",
@@ -76,8 +123,10 @@ class CompilerContext:
         }
         self.nodes.clear()
         self._node_set.clear()
+        self._node_map.clear()
         self.variables.clear()
         self._variable_set.clear()
+        self.trigger_stack.clear()
         self._configured = False
         self._exported_file = None
         ConnectionManager.clear()

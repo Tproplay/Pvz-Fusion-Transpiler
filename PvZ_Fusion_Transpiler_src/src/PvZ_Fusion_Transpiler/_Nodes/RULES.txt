@@ -1,0 +1,9 @@
+These rules must be followed for any changes inside Nodes folder.
+
+1. Always return Plant and Zombie references in a wrapped class (Extentions/Entity/plant.py, Extentions/Entity/zombie.py)
+2. Always write __init__.py in every folder, and try to avoid direct imports from files like "from ..Original.Calculate.add_node import AddNode".
+3. Try not to make any function big, it that happen, divide them into classes and functions.
+4. Taking inputs like PlantType, ZombieType must be handeled through the enum, direct int input is not allowed.
+5. Do not write the names of ports in Execution path like 创建成功, instead do self.node.port_output_plant_Plant.name
+6. Extentions should only be focused on handeling the Original nodes more easily, and should not be making a completely new functionality like arrays.
+These advanced functionality will be present in extra libraries and not in the base library by default.
