@@ -4,7 +4,7 @@ from .PlantType import PlantType, Plant_DieReason
 from .ZombieType import ZombieType
 from .SoundType import SoundType
 from .KeyCode import KeyCode
-from .ZombieAnimations import ZombieAnimation, ZombieAnimations
+from .ZombieAnimations import ZombieAnimations
 from .TravelBuffType import TravelBuffType
 from .BulletType import BulletType
 
@@ -16,7 +16,6 @@ __all__ = [
     "ZombieType",
     "SoundType",
     "KeyCode",
-    "ZombieAnimation",
     "ZombieAnimations",
     "TravelBuffType",
     "BulletType",
