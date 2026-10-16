@@ -60,6 +60,27 @@ class Node(ABC):
             "nodeName": getattr(self, "node_name", node_type),
         }
 
+        # Include value if present or for ValueNode types
+        if hasattr(self, "value"):
+            data["value"] = _sanitize_for_json(getattr(self, "value"))
+        elif node_type.endswith("ValueNode"):
+            if any(k in node_type for k in ("Int", "PlantType", "ZombieType", "BulletType", "ToolType")):
+                data["value"] = 0
+            elif "Float" in node_type:
+                data["value"] = 0.0
+            elif "Bool" in node_type:
+                data["value"] = False
+            elif "String" in node_type:
+                data["value"] = ""
+
+        # Include asset reference if present
+        if hasattr(self, "asset") and getattr(self, "asset") is not None:
+            asset_obj = getattr(self, "asset")
+            if hasattr(asset_obj, "rid"):
+                data["asset"] = {"rid": asset_obj.rid}
+            elif isinstance(asset_obj, dict):
+                data["asset"] = asset_obj
+
         # For EventNodeBase, populate port name properties
         if isinstance(self, EventNodeBase):
             for attr in dir(self):
@@ -74,7 +95,7 @@ class Node(ABC):
 
         reserved = {
             "id", "x", "y", "position", "ports", "rid", "node_type", "node_name",
-            "input_defaults", "inputDefaults",
+            "input_defaults", "inputDefaults", "value", "asset",
         }
         for k, v in vars(self).items():
             if k not in reserved and not k.startswith("port_") and not k.startswith("_"):

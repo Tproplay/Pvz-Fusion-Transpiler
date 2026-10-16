@@ -13,6 +13,19 @@ from PvZ_Fusion_Transpiler._Nodes import (
     CompareIntNode,
     GetMouseWorldPositionNode,
     Node,
+    IntValueNode,
+    FloatValueNode,
+    BoolValueNode,
+    StringValueNode,
+    IntVariableNode,
+    FloatVariableNode,
+    BoolVariableNode,
+    StringVariableNode,
+    VariableAsset,
+    IntVariableAsset,
+    FloatVariableAsset,
+    BoolVariableAsset,
+    StringVariableAsset,
 )
 
 
@@ -93,7 +106,7 @@ class TestExportSystem(unittest.TestCase):
 
         exported_path = export()
         expected_path = os.path.join(self.test_dir, "BrandNewLevel.json")
-        self.assertEqual(os.path.abspath(exported_path), os.path.abspath(expected_path))
+        self.assertEqual(os.path.abspath(exported_path), os.path.abspath(expected_path)) #type: ignore
         self.assertTrue(os.path.isfile(expected_path))
 
         with open(expected_path, "r", encoding="utf-8") as f:
@@ -266,6 +279,141 @@ raise RuntimeError("Intentional error to test exception handling")
 
         exported_file = os.path.join(self.test_dir, "ShouldNotExist.json")
         self.assertFalse(os.path.exists(exported_file), "File should not be exported when script crashes!")
+
+    def test_value_nodes_export(self):
+        """Test value nodes (Int, Float, Bool, String) serialize value and value_PortName."""
+        Config(output=self.test_dir, name="ValueNodesTest")
+        int_n = IntValueNode(value=42)
+        float_n = FloatValueNode(value=3.14)
+        bool_n = BoolValueNode(value=True)
+        str_n = StringValueNode(value="CustomString")
+
+        export()
+        file_path = os.path.join(self.test_dir, "ValueNodesTest.json")
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        ref_ids = data["references"]["RefIds"]
+        self.assertEqual(len(ref_ids), 4)
+
+        # IntValueNode
+        self.assertEqual(ref_ids[0]["type"]["class"], "IntValueNode")
+        self.assertEqual(ref_ids[0]["data"]["value"], 42)
+        self.assertEqual(ref_ids[0]["data"]["value_PortName"], "值")
+
+        # FloatValueNode
+        self.assertEqual(ref_ids[1]["type"]["class"], "FloatValueNode")
+        self.assertAlmostEqual(ref_ids[1]["data"]["value"], 3.14)
+        self.assertEqual(ref_ids[1]["data"]["value_PortName"], "值")
+
+        # BoolValueNode
+        self.assertEqual(ref_ids[2]["type"]["class"], "BoolValueNode")
+        self.assertEqual(ref_ids[2]["data"]["value"], True)
+        self.assertEqual(ref_ids[2]["data"]["value_PortName"], "值")
+
+        # StringValueNode
+        self.assertEqual(ref_ids[3]["type"]["class"], "StringValueNode")
+        self.assertEqual(ref_ids[3]["data"]["value"], "CustomString")
+        self.assertEqual(ref_ids[3]["data"]["value_PortName"], "值")
+
+    def test_variable_nodes_and_assets_export(self):
+        """Test variable nodes and variable assets linking, RID assignment, and referencedNodeIds."""
+        Config(output=self.test_dir, name="VariablesTest")
+
+        # Shared asset
+        shared_int = IntVariableAsset(name="共享整数", initial_value=100)
+        n1 = IntVariableNode(asset=shared_int)
+        n2 = IntVariableNode(asset=shared_int)
+
+        # Dedicated asset node
+        n3 = IntVariableNode(name="独立整数", value=200)
+
+        # Standalone unreferenced asset
+        f_asset = FloatVariableAsset(name="未引用浮点", initial_value=9.99)
+
+        export()
+        file_path = os.path.join(self.test_dir, "VariablesTest.json")
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # Graph should have 3 nodes and 3 variables
+        self.assertEqual(len(data["eventNodeGraph"]["nodes"]), 3)
+        self.assertEqual(len(data["eventNodeGraph"]["variables"]), 3)
+        self.assertEqual(data["eventNodeGraph"]["nodes"], [{"rid": 1000}, {"rid": 1001}, {"rid": 1002}])
+        self.assertEqual(data["eventNodeGraph"]["variables"], [{"rid": 1003}, {"rid": 1004}, {"rid": 1005}])
+
+        # References
+        ref_ids = data["references"]["RefIds"]
+        self.assertEqual(len(ref_ids), 6)
+
+        # Node 1 and Node 2 point to shared asset rid 1003
+        self.assertEqual(ref_ids[0]["rid"], 1000)
+        self.assertEqual(ref_ids[0]["data"]["asset"]["rid"], 1003)
+        self.assertEqual(ref_ids[0]["data"]["variable_PortName"], "变量")
+
+        self.assertEqual(ref_ids[1]["rid"], 1001)
+        self.assertEqual(ref_ids[1]["data"]["asset"]["rid"], 1003)
+        self.assertEqual(ref_ids[1]["data"]["variable_PortName"], "变量")
+
+        # Node 3 points to dedicated asset rid 1004
+        self.assertEqual(ref_ids[2]["rid"], 1002)
+        self.assertEqual(ref_ids[2]["data"]["asset"]["rid"], 1004)
+        self.assertEqual(ref_ids[2]["data"]["variable_PortName"], "变量")
+
+        # Shared asset has both n1.id and n2.id in referencedNodeIds
+        self.assertEqual(ref_ids[3]["rid"], 1003)
+        self.assertEqual(ref_ids[3]["type"]["class"], "IntVariableAsset")
+        self.assertEqual(ref_ids[3]["data"]["name"], "共享整数")
+        self.assertEqual(ref_ids[3]["data"]["value"], 100)
+        self.assertCountEqual(ref_ids[3]["data"]["referencedNodeIds"], [n1.id, n2.id])
+
+        # Dedicated asset has n3.id in referencedNodeIds
+        self.assertEqual(ref_ids[4]["rid"], 1004)
+        self.assertEqual(ref_ids[4]["type"]["class"], "IntVariableAsset")
+        self.assertEqual(ref_ids[4]["data"]["name"], "独立整数")
+        self.assertEqual(ref_ids[4]["data"]["value"], 200)
+        self.assertEqual(ref_ids[4]["data"]["referencedNodeIds"], [n3.id])
+
+        # Unreferenced asset has empty referencedNodeIds
+        self.assertEqual(ref_ids[5]["rid"], 1005)
+        self.assertEqual(ref_ids[5]["type"]["class"], "FloatVariableAsset")
+        self.assertEqual(ref_ids[5]["data"]["name"], "未引用浮点")
+        self.assertAlmostEqual(ref_ids[5]["data"]["value"], 9.99)
+        self.assertEqual(ref_ids[5]["data"]["referencedNodeIds"], [])
+
+    def test_all_typed_variable_nodes(self):
+        """Test FloatVariableNode, BoolVariableNode, StringVariableNode."""
+        Config(output=self.test_dir, name="AllTypedVarsTest")
+        fn = FloatVariableNode(name="我的浮点", value=12.5)
+        bn = BoolVariableNode(name="我的布尔", value=True)
+        sn = StringVariableNode(name="我的文本", value="PvZ Fusion")
+
+        export()
+        file_path = os.path.join(self.test_dir, "AllTypedVarsTest.json")
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        ref_ids = data["references"]["RefIds"]
+        self.assertEqual(len(ref_ids), 6)  # 3 nodes + 3 assets
+
+        # Assets
+        asset_f = ref_ids[3]
+        self.assertEqual(asset_f["type"]["class"], "FloatVariableAsset")
+        self.assertEqual(asset_f["data"]["name"], "我的浮点")
+        self.assertAlmostEqual(asset_f["data"]["value"], 12.5)
+        self.assertEqual(asset_f["data"]["referencedNodeIds"], [fn.id])
+
+        asset_b = ref_ids[4]
+        self.assertEqual(asset_b["type"]["class"], "BoolVariableAsset")
+        self.assertEqual(asset_b["data"]["name"], "我的布尔")
+        self.assertEqual(asset_b["data"]["value"], True)
+        self.assertEqual(asset_b["data"]["referencedNodeIds"], [bn.id])
+
+        asset_s = ref_ids[5]
+        self.assertEqual(asset_s["type"]["class"], "StringVariableAsset")
+        self.assertEqual(asset_s["data"]["name"], "我的文本")
+        self.assertEqual(asset_s["data"]["value"], "PvZ Fusion")
+        self.assertEqual(asset_s["data"]["referencedNodeIds"], [sn.id])
 
 
 if __name__ == "__main__":

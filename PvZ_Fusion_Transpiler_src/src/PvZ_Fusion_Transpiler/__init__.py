@@ -1,5 +1,14 @@
 import sys
-from .Core import Config, export, _ctx
+from .Core import (
+    Config,
+    export,
+    _ctx,
+    VariableAsset,
+    IntVariableAsset,
+    FloatVariableAsset,
+    BoolVariableAsset,
+    StringVariableAsset,
+)
 from .Core.connection_manager import (
     ConnectionManager,
     Connection,
@@ -25,4 +34,9 @@ __all__ = [
     "Port",
     "PortDirection",
     "PortType",
+    "VariableAsset",
+    "IntVariableAsset",
+    "FloatVariableAsset",
+    "BoolVariableAsset",
+    "StringVariableAsset",
 ]

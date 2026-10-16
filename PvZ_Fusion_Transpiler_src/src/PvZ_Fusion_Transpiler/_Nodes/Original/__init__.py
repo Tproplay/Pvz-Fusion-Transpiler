@@ -1,4 +1,11 @@
 from .node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortType, Port
+from .VariableAsset import (
+    VariableAsset,
+    IntVariableAsset,
+    FloatVariableAsset,
+    BoolVariableAsset,
+    StringVariableAsset,
+)
 
 from .BulletManipulation import (
     BulletTypeValueNode,
@@ -297,6 +304,11 @@ __all__ = [
     "PortDirection",
     "PortType",
     "Port",
+    "VariableAsset",
+    "IntVariableAsset",
+    "FloatVariableAsset",
+    "BoolVariableAsset",
+    "StringVariableAsset",
     "BulletTypeValueNode",
     "ModifyEventBulletNode",
     "ShootEventBulletNode",

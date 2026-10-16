@@ -7,6 +7,13 @@ from .connection_manager import (
     PortType,
 )
 from .uuid import generate_uuid
+from .._Nodes.Original.VariableAsset import (
+    VariableAsset,
+    IntVariableAsset,
+    FloatVariableAsset,
+    BoolVariableAsset,
+    StringVariableAsset,
+)
 
 __all__ = [
     "_ctx",
@@ -18,4 +25,9 @@ __all__ = [
     "PortDirection",
     "PortType",
     "generate_uuid",
+    "VariableAsset",
+    "IntVariableAsset",
+    "FloatVariableAsset",
+    "BoolVariableAsset",
+    "StringVariableAsset",
 ]

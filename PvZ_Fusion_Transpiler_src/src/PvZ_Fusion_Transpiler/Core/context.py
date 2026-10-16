@@ -48,6 +48,8 @@ class CompilerContext:
         }
         self.nodes: List[Any] = []
         self._node_set: Set[str] = set()
+        self.variables: List[Any] = []
+        self._variable_set: Set[str] = set()
         self._configured: bool = False
         self._exported_file: Optional[str] = None
 
@@ -59,6 +61,14 @@ class CompilerContext:
         elif not node_id and node not in self.nodes:
             self.nodes.append(node)
 
+    def add_variable(self, var: Any) -> None:
+        vid = getattr(var, "variable_id", None)
+        if vid and vid not in self._variable_set:
+            self._variable_set.add(vid)
+            self.variables.append(var)
+        elif not vid and var not in self.variables:
+            self.variables.append(var)
+
     def clear(self) -> None:
         self.config = {
             "output": "./",
@@ -66,6 +76,8 @@ class CompilerContext:
         }
         self.nodes.clear()
         self._node_set.clear()
+        self.variables.clear()
+        self._variable_set.clear()
         self._configured = False
         self._exported_file = None
         ConnectionManager.clear()
@@ -109,9 +121,27 @@ class CompilerContext:
                 all_nodes.append(conn.target_node)
                 existing_node_ids.add(conn.target_node.id)
 
+        # Collect variables
+        all_variables = list(self.variables)
+        existing_var_ids = {getattr(v, "variable_id", None) for v in all_variables}
+
+        for node in all_nodes:
+            if hasattr(node, "asset") and getattr(node, "asset") is not None:
+                asset_obj = getattr(node, "asset")
+                vid = getattr(asset_obj, "variable_id", None)
+                if vid and vid not in existing_var_ids:
+                    all_variables.append(asset_obj)
+                    existing_var_ids.add(vid)
+                if hasattr(asset_obj, "add_reference"):
+                    asset_obj.add_reference(node.id)
+
         # Allocate RIDs starting at 1000
         for idx, node in enumerate(all_nodes):
             node.rid = 1000 + idx
+
+        var_start_rid = 1000 + len(all_nodes)
+        for idx, var in enumerate(all_variables):
+            var.rid = var_start_rid + idx
 
         # Arrange nodes in a square pattern
         apply_square_layout(all_nodes)
@@ -126,7 +156,7 @@ class CompilerContext:
         event_node_graph: Dict[str, Any] = {
             "nodes": [{"rid": n.rid} for n in all_nodes],
             "connections": [dummy_conn] + [c.to_dict() for c in connections],
-            "variables": [],
+            "variables": [{"rid": v.rid} for v in all_variables],
             "groups": [],
             "executionVersion": 1,
             "graphId": uuid.uuid4().hex,
@@ -134,7 +164,7 @@ class CompilerContext:
 
         references: Dict[str, Any] = {
             "version": 2,
-            "RefIds": [n.dump_ref() for n in all_nodes],
+            "RefIds": [n.dump_ref() for n in all_nodes] + [v.dump_ref() for v in all_variables],
         }
 
         # If file exists, update references and eventNodeGraph, leave everything else as it is.
