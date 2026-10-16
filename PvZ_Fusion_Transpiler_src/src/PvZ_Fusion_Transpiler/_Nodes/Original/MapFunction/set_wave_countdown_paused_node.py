@@ -1,0 +1,16 @@
+from ..node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortType, Port
+
+
+class SetWaveCountdownPausedNode(EventSuggestedNode):
+    # Status in Extensions: Not implemented
+    node_type = "SetWaveCountdownPausedNode"
+
+    def __init__(self):
+        super().__init__()
+        self.port_input_trigger_Trigger : Port = self.create_port("触发", PortDirection.Input, PortType.Trigger)
+        self.port_input_bool_Pause : Port = self.create_port("暂停", PortDirection.Input, PortType.Bool)
+        self.port_output_trigger_Complete : Port = self.create_port("完成", PortDirection.Output, PortType.Trigger)
+        self.port_output_trigger_Failed : Port = self.create_port("失败", PortDirection.Output, PortType.Trigger)
+
+
+__all__ = ["SetWaveCountdownPausedNode"]

@@ -1,0 +1,10 @@
+{
+  "include": [
+    "PvZ_Fusion_Transpiler_src/src"
+  ],
+  "extraPaths": [
+    "PvZ_Fusion_Transpiler_src/src"
+  ],
+  "venvPath": ".",
+  "venv": ".venv"
+}
