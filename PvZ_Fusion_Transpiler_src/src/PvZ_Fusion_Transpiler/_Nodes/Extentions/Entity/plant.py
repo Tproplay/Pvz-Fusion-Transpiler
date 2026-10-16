@@ -81,5 +81,11 @@ class Plant:
     def attributeCD(self) -> Any:
         return self._split.port_output_int_AttributeCountdown
 
+    def ToString(self) -> Any:
+        conv = nodes.plant_type_to_string(plant_type=self.plantType)
+        return conv.port_output_string_String
+
+    to_string = ToString
+
 
 __all__ = ["Plant"]

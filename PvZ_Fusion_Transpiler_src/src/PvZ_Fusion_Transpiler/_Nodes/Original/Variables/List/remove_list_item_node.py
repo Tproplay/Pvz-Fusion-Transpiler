@@ -2,7 +2,7 @@ from ...node import Node, EventNodeBase, EventSuggestedNode, PortDirection, Port
 
 
 class RemoveListItemNode(EventSuggestedNode):
-    # Status in Extensions: Not implemented
+    # Status in Extensions: Implemented
     node_type = "RemoveListItemNode"
 
     def __init__(self):

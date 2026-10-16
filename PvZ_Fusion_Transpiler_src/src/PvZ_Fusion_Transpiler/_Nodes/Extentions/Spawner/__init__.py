@@ -1,4 +1,4 @@
-from .spawner import Spawner, SpawnedPlant, SpawnedZombie
+from .spawner import Spawner, SpawnedPlant, SpawnedZombie, SpawnedBullet
 
-__all__ = ["Spawner", "SpawnedPlant", "SpawnedZombie"]
+__all__ = ["Spawner", "SpawnedPlant", "SpawnedZombie", "SpawnedBullet"]
 

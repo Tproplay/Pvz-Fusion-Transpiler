@@ -137,10 +137,29 @@ class StringVariableAsset(VariableAsset):
         )
 
 
+class ListVariableAsset(VariableAsset):
+    asset_class = "ListVariableAsset"
+
+    def __init__(
+        self,
+        name: str = "列表",
+        initial_value: Optional[List[Any]] = None,
+        variable_id: Optional[str] = None,
+        rid: Optional[int] = None,
+    ):
+        super().__init__(
+            name=name,
+            initial_value=list(initial_value or []),
+            variable_id=variable_id,
+            rid=rid,
+        )
+
+
 __all__ = [
     "VariableAsset",
     "IntVariableAsset",
     "FloatVariableAsset",
     "BoolVariableAsset",
     "StringVariableAsset",
+    "ListVariableAsset",
 ]

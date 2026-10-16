@@ -61,5 +61,11 @@ class Zombie:
     def col(self) -> Any:
         return self.split.port_output_int_Col
 
+    def ToString(self) -> Any:
+        conv = nodes.zombie_type_to_string(zombie_type=self.zombieType)
+        return conv.port_output_string_String
+
+    to_string = ToString
+
 
 __all__ = ["Zombie"]

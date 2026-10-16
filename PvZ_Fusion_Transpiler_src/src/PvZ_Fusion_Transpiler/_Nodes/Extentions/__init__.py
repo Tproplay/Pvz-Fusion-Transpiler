@@ -10,14 +10,14 @@ from .Abstract import (
 )
 from .Branching import If, Switch
 from .Variables import IntVar, FloatVar, BoolVar
-from .Entity import Plant, Zombie, ForEachPlant, ForEachPlantType, PlantTypeList
+from .Entity import Plant, Zombie, Bullet, ForEachPlant, ForEachPlantType, ForEachZombieType, PlantTypeList, ZombieTypeList
 from .Loops import While, For
 from .Time import Time
 from .Input import Mouse
 from .Random import Random
 from .UI import Option, MultiSelectMenu, InfoCard, InGameUI, format_string
 from .Triggers import Trigger
-from .Spawner import Spawner, SpawnedPlant, SpawnedZombie
+from .Spawner import Spawner, SpawnedPlant, SpawnedZombie, SpawnedBullet
 from .Game import Game, Board, _SunManager, _MoneyManager
 from .Lawn import Lawnf
 
@@ -41,9 +41,12 @@ __all__ = [
     # Entity
     "Plant",
     "Zombie",
+    "Bullet",
     "ForEachPlant",
     "ForEachPlantType",
+    "ForEachZombieType",
     "PlantTypeList",
+    "ZombieTypeList",
     # Loops
     "While",
     "For",
@@ -65,6 +68,7 @@ __all__ = [
     "Spawner",
     "SpawnedPlant",
     "SpawnedZombie",
+    "SpawnedBullet",
     # Game & Lawn
     "Game",
     "Board",

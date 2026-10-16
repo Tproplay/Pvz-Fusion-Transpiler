@@ -1,10 +1,11 @@
 from .Boolean import BoolVariableNode, GetBoolVariableValueNode, SetBoolVariableValueNode
 from .Float import FloatVariableArithmeticNode, FloatVariableNode, GetFloatVariableValueNode, SetFloatVariableValueNode
 from .Integer import GetIntVariableValueNode, IntVariableArithmeticNode, IntVariableNode, SetIntVariableValueNode
-from .List import AppendBoolListNode, AppendFloatListNode, AppendIntListNode, AppendObjectListNode, AppendPlantTypeListNode, AppendStringListNode, AppendZombieTypeListNode, ClearListValuesNode, CopyListValuesNode, FindBoolListValueNode, FindFloatListValueNode, FindIntListValueNode, FindObjectListValueNode, FindPlantTypeListValueNode, FindStringListValueNode, FindZombieTypeListValueNode, GetBoolListItemNode, GetFloatListItemNode, GetIntListItemNode, GetListLengthNode, GetObjectListItemNode, GetPlantTypeListItemNode, GetStringListItemNode, GetZombieTypeListItemNode, InsertBoolListNode, InsertFloatListNode, InsertIntListNode, InsertObjectListNode, InsertPlantTypeListNode, InsertStringListNode, InsertZombieTypeListNode, PlantTypeListStorageNode, RemoveListItemNode, ReplaceBoolListNode, ReplaceFloatListNode, ReplaceIntListNode, ReplaceObjectListNode, ReplacePlantTypeListNode, ReplaceStringListNode, ReplaceZombieTypeListNode
+from .List import AppendBoolListNode, AppendFloatListNode, AppendIntListNode, AppendObjectListNode, AppendPlantTypeListNode, AppendStringListNode, AppendZombieTypeListNode, ClearListValuesNode, CopyListValuesNode, FindBoolListValueNode, FindFloatListValueNode, FindIntListValueNode, FindObjectListValueNode, FindPlantTypeListValueNode, FindStringListValueNode, FindZombieTypeListValueNode, GetBoolListItemNode, GetFloatListItemNode, GetIntListItemNode, GetListLengthNode, GetObjectListItemNode, GetPlantTypeListItemNode, GetStringListItemNode, GetZombieTypeListItemNode, InsertBoolListNode, InsertFloatListNode, InsertIntListNode, InsertObjectListNode, InsertPlantTypeListNode, InsertStringListNode, InsertZombieTypeListNode, ListVariableNode, PlantTypeListStorageNode, RemoveListItemNode, ReplaceBoolListNode, ReplaceFloatListNode, ReplaceIntListNode, ReplaceObjectListNode, ReplacePlantTypeListNode, ReplaceStringListNode, ReplaceZombieTypeListNode
 from .String import GetStringVariableValueNode, SetStringVariableValueNode, StringVariableNode
 
 __all__ = [
+    "ListVariableNode",
     "AppendBoolListNode",
     "AppendFloatListNode",
     "AppendIntListNode",

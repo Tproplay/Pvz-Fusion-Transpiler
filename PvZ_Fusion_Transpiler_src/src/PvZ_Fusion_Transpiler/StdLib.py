@@ -6,7 +6,7 @@ from ._Nodes.Extentions.Branching import If
 from ._Nodes.Extentions.Variables import IntVar, FloatVar, BoolVar
 from ._Nodes.Extentions.Entity import Plant
 from ._Nodes.Extentions.Triggers import Trigger
-from .Data.TypeMgr import KeyCode
+from ._Data.TypeMgr import KeyCode
 
 
 class _wasd_key:

@@ -1,3 +1,4 @@
+from typing import Any
 from ..node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortType, Port
 
 
@@ -5,9 +6,12 @@ class OnKeyPressNode(EventNodeBase):
     # Status in Extensions: Not implemented
     node_type = "OnKeyPressNode"
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, target_key: Any = None, targetKey: Any = None, **kwargs):
+        super().__init__(**kwargs)
         self.port_output_trigger_Trigger : Port = self.create_port("触发", PortDirection.Output, PortType.Trigger)
+        key = targetKey if targetKey is not None else target_key
+        if key is not None:
+            self.targetKey: int = int(getattr(key, "value", key))
 
 
 __all__ = ["OnKeyPressNode"]

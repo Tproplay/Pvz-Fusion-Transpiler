@@ -2,7 +2,7 @@ from ...node import Node, EventNodeBase, EventSuggestedNode, PortDirection, Port
 
 
 class GetListLengthNode(EventSuggestedNode):
-    # Status in Extensions: Not implemented
+    # Status in Extensions: Implemented
     node_type = "GetListLengthNode"
 
     def __init__(self):

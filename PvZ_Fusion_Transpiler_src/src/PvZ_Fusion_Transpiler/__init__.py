@@ -8,6 +8,7 @@ from .Core import (
     FloatVariableAsset,
     BoolVariableAsset,
     StringVariableAsset,
+    ListVariableAsset,
 )
 from .Core.connection_manager import (
     ConnectionManager,
@@ -18,9 +19,11 @@ from .Core.connection_manager import (
 )
 from . import Core
 from . import _Nodes
+from . import _Data
+from . import _Data as Data
 from . import nodes
-from . import Data
 from . import StdLib
+from . import Types
 
 from ._Nodes.Extentions import (
     If,
@@ -30,9 +33,12 @@ from ._Nodes.Extentions import (
     BoolVar,
     Plant,
     Zombie,
+    Bullet,
     ForEachPlant,
     ForEachPlantType,
+    ForEachZombieType,
     PlantTypeList,
+    ZombieTypeList,
     While,
     For,
     Time,
@@ -45,6 +51,7 @@ from ._Nodes.Extentions import (
     Spawner,
     SpawnedPlant,
     SpawnedZombie,
+    SpawnedBullet,
     Game,
     Board,
     Lawnf,
@@ -52,9 +59,11 @@ from ._Nodes.Extentions import (
     format_string,
 )
 
-# Alias _Nodes in sys.modules so `from _Nodes import ...` or `import _Nodes` works as well
+# Alias _Nodes and _Data in sys.modules so imports work cleanly
 if "_Nodes" not in sys.modules:
     sys.modules["_Nodes"] = _Nodes
+if "PvZ_Fusion_Transpiler.Data" not in sys.modules:
+    sys.modules["PvZ_Fusion_Transpiler.Data"] = _Data
 
 __all__ = [
     "Config",
@@ -62,9 +71,11 @@ __all__ = [
     "_ctx",
     "Core",
     "_Nodes",
-    "nodes",
+    "_Data",
     "Data",
+    "nodes",
     "StdLib",
+    "Types",
     "ConnectionManager",
     "Connection",
     "Port",
@@ -75,6 +86,7 @@ __all__ = [
     "FloatVariableAsset",
     "BoolVariableAsset",
     "StringVariableAsset",
+    "ListVariableAsset",
     # Extensions
     "If",
     "Switch",
@@ -83,9 +95,12 @@ __all__ = [
     "BoolVar",
     "Plant",
     "Zombie",
+    "Bullet",
     "ForEachPlant",
     "ForEachPlantType",
+    "ForEachZombieType",
     "PlantTypeList",
+    "ZombieTypeList",
     "While",
     "For",
     "Time",
@@ -98,6 +113,7 @@ __all__ = [
     "Spawner",
     "SpawnedPlant",
     "SpawnedZombie",
+    "SpawnedBullet",
     "Game",
     "Board",
     "Lawnf",

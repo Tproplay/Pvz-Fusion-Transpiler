@@ -13,6 +13,7 @@ from .._Nodes.Original.VariableAsset import (
     FloatVariableAsset,
     BoolVariableAsset,
     StringVariableAsset,
+    ListVariableAsset,
 )
 
 __all__ = [
@@ -30,4 +31,5 @@ __all__ = [
     "FloatVariableAsset",
     "BoolVariableAsset",
     "StringVariableAsset",
+    "ListVariableAsset",
 ]

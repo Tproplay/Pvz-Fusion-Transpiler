@@ -31,10 +31,10 @@ class Lawnf:
     @staticmethod
     def spawn_ice_block(row: Any, col: Any, plant_type: Any = None) -> Any:
         if plant_type is not None:
-            if isinstance(plant_type, int) and not isinstance(plant_type, Enum):
+            if isinstance(plant_type, (int, float)) and not isinstance(plant_type, Enum):
                 raise TypeError("PlantType must be an Enum instance (e.g. PlantType.PEASHOOTER); direct int is not allowed.")
             if isinstance(plant_type, Enum):
-                plant_type = nodes.plant_type_value(val=int(plant_type.value))
+                plant_type = nodes.plant_type_value(val=plant_type)
         return nodes.create_ice_block(row=row, column=col, plant_type=plant_type)
 
     @staticmethod

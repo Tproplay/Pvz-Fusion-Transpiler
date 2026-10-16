@@ -1,13 +1,45 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Optional, List
 from ._Nodes.Original import *
 from .typing import to_port, to_int_port, to_float_port, to_bool_port, to_string_port
 
 
+from enum import Enum
+
+
+def _should_connect_arg(val: Any) -> bool:
+    """Returns True if the argument is not a default/falsy constant that can be omitted."""
+    if val is None:
+        return False
+    if val is False:
+        return False
+    if isinstance(val, (int, float)) and not isinstance(val, (bool, Enum)) and val == 0:
+        return False
+    return True
+
+
+def _validate_plant_type(val: Any) -> Any:
+    if isinstance(val, (int, float)) and not isinstance(val, Enum):
+        raise TypeError("PlantType must be handled through the PlantType enum, direct int input is not allowed.")
+    return val
+
+
+def _validate_zombie_type(val: Any) -> Any:
+    if isinstance(val, (int, float)) and not isinstance(val, Enum):
+        raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
+    return val
+
+
+def _validate_bullet_type(val: Any) -> Any:
+    if isinstance(val, (int, float)) and not isinstance(val, Enum):
+        raise TypeError("BulletType must be handled through the BulletType enum, direct int input is not allowed.")
+    return val
+
+
 def _wire_node_kwargs(node: Any, kwargs: dict[str, Any]) -> Any:
     for k, v in kwargs.items():
-        if v is None:
+        if not _should_connect_arg(v):
             continue
         try:
             inp = node.get_input(k)
@@ -33,11 +65,17 @@ def bool_value(val: bool = False, **kwargs: Any) -> BoolValueNode:
 def string_value(val: str = "", **kwargs: Any) -> StringValueNode:
     return StringValueNode(value=val, **kwargs)
 
-def plant_type_value(val: int = 0, **kwargs: Any) -> PlantTypeValueNode:
+def plant_type_value(val: Any = None, **kwargs: Any) -> PlantTypeValueNode:
+    _validate_plant_type(val)
     return PlantTypeValueNode(value=val, **kwargs)
 
-def zombie_type_value(val: int = 0, **kwargs: Any) -> ZombieTypeValueNode:
+def zombie_type_value(val: Any = None, **kwargs: Any) -> ZombieTypeValueNode:
+    _validate_zombie_type(val)
     return ZombieTypeValueNode(value=val, **kwargs)
+
+def bullet_type_value(val: Any = None, **kwargs: Any) -> BulletTypeValueNode:
+    _validate_bullet_type(val)
+    return BulletTypeValueNode(value=val, **kwargs)
 
 
 # =============================================================================
@@ -301,6 +339,8 @@ def for_loop_node(count: Any = 1, **kwargs: Any) -> ForLoopNode:
     to_port(count).connect(node.port_input_int_LoopCount)
     return node
 
+for_loop = for_loop_node
+
 
 # =============================================================================
 # ENTITIES & COLLECTIONS
@@ -440,11 +480,9 @@ def on_wave(**kwargs: Any) -> WaveEventNode:
 def on_mouse_click(**kwargs: Any) -> OnMouseClickNode:
     return OnMouseClickNode(**kwargs)
 
-def on_key_press(target_key: Any = None, **kwargs: Any) -> OnKeyPressNode:
-    node = OnKeyPressNode(**kwargs)
-    if target_key is not None:
-        setattr(node, "target_key", getattr(target_key, "value", target_key))
-    return node
+def on_key_press(target_key: Any = None, targetKey: Any = None, **kwargs: Any) -> OnKeyPressNode:
+    k = targetKey if targetKey is not None else target_key
+    return OnKeyPressNode(targetKey=k, **kwargs)
 
 def on_plant_create(**kwargs: Any) -> OnPlantCreateNode:
     return OnPlantCreateNode(**kwargs)
@@ -478,38 +516,38 @@ def on_wave_cleared(**kwargs: Any) -> OnWaveClearedNode:
 
 def set_plant(row: Any = None, column: Any = None, plant_type: Any = None, force_plant: Any = False, **kwargs: Any) -> SetPlantNode:
     node = SetPlantNode(**kwargs)
-    if row is not None:
-        to_port(row).connect(node.port_input_int_Row)
-    if column is not None:
-        to_port(column).connect(node.port_input_int_Col)
+    if _should_connect_arg(row):
+        to_int_port(row).connect(node.port_input_int_Row)
+    if _should_connect_arg(column):
+        to_int_port(column).connect(node.port_input_int_Col)
     if plant_type is not None:
-        to_port(plant_type).connect(node.port_input_planttype_PlantType)
-    if force_plant is not None:
-        to_port(force_plant).connect(node.port_input_bool_ForcePlant)
+        to_port(_validate_plant_type(plant_type)).connect(node.port_input_planttype_PlantType)
+    if _should_connect_arg(force_plant):
+        to_bool_port(force_plant).connect(node.port_input_bool_ForcePlant)
     return node
 
 def create_zombie(row: Any = None, column: Any = None, zombie_type: Any = None, mind_controlled: Any = False, **kwargs: Any) -> CreateZombieNode:
     node = CreateZombieNode(**kwargs)
-    if row is not None:
-        to_port(row).connect(node.port_input_int_Row)
-    if column is not None:
-        to_port(column).connect(node.port_input_int_Col)
+    if _should_connect_arg(row):
+        to_int_port(row).connect(node.port_input_int_Row)
+    if _should_connect_arg(column):
+        to_int_port(column).connect(node.port_input_int_Col)
     if zombie_type is not None:
-        to_port(zombie_type).connect(node.port_input_zombietype_ZombieType)
-    if mind_controlled is not None:
-        to_port(mind_controlled).connect(node.port_input_bool_IsHypnotized)
+        to_port(_validate_zombie_type(zombie_type)).connect(node.port_input_zombietype_ZombieType)
+    if _should_connect_arg(mind_controlled):
+        to_bool_port(mind_controlled).connect(node.port_input_bool_IsHypnotized)
     return node
 
 def add_multiple_choice_option(title: Any = None, description: Any = None, plant_type: Any = None, zombie_type: Any = None, **kwargs: Any) -> AddMultipleChoiceOptionNode:
     node = AddMultipleChoiceOptionNode(**kwargs)
-    if title is not None:
+    if _should_connect_arg(title):
         to_port(title).connect(node.port_input_string_Title)
-    if description is not None:
+    if _should_connect_arg(description):
         to_port(description).connect(node.port_input_string_Description)
     if plant_type is not None:
-        to_port(plant_type).connect(node.port_input_planttype_PlantType)
+        to_port(_validate_plant_type(plant_type)).connect(node.port_input_planttype_PlantType)
     if zombie_type is not None:
-        to_port(zombie_type).connect(node.port_input_zombietype_ZombieType)
+        to_port(_validate_zombie_type(zombie_type)).connect(node.port_input_zombietype_ZombieType)
     return node
 
 def create_info_card(big_title: Any = None, small_title: Any = None, **kwargs: Any) -> CreateInfoCardNode:
@@ -838,4 +876,141 @@ def string_concat(a: Any = None, b: Any = None, **kwargs: Any) -> StringConcatNo
         to_string_port(a).connect(node.port_input_string_A)
     if b is not None:
         to_string_port(b).connect(node.port_input_string_B)
+    return node
+
+
+# =============================================================================
+# BULLET MANIPULATION
+# =============================================================================
+
+def modify_event_bullet(bullet: Any = None, value: Any = None, **kwargs: Any) -> ModifyEventBulletNode:
+    node = ModifyEventBulletNode(**kwargs)
+    if bullet is not None:
+        to_port(bullet).connect(node.port_input_bullet_Bullet)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    return node
+
+def shoot_event_bullet(
+    row: Any = None,
+    col: Any = None,
+    column: Any = None,
+    bullet_type: Any = None,
+    at_mouse: Any = None,
+    zombie_camp: Any = None,
+    damage: Any = None,
+    speed: Any = None,
+    angle: Any = None,
+    scale_multiplier: Any = None,
+    **kwargs: Any,
+) -> ShootEventBulletNode:
+    node = ShootEventBulletNode(**kwargs)
+    actual_col = column if column is not None else col
+    if bullet_type is not None:
+        to_port(_validate_bullet_type(bullet_type)).connect(node.port_input_bullettype_BulletType)
+    if _should_connect_arg(at_mouse):
+        to_bool_port(at_mouse).connect(node.port_input_bool_AtMouse)
+    if _should_connect_arg(row):
+        to_int_port(row).connect(node.port_input_int_Row)
+    if _should_connect_arg(actual_col):
+        to_float_port(actual_col).connect(node.port_input_float_Col)
+    if _should_connect_arg(zombie_camp):
+        to_bool_port(zombie_camp).connect(node.port_input_bool_ZombieCamp)
+    if _should_connect_arg(damage):
+        to_int_port(damage).connect(node.port_input_int_Damage)
+    if _should_connect_arg(speed):
+        to_float_port(speed).connect(node.port_input_float_Speed)
+    if _should_connect_arg(angle):
+        to_float_port(angle).connect(node.port_input_float_Angle)
+    if _should_connect_arg(scale_multiplier):
+        to_float_port(scale_multiplier).connect(node.port_input_float_ScaleMultiplier)
+    return node
+
+
+# =============================================================================
+# TYPE CONVERSIONS
+# =============================================================================
+
+def plant_type_to_string(plant_type: Any = None, **kwargs: Any) -> PlantTypeToStringNode:
+    node = PlantTypeToStringNode(**kwargs)
+    if plant_type is not None:
+        to_port(_validate_plant_type(plant_type)).connect(node.port_input_planttype_Value)
+    return node
+
+def zombie_type_to_string(zombie_type: Any = None, **kwargs: Any) -> ZombieTypeToStringNode:
+    node = ZombieTypeToStringNode(**kwargs)
+    if zombie_type is not None:
+        to_port(_validate_zombie_type(zombie_type)).connect(node.port_input_zombietype_Value)
+    return node
+
+
+# =============================================================================
+# LIST OPERATIONS
+# =============================================================================
+
+def list_variable(name: str = "列表", value: Optional[List[Any]] = None, asset: Any = None, **kwargs: Any) -> ListVariableNode:
+    return ListVariableNode(name=name, value=value, asset=asset, **kwargs)
+
+def append_zombie_type_list(list_var: Any = None, value: Any = None, **kwargs: Any) -> AppendZombieTypeListNode:
+    node = AppendZombieTypeListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_port(value).connect(node.port_input_zombietype_Value)
+    return node
+
+def find_zombie_type_list_value(list_var: Any = None, value: Any = None, **kwargs: Any) -> FindZombieTypeListValueNode:
+    node = FindZombieTypeListValueNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_port(value).connect(node.port_input_zombietype_Value)
+    return node
+
+def get_zombie_type_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> GetZombieTypeListItemNode:
+    node = GetZombieTypeListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def insert_zombie_type_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> InsertZombieTypeListNode:
+    node = InsertZombieTypeListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_port(value).connect(node.port_input_zombietype_Value)
+    return node
+
+def replace_zombie_type_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> ReplaceZombieTypeListNode:
+    node = ReplaceZombieTypeListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_port(value).connect(node.port_input_zombietype_Value)
+    return node
+
+def get_list_length(list_var: Any = None, **kwargs: Any) -> GetListLengthNode:
+    node = GetListLengthNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    return node
+
+def clear_list_values(list_var: Any = None, **kwargs: Any) -> ClearListValuesNode:
+    node = ClearListValuesNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    return node
+
+def remove_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> RemoveListItemNode:
+    node = RemoveListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
     return node

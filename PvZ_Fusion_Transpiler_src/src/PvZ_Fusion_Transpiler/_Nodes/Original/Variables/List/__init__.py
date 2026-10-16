@@ -38,8 +38,10 @@ from .replace_object_list_node import ReplaceObjectListNode
 from .replace_plant_type_list_node import ReplacePlantTypeListNode
 from .replace_string_list_node import ReplaceStringListNode
 from .replace_zombie_type_list_node import ReplaceZombieTypeListNode
+from .list_variable_node import ListVariableNode
 
 __all__ = [
+    "ListVariableNode",
     "AppendBoolListNode",
     "AppendFloatListNode",
     "AppendIntListNode",

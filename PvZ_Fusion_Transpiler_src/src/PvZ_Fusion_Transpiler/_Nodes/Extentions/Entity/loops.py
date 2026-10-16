@@ -107,4 +107,6 @@ class ForEachPlantType:
         return self.plant_type != other
 
 
-__all__ = ["ForEachPlant", "ForEachPlantType"]
+from .zombie_type_list import ForEachZombieType
+
+__all__ = ["ForEachPlant", "ForEachPlantType", "ForEachZombieType"]

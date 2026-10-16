@@ -1,0 +1,1745 @@
+[18:00:52.992] [Debug_Mode] Dumping All animations
+[18:00:53.002] [Debug_Mode] 
+[ZombieType: NormalZombie] Prefab: NormalZombie
+[18:00:53.004] [Debug_Mode]   -> Clip: attack
+[18:00:53.004] [Debug_Mode]   -> Clip: die
+[18:00:53.004] [Debug_Mode]   -> Clip: idle
+[18:00:53.004] [Debug_Mode]   -> Clip: walk
+[18:00:53.004] [Debug_Mode]   -> Clip: walk2
+[18:00:53.004] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.004] [Debug_Mode] 
+[ZombieType: FlagZombie] Prefab: FlagZombie
+[18:00:53.004] [Debug_Mode]   -> Clip: die
+[18:00:53.004] [Debug_Mode]   -> Clip: walk
+[18:00:53.004] [Debug_Mode]   -> Clip: idle
+[18:00:53.004] [Debug_Mode]   -> Clip: attack
+[18:00:53.004] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.004] [Debug_Mode]   -> Clip: flag
+[18:00:53.004] [Debug_Mode] 
+[ZombieType: ConeZombie] Prefab: ConeZombie
+[18:00:53.004] [Debug_Mode]   -> Clip: attack
+[18:00:53.005] [Debug_Mode]   -> Clip: die
+[18:00:53.005] [Debug_Mode]   -> Clip: idle
+[18:00:53.005] [Debug_Mode]   -> Clip: walk
+[18:00:53.005] [Debug_Mode]   -> Clip: walk2
+[18:00:53.005] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.005] [Debug_Mode] 
+[ZombieType: PolevaulterZombie] Prefab: PolevaulterZombie
+[18:00:53.005] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.005] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.005] [Debug_Mode]   -> Clip: Zombie_polevaulter_jump
+[18:00:53.005] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.005] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.005] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.005] [Debug_Mode] 
+[ZombieType: BucketZombie] Prefab: BucketZombie
+[18:00:53.005] [Debug_Mode]   -> Clip: attack
+[18:00:53.005] [Debug_Mode]   -> Clip: die
+[18:00:53.006] [Debug_Mode]   -> Clip: idle
+[18:00:53.006] [Debug_Mode]   -> Clip: walk
+[18:00:53.006] [Debug_Mode]   -> Clip: walk2
+[18:00:53.006] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.006] [Debug_Mode] 
+[ZombieType: PaperZombie] Prefab: PaperZombie
+[18:00:53.006] [Debug_Mode]   -> Clip: attack
+[18:00:53.006] [Debug_Mode]   -> Clip: die
+[18:00:53.006] [Debug_Mode]   -> Clip: idle
+[18:00:53.006] [Debug_Mode]   -> Clip: walk
+[18:00:53.006] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.006] [Debug_Mode]   -> Clip: walk2
+[18:00:53.006] [Debug_Mode]   -> Clip: attack2
+[18:00:53.006] [Debug_Mode] 
+[ZombieType: DancePolZombie] Prefab: DancePolZombie
+[18:00:53.006] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.006] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.006] [Debug_Mode]   -> Clip: Zombie_polevaulter_jump 1
+[18:00:53.006] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.006] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.006] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.006] [Debug_Mode] 
+[ZombieType: DancePolZombie2] Prefab: DancePolZombie2
+[18:00:53.006] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.007] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.007] [Debug_Mode]   -> Clip: Zombie_polevaulter_jump
+[18:00:53.007] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.007] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.007] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.007] [Debug_Mode] 
+[ZombieType: DoorZombie] Prefab: DoorZombie
+[18:00:53.007] [Debug_Mode]   -> Clip: attack
+[18:00:53.007] [Debug_Mode]   -> Clip: die
+[18:00:53.007] [Debug_Mode]   -> Clip: idle
+[18:00:53.007] [Debug_Mode]   -> Clip: walk
+[18:00:53.007] [Debug_Mode]   -> Clip: walk2
+[18:00:53.007] [Debug_Mode]   -> Clip: losewalk2
+[18:00:53.007] [Debug_Mode]   -> Clip: losewalk
+[18:00:53.007] [Debug_Mode] 
+[ZombieType: FootballZombie] Prefab: FootballZombie
+[18:00:53.007] [Debug_Mode]   -> Clip: eat
+[18:00:53.007] [Debug_Mode]   -> Clip: die
+[18:00:53.007] [Debug_Mode]   -> Clip: idle
+[18:00:53.007] [Debug_Mode]   -> Clip: walk
+[18:00:53.007] [Debug_Mode] 
+[ZombieType: JacksonZombie] Prefab: JacksonZombie
+[18:00:53.008] [Debug_Mode]   -> Clip: moonwalk
+[18:00:53.008] [Debug_Mode]   -> Clip: point
+[18:00:53.008] [Debug_Mode]   -> Clip: walk
+[18:00:53.008] [Debug_Mode]   -> Clip: armraise
+[18:00:53.008] [Debug_Mode]   -> Clip: death
+[18:00:53.008] [Debug_Mode]   -> Clip: eat
+[18:00:53.008] [Debug_Mode]   -> Clip: idle
+[18:00:53.008] [Debug_Mode] 
+[ZombieType: ZombieDuck] Prefab: ZombieDuck
+[18:00:53.008] [Debug_Mode]   -> Clip: attack
+[18:00:53.008] [Debug_Mode]   -> Clip: die
+[18:00:53.008] [Debug_Mode]   -> Clip: idle
+[18:00:53.008] [Debug_Mode]   -> Clip: walk
+[18:00:53.008] [Debug_Mode]   -> Clip: walk2
+[18:00:53.008] [Debug_Mode]   -> Clip: swim
+[18:00:53.008] [Debug_Mode]   -> Clip: drowning
+[18:00:53.008] [Debug_Mode]   -> Clip: attack_water
+[18:00:53.008] [Debug_Mode]   -> Clip: water
+[18:00:53.008] [Debug_Mode] 
+[ZombieType: ConeZombieDuck] Prefab: ConeZombieDuck
+[18:00:53.008] [Debug_Mode]   -> Clip: attack
+[18:00:53.008] [Debug_Mode]   -> Clip: die
+[18:00:53.008] [Debug_Mode]   -> Clip: idle
+[18:00:53.008] [Debug_Mode]   -> Clip: walk
+[18:00:53.008] [Debug_Mode]   -> Clip: walk2
+[18:00:53.008] [Debug_Mode]   -> Clip: swim
+[18:00:53.008] [Debug_Mode]   -> Clip: drowning
+[18:00:53.008] [Debug_Mode]   -> Clip: attack_water
+[18:00:53.009] [Debug_Mode]   -> Clip: water
+[18:00:53.009] [Debug_Mode] 
+[ZombieType: BucketZombieDuck] Prefab: BucketZombieDuck
+[18:00:53.009] [Debug_Mode]   -> Clip: attack
+[18:00:53.009] [Debug_Mode]   -> Clip: die
+[18:00:53.009] [Debug_Mode]   -> Clip: idle
+[18:00:53.009] [Debug_Mode]   -> Clip: walk
+[18:00:53.009] [Debug_Mode]   -> Clip: walk2
+[18:00:53.009] [Debug_Mode]   -> Clip: swim
+[18:00:53.009] [Debug_Mode]   -> Clip: drowning
+[18:00:53.009] [Debug_Mode]   -> Clip: attack_water
+[18:00:53.009] [Debug_Mode]   -> Clip: water
+[18:00:53.009] [Debug_Mode] 
+[ZombieType: SubmarineZombie] Prefab: SubmarineZombie
+[18:00:53.009] [Debug_Mode]   -> Clip: idle
+[18:00:53.009] [Debug_Mode]   -> Clip: walk
+[18:00:53.009] [Debug_Mode] 
+[ZombieType: ElitePaperZombie] Prefab: ElitePaperZombie
+[18:00:53.009] [Debug_Mode]   -> Clip: attack
+[18:00:53.009] [Debug_Mode]   -> Clip: die
+[18:00:53.009] [Debug_Mode]   -> Clip: idle
+[18:00:53.009] [Debug_Mode]   -> Clip: walk
+[18:00:53.009] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.009] [Debug_Mode]   -> Clip: walk2
+[18:00:53.009] [Debug_Mode]   -> Clip: attack2
+[18:00:53.010] [Debug_Mode] 
+[ZombieType: DriverZombie] Prefab: DriverZombie
+[18:00:53.010] [Debug_Mode]   -> Clip: idle
+[18:00:53.010] [Debug_Mode]   -> Clip: die
+[18:00:53.010] [Debug_Mode]   -> Clip: shake
+[18:00:53.010] [Debug_Mode] 
+[ZombieType: SnorkleZombie] Prefab: SnorkleZombie
+[18:00:53.010] [Debug_Mode]   -> Clip: idle
+[18:00:53.012] [Debug_Mode]   -> Clip: swim
+[18:00:53.012] [Debug_Mode]   -> Clip: uptoeat
+[18:00:53.012] [Debug_Mode]   -> Clip: eat
+[18:00:53.012] [Debug_Mode]   -> Clip: die
+[18:00:53.013] [Debug_Mode]   -> Clip: backtoswim
+[18:00:53.013] [Debug_Mode]   -> Clip: water
+[18:00:53.013] [Debug_Mode] 
+[ZombieType: SuperDriver] Prefab: SuperDriver
+[18:00:53.013] [Debug_Mode]   -> Clip: idle
+[18:00:53.013] [Debug_Mode]   -> Clip: die
+[18:00:53.013] [Debug_Mode]   -> Clip: shake
+[18:00:53.013] [Debug_Mode] 
+[ZombieType: Dolphinrider] Prefab: Dolphinrider
+[18:00:53.013] [Debug_Mode]   -> Clip: idle
+[18:00:53.013] [Debug_Mode]   -> Clip: ride
+[18:00:53.013] [Debug_Mode]   -> Clip: dolphinjump
+[18:00:53.013] [Debug_Mode]   -> Clip: eat
+[18:00:53.013] [Debug_Mode]   -> Clip: swim
+[18:00:53.013] [Debug_Mode]   -> Clip: die
+[18:00:53.013] [Debug_Mode]   -> Clip: water
+[18:00:53.013] [Debug_Mode] 
+[ZombieType: DrownZombie] Prefab: DrownZombie
+[18:00:53.013] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.013] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.013] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.013] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.013] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.013] [Debug_Mode]   -> Clip: throw
+[18:00:53.013] [Debug_Mode] 
+[ZombieType: DollDiamond] Prefab: DollDiamond
+[18:00:53.013] [Debug_Mode]   -> Clip: attack
+[18:00:53.013] [Debug_Mode]   -> Clip: die
+[18:00:53.013] [Debug_Mode]   -> Clip: idle
+[18:00:53.014] [Debug_Mode]   -> Clip: walk
+[18:00:53.014] [Debug_Mode]   -> Clip: walk2
+[18:00:53.014] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.014] [Debug_Mode] 
+[ZombieType: DollGold] Prefab: DollGold
+[18:00:53.014] [Debug_Mode]   -> Clip: attack
+[18:00:53.014] [Debug_Mode]   -> Clip: die
+[18:00:53.014] [Debug_Mode]   -> Clip: idle
+[18:00:53.014] [Debug_Mode]   -> Clip: walk
+[18:00:53.014] [Debug_Mode]   -> Clip: walk2
+[18:00:53.014] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.014] [Debug_Mode] 
+[ZombieType: DollSilver] Prefab: DollSilver
+[18:00:53.014] [Debug_Mode]   -> Clip: attack
+[18:00:53.014] [Debug_Mode]   -> Clip: die
+[18:00:53.014] [Debug_Mode]   -> Clip: idle
+[18:00:53.014] [Debug_Mode]   -> Clip: walk
+[18:00:53.014] [Debug_Mode]   -> Clip: walk2
+[18:00:53.014] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.014] [Debug_Mode] 
+[ZombieType: JackboxZombie] Prefab: JackboxZombie
+[18:00:53.014] [Debug_Mode]   -> Clip: idle
+[18:00:53.014] [Debug_Mode]   -> Clip: walk
+[18:00:53.014] [Debug_Mode]   -> Clip: eat
+[18:00:53.014] [Debug_Mode]   -> Clip: pop
+[18:00:53.015] [Debug_Mode]   -> Clip: death
+[18:00:53.015] [Debug_Mode] 
+[ZombieType: BalloonZombie] Prefab: BalloonZombie
+[18:00:53.015] [Debug_Mode]   -> Clip: idle
+[18:00:53.015] [Debug_Mode]   -> Clip: fly
+[18:00:53.015] [Debug_Mode]   -> Clip: fall
+[18:00:53.015] [Debug_Mode]   -> Clip: walk
+[18:00:53.015] [Debug_Mode]   -> Clip: attack
+[18:00:53.015] [Debug_Mode]   -> Clip: die
+[18:00:53.015] [Debug_Mode]   -> Clip: propeller
+[18:00:53.015] [Debug_Mode] 
+[ZombieType: KirovZombie] Prefab: KirovZombie
+[18:00:53.015] [Debug_Mode]   -> Clip: idle
+[18:00:53.015] [Debug_Mode]   -> Clip: crash
+[18:00:53.015] [Debug_Mode]   -> Clip: throw
+[18:00:53.015] [Debug_Mode] 
+[ZombieType: SnowDolphinrider] Prefab: SnowDolphinrider
+[18:00:53.015] [Debug_Mode]   -> Clip: idle
+[18:00:53.015] [Debug_Mode]   -> Clip: ride
+[18:00:53.015] [Debug_Mode]   -> Clip: dolphinjump
+[18:00:53.015] [Debug_Mode]   -> Clip: eat
+[18:00:53.015] [Debug_Mode]   -> Clip: swim
+[18:00:53.015] [Debug_Mode]   -> Clip: die
+[18:00:53.015] [Debug_Mode]   -> Clip: water
+[18:00:53.015] [Debug_Mode] 
+[ZombieType: MinerZombie] Prefab: MinerZombie
+[18:00:53.016] [Debug_Mode]   -> Clip: idle
+[18:00:53.016] [Debug_Mode]   -> Clip: walk
+[18:00:53.016] [Debug_Mode]   -> Clip: eat
+[18:00:53.016] [Debug_Mode]   -> Clip: death
+[18:00:53.016] [Debug_Mode]   -> Clip: dig
+[18:00:53.016] [Debug_Mode]   -> Clip: landing
+[18:00:53.016] [Debug_Mode]   -> Clip: dizzy
+[18:00:53.016] [Debug_Mode]   -> Clip: landing 1
+[18:00:53.016] [Debug_Mode] 
+[ZombieType: IronBalloonZombie] Prefab: IronBalloonZombie
+[18:00:53.016] [Debug_Mode]   -> Clip: idle
+[18:00:53.016] [Debug_Mode]   -> Clip: fly
+[18:00:53.016] [Debug_Mode]   -> Clip: fall
+[18:00:53.016] [Debug_Mode]   -> Clip: walk
+[18:00:53.016] [Debug_Mode]   -> Clip: attack
+[18:00:53.016] [Debug_Mode]   -> Clip: die
+[18:00:53.016] [Debug_Mode]   -> Clip: petals
+[18:00:53.016] [Debug_Mode] 
+[ZombieType: SuperJackboxZombie] Prefab: SuperJackboxZombie
+[18:00:53.016] [Debug_Mode]   -> Clip: idle
+[18:00:53.016] [Debug_Mode]   -> Clip: walk
+[18:00:53.016] [Debug_Mode]   -> Clip: eat
+[18:00:53.016] [Debug_Mode]   -> Clip: pop
+[18:00:53.016] [Debug_Mode]   -> Clip: death
+[18:00:53.016] [Debug_Mode] 
+[ZombieType: CatapultZombie] Prefab: CatapultZombie
+[18:00:53.017] [Debug_Mode]   -> Clip: idle
+[18:00:53.017] [Debug_Mode]   -> Clip: crank
+[18:00:53.017] [Debug_Mode]   -> Clip: walk2
+[18:00:53.017] [Debug_Mode]   -> Clip: walk
+[18:00:53.017] [Debug_Mode]   -> Clip: shoot
+[18:00:53.017] [Debug_Mode]   -> Clip: rest
+[18:00:53.017] [Debug_Mode]   -> Clip: shake
+[18:00:53.017] [Debug_Mode] 
+[ZombieType: PogoZombie] Prefab: PogoZombie
+[18:00:53.017] [Debug_Mode]   -> Clip: idle
+[18:00:53.017] [Debug_Mode]   -> Clip: walk
+[18:00:53.017] [Debug_Mode]   -> Clip: attack
+[18:00:53.017] [Debug_Mode]   -> Clip: die
+[18:00:53.017] [Debug_Mode]   -> Clip: jump
+[18:00:53.017] [Debug_Mode] 
+[ZombieType: LadderZombie] Prefab: LadderZombie
+[18:00:53.017] [Debug_Mode]   -> Clip: attack
+[18:00:53.017] [Debug_Mode]   -> Clip: attack2
+[18:00:53.017] [Debug_Mode]   -> Clip: die
+[18:00:53.017] [Debug_Mode]   -> Clip: idle
+[18:00:53.018] [Debug_Mode]   -> Clip: walk
+[18:00:53.018] [Debug_Mode]   -> Clip: walk2
+[18:00:53.018] [Debug_Mode]   -> Clip: set
+[18:00:53.018] [Debug_Mode] 
+[ZombieType: SuperPogoZombie] Prefab: SuperPogoZombie
+[18:00:53.018] [Debug_Mode]   -> Clip: idle
+[18:00:53.018] [Debug_Mode]   -> Clip: walk
+[18:00:53.018] [Debug_Mode]   -> Clip: attack
+[18:00:53.018] [Debug_Mode]   -> Clip: die
+[18:00:53.018] [Debug_Mode]   -> Clip: jump
+[18:00:53.018] [Debug_Mode]   -> Clip: jump2
+[18:00:53.018] [Debug_Mode] 
+[ZombieType: Gargantuar] Prefab: Gargantuar
+[18:00:53.018] [Debug_Mode]   -> Clip: walk
+[18:00:53.018] [Debug_Mode]   -> Clip: idle
+[18:00:53.018] [Debug_Mode]   -> Clip: throw
+[18:00:53.018] [Debug_Mode]   -> Clip: die
+[18:00:53.018] [Debug_Mode]   -> Clip: attack
+[18:00:53.018] [Debug_Mode] 
+[ZombieType: RedGargantuar] Prefab: RedGargantuar
+[18:00:53.018] [Debug_Mode]   -> Clip: walk
+[18:00:53.018] [Debug_Mode]   -> Clip: idle
+[18:00:53.018] [Debug_Mode]   -> Clip: throw
+[18:00:53.018] [Debug_Mode]   -> Clip: die
+[18:00:53.018] [Debug_Mode]   -> Clip: attack
+[18:00:53.018] [Debug_Mode] 
+[ZombieType: ImpZombie] Prefab: ImpZombie
+[18:00:53.018] [Debug_Mode]   -> Clip: idle
+[18:00:53.018] [Debug_Mode]   -> Clip: walk
+[18:00:53.018] [Debug_Mode]   -> Clip: attack
+[18:00:53.019] [Debug_Mode]   -> Clip: die
+[18:00:53.019] [Debug_Mode]   -> Clip: land
+[18:00:53.019] [Debug_Mode]   -> Clip: thrown
+[18:00:53.019] [Debug_Mode] 
+[ZombieType: IronGargantuar] Prefab: IronGargantuar
+[18:00:53.019] [Debug_Mode]   -> Clip: idle
+[18:00:53.019] [Debug_Mode]   -> Clip: walk
+[18:00:53.019] [Debug_Mode]   -> Clip: die
+[18:00:53.019] [Debug_Mode] 
+[ZombieType: IronRedGargantuar] Prefab: IronRedGargantuar
+[18:00:53.019] [Debug_Mode]   -> Clip: idle
+[18:00:53.019] [Debug_Mode]   -> Clip: walk
+[18:00:53.019] [Debug_Mode]   -> Clip: die
+[18:00:53.019] [Debug_Mode] 
+[ZombieType: MachineNutZombie] Prefab: MachineNutZombie
+[18:00:53.019] [Debug_Mode]   -> Clip: idle
+[18:00:53.019] [Debug_Mode]   -> Clip: walk
+[18:00:53.019] [Debug_Mode] 
+[ZombieType: SilverZombie] Prefab: SilverZombie
+[18:00:53.019] [Debug_Mode]   -> Clip: idle
+[18:00:53.019] [Debug_Mode]   -> Clip: walk
+[18:00:53.020] [Debug_Mode] 
+[ZombieType: GoldZombie] Prefab: GoldZombie
+[18:00:53.020] [Debug_Mode]   -> Clip: idle
+[18:00:53.020] [Debug_Mode]   -> Clip: walk
+[18:00:53.020] [Debug_Mode] 
+[ZombieType: SuperGargantuar] Prefab: SuperGargantuar
+[18:00:53.020] [Debug_Mode]   -> Clip: walk
+[18:00:53.020] [Debug_Mode]   -> Clip: idle
+[18:00:53.020] [Debug_Mode]   -> Clip: throw
+[18:00:53.020] [Debug_Mode]   -> Clip: die
+[18:00:53.020] [Debug_Mode]   -> Clip: attack
+[18:00:53.020] [Debug_Mode] 
+[ZombieType: ZombieBoss] Prefab: ZombieBoss
+[18:00:53.020] [Debug_Mode]   -> Clip: enter
+[18:00:53.020] [Debug_Mode]   -> Clip: idle
+[18:00:53.020] [Debug_Mode]   -> Clip: spawn_5
+[18:00:53.020] [Debug_Mode]   -> Clip: spawn_4
+[18:00:53.020] [Debug_Mode]   -> Clip: spawn_3
+[18:00:53.020] [Debug_Mode]   -> Clip: spawn_2
+[18:00:53.020] [Debug_Mode]   -> Clip: spawn_1
+[18:00:53.020] [Debug_Mode]   -> Clip: stomp_1
+[18:00:53.020] [Debug_Mode]   -> Clip: stomp_2
+[18:00:53.020] [Debug_Mode]   -> Clip: stomp_3
+[18:00:53.020] [Debug_Mode]   -> Clip: stomp_4
+[18:00:53.020] [Debug_Mode]   -> Clip: head_enter
+[18:00:53.020] [Debug_Mode]   -> Clip: head_idle
+[18:00:53.021] [Debug_Mode]   -> Clip: head_attack_1
+[18:00:53.021] [Debug_Mode]   -> Clip: head_attack_2
+[18:00:53.021] [Debug_Mode]   -> Clip: head_attack_3
+[18:00:53.021] [Debug_Mode]   -> Clip: head_attack_4
+[18:00:53.021] [Debug_Mode]   -> Clip: head_attack_5
+[18:00:53.021] [Debug_Mode]   -> Clip: head_leave
+[18:00:53.021] [Debug_Mode]   -> Clip: death
+[18:00:53.021] [Debug_Mode]   -> Clip: RV_leg
+[18:00:53.021] [Debug_Mode]   -> Clip: bungee_1_enter
+[18:00:53.021] [Debug_Mode]   -> Clip: bungee_1_leave
+[18:00:53.021] [Debug_Mode] 
+[ZombieType: BungiZombie] Prefab: BungiZombie
+[18:00:53.021] [Debug_Mode]   -> Clip: attack
+[18:00:53.021] [Debug_Mode]   -> Clip: idle
+[18:00:53.021] [Debug_Mode]   -> Clip: setzombie
+[18:00:53.021] [Debug_Mode] 
+[ZombieType: ZombieBoss2] Prefab: ZombieBoss2
+[18:00:53.021] [Debug_Mode]   -> Clip: enter
+[18:00:53.021] [Debug_Mode]   -> Clip: idle
+[18:00:53.021] [Debug_Mode]   -> Clip: spawn_5
+[18:00:53.021] [Debug_Mode]   -> Clip: spawn_4
+[18:00:53.021] [Debug_Mode]   -> Clip: spawn_3
+[18:00:53.021] [Debug_Mode]   -> Clip: spawn_2
+[18:00:53.021] [Debug_Mode]   -> Clip: spawn_1
+[18:00:53.021] [Debug_Mode]   -> Clip: stomp_1
+[18:00:53.021] [Debug_Mode]   -> Clip: stomp_2
+[18:00:53.021] [Debug_Mode]   -> Clip: stomp_3
+[18:00:53.021] [Debug_Mode]   -> Clip: stomp_4
+[18:00:53.022] [Debug_Mode]   -> Clip: head_enter
+[18:00:53.022] [Debug_Mode]   -> Clip: head_idle
+[18:00:53.022] [Debug_Mode]   -> Clip: head_attack_1
+[18:00:53.022] [Debug_Mode]   -> Clip: head_attack_2
+[18:00:53.022] [Debug_Mode]   -> Clip: head_attack_3
+[18:00:53.022] [Debug_Mode]   -> Clip: head_attack_4
+[18:00:53.022] [Debug_Mode]   -> Clip: head_attack_5
+[18:00:53.022] [Debug_Mode]   -> Clip: head_leave
+[18:00:53.022] [Debug_Mode]   -> Clip: death
+[18:00:53.022] [Debug_Mode]   -> Clip: RV_leg
+[18:00:53.022] [Debug_Mode]   -> Clip: bungee_1_enter
+[18:00:53.022] [Debug_Mode]   -> Clip: bungee_1_leave
+[18:00:53.022] [Debug_Mode] 
+[ZombieType: SnowZombie] Prefab: SnowZombie
+[18:00:53.022] [Debug_Mode]   -> Clip: idle
+[18:00:53.022] [Debug_Mode]   -> Clip: walk
+[18:00:53.022] [Debug_Mode]   -> Clip: eat
+[18:00:53.022] [Debug_Mode]   -> Clip: death
+[18:00:53.022] [Debug_Mode] 
+[ZombieType: NewYearZombie] Prefab: NewYearZombie
+[18:00:53.022] [Debug_Mode]   -> Clip: idle
+[18:00:53.022] [Debug_Mode]   -> Clip: walk
+[18:00:53.022] [Debug_Mode]   -> Clip: eat
+[18:00:53.022] [Debug_Mode]   -> Clip: death
+[18:00:53.022] [Debug_Mode] 
+[ZombieType: SnowGunZombie] Prefab: SnowGunZombie
+[18:00:53.022] [Debug_Mode]   -> Clip: idle
+[18:00:53.022] [Debug_Mode]   -> Clip: run
+[18:00:53.022] [Debug_Mode]   -> Clip: die
+[18:00:53.023] [Debug_Mode]   -> Clip: shoot
+[18:00:53.023] [Debug_Mode] 
+[ZombieType: SnowShieldZombie] Prefab: SnowShieldZombie
+[18:00:53.023] [Debug_Mode]   -> Clip: walk
+[18:00:53.023] [Debug_Mode]   -> Clip: die
+[18:00:53.023] [Debug_Mode]   -> Clip: attack
+[18:00:53.023] [Debug_Mode]   -> Clip: idle
+[18:00:53.023] [Debug_Mode]   -> Clip: walk2
+[18:00:53.023] [Debug_Mode]   -> Clip: attack2
+[18:00:53.023] [Debug_Mode]   -> Clip: rebound
+[18:00:53.023] [Debug_Mode] 
+[ZombieType: SnowDrownZombie] Prefab: SnowDrownZombie
+[18:00:53.023] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.023] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.023] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.023] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.023] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.023] [Debug_Mode]   -> Clip: throw
+[18:00:53.023] [Debug_Mode] 
+[ZombieType: ProtalZombie] Prefab: ProtalZombie
+[18:00:53.023] [Debug_Mode]   -> Clip: die
+[18:00:53.023] [Debug_Mode]   -> Clip: idle
+[18:00:53.023] [Debug_Mode]   -> Clip: attack
+[18:00:53.023] [Debug_Mode]   -> Clip: walk2
+[18:00:53.023] [Debug_Mode]   -> Clip: losewalk2
+[18:00:53.024] [Debug_Mode]   -> Clip: shoot
+[18:00:53.024] [Debug_Mode] 
+[ZombieType: LevatationZombie] Prefab: LevatationZombie
+[18:00:53.024] [Debug_Mode]   -> Clip: idle
+[18:00:53.024] [Debug_Mode]   -> Clip: walk
+[18:00:53.024] [Debug_Mode]   -> Clip: die
+[18:00:53.024] [Debug_Mode] 
+[ZombieType: TrainingDummy] Prefab: TrainingDummy
+[18:00:53.024] [Debug_Mode]   -> Clip: die
+[18:00:53.024] [Debug_Mode]   -> Clip: idle
+[18:00:53.024] [Debug_Mode]   -> Clip: walk
+[18:00:53.024] [Debug_Mode] 
+[ZombieType: SnowConeZombie] Prefab: SnowConeZombie
+[18:00:53.024] [Debug_Mode]   -> Clip: attack
+[18:00:53.024] [Debug_Mode]   -> Clip: die
+[18:00:53.024] [Debug_Mode]   -> Clip: idle
+[18:00:53.024] [Debug_Mode]   -> Clip: walk
+[18:00:53.024] [Debug_Mode]   -> Clip: walk2
+[18:00:53.024] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.024] [Debug_Mode] 
+[ZombieType: SnowMonsterZombie] Prefab: SnowMonsterZombie
+[18:00:53.024] [Debug_Mode]   -> Clip: idle
+[18:00:53.024] [Debug_Mode]   -> Clip: walk
+[18:00:53.024] [Debug_Mode]   -> Clip: die
+[18:00:53.024] [Debug_Mode]   -> Clip: jump
+[18:00:53.024] [Debug_Mode] 
+[ZombieType: SuperSnowMonsterZombie] Prefab: SuperSnowMonsterZombie
+[18:00:53.025] [Debug_Mode]   -> Clip: idle
+[18:00:53.025] [Debug_Mode]   -> Clip: walk
+[18:00:53.025] [Debug_Mode]   -> Clip: die
+[18:00:53.025] [Debug_Mode]   -> Clip: jump
+[18:00:53.025] [Debug_Mode] 
+[ZombieType: PickaxeZombie] Prefab: PickaxeZombie
+[18:00:53.025] [Debug_Mode]   -> Clip: idle
+[18:00:53.025] [Debug_Mode]   -> Clip: walk
+[18:00:53.025] [Debug_Mode]   -> Clip: attack
+[18:00:53.025] [Debug_Mode]   -> Clip: die
+[18:00:53.025] [Debug_Mode] 
+[ZombieType: DolphinPaper] Prefab: DolphinPaper
+[18:00:53.025] [Debug_Mode]   -> Clip: attack
+[18:00:53.025] [Debug_Mode]   -> Clip: die
+[18:00:53.028] [Debug_Mode]   -> Clip: idle
+[18:00:53.028] [Debug_Mode]   -> Clip: walk
+[18:00:53.029] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.029] [Debug_Mode]   -> Clip: walk2
+[18:00:53.029] [Debug_Mode]   -> Clip: attack2
+[18:00:53.029] [Debug_Mode] 
+[ZombieType: ProjectileZombie] Prefab: ProjectileZombie
+[18:00:53.029] [Debug_Mode] 
+[ZombieType: FootballDolphin] Prefab: FootballDolphin
+[18:00:53.029] [Debug_Mode]   -> Clip: eat
+[18:00:53.029] [Debug_Mode]   -> Clip: die
+[18:00:53.029] [Debug_Mode]   -> Clip: idle
+[18:00:53.029] [Debug_Mode]   -> Clip: walk
+[18:00:53.029] [Debug_Mode] 
+[ZombieType: MiniSnowMonster] Prefab: MiniSnowMonster
+[18:00:53.029] [Debug_Mode]   -> Clip: idle
+[18:00:53.029] [Debug_Mode]   -> Clip: die
+[18:00:53.029] [Debug_Mode]   -> Clip: walk
+[18:00:53.029] [Debug_Mode] 
+[ZombieType: GoldBungiZombie] Prefab: GoldBungiZombie
+[18:00:53.029] [Debug_Mode]   -> Clip: attack
+[18:00:53.029] [Debug_Mode]   -> Clip: idle
+[18:00:53.029] [Debug_Mode]   -> Clip: setzombie
+[18:00:53.029] [Debug_Mode] 
+[ZombieType: SandJackson] Prefab: SandJackson
+[18:00:53.029] [Debug_Mode]   -> Clip: moonwalk
+[18:00:53.029] [Debug_Mode]   -> Clip: point
+[18:00:53.030] [Debug_Mode]   -> Clip: walk
+[18:00:53.030] [Debug_Mode]   -> Clip: armraise
+[18:00:53.030] [Debug_Mode]   -> Clip: death
+[18:00:53.030] [Debug_Mode]   -> Clip: eat
+[18:00:53.030] [Debug_Mode]   -> Clip: idle
+[18:00:53.030] [Debug_Mode] 
+[ZombieType: StoneDancer] Prefab: StoneDancer
+[18:00:53.030] [Debug_Mode]   -> Clip: idle
+[18:00:53.030] [Debug_Mode]   -> Clip: walk
+[18:00:53.030] [Debug_Mode] 
+[ZombieType: FlagFootball] Prefab: FlagFootball
+[18:00:53.030] [Debug_Mode]   -> Clip: eat
+[18:00:53.030] [Debug_Mode]   -> Clip: die
+[18:00:53.030] [Debug_Mode]   -> Clip: idle
+[18:00:53.030] [Debug_Mode]   -> Clip: walk
+[18:00:53.030] [Debug_Mode]   -> Clip: roll
+[18:00:53.030] [Debug_Mode] 
+[ZombieType: MiniSandMonster] Prefab: MiniSandMonster
+[18:00:53.030] [Debug_Mode]   -> Clip: idle
+[18:00:53.030] [Debug_Mode]   -> Clip: die
+[18:00:53.030] [Debug_Mode]   -> Clip: walk
+[18:00:53.030] [Debug_Mode] 
+[ZombieType: ChickenImp] Prefab: ChickenImp
+[18:00:53.030] [Debug_Mode]   -> Clip: attack
+[18:00:53.031] [Debug_Mode]   -> Clip: die
+[18:00:53.031] [Debug_Mode]   -> Clip: idle
+[18:00:53.031] [Debug_Mode]   -> Clip: walk
+[18:00:53.031] [Debug_Mode] 
+[ZombieType: HorseZombie] Prefab: HorseZombie
+[18:00:53.031] [Debug_Mode]   -> Clip: die
+[18:00:53.031] [Debug_Mode]   -> Clip: idle
+[18:00:53.031] [Debug_Mode]   -> Clip: walk
+[18:00:53.031] [Debug_Mode]   -> Clip: idle_1
+[18:00:53.031] [Debug_Mode]   -> Clip: hit
+[18:00:53.031] [Debug_Mode]   -> Clip: waiting
+[18:00:53.031] [Debug_Mode] 
+[ZombieType: SuperHorse] Prefab: SuperHorse
+[18:00:53.031] [Debug_Mode]   -> Clip: idle
+[18:00:53.031] [Debug_Mode]   -> Clip: walk
+[18:00:53.031] [Debug_Mode]   -> Clip: die
+[18:00:53.031] [Debug_Mode]   -> Clip: hit
+[18:00:53.031] [Debug_Mode]   -> Clip: shoot
+[18:00:53.031] [Debug_Mode]   -> Clip: flagup
+[18:00:53.031] [Debug_Mode] 
+[ZombieType: BoatImp] Prefab: BoatImp
+[18:00:53.031] [Debug_Mode]   -> Clip: idle
+[18:00:53.031] [Debug_Mode]   -> Clip: walk
+[18:00:53.031] [Debug_Mode]   -> Clip: pop
+[18:00:53.031] [Debug_Mode]   -> Clip: water
+[18:00:53.032] [Debug_Mode] 
+[ZombieType: SuperLadderZombie] Prefab: SuperLadderZombie
+[18:00:53.032] [Debug_Mode]   -> Clip: attack
+[18:00:53.032] [Debug_Mode]   -> Clip: attack2
+[18:00:53.032] [Debug_Mode]   -> Clip: die
+[18:00:53.032] [Debug_Mode]   -> Clip: idle
+[18:00:53.032] [Debug_Mode]   -> Clip: walk
+[18:00:53.032] [Debug_Mode]   -> Clip: walk2
+[18:00:53.032] [Debug_Mode]   -> Clip: set
+[18:00:53.032] [Debug_Mode] 
+[ZombieType: EndoFlameZombie] Prefab: EndoFlameZombie
+[18:00:53.032] [Debug_Mode]   -> Clip: idle
+[18:00:53.032] [Debug_Mode]   -> Clip: enter
+[18:00:53.032] [Debug_Mode] 
+[ZombieType: HypnoJalapenoZombie] Prefab: HypnoJalapenoZombie
+[18:00:53.032] [Debug_Mode]   -> Clip: attack
+[18:00:53.032] [Debug_Mode]   -> Clip: die
+[18:00:53.032] [Debug_Mode]   -> Clip: idle
+[18:00:53.032] [Debug_Mode]   -> Clip: walk
+[18:00:53.032] [Debug_Mode]   -> Clip: walk2
+[18:00:53.032] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.032] [Debug_Mode] 
+[ZombieType: HypnoJalapenoPickaxeZombie] Prefab: HypnoJalapenoPickaxeZombie
+[18:00:53.032] [Debug_Mode]   -> Clip: idle
+[18:00:53.032] [Debug_Mode]   -> Clip: walk
+[18:00:53.033] [Debug_Mode]   -> Clip: attack
+[18:00:53.033] [Debug_Mode]   -> Clip: die
+[18:00:53.033] [Debug_Mode]   -> Clip: rise_hypno
+[18:00:53.033] [Debug_Mode]   -> Clip: dig
+[18:00:53.033] [Debug_Mode] 
+[ZombieType: DrownGargantuar] Prefab: DrownGargantuar
+[18:00:53.033] [Debug_Mode]   -> Clip: walk
+[18:00:53.033] [Debug_Mode]   -> Clip: idle
+[18:00:53.033] [Debug_Mode]   -> Clip: throw
+[18:00:53.033] [Debug_Mode]   -> Clip: die
+[18:00:53.033] [Debug_Mode]   -> Clip: attack
+[18:00:53.033] [Debug_Mode]   -> Clip: water
+[18:00:53.033] [Debug_Mode] 
+[ZombieType: SuperPolevaulter] Prefab: SuperPolevaulter
+[18:00:53.033] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.034] [Debug_Mode]   -> Clip: jump
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.034] [Debug_Mode] 
+[ZombieType: WhiteFootball] Prefab: WhiteFootball
+[18:00:53.034] [Debug_Mode]   -> Clip: eat
+[18:00:53.034] [Debug_Mode]   -> Clip: die
+[18:00:53.034] [Debug_Mode]   -> Clip: idle
+[18:00:53.034] [Debug_Mode]   -> Clip: walk
+[18:00:53.034] [Debug_Mode] 
+[ZombieType: YellowFootball] Prefab: YellowFootball
+[18:00:53.034] [Debug_Mode]   -> Clip: eat
+[18:00:53.034] [Debug_Mode]   -> Clip: die
+[18:00:53.034] [Debug_Mode]   -> Clip: idle
+[18:00:53.034] [Debug_Mode]   -> Clip: walk
+[18:00:53.034] [Debug_Mode] 
+[ZombieType: PortalPolevaulter] Prefab: PortalPolevaulter
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_jump
+[18:00:53.034] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.035] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.035] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.035] [Debug_Mode] 
+[ZombieType: CoachPaper] Prefab: CoachPaper
+[18:00:53.035] [Debug_Mode]   -> Clip: attack
+[18:00:53.035] [Debug_Mode]   -> Clip: die
+[18:00:53.035] [Debug_Mode]   -> Clip: idle
+[18:00:53.035] [Debug_Mode]   -> Clip: walk
+[18:00:53.035] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.035] [Debug_Mode]   -> Clip: walk2
+[18:00:53.035] [Debug_Mode]   -> Clip: attack2
+[18:00:53.035] [Debug_Mode] 
+[ZombieType: BucketPaper] Prefab: BucketPaper
+[18:00:53.035] [Debug_Mode]   -> Clip: attack
+[18:00:53.035] [Debug_Mode]   -> Clip: die
+[18:00:53.035] [Debug_Mode]   -> Clip: idle
+[18:00:53.035] [Debug_Mode]   -> Clip: walk
+[18:00:53.035] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.035] [Debug_Mode]   -> Clip: walk2
+[18:00:53.035] [Debug_Mode]   -> Clip: attack2
+[18:00:53.035] [Debug_Mode] 
+[ZombieType: PenguinZombie] Prefab: PenguinZombie
+[18:00:53.036] [Debug_Mode]   -> Clip: idle
+[18:00:53.036] [Debug_Mode]   -> Clip: walk
+[18:00:53.036] [Debug_Mode]   -> Clip: skating
+[18:00:53.036] [Debug_Mode]   -> Clip: jump
+[18:00:53.036] [Debug_Mode]   -> Clip: die
+[18:00:53.036] [Debug_Mode] 
+[ZombieType: SnowNormalZombie] Prefab: SnowNormalZombie
+[18:00:53.036] [Debug_Mode]   -> Clip: attack
+[18:00:53.036] [Debug_Mode]   -> Clip: die
+[18:00:53.036] [Debug_Mode]   -> Clip: idle
+[18:00:53.036] [Debug_Mode]   -> Clip: walk
+[18:00:53.036] [Debug_Mode]   -> Clip: walk2
+[18:00:53.036] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.036] [Debug_Mode] 
+[ZombieType: SnowBucketZombie] Prefab: SnowBucketZombie
+[18:00:53.036] [Debug_Mode]   -> Clip: attack
+[18:00:53.036] [Debug_Mode]   -> Clip: die
+[18:00:53.036] [Debug_Mode]   -> Clip: idle
+[18:00:53.036] [Debug_Mode]   -> Clip: walk
+[18:00:53.036] [Debug_Mode]   -> Clip: walk2
+[18:00:53.036] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.036] [Debug_Mode] 
+[ZombieType: SuperPenguinZombie] Prefab: SuperPenguinZombie
+[18:00:53.036] [Debug_Mode]   -> Clip: idle
+[18:00:53.036] [Debug_Mode]   -> Clip: walk
+[18:00:53.036] [Debug_Mode]   -> Clip: skating
+[18:00:53.036] [Debug_Mode]   -> Clip: jump
+[18:00:53.037] [Debug_Mode]   -> Clip: die
+[18:00:53.037] [Debug_Mode] 
+[ZombieType: IronConeZombie] Prefab: IronConeZombie
+[18:00:53.037] [Debug_Mode]   -> Clip: attack
+[18:00:53.037] [Debug_Mode]   -> Clip: die
+[18:00:53.037] [Debug_Mode]   -> Clip: idle
+[18:00:53.037] [Debug_Mode]   -> Clip: walk
+[18:00:53.037] [Debug_Mode]   -> Clip: walk2
+[18:00:53.037] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.037] [Debug_Mode] 
+[ZombieType: ElephantZombie] Prefab: ElephantZombie
+[18:00:53.037] [Debug_Mode]   -> Clip: idle
+[18:00:53.037] [Debug_Mode]   -> Clip: walk
+[18:00:53.037] [Debug_Mode]   -> Clip: attack
+[18:00:53.037] [Debug_Mode]   -> Clip: die
+[18:00:53.037] [Debug_Mode] 
+[ZombieType: ZombieLoonNut] Prefab: ZombieLoonNut
+[18:00:53.037] [Debug_Mode]   -> Clip: idle
+[18:00:53.037] [Debug_Mode]   -> Clip: walk
+[18:00:53.037] [Debug_Mode] 
+[ZombieType: RedZombieLoonNut] Prefab: RedZombieLoonNut
+[18:00:53.037] [Debug_Mode]   -> Clip: idle
+[18:00:53.037] [Debug_Mode]   -> Clip: walk
+[18:00:53.037] [Debug_Mode] 
+[ZombieType: PolFootballZombie] Prefab: PolFootballZombie
+[18:00:53.037] [Debug_Mode]   -> Clip: eat
+[18:00:53.038] [Debug_Mode]   -> Clip: die
+[18:00:53.038] [Debug_Mode]   -> Clip: idle
+[18:00:53.038] [Debug_Mode]   -> Clip: walk
+[18:00:53.038] [Debug_Mode]   -> Clip: jump
+[18:00:53.038] [Debug_Mode]   -> Clip: walk2
+[18:00:53.038] [Debug_Mode] 
+[ZombieType: LostMachine] Prefab: LostMachine
+[18:00:53.038] [Debug_Mode]   -> Clip: idle
+[18:00:53.038] [Debug_Mode]   -> Clip: walk
+[18:00:53.038] [Debug_Mode]   -> Clip: attack
+[18:00:53.038] [Debug_Mode]   -> Clip: die
+[18:00:53.038] [Debug_Mode] 
+[ZombieType: LostMachineII] Prefab: LostMachineII
+[18:00:53.038] [Debug_Mode]   -> Clip: idle
+[18:00:53.038] [Debug_Mode]   -> Clip: walk
+[18:00:53.038] [Debug_Mode]   -> Clip: attack
+[18:00:53.038] [Debug_Mode]   -> Clip: die
+[18:00:53.038] [Debug_Mode] 
+[ZombieType: LostMachineIII] Prefab: LostMachineIII
+[18:00:53.038] [Debug_Mode]   -> Clip: idle
+[18:00:53.038] [Debug_Mode]   -> Clip: walk
+[18:00:53.038] [Debug_Mode]   -> Clip: attack
+[18:00:53.038] [Debug_Mode]   -> Clip: die
+[18:00:53.038] [Debug_Mode] 
+[ZombieType: LostPenguin] Prefab: LostPenguin
+[18:00:53.038] [Debug_Mode]   -> Clip: idle
+[18:00:53.038] [Debug_Mode]   -> Clip: skating
+[18:00:53.039] [Debug_Mode]   -> Clip: walk
+[18:00:53.039] [Debug_Mode]   -> Clip: attack
+[18:00:53.039] [Debug_Mode] 
+[ZombieType: LostSnowMonster] Prefab: LostSnowMonster
+[18:00:53.039] [Debug_Mode]   -> Clip: idle
+[18:00:53.039] [Debug_Mode]   -> Clip: walk2
+[18:00:53.039] [Debug_Mode]   -> Clip: walk
+[18:00:53.039] [Debug_Mode]   -> Clip: attack
+[18:00:53.039] [Debug_Mode]   -> Clip: tail
+[18:00:53.039] [Debug_Mode]   -> Clip: changeColor
+[18:00:53.039] [Debug_Mode] 
+[ZombieType: SnowCrab] Prefab: SnowCrab
+[18:00:53.039] [Debug_Mode]   -> Clip: idle
+[18:00:53.039] [Debug_Mode]   -> Clip: walk
+[18:00:53.039] [Debug_Mode]   -> Clip: die
+[18:00:53.039] [Debug_Mode] 
+[ZombieType: SnowBirdZombie] Prefab: SnowBirdZombie
+[18:00:53.039] [Debug_Mode]   -> Clip: idle
+[18:00:53.039] [Debug_Mode]   -> Clip: shoot
+[18:00:53.039] [Debug_Mode]   -> Clip: walk
+[18:00:53.039] [Debug_Mode]   -> Clip: die
+[18:00:53.039] [Debug_Mode] 
+[ZombieType: LostMachineIV] Prefab: LostMachineIV
+[18:00:53.039] [Debug_Mode]   -> Clip: idle
+[18:00:53.039] [Debug_Mode]   -> Clip: walk
+[18:00:53.039] [Debug_Mode]   -> Clip: attack
+[18:00:53.040] [Debug_Mode]   -> Clip: die
+[18:00:53.040] [Debug_Mode]   -> Clip: shoot
+[18:00:53.040] [Debug_Mode] 
+[ZombieType: PeaShooterZombie] Prefab: PeaShooterZombie
+[18:00:53.040] [Debug_Mode]   -> Clip: attack
+[18:00:53.040] [Debug_Mode]   -> Clip: die
+[18:00:53.040] [Debug_Mode]   -> Clip: idle
+[18:00:53.040] [Debug_Mode]   -> Clip: walk2
+[18:00:53.040] [Debug_Mode]   -> Clip: shoot
+[18:00:53.040] [Debug_Mode] 
+[ZombieType: CherryShooterZombie] Prefab: CherryShooterZombie
+[18:00:53.040] [Debug_Mode]   -> Clip: attack
+[18:00:53.040] [Debug_Mode]   -> Clip: die
+[18:00:53.040] [Debug_Mode]   -> Clip: idle
+[18:00:53.040] [Debug_Mode]   -> Clip: walk2
+[18:00:53.040] [Debug_Mode]   -> Clip: shoot
+[18:00:53.040] [Debug_Mode] 
+[ZombieType: SuperCherryShooterZombie] Prefab: SuperCherryShooterZombie
+[18:00:53.040] [Debug_Mode]   -> Clip: attack
+[18:00:53.040] [Debug_Mode]   -> Clip: die
+[18:00:53.040] [Debug_Mode]   -> Clip: idle
+[18:00:53.040] [Debug_Mode]   -> Clip: walk2
+[18:00:53.041] [Debug_Mode]   -> Clip: shoot
+[18:00:53.045] [Debug_Mode] 
+[ZombieType: WallNutZombie] Prefab: WallNutZombie
+[18:00:53.046] [Debug_Mode]   -> Clip: attackW
+[18:00:53.046] [Debug_Mode]   -> Clip: die
+[18:00:53.046] [Debug_Mode]   -> Clip: idleW
+[18:00:53.046] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.046] [Debug_Mode] 
+[ZombieType: CherryPaperZombie] Prefab: CherryPaperZombie
+[18:00:53.046] [Debug_Mode]   -> Clip: attack
+[18:00:53.046] [Debug_Mode]   -> Clip: die
+[18:00:53.046] [Debug_Mode]   -> Clip: idle
+[18:00:53.046] [Debug_Mode]   -> Clip: walk
+[18:00:53.046] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.047] [Debug_Mode]   -> Clip: walk2
+[18:00:53.047] [Debug_Mode]   -> Clip: attack2
+[18:00:53.047] [Debug_Mode]   -> Clip: shoot
+[18:00:53.047] [Debug_Mode] 
+[ZombieType: RandomZombie] Prefab: RandomZombie
+[18:00:53.047] [Debug_Mode]   -> Clip: attack
+[18:00:53.047] [Debug_Mode]   -> Clip: die
+[18:00:53.047] [Debug_Mode]   -> Clip: idle
+[18:00:53.047] [Debug_Mode]   -> Clip: walk
+[18:00:53.047] [Debug_Mode]   -> Clip: walk2
+[18:00:53.047] [Debug_Mode]   -> Clip: swim
+[18:00:53.047] [Debug_Mode]   -> Clip: drowning
+[18:00:53.047] [Debug_Mode]   -> Clip: attack_water
+[18:00:53.047] [Debug_Mode]   -> Clip: water
+[18:00:53.047] [Debug_Mode] 
+[ZombieType: BucketNutZombie] Prefab: BucketNutZombie
+[18:00:53.047] [Debug_Mode]   -> Clip: attackW
+[18:00:53.047] [Debug_Mode]   -> Clip: die
+[18:00:53.048] [Debug_Mode]   -> Clip: idleW
+[18:00:53.048] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.048] [Debug_Mode] 
+[ZombieType: CherryNutZombie] Prefab: CherryNutZombie
+[18:00:53.048] [Debug_Mode]   -> Clip: attackW
+[18:00:53.048] [Debug_Mode]   -> Clip: die
+[18:00:53.048] [Debug_Mode]   -> Clip: idleW
+[18:00:53.048] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.048] [Debug_Mode] 
+[ZombieType: IronPeaZombie] Prefab: IronPeaZombie
+[18:00:53.048] [Debug_Mode]   -> Clip: attack
+[18:00:53.048] [Debug_Mode]   -> Clip: die
+[18:00:53.048] [Debug_Mode]   -> Clip: idle
+[18:00:53.048] [Debug_Mode]   -> Clip: walk2
+[18:00:53.048] [Debug_Mode]   -> Clip: shoot
+[18:00:53.048] [Debug_Mode] 
+[ZombieType: TallNutFootballZombie] Prefab: TallNutFootballZombie
+[18:00:53.048] [Debug_Mode]   -> Clip: eat
+[18:00:53.048] [Debug_Mode]   -> Clip: die
+[18:00:53.048] [Debug_Mode]   -> Clip: idle
+[18:00:53.049] [Debug_Mode]   -> Clip: walk
+[18:00:53.049] [Debug_Mode] 
+[ZombieType: RandomPlusZombie] Prefab: RandomPlusZombie
+[18:00:53.049] [Debug_Mode]   -> Clip: attack
+[18:00:53.049] [Debug_Mode]   -> Clip: die
+[18:00:53.049] [Debug_Mode]   -> Clip: idle
+[18:00:53.049] [Debug_Mode]   -> Clip: walk
+[18:00:53.049] [Debug_Mode]   -> Clip: walk2
+[18:00:53.049] [Debug_Mode]   -> Clip: swim
+[18:00:53.049] [Debug_Mode]   -> Clip: drowning
+[18:00:53.049] [Debug_Mode]   -> Clip: attack_water
+[18:00:53.049] [Debug_Mode]   -> Clip: water
+[18:00:53.049] [Debug_Mode] 
+[ZombieType: TallIceNutZombie] Prefab: TallIceNutZombie
+[18:00:53.049] [Debug_Mode]   -> Clip: attackW
+[18:00:53.049] [Debug_Mode]   -> Clip: die
+[18:00:53.049] [Debug_Mode]   -> Clip: idleW
+[18:00:53.049] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.049] [Debug_Mode] 
+[ZombieType: CherryCatapultZombie] Prefab: CherryCatapultZombie
+[18:00:53.049] [Debug_Mode]   -> Clip: idle
+[18:00:53.049] [Debug_Mode]   -> Clip: walk
+[18:00:53.049] [Debug_Mode]   -> Clip: shoot
+[18:00:53.049] [Debug_Mode]   -> Clip: crank
+[18:00:53.050] [Debug_Mode]   -> Clip: walk2
+[18:00:53.050] [Debug_Mode]   -> Clip: shoot2
+[18:00:53.050] [Debug_Mode]   -> Clip: walk1
+[18:00:53.050] [Debug_Mode]   -> Clip: rest
+[18:00:53.050] [Debug_Mode]   -> Clip: shake
+[18:00:53.050] [Debug_Mode] 
+[ZombieType: DolphinPeaZombie] Prefab: DolphinPeaZombie
+[18:00:53.050] [Debug_Mode]   -> Clip: idle
+[18:00:53.050] [Debug_Mode]   -> Clip: ride
+[18:00:53.050] [Debug_Mode]   -> Clip: dolphinjump
+[18:00:53.050] [Debug_Mode]   -> Clip: eat
+[18:00:53.050] [Debug_Mode]   -> Clip: swim
+[18:00:53.050] [Debug_Mode]   -> Clip: die
+[18:00:53.050] [Debug_Mode]   -> Clip: water
+[18:00:53.050] [Debug_Mode]   -> Clip: shoot
+[18:00:53.050] [Debug_Mode] 
+[ZombieType: IronPeaDoorZombie] Prefab: IronPeaDoorZombie
+[18:00:53.050] [Debug_Mode]   -> Clip: die
+[18:00:53.050] [Debug_Mode]   -> Clip: idle
+[18:00:53.050] [Debug_Mode]   -> Clip: attack
+[18:00:53.050] [Debug_Mode]   -> Clip: walk
+[18:00:53.050] [Debug_Mode]   -> Clip: losewalk
+[18:00:53.051] [Debug_Mode]   -> Clip: shoot
+[18:00:53.051] [Debug_Mode] 
+[ZombieType: SquashZombie] Prefab: SquashZombie
+[18:00:53.051] [Debug_Mode]   -> Clip: die
+[18:00:53.051] [Debug_Mode]   -> Clip: idle
+[18:00:53.051] [Debug_Mode]   -> Clip: walk2
+[18:00:53.051] [Debug_Mode] 
+[ZombieType: JalaSquashZombie] Prefab: JalaSquashZombie
+[18:00:53.051] [Debug_Mode]   -> Clip: die
+[18:00:53.051] [Debug_Mode]   -> Clip: idle
+[18:00:53.051] [Debug_Mode]   -> Clip: walk2
+[18:00:53.051] [Debug_Mode] 
+[ZombieType: JalapenoZombie] Prefab: JalapenoZombie
+[18:00:53.051] [Debug_Mode]   -> Clip: attack
+[18:00:53.051] [Debug_Mode]   -> Clip: die
+[18:00:53.051] [Debug_Mode]   -> Clip: idle
+[18:00:53.051] [Debug_Mode]   -> Clip: walk
+[18:00:53.051] [Debug_Mode]   -> Clip: walk2
+[18:00:53.051] [Debug_Mode]   -> Clip: attack_lose
+[18:00:53.051] [Debug_Mode] 
+[ZombieType: GatlingFootballZombie] Prefab: GatlingFootballZombie
+[18:00:53.051] [Debug_Mode]   -> Clip: eat
+[18:00:53.051] [Debug_Mode]   -> Clip: die
+[18:00:53.051] [Debug_Mode]   -> Clip: idle
+[18:00:53.051] [Debug_Mode]   -> Clip: walk
+[18:00:53.052] [Debug_Mode]   -> Clip: shoot
+[18:00:53.052] [Debug_Mode] 
+[ZombieType: IronBalloonZombie2] Prefab: IronBalloonZombie2
+[18:00:53.052] [Debug_Mode]   -> Clip: idle
+[18:00:53.052] [Debug_Mode]   -> Clip: fly
+[18:00:53.052] [Debug_Mode]   -> Clip: fall
+[18:00:53.052] [Debug_Mode]   -> Clip: walk
+[18:00:53.052] [Debug_Mode]   -> Clip: attack
+[18:00:53.052] [Debug_Mode]   -> Clip: die
+[18:00:53.052] [Debug_Mode]   -> Clip: petals
+[18:00:53.052] [Debug_Mode]   -> Clip: shoot
+[18:00:53.052] [Debug_Mode] 
+[ZombieType: DoomZombie] Prefab: DoomZombie
+[18:00:53.052] [Debug_Mode]   -> Clip: attackW
+[18:00:53.052] [Debug_Mode]   -> Clip: die
+[18:00:53.052] [Debug_Mode]   -> Clip: idleW
+[18:00:53.052] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.052] [Debug_Mode] 
+[ZombieType: RandomGargantuar] Prefab: RandomGargantuar
+[18:00:53.052] [Debug_Mode]   -> Clip: walk
+[18:00:53.052] [Debug_Mode]   -> Clip: idle
+[18:00:53.052] [Debug_Mode]   -> Clip: throw
+[18:00:53.053] [Debug_Mode]   -> Clip: die
+[18:00:53.053] [Debug_Mode]   -> Clip: attack
+[18:00:53.053] [Debug_Mode] 
+[ZombieType: BlueGargantuar] Prefab: BlueGargantuar
+[18:00:53.053] [Debug_Mode]   -> Clip: walk
+[18:00:53.053] [Debug_Mode]   -> Clip: idle
+[18:00:53.053] [Debug_Mode]   -> Clip: throw
+[18:00:53.053] [Debug_Mode]   -> Clip: die
+[18:00:53.053] [Debug_Mode]   -> Clip: attack
+[18:00:53.053] [Debug_Mode] 
+[ZombieType: GreenGargantuar] Prefab: GreenGargantuar
+[18:00:53.053] [Debug_Mode]   -> Clip: walk
+[18:00:53.053] [Debug_Mode]   -> Clip: idle
+[18:00:53.053] [Debug_Mode]   -> Clip: throw
+[18:00:53.053] [Debug_Mode]   -> Clip: die
+[18:00:53.053] [Debug_Mode]   -> Clip: attack
+[18:00:53.053] [Debug_Mode] 
+[ZombieType: YellowGargantuar] Prefab: YellowGargantuar
+[18:00:53.053] [Debug_Mode]   -> Clip: walk
+[18:00:53.053] [Debug_Mode]   -> Clip: idle
+[18:00:53.053] [Debug_Mode]   -> Clip: throw
+[18:00:53.053] [Debug_Mode]   -> Clip: die
+[18:00:53.053] [Debug_Mode]   -> Clip: attack
+[18:00:53.053] [Debug_Mode] 
+[ZombieType: Zombie9527] Prefab: Zombie9527
+[18:00:53.053] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.053] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.054] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.054] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.054] [Debug_Mode] 
+[ZombieType: TallFireNutZombie] Prefab: TallFireNutZombie
+[18:00:53.054] [Debug_Mode]   -> Clip: attackW
+[18:00:53.054] [Debug_Mode]   -> Clip: die
+[18:00:53.054] [Debug_Mode]   -> Clip: idleW
+[18:00:53.054] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.054] [Debug_Mode] 
+[ZombieType: ObsidianTallNutZombie] Prefab: ObsidianTallNutZombie
+[18:00:53.054] [Debug_Mode]   -> Clip: attackW
+[18:00:53.054] [Debug_Mode]   -> Clip: die
+[18:00:53.054] [Debug_Mode]   -> Clip: idleW
+[18:00:53.054] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.054] [Debug_Mode] 
+[ZombieType: SunNutZombie] Prefab: SunNutZombie
+[18:00:53.054] [Debug_Mode]   -> Clip: attackW
+[18:00:53.054] [Debug_Mode]   -> Clip: die
+[18:00:53.055] [Debug_Mode]   -> Clip: idleW
+[18:00:53.055] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.055] [Debug_Mode] 
+[ZombieType: SuperSunNutZombie] Prefab: SuperSunNutZombie
+[18:00:53.055] [Debug_Mode]   -> Clip: attackW
+[18:00:53.055] [Debug_Mode]   -> Clip: die
+[18:00:53.055] [Debug_Mode]   -> Clip: idleW
+[18:00:53.055] [Debug_Mode]   -> Clip: walk2W
+[18:00:53.055] [Debug_Mode] 
+[ZombieType: GatlingPeaZombie] Prefab: GatlingPeaZombie
+[18:00:53.055] [Debug_Mode]   -> Clip: attack
+[18:00:53.055] [Debug_Mode]   -> Clip: die
+[18:00:53.055] [Debug_Mode]   -> Clip: idle
+[18:00:53.055] [Debug_Mode]   -> Clip: walk2
+[18:00:53.055] [Debug_Mode]   -> Clip: shoot
+[18:00:53.055] [Debug_Mode] 
+[ZombieType: SnowGatlingPeaZombie] Prefab: SnowGatlingPeaZombie
+[18:00:53.055] [Debug_Mode]   -> Clip: attack_snow
+[18:00:53.055] [Debug_Mode]   -> Clip: die
+[18:00:53.055] [Debug_Mode]   -> Clip: idle
+[18:00:53.056] [Debug_Mode]   -> Clip: walk2
+[18:00:53.056] [Debug_Mode]   -> Clip: shoot
+[18:00:53.056] [Debug_Mode] 
+[ZombieType: BedRockSnowZombie] Prefab: BedRockSnowZombie
+[18:00:53.060] [Debug_Mode]   -> Clip: idle
+[18:00:53.060] [Debug_Mode]   -> Clip: walk
+[18:00:53.060] [Debug_Mode]   -> Clip: eat
+[18:00:53.061] [Debug_Mode]   -> Clip: death
+[18:00:53.061] [Debug_Mode] 
+[ZombieType: SqualourZombie] Prefab: SqualourZombie
+[18:00:53.061] [Debug_Mode]   -> Clip: die
+[18:00:53.061] [Debug_Mode]   -> Clip: idle
+[18:00:53.062] [Debug_Mode]   -> Clip: walk2
+[18:00:53.062] [Debug_Mode] 
+[ZombieType: SuperSubmarine] Prefab: SuperSubmarine
+[18:00:53.062] [Debug_Mode]   -> Clip: idle
+[18:00:53.062] [Debug_Mode]   -> Clip: move
+[18:00:53.062] [Debug_Mode]   -> Clip: water
+[18:00:53.062] [Debug_Mode] 
+[ZombieType: JacksonDriver] Prefab: JacksonDriver
+[18:00:53.062] [Debug_Mode]   -> Clip: idle
+[18:00:53.062] [Debug_Mode]   -> Clip: die
+[18:00:53.062] [Debug_Mode]   -> Clip: shake
+[18:00:53.062] [Debug_Mode] 
+[ZombieType: FootballDrown] Prefab: FootballDrown
+[18:00:53.062] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.062] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.062] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.062] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.063] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.063] [Debug_Mode]   -> Clip: throw
+[18:00:53.063] [Debug_Mode] 
+[ZombieType: CherryPaperZ95] Prefab: CherryPaperZ95
+[18:00:53.063] [Debug_Mode]   -> Clip: attack
+[18:00:53.063] [Debug_Mode]   -> Clip: die
+[18:00:53.063] [Debug_Mode]   -> Clip: idle
+[18:00:53.063] [Debug_Mode]   -> Clip: walk
+[18:00:53.063] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.063] [Debug_Mode]   -> Clip: walk2
+[18:00:53.063] [Debug_Mode]   -> Clip: attack2
+[18:00:53.063] [Debug_Mode]   -> Clip: shoot
+[18:00:53.063] [Debug_Mode] 
+[ZombieType: BlackFootball] Prefab: BlackFootball
+[18:00:53.063] [Debug_Mode]   -> Clip: eat
+[18:00:53.063] [Debug_Mode]   -> Clip: die
+[18:00:53.063] [Debug_Mode]   -> Clip: idle
+[18:00:53.063] [Debug_Mode]   -> Clip: walk
+[18:00:53.063] [Debug_Mode] 
+[ZombieType: SuperKirov] Prefab: SuperKirov
+[18:00:53.063] [Debug_Mode]   -> Clip: idle
+[18:00:53.063] [Debug_Mode]   -> Clip: crash
+[18:00:53.063] [Debug_Mode]   -> Clip: throw
+[18:00:53.063] [Debug_Mode] 
+[ZombieType: SuperBombThrower] Prefab: SuperBombThrower
+[18:00:53.064] [Debug_Mode]   -> Clip: idle
+[18:00:53.064] [Debug_Mode]   -> Clip: crash
+[18:00:53.064] [Debug_Mode]   -> Clip: levitation
+[18:00:53.064] [Debug_Mode]   -> Clip: throw
+[18:00:53.064] [Debug_Mode] 
+[ZombieType: QuickJacksonZombie] Prefab: QuickJacksonZombie
+[18:00:53.064] [Debug_Mode]   -> Clip: moonwalk
+[18:00:53.064] [Debug_Mode]   -> Clip: point
+[18:00:53.064] [Debug_Mode]   -> Clip: walk
+[18:00:53.064] [Debug_Mode]   -> Clip: armraise
+[18:00:53.064] [Debug_Mode]   -> Clip: death
+[18:00:53.064] [Debug_Mode]   -> Clip: eat
+[18:00:53.064] [Debug_Mode]   -> Clip: idle
+[18:00:53.064] [Debug_Mode] 
+[ZombieType: QingZombie] Prefab: QingZombie
+[18:00:53.064] [Debug_Mode]   -> Clip: idle
+[18:00:53.065] [Debug_Mode]   -> Clip: walk
+[18:00:53.065] [Debug_Mode]   -> Clip: attack2
+[18:00:53.065] [Debug_Mode]   -> Clip: attack
+[18:00:53.065] [Debug_Mode]   -> Clip: die
+[18:00:53.065] [Debug_Mode]   -> Clip: shake
+[18:00:53.065] [Debug_Mode] 
+[ZombieType: JackboxJumpZombie] Prefab: JackboxJumpZombie
+[18:00:53.065] [Debug_Mode]   -> Clip: idle
+[18:00:53.065] [Debug_Mode]   -> Clip: walk
+[18:00:53.065] [Debug_Mode]   -> Clip: attack
+[18:00:53.065] [Debug_Mode]   -> Clip: die
+[18:00:53.065] [Debug_Mode]   -> Clip: jump
+[18:00:53.065] [Debug_Mode]   -> Clip: jump2
+[18:00:53.065] [Debug_Mode] 
+[ZombieType: SuperMachineNutZombie] Prefab: SuperMachineNutZombie
+[18:00:53.065] [Debug_Mode]   -> Clip: idle
+[18:00:53.065] [Debug_Mode]   -> Clip: walk
+[18:00:53.065] [Debug_Mode] 
+[ZombieType: LandSubmarine] Prefab: LandSubmarine
+[18:00:53.065] [Debug_Mode]   -> Clip: idle_land
+[18:00:53.065] [Debug_Mode]   -> Clip: move_land
+[18:00:53.065] [Debug_Mode] 
+[ZombieType: UltimateGargantuar] Prefab: UltimateGargantuar
+[18:00:53.066] [Debug_Mode]   -> Clip: walk
+[18:00:53.066] [Debug_Mode]   -> Clip: idle
+[18:00:53.066] [Debug_Mode]   -> Clip: throw
+[18:00:53.066] [Debug_Mode]   -> Clip: die
+[18:00:53.066] [Debug_Mode]   -> Clip: attack
+[18:00:53.066] [Debug_Mode] 
+[ZombieType: ObsidianImpZombie] Prefab: ObsidianImpZombie
+[18:00:53.066] [Debug_Mode]   -> Clip: attack
+[18:00:53.066] [Debug_Mode]   -> Clip: die
+[18:00:53.066] [Debug_Mode]   -> Clip: idle
+[18:00:53.066] [Debug_Mode]   -> Clip: walk
+[18:00:53.066] [Debug_Mode]   -> Clip: walk2
+[18:00:53.066] [Debug_Mode] 
+[ZombieType: DolphinGatlingZombie] Prefab: DolphinGatlingZombie
+[18:00:53.066] [Debug_Mode]   -> Clip: idle
+[18:00:53.066] [Debug_Mode]   -> Clip: ride
+[18:00:53.066] [Debug_Mode]   -> Clip: dolphinjump
+[18:00:53.066] [Debug_Mode]   -> Clip: eat
+[18:00:53.066] [Debug_Mode]   -> Clip: swim
+[18:00:53.066] [Debug_Mode]   -> Clip: die
+[18:00:53.066] [Debug_Mode]   -> Clip: water
+[18:00:53.066] [Debug_Mode]   -> Clip: shoot
+[18:00:53.066] [Debug_Mode] 
+[ZombieType: DiamondRandomZombie] Prefab: DiamondRandomZombie
+[18:00:53.066] [Debug_Mode]   -> Clip: attack
+[18:00:53.066] [Debug_Mode]   -> Clip: die
+[18:00:53.067] [Debug_Mode]   -> Clip: idle
+[18:00:53.067] [Debug_Mode]   -> Clip: walk
+[18:00:53.067] [Debug_Mode]   -> Clip: walk2
+[18:00:53.067] [Debug_Mode]   -> Clip: swim
+[18:00:53.067] [Debug_Mode]   -> Clip: drowning
+[18:00:53.067] [Debug_Mode]   -> Clip: attack_water
+[18:00:53.067] [Debug_Mode]   -> Clip: water
+[18:00:53.067] [Debug_Mode] 
+[ZombieType: DrownpultZombie] Prefab: DrownpultZombie
+[18:00:53.067] [Debug_Mode]   -> Clip: idle
+[18:00:53.067] [Debug_Mode]   -> Clip: crash
+[18:00:53.067] [Debug_Mode]   -> Clip: walk2
+[18:00:53.067] [Debug_Mode]   -> Clip: walk
+[18:00:53.067] [Debug_Mode]   -> Clip: attack
+[18:00:53.067] [Debug_Mode]   -> Clip: reload
+[18:00:53.067] [Debug_Mode]   -> Clip: shack
+[18:00:53.068] [Debug_Mode] 
+[ZombieType: SuperDancePolZombie] Prefab: SuperDancePolZombie
+[18:00:53.068] [Debug_Mode]   -> Clip: Zombie_polevaulter_idle
+[18:00:53.068] [Debug_Mode]   -> Clip: Zombie_polevaulter_run
+[18:00:53.068] [Debug_Mode]   -> Clip: Zombie_polevaulter_jump 1
+[18:00:53.068] [Debug_Mode]   -> Clip: Zombie_polevaulter_walk
+[18:00:53.068] [Debug_Mode]   -> Clip: Zombie_polevaulter_die
+[18:00:53.068] [Debug_Mode]   -> Clip: Zombie_polevaulter_eat
+[18:00:53.068] [Debug_Mode] 
+[ZombieType: UltimateFootballDrown] Prefab: UltimateFootballDrown
+[18:00:53.068] [Debug_Mode]   -> Clip: die
+[18:00:53.068] [Debug_Mode]   -> Clip: eat
+[18:00:53.068] [Debug_Mode]   -> Clip: idle
+[18:00:53.068] [Debug_Mode]   -> Clip: throw
+[18:00:53.068] [Debug_Mode]   -> Clip: walk
+[18:00:53.068] [Debug_Mode]   -> Clip: Bajian
+[18:00:53.068] [Debug_Mode] 
+[ZombieType: UltimateMachineNutZombie] Prefab: UltimateMachineNutZombie
+[18:00:53.068] [Debug_Mode]   -> Clip: idle
+[18:00:53.068] [Debug_Mode]   -> Clip: walk
+[18:00:53.069] [Debug_Mode] 
+[ZombieType: UltimateFootballZombie] Prefab: UltimateFootballZombie
+[18:00:53.069] [Debug_Mode]   -> Clip: eat
+[18:00:53.069] [Debug_Mode]   -> Clip: die
+[18:00:53.069] [Debug_Mode]   -> Clip: idle
+[18:00:53.069] [Debug_Mode]   -> Clip: walk
+[18:00:53.069] [Debug_Mode] 
+[ZombieType: UltimateKirovZombie] Prefab: UltimateKirovZombie
+[18:00:53.069] [Debug_Mode]   -> Clip: Idle
+[18:00:53.069] [Debug_Mode]   -> Clip: walk
+[18:00:53.069] [Debug_Mode]   -> Clip: Qifei
+[18:00:53.069] [Debug_Mode]   -> Clip: flying
+[18:00:53.069] [Debug_Mode]   -> Clip: shoot
+[18:00:53.069] [Debug_Mode] 
+[ZombieType: UltimateJacksonDriver] Prefab: UltimateJacksonDriver
+[18:00:53.069] [Debug_Mode]   -> Clip: idle car
+[18:00:53.069] [Debug_Mode] 
+[ZombieType: UltimatePaperZombie] Prefab: UltimatePaperZombie
+[18:00:53.069] [Debug_Mode]   -> Clip: idle
+[18:00:53.069] [Debug_Mode]   -> Clip: walk
+[18:00:53.069] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.070] [Debug_Mode]   -> Clip: use
+[18:00:53.070] [Debug_Mode]   -> Clip: walk2
+[18:00:53.070] [Debug_Mode]   -> Clip: stopwalking
+[18:00:53.070] [Debug_Mode]   -> Clip: shoot
+[18:00:53.070] [Debug_Mode]   -> Clip: shootback
+[18:00:53.070] [Debug_Mode] 
+[ZombieType: UltimateJackboxZombie] Prefab: UltimateJackboxZombie
+[18:00:53.070] [Debug_Mode]   -> Clip: idle
+[18:00:53.070] [Debug_Mode]   -> Clip: walk
+[18:00:53.070] [Debug_Mode]   -> Clip: tiaochu
+[18:00:53.070] [Debug_Mode]   -> Clip: suohui
+[18:00:53.070] [Debug_Mode] 
+[ZombieType: GatlingBlackFootball] Prefab: GatlingBlackFootball
+[18:00:53.070] [Debug_Mode]   -> Clip: eat_black
+[18:00:53.070] [Debug_Mode]   -> Clip: die
+[18:00:53.070] [Debug_Mode]   -> Clip: idle
+[18:00:53.070] [Debug_Mode]   -> Clip: walk_black
+[18:00:53.070] [Debug_Mode]   -> Clip: shoot
+[18:00:53.070] [Debug_Mode] 
+[ZombieType: LegionZombie] Prefab: LegionZombie
+[18:00:53.070] [Debug_Mode]   -> Clip: walk
+[18:00:53.071] [Debug_Mode]   -> Clip: attack
+[18:00:53.071] [Debug_Mode]   -> Clip: idle
+[18:00:53.071] [Debug_Mode]   -> Clip: die
+[18:00:53.071] [Debug_Mode]   -> Clip: fakedie
+[18:00:53.071] [Debug_Mode]   -> Clip: quickmove
+[18:00:53.071] [Debug_Mode] 
+[ZombieType: IceClawZombie] Prefab: IceClawZombie
+[18:00:53.071] [Debug_Mode]   -> Clip: attack
+[18:00:53.071] [Debug_Mode]   -> Clip: walk
+[18:00:53.074] [Debug_Mode]   -> Clip: die
+[18:00:53.074] [Debug_Mode]   -> Clip: idle
+[18:00:53.074] [Debug_Mode] 
+[ZombieType: UltimateSnowZombie] Prefab: UltimateSnowZombie
+[18:00:53.074] [Debug_Mode]   -> Clip: idle
+[18:00:53.074] [Debug_Mode]   -> Clip: walk
+[18:00:53.074] [Debug_Mode]   -> Clip: die
+[18:00:53.074] [Debug_Mode]   -> Clip: attack2
+[18:00:53.074] [Debug_Mode]   -> Clip: attack3
+[18:00:53.074] [Debug_Mode]   -> Clip: attack
+[18:00:53.074] [Debug_Mode] 
+[ZombieType: UltimateHorse] Prefab: UltimateHorse
+[18:00:53.074] [Debug_Mode]   -> Clip: idle
+[18:00:53.074] [Debug_Mode]   -> Clip: walk
+[18:00:53.074] [Debug_Mode]   -> Clip: hit
+[18:00:53.075] [Debug_Mode]   -> Clip: tohorse
+[18:00:53.075] [Debug_Mode]   -> Clip: run
+[18:00:53.075] [Debug_Mode]   -> Clip: hit2
+[18:00:53.075] [Debug_Mode]   -> Clip: shoot
+[18:00:53.075] [Debug_Mode]   -> Clip: flagup
+[18:00:53.075] [Debug_Mode] 
+[ZombieType: UltimateHorse2] Prefab: UltimateHorse2
+[18:00:53.075] [Debug_Mode]   -> Clip: die
+[18:00:53.075] [Debug_Mode]   -> Clip: idle
+[18:00:53.075] [Debug_Mode]   -> Clip: walk
+[18:00:53.075] [Debug_Mode]   -> Clip: jump
+[18:00:53.075] [Debug_Mode]   -> Clip: attack
+[18:00:53.075] [Debug_Mode]   -> Clip: eat
+[18:00:53.075] [Debug_Mode]   -> Clip: walk2
+[18:00:53.075] [Debug_Mode]   -> Clip: shoot
+[18:00:53.075] [Debug_Mode] 
+[ZombieType: HorseBoss] Prefab: HorseBoss
+[18:00:53.076] [Debug_Mode]   -> Clip: idle
+[18:00:53.076] [Debug_Mode]   -> Clip: die
+[18:00:53.076] [Debug_Mode]   -> Clip: enter
+[18:00:53.076] [Debug_Mode]   -> Clip: rise
+[18:00:53.076] [Debug_Mode]   -> Clip: chargeForward
+[18:00:53.076] [Debug_Mode]   -> Clip: chargeBack
+[18:00:53.076] [Debug_Mode]   -> Clip: jump
+[18:00:53.076] [Debug_Mode]   -> Clip: flagup
+[18:00:53.076] [Debug_Mode]   -> Clip: flagup2
+[18:00:53.076] [Debug_Mode]   -> Clip: flag3
+[18:00:53.076] [Debug_Mode] 
+[ZombieType: SummonedHorse] Prefab: SummonedHorse
+[18:00:53.076] [Debug_Mode]   -> Clip: idle
+[18:00:53.076] [Debug_Mode]   -> Clip: die
+[18:00:53.076] [Debug_Mode]   -> Clip: run
+[18:00:53.076] [Debug_Mode] 
+[ZombieType: ArmedGargantuar] Prefab: ArmedGargantuar
+[18:00:53.076] [Debug_Mode]   -> Clip: walk
+[18:00:53.076] [Debug_Mode]   -> Clip: idle
+[18:00:53.076] [Debug_Mode]   -> Clip: die
+[18:00:53.077] [Debug_Mode]   -> Clip: attack
+[18:00:53.077] [Debug_Mode]   -> Clip: jumpAttack
+[18:00:53.077] [Debug_Mode] 
+[ZombieType: UltimateImpKing] Prefab: UltimateImpKing
+[18:00:53.077] [Debug_Mode]   -> Clip: idle
+[18:00:53.077] [Debug_Mode]   -> Clip: walk
+[18:00:53.077] [Debug_Mode]   -> Clip: die
+[18:00:53.077] [Debug_Mode]   -> Clip: landwalk
+[18:00:53.077] [Debug_Mode]   -> Clip: landdie
+[18:00:53.077] [Debug_Mode]   -> Clip: water
+[18:00:53.077] [Debug_Mode] 
+[ZombieType: ImpKing] Prefab: ImpKing
+[18:00:53.077] [Debug_Mode]   -> Clip: idle
+[18:00:53.077] [Debug_Mode]   -> Clip: walk
+[18:00:53.077] [Debug_Mode]   -> Clip: attack
+[18:00:53.078] [Debug_Mode]   -> Clip: die
+[18:00:53.078] [Debug_Mode]   -> Clip: land
+[18:00:53.078] [Debug_Mode]   -> Clip: thrown
+[18:00:53.078] [Debug_Mode] 
+[ZombieType: SuperLevatation] Prefab: SuperLevatation
+[18:00:53.078] [Debug_Mode]   -> Clip: idle
+[18:00:53.078] [Debug_Mode]   -> Clip: walk
+[18:00:53.078] [Debug_Mode]   -> Clip: die
+[18:00:53.078] [Debug_Mode]   -> Clip: shoot
+[18:00:53.078] [Debug_Mode] 
+[ZombieType: CherrySubmarine] Prefab: CherrySubmarine
+[18:00:53.078] [Debug_Mode]   -> Clip: idle
+[18:00:53.078] [Debug_Mode]   -> Clip: move
+[18:00:53.078] [Debug_Mode]   -> Clip: water
+[18:00:53.078] [Debug_Mode] 
+[ZombieType: SnowMonsterRider] Prefab: SnowMonsterRider
+[18:00:53.078] [Debug_Mode]   -> Clip: jump
+[18:00:53.078] [Debug_Mode]   -> Clip: idle
+[18:00:53.078] [Debug_Mode]   -> Clip: die
+[18:00:53.078] [Debug_Mode]   -> Clip: walk
+[18:00:53.078] [Debug_Mode] 
+[ZombieType: WaterJackboxJumpZombie] Prefab: WaterJackboxJumpZombie
+[18:00:53.079] [Debug_Mode]   -> Clip: idle
+[18:00:53.079] [Debug_Mode]   -> Clip: walk
+[18:00:53.079] [Debug_Mode]   -> Clip: water
+[18:00:53.079] [Debug_Mode] 
+[ZombieType: UltiWaterGargantuar] Prefab: UltiWaterGargantuar
+[18:00:53.079] [Debug_Mode]   -> Clip: walk
+[18:00:53.079] [Debug_Mode]   -> Clip: idle
+[18:00:53.079] [Debug_Mode]   -> Clip: throw
+[18:00:53.079] [Debug_Mode]   -> Clip: die
+[18:00:53.079] [Debug_Mode]   -> Clip: attack
+[18:00:53.079] [Debug_Mode]   -> Clip: water
+[18:00:53.079] [Debug_Mode] 
+[ZombieType: UltimateGoldGargantuar] Prefab: UltimateGoldGargantuar
+[18:00:53.079] [Debug_Mode]   -> Clip: walk
+[18:00:53.079] [Debug_Mode]   -> Clip: idle
+[18:00:53.079] [Debug_Mode]   -> Clip: die
+[18:00:53.079] [Debug_Mode]   -> Clip: attack
+[18:00:53.079] [Debug_Mode]   -> Clip: rise
+[18:00:53.079] [Debug_Mode]   -> Clip: attack2
+[18:00:53.080] [Debug_Mode] 
+[ZombieType: DoomPaper] Prefab: DoomPaper
+[18:00:53.080] [Debug_Mode]   -> Clip: attack
+[18:00:53.080] [Debug_Mode]   -> Clip: die
+[18:00:53.080] [Debug_Mode]   -> Clip: idle
+[18:00:53.080] [Debug_Mode]   -> Clip: walk
+[18:00:53.080] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.080] [Debug_Mode]   -> Clip: walk2
+[18:00:53.080] [Debug_Mode]   -> Clip: attack2
+[18:00:53.080] [Debug_Mode]   -> Clip: shoot
+[18:00:53.080] [Debug_Mode] 
+[ZombieType: UltimateLegionZombie] Prefab: UltimateLegionZombie
+[18:00:53.080] [Debug_Mode]   -> Clip: walk
+[18:00:53.080] [Debug_Mode]   -> Clip: attack
+[18:00:53.080] [Debug_Mode]   -> Clip: idle
+[18:00:53.080] [Debug_Mode]   -> Clip: die
+[18:00:53.080] [Debug_Mode]   -> Clip: fakedie
+[18:00:53.080] [Debug_Mode]   -> Clip: quickmove
+[18:00:53.080] [Debug_Mode] 
+[ZombieType: UltimateSwordZombie] Prefab: UltimateSwordZombie
+[18:00:53.080] [Debug_Mode]   -> Clip: idle
+[18:00:53.080] [Debug_Mode]   -> Clip: enter
+[18:00:53.080] [Debug_Mode]   -> Clip: idle1to2
+[18:00:53.081] [Debug_Mode]   -> Clip: idle2
+[18:00:53.081] [Debug_Mode]   -> Clip: idle2to3
+[18:00:53.081] [Debug_Mode]   -> Clip: idle3
+[18:00:53.081] [Debug_Mode]   -> Clip: dragon
+[18:00:53.081] [Debug_Mode]   -> Clip: idle_dragon
+[18:00:53.081] [Debug_Mode]   -> Clip: die
+[18:00:53.081] [Debug_Mode]   -> Clip: skill
+[18:00:53.081] [Debug_Mode] 
+[ZombieType: MachineLevatation] Prefab: MachineLevatation
+[18:00:53.081] [Debug_Mode]   -> Clip: idle
+[18:00:53.081] [Debug_Mode]   -> Clip: walk
+[18:00:53.081] [Debug_Mode]   -> Clip: die
+[18:00:53.081] [Debug_Mode]   -> Clip: shoot
+[18:00:53.081] [Debug_Mode] 
+[ZombieType: LegionSniperZombie] Prefab: LegionSniperZombie
+[18:00:53.081] [Debug_Mode]   -> Clip: idle
+[18:00:53.081] [Debug_Mode]   -> Clip: walk
+[18:00:53.082] [Debug_Mode]   -> Clip: shoot
+[18:00:53.082] [Debug_Mode]   -> Clip: preshoot
+[18:00:53.082] [Debug_Mode]   -> Clip: die
+[18:00:53.082] [Debug_Mode] 
+[ZombieType: VoodooDollZombie] Prefab: VoodooDollZombie
+[18:00:53.082] [Debug_Mode]   -> Clip: idle
+[18:00:53.082] [Debug_Mode]   -> Clip: walk
+[18:00:53.082] [Debug_Mode] 
+[ZombieType: ObsidianClawZombie] Prefab: ObsidianClawZombie
+[18:00:53.082] [Debug_Mode]   -> Clip: attack
+[18:00:53.082] [Debug_Mode]   -> Clip: walk
+[18:00:53.082] [Debug_Mode]   -> Clip: die
+[18:00:53.082] [Debug_Mode]   -> Clip: idle
+[18:00:53.082] [Debug_Mode] 
+[ZombieType: UltimateDolphin] Prefab: UltimateDolphin
+[18:00:53.082] [Debug_Mode]   -> Clip: idle
+[18:00:53.082] [Debug_Mode]   -> Clip: walk
+[18:00:53.082] [Debug_Mode]   -> Clip: die
+[18:00:53.082] [Debug_Mode]   -> Clip: attack
+[18:00:53.082] [Debug_Mode]   -> Clip: Jump
+[18:00:53.083] [Debug_Mode]   -> Clip: shoot
+[18:00:53.083] [Debug_Mode] 
+[ZombieType: PortalBalloonZombie] Prefab: PortalBalloonZombie
+[18:00:53.083] [Debug_Mode]   -> Clip: idle
+[18:00:53.083] [Debug_Mode]   -> Clip: fly
+[18:00:53.083] [Debug_Mode]   -> Clip: fall
+[18:00:53.083] [Debug_Mode]   -> Clip: walk
+[18:00:53.083] [Debug_Mode]   -> Clip: attack
+[18:00:53.083] [Debug_Mode]   -> Clip: die
+[18:00:53.083] [Debug_Mode]   -> Clip: petals
+[18:00:53.083] [Debug_Mode] 
+[ZombieType: BlackHorse] Prefab: BlackHorse
+[18:00:53.083] [Debug_Mode]   -> Clip: idle
+[18:00:53.083] [Debug_Mode]   -> Clip: walk
+[18:00:53.083] [Debug_Mode]   -> Clip: hit
+[18:00:53.083] [Debug_Mode]   -> Clip: run
+[18:00:53.083] [Debug_Mode]   -> Clip: hit2
+[18:00:53.083] [Debug_Mode] 
+[ZombieType: SuperBlackHorse] Prefab: SuperBlackHorse
+[18:00:53.083] [Debug_Mode]   -> Clip: idle
+[18:00:53.083] [Debug_Mode]   -> Clip: walk
+[18:00:53.083] [Debug_Mode]   -> Clip: hit
+[18:00:53.083] [Debug_Mode]   -> Clip: blackshoot
+[18:00:53.084] [Debug_Mode]   -> Clip: flagup
+[18:00:53.084] [Debug_Mode] 
+[ZombieType: BlackJackboxZombie] Prefab: BlackJackboxZombie
+[18:00:53.084] [Debug_Mode]   -> Clip: idle
+[18:00:53.084] [Debug_Mode]   -> Clip: walk
+[18:00:53.084] [Debug_Mode]   -> Clip: eat
+[18:00:53.084] [Debug_Mode]   -> Clip: pop
+[18:00:53.084] [Debug_Mode]   -> Clip: death
+[18:00:53.084] [Debug_Mode]   -> Clip: throw
+[18:00:53.084] [Debug_Mode] 
+[ZombieType: BlackElephantZombie] Prefab: BlackElephantZombie
+[18:00:53.084] [Debug_Mode]   -> Clip: idle
+[18:00:53.084] [Debug_Mode]   -> Clip: walk
+[18:00:53.084] [Debug_Mode]   -> Clip: attack
+[18:00:53.084] [Debug_Mode]   -> Clip: die
+[18:00:53.084] [Debug_Mode]   -> Clip: attack2
+[18:00:53.084] [Debug_Mode] 
+[ZombieType: BlackTrainZombie] Prefab: BlackTrainZombie
+[18:00:53.084] [Debug_Mode]   -> Clip: idle
+[18:00:53.084] [Debug_Mode]   -> Clip: walk
+[18:00:53.085] [Debug_Mode] 
+[ZombieType: BlackFlagFootball] Prefab: BlackFlagFootball
+[18:00:53.085] [Debug_Mode]   -> Clip: eat_black
+[18:00:53.085] [Debug_Mode]   -> Clip: die
+[18:00:53.085] [Debug_Mode]   -> Clip: idle
+[18:00:53.085] [Debug_Mode]   -> Clip: walk_black
+[18:00:53.085] [Debug_Mode]   -> Clip: roll
+[18:00:53.085] [Debug_Mode] 
+[ZombieType: SuperBlackFootball] Prefab: SuperBlackFootball
+[18:00:53.085] [Debug_Mode]   -> Clip: eat_black
+[18:00:53.085] [Debug_Mode]   -> Clip: die
+[18:00:53.085] [Debug_Mode]   -> Clip: idle
+[18:00:53.085] [Debug_Mode]   -> Clip: walk_black
+[18:00:53.085] [Debug_Mode]   -> Clip: roll
+[18:00:53.085] [Debug_Mode] 
+[ZombieType: ArmoredImpZombie] Prefab: ArmoredImpZombie
+[18:00:53.085] [Debug_Mode]   -> Clip: attack
+[18:00:53.085] [Debug_Mode]   -> Clip: die
+[18:00:53.085] [Debug_Mode]   -> Clip: idle
+[18:00:53.085] [Debug_Mode]   -> Clip: walk
+[18:00:53.085] [Debug_Mode] 
+[ZombieType: UltimateEndoflameZombie] Prefab: UltimateEndoflameZombie
+[18:00:53.086] [Debug_Mode]   -> Clip: idle
+[18:00:53.086] [Debug_Mode]   -> Clip: bud
+[18:00:53.086] [Debug_Mode]   -> Clip: bloomed
+[18:00:53.086] [Debug_Mode]   -> Clip: bloom
+[18:00:53.086] [Debug_Mode]   -> Clip: buded
+[18:00:53.086] [Debug_Mode]   -> Clip: die
+[18:00:53.086] [Debug_Mode]   -> Clip: fire
+[18:00:53.086] [Debug_Mode]   -> Clip: openFire
+[18:00:53.086] [Debug_Mode]   -> Clip: flower
+[18:00:53.086] [Debug_Mode] 
+[ZombieType: FootballBoss] Prefab: FootballBoss
+[18:00:53.086] [Debug_Mode]   -> Clip: die
+[18:00:53.086] [Debug_Mode]   -> Clip: idle
+[18:00:53.086] [Debug_Mode]   -> Clip: enter
+[18:00:53.086] [Debug_Mode]   -> Clip: land
+[18:00:53.086] [Debug_Mode]   -> Clip: walk
+[18:00:53.086] [Debug_Mode]   -> Clip: jump
+[18:00:53.087] [Debug_Mode]   -> Clip: roll
+[18:00:53.091] [Debug_Mode]   -> Clip: enter2
+[18:00:53.091] [Debug_Mode] 
+[ZombieType: JacksonDriverBoss] Prefab: JacksonDriverBoss
+[18:00:53.091] [Debug_Mode]   -> Clip: idle
+[18:00:53.091] [Debug_Mode]   -> Clip: walk
+[18:00:53.092] [Debug_Mode] 
+[ZombieType: SnowFootballDrown] Prefab: SnowFootballDrown
+[18:00:53.092] [Debug_Mode]   -> Clip: idle
+[18:00:53.092] [Debug_Mode]   -> Clip: run
+[18:00:53.092] [Debug_Mode]   -> Clip: die
+[18:00:53.092] [Debug_Mode]   -> Clip: throw
+[18:00:53.092] [Debug_Mode]   -> Clip: attack
+[18:00:53.092] [Debug_Mode]   -> Clip: run2
+[18:00:53.092] [Debug_Mode] 
+[ZombieType: GatlingPaper_a] Prefab: GatlingPaper_a
+[18:00:53.092] [Debug_Mode]   -> Clip: attack
+[18:00:53.092] [Debug_Mode]   -> Clip: die
+[18:00:53.092] [Debug_Mode]   -> Clip: idle
+[18:00:53.092] [Debug_Mode]   -> Clip: walk
+[18:00:53.092] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.092] [Debug_Mode]   -> Clip: walk2
+[18:00:53.092] [Debug_Mode]   -> Clip: attack2
+[18:00:53.092] [Debug_Mode]   -> Clip: shoot
+[18:00:53.093] [Debug_Mode] 
+[ZombieType: GatlingPaper_b] Prefab: GatlingPaper_b
+[18:00:53.093] [Debug_Mode]   -> Clip: attack
+[18:00:53.093] [Debug_Mode]   -> Clip: die
+[18:00:53.093] [Debug_Mode]   -> Clip: idle
+[18:00:53.093] [Debug_Mode]   -> Clip: walk
+[18:00:53.093] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.093] [Debug_Mode]   -> Clip: walk2
+[18:00:53.093] [Debug_Mode]   -> Clip: attack2
+[18:00:53.093] [Debug_Mode]   -> Clip: shoot
+[18:00:53.093] [Debug_Mode] 
+[ZombieType: GatlingPaper_c] Prefab: GatlingPaper_c
+[18:00:53.093] [Debug_Mode]   -> Clip: attack
+[18:00:53.093] [Debug_Mode]   -> Clip: die
+[18:00:53.093] [Debug_Mode]   -> Clip: idle
+[18:00:53.093] [Debug_Mode]   -> Clip: walk
+[18:00:53.093] [Debug_Mode]   -> Clip: losePaper
+[18:00:53.093] [Debug_Mode]   -> Clip: walk2
+[18:00:53.093] [Debug_Mode]   -> Clip: attack2
+[18:00:53.093] [Debug_Mode]   -> Clip: takeGun
+[18:00:53.093] [Debug_Mode]   -> Clip: shoot
+[18:00:53.094] [Debug_Mode]   -> Clip: shoot_gun
+[18:00:53.094] [Debug_Mode] 
+[ZombieType: BlackFootball_a] Prefab: BlackFootball_a
+[18:00:53.094] [Debug_Mode]   -> Clip: attack
+[18:00:53.094] [Debug_Mode]   -> Clip: die
+[18:00:53.094] [Debug_Mode]   -> Clip: idle
+[18:00:53.094] [Debug_Mode]   -> Clip: walk
+[18:00:53.094] [Debug_Mode] 
+[ZombieType: BlackFootball_b] Prefab: BlackFootball_b
+[18:00:53.094] [Debug_Mode]   -> Clip: attack
+[18:00:53.094] [Debug_Mode]   -> Clip: die
+[18:00:53.094] [Debug_Mode]   -> Clip: idle
+[18:00:53.094] [Debug_Mode]   -> Clip: walk
+[18:00:53.094] [Debug_Mode] 
+[ZombieType: BlackFootball_c] Prefab: BlackFootball_c
+[18:00:53.094] [Debug_Mode]   -> Clip: attack
+[18:00:53.094] [Debug_Mode]   -> Clip: die
+[18:00:53.094] [Debug_Mode]   -> Clip: idle
+[18:00:53.094] [Debug_Mode]   -> Clip: walk
+[18:00:53.095] [Debug_Mode] 
+[ZombieType: BlackFootball_c2] Prefab: BlackFootball_c2
+[18:00:53.095] [Debug_Mode]   -> Clip: eat_black
+[18:00:53.095] [Debug_Mode]   -> Clip: die
+[18:00:53.095] [Debug_Mode]   -> Clip: idle
+[18:00:53.095] [Debug_Mode]   -> Clip: walk_black
+[18:00:53.095] [Debug_Mode]   -> Clip: shoot
+[18:00:53.095] [Debug_Mode] 
+[ZombieType: Jackson_a] Prefab: Jackson_a
+[18:00:53.095] [Debug_Mode]   -> Clip: moonwalk
+[18:00:53.095] [Debug_Mode]   -> Clip: point
+[18:00:53.095] [Debug_Mode]   -> Clip: walk
+[18:00:53.095] [Debug_Mode]   -> Clip: armraise
+[18:00:53.095] [Debug_Mode]   -> Clip: death
+[18:00:53.095] [Debug_Mode]   -> Clip: attack
+[18:00:53.095] [Debug_Mode]   -> Clip: idle
+[18:00:53.095] [Debug_Mode] 
+[ZombieType: Jackson_b] Prefab: Jackson_b
+[18:00:53.096] [Debug_Mode]   -> Clip: moonwalk
+[18:00:53.096] [Debug_Mode]   -> Clip: point
+[18:00:53.096] [Debug_Mode]   -> Clip: walk
+[18:00:53.096] [Debug_Mode]   -> Clip: armraise
+[18:00:53.096] [Debug_Mode]   -> Clip: death
+[18:00:53.096] [Debug_Mode]   -> Clip: attack
+[18:00:53.096] [Debug_Mode]   -> Clip: idle
+[18:00:53.096] [Debug_Mode] 
+[ZombieType: Jackson_c] Prefab: Jackson_c
+[18:00:53.096] [Debug_Mode]   -> Clip: moonwalk
+[18:00:53.096] [Debug_Mode]   -> Clip: point
+[18:00:53.096] [Debug_Mode]   -> Clip: walk
+[18:00:53.096] [Debug_Mode]   -> Clip: armraise
+[18:00:53.096] [Debug_Mode]   -> Clip: death
+[18:00:53.096] [Debug_Mode]   -> Clip: attack
+[18:00:53.096] [Debug_Mode]   -> Clip: idle
+[18:00:53.096] [Debug_Mode] 
+[ZombieType: Submarine_a] Prefab: Submarine_a
+[18:00:53.096] [Debug_Mode]   -> Clip: idle
+[18:00:53.097] [Debug_Mode]   -> Clip: move
+[18:00:53.097] [Debug_Mode]   -> Clip: water
+[18:00:53.097] [Debug_Mode]   -> Clip: shoot
+[18:00:53.097] [Debug_Mode] 
+[ZombieType: Submarine_b] Prefab: Submarine_b
+[18:00:53.097] [Debug_Mode]   -> Clip: idle
+[18:00:53.097] [Debug_Mode]   -> Clip: move
+[18:00:53.097] [Debug_Mode]   -> Clip: water
+[18:00:53.097] [Debug_Mode]   -> Clip: shoot
+[18:00:53.097] [Debug_Mode] 
+[ZombieType: Submarine_b2] Prefab: Submarine_b2
+[18:00:53.097] [Debug_Mode]   -> Clip: idle
+[18:00:53.097] [Debug_Mode]   -> Clip: move
+[18:00:53.097] [Debug_Mode]   -> Clip: water
+[18:00:53.097] [Debug_Mode]   -> Clip: shoot
+[18:00:53.097] [Debug_Mode] 
+[ZombieType: Submarine_c] Prefab: Submarine_c
+[18:00:53.097] [Debug_Mode]   -> Clip: idle
+[18:00:53.098] [Debug_Mode]   -> Clip: move
+[18:00:53.098] [Debug_Mode]   -> Clip: raised
+[18:00:53.098] [Debug_Mode]   -> Clip: rise
+[18:00:53.098] [Debug_Mode]   -> Clip: sub
+[18:00:53.098] [Debug_Mode]   -> Clip: water
+[18:00:53.098] [Debug_Mode]   -> Clip: shoot
+[18:00:53.098] [Debug_Mode] 
+[ZombieType: Submarine_c2] Prefab: Submarine_c2
+[18:00:53.098] [Debug_Mode]   -> Clip: idle
+[18:00:53.098] [Debug_Mode]   -> Clip: move
+[18:00:53.098] [Debug_Mode]   -> Clip: water
+[18:00:53.098] [Debug_Mode]   -> Clip: shoot
+[18:00:53.098] [Debug_Mode] 
+[ZombieType: Drown_a] Prefab: Drown_a
+[18:00:53.098] [Debug_Mode]   -> Clip: idle
+[18:00:53.098] [Debug_Mode]   -> Clip: run
+[18:00:53.098] [Debug_Mode]   -> Clip: walk
+[18:00:53.098] [Debug_Mode]   -> Clip: die
+[18:00:53.099] [Debug_Mode]   -> Clip: attack
+[18:00:53.099] [Debug_Mode]   -> Clip: shoot
+[18:00:53.099] [Debug_Mode] 
+[ZombieType: Drown_b] Prefab: Drown_b
+[18:00:53.099] [Debug_Mode]   -> Clip: idle
+[18:00:53.099] [Debug_Mode]   -> Clip: walk
+[18:00:53.099] [Debug_Mode]   -> Clip: walk2
+[18:00:53.099] [Debug_Mode]   -> Clip: die
+[18:00:53.099] [Debug_Mode]   -> Clip: attack
+[18:00:53.099] [Debug_Mode]   -> Clip: shoot
+[18:00:53.099] [Debug_Mode] 
+[ZombieType: Drown_c] Prefab: Drown_c
+[18:00:53.099] [Debug_Mode]   -> Clip: idle
+[18:00:53.099] [Debug_Mode]   -> Clip: walk
+[18:00:53.099] [Debug_Mode]   -> Clip: walk2
+[18:00:53.099] [Debug_Mode]   -> Clip: die
+[18:00:53.099] [Debug_Mode]   -> Clip: attack
+[18:00:53.099] [Debug_Mode]   -> Clip: shoot
+[18:00:53.100] [Debug_Mode] 
+[ZombieType: Pickaxe_a] Prefab: Pickaxe_a
+[18:00:53.100] [Debug_Mode]   -> Clip: idle
+[18:00:53.100] [Debug_Mode]   -> Clip: walk
+[18:00:53.100] [Debug_Mode]   -> Clip: attack
+[18:00:53.100] [Debug_Mode]   -> Clip: die
+[18:00:53.100] [Debug_Mode] 
+[ZombieType: Pickaxe_b] Prefab: Pickaxe_b
+[18:00:53.100] [Debug_Mode]   -> Clip: idle
+[18:00:53.100] [Debug_Mode]   -> Clip: walk
+[18:00:53.100] [Debug_Mode]   -> Clip: attack
+[18:00:53.100] [Debug_Mode]   -> Clip: die
+[18:00:53.100] [Debug_Mode]   -> Clip: rise
+[18:00:53.100] [Debug_Mode]   -> Clip: dig
+[18:00:53.100] [Debug_Mode] 
+[ZombieType: Pickaxe_c] Prefab: Pickaxe_c
+[18:00:53.100] [Debug_Mode]   -> Clip: idle
+[18:00:53.100] [Debug_Mode]   -> Clip: walk
+[18:00:53.100] [Debug_Mode]   -> Clip: attack
+[18:00:53.100] [Debug_Mode]   -> Clip: die
+[18:00:53.100] [Debug_Mode]   -> Clip: rise
+[18:00:53.100] [Debug_Mode]   -> Clip: dig
+[18:00:53.101] [Debug_Mode] 
+[ZombieType: Driver_a] Prefab: Driver_a
+[18:00:53.101] [Debug_Mode]   -> Clip: idle
+[18:00:53.101] [Debug_Mode]   -> Clip: die
+[18:00:53.101] [Debug_Mode]   -> Clip: walk
+[18:00:53.101] [Debug_Mode]   -> Clip: shake
+[18:00:53.101] [Debug_Mode] 
+[ZombieType: Driver_b] Prefab: Driver_b
+[18:00:53.101] [Debug_Mode]   -> Clip: idle
+[18:00:53.101] [Debug_Mode]   -> Clip: die
+[18:00:53.101] [Debug_Mode]   -> Clip: walk
+[18:00:53.101] [Debug_Mode]   -> Clip: shake
+[18:00:53.101] [Debug_Mode] 
+[ZombieType: Driver_c] Prefab: Driver_c
+[18:00:53.101] [Debug_Mode]   -> Clip: idle
+[18:00:53.101] [Debug_Mode]   -> Clip: die
+[18:00:53.101] [Debug_Mode]   -> Clip: walk
+[18:00:53.101] [Debug_Mode]   -> Clip: shake
+[18:00:53.102] [Debug_Mode] 
+[ZombieType: Jackbox_a] Prefab: Jackbox_a
+[18:00:53.102] [Debug_Mode]   -> Clip: idle
+[18:00:53.102] [Debug_Mode]   -> Clip: walk
+[18:00:53.102] [Debug_Mode]   -> Clip: attack
+[18:00:53.102] [Debug_Mode]   -> Clip: die
+[18:00:53.106] [Debug_Mode]   -> Clip: jump
+[18:00:53.106] [Debug_Mode]   -> Clip: jump2
+[18:00:53.106] [Debug_Mode] 
+[ZombieType: Jackbox_b] Prefab: Jackbox_b
+[18:00:53.106] [Debug_Mode]   -> Clip: idle
+[18:00:53.106] [Debug_Mode]   -> Clip: walk
+[18:00:53.106] [Debug_Mode]   -> Clip: attack
+[18:00:53.106] [Debug_Mode]   -> Clip: die
+[18:00:53.106] [Debug_Mode]   -> Clip: jump
+[18:00:53.106] [Debug_Mode]   -> Clip: jump2
+[18:00:53.106] [Debug_Mode] 
+[ZombieType: Jackbox_c] Prefab: Jackbox_c
+[18:00:53.106] [Debug_Mode]   -> Clip: idle
+[18:00:53.106] [Debug_Mode]   -> Clip: walk
+[18:00:53.106] [Debug_Mode]   -> Clip: attack
+[18:00:53.106] [Debug_Mode]   -> Clip: die
+[18:00:53.106] [Debug_Mode]   -> Clip: jump
+[18:00:53.107] [Debug_Mode]   -> Clip: jump2
+[18:00:53.108] [Debug_Mode] 
+[ZombieType: Kirov_a] Prefab: Kirov_a
+[18:00:53.108] [Debug_Mode]   -> Clip: idle
+[18:00:53.108] [Debug_Mode]   -> Clip: walk
+[18:00:53.108] [Debug_Mode]   -> Clip: crash
+[18:00:53.108] [Debug_Mode]   -> Clip: shoot
+[18:00:53.108] [Debug_Mode] 
+[ZombieType: Kirov_b] Prefab: Kirov_b
+[18:00:53.108] [Debug_Mode]   -> Clip: idle
+[18:00:53.108] [Debug_Mode]   -> Clip: walk
+[18:00:53.108] [Debug_Mode]   -> Clip: crash
+[18:00:53.108] [Debug_Mode]   -> Clip: shoot
+[18:00:53.108] [Debug_Mode] 
+[ZombieType: Kirov_c] Prefab: Kirov_c
+[18:00:53.108] [Debug_Mode]   -> Clip: idle
+[18:00:53.108] [Debug_Mode]   -> Clip: walk
+[18:00:53.108] [Debug_Mode]   -> Clip: crash
+[18:00:53.108] [Debug_Mode]   -> Clip: shoot
+[18:00:53.109] [Debug_Mode]   -> Clip: flame
+[18:00:53.109] [Debug_Mode] 
+[ZombieType: EternalZombie_a] Prefab: EternalZombie_a
+[18:00:53.109] [Debug_Mode]   -> Clip: idle
+[18:00:53.109] [Debug_Mode]   -> Clip: walk
+[18:00:53.109] [Debug_Mode]   -> Clip: attack2
+[18:00:53.109] [Debug_Mode]   -> Clip: attack
+[18:00:53.109] [Debug_Mode]   -> Clip: die
+[18:00:53.109] [Debug_Mode]   -> Clip: shake
+[18:00:53.109] [Debug_Mode] 
+[ZombieType: EternalZombie_b] Prefab: EternalZombie_b
+[18:00:53.109] [Debug_Mode]   -> Clip: idle
+[18:00:53.109] [Debug_Mode]   -> Clip: walk
+[18:00:53.109] [Debug_Mode]   -> Clip: attack2
+[18:00:53.110] [Debug_Mode]   -> Clip: attack
+[18:00:53.110] [Debug_Mode]   -> Clip: die
+[18:00:53.110] [Debug_Mode]   -> Clip: shake
+[18:00:53.110] [Debug_Mode] 
+[ZombieType: EternalZombie_c] Prefab: EternalZombie_c
+[18:00:53.110] [Debug_Mode]   -> Clip: idle
+[18:00:53.110] [Debug_Mode]   -> Clip: walk
+[18:00:53.110] [Debug_Mode]   -> Clip: attack
+[18:00:53.110] [Debug_Mode]   -> Clip: die
+[18:00:53.110] [Debug_Mode]   -> Clip: skill
+[18:00:53.110] [Debug_Mode]   -> Clip: skilling
+[18:00:53.110] [Debug_Mode]   -> Clip: shake
+[18:00:53.110] [Debug_Mode] 
+[ZombieType: Drownpult_a] Prefab: Drownpult_a
+[18:00:53.110] [Debug_Mode]   -> Clip: idle
+[18:00:53.110] [Debug_Mode]   -> Clip: crash
+[18:00:53.110] [Debug_Mode]   -> Clip: walk2
+[18:00:53.110] [Debug_Mode]   -> Clip: walk
+[18:00:53.110] [Debug_Mode]   -> Clip: attack
+[18:00:53.111] [Debug_Mode]   -> Clip: reload
+[18:00:53.111] [Debug_Mode]   -> Clip: shack
+[18:00:53.111] [Debug_Mode] 
+[ZombieType: Drownpult_b] Prefab: Drownpult_b
+[18:00:53.111] [Debug_Mode]   -> Clip: idle
+[18:00:53.111] [Debug_Mode]   -> Clip: crash
+[18:00:53.111] [Debug_Mode]   -> Clip: walk2
+[18:00:53.111] [Debug_Mode]   -> Clip: walk
+[18:00:53.111] [Debug_Mode]   -> Clip: attack
+[18:00:53.111] [Debug_Mode]   -> Clip: reload
+[18:00:53.111] [Debug_Mode]   -> Clip: shack
+[18:00:53.111] [Debug_Mode] 
+[ZombieType: Drownpult_c] Prefab: Drownpult_c
+[18:00:53.111] [Debug_Mode]   -> Clip: idle
+[18:00:53.111] [Debug_Mode]   -> Clip: crash
+[18:00:53.111] [Debug_Mode]   -> Clip: walk2
+[18:00:53.111] [Debug_Mode]   -> Clip: walk
+[18:00:53.111] [Debug_Mode]   -> Clip: attack
+[18:00:53.111] [Debug_Mode]   -> Clip: reload
+[18:00:53.111] [Debug_Mode]   -> Clip: shack
+[18:00:53.111] [Debug_Mode] 
+[ZombieType: ElephantZombie_a] Prefab: ElephantZombie_a
+[18:00:53.112] [Debug_Mode]   -> Clip: idle
+[18:00:53.112] [Debug_Mode]   -> Clip: walk
+[18:00:53.112] [Debug_Mode]   -> Clip: attack
+[18:00:53.112] [Debug_Mode]   -> Clip: die
+[18:00:53.112] [Debug_Mode]   -> Clip: attack2
+[18:00:53.112] [Debug_Mode] 
+[ZombieType: ElephantZombie_b] Prefab: ElephantZombie_b
+[18:00:53.112] [Debug_Mode]   -> Clip: idle
+[18:00:53.112] [Debug_Mode]   -> Clip: walk
+[18:00:53.112] [Debug_Mode]   -> Clip: attack
+[18:00:53.112] [Debug_Mode]   -> Clip: die
+[18:00:53.112] [Debug_Mode]   -> Clip: attack2
+[18:00:53.112] [Debug_Mode] 
+[ZombieType: ElephantZombie_c] Prefab: ElephantZombie_c
+[18:00:53.112] [Debug_Mode]   -> Clip: idle
+[18:00:53.112] [Debug_Mode]   -> Clip: walk
+[18:00:53.112] [Debug_Mode]   -> Clip: attack
+[18:00:53.112] [Debug_Mode]   -> Clip: die
+[18:00:53.112] [Debug_Mode]   -> Clip: attack2
+[18:00:53.112] [Debug_Mode] 
+=== Bulk Animation Dump Complete ===
+[18:00:55.613] [Magnetar_AutoSave] Saved profile data.
+[18:00:59.502] [Magnetar_Debugger] Preferences Saved!
+[18:01:07.042] Preferences Saved!

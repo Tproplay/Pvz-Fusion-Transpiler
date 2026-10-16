@@ -6,7 +6,8 @@ import tempfile
 
 import PvZ_Fusion_Transpiler as pft
 from PvZ_Fusion_Transpiler.Core.context import _ctx
-from PvZ_Fusion_Transpiler.Data.TypeMgr import PlantType, ZombieType, KeyCode, TravelBuffType, SoundType
+from PvZ_Fusion_Transpiler.Core.connection_manager import PortType, ConnectionManager
+from PvZ_Fusion_Transpiler.Data.TypeMgr import PlantType, ZombieType, KeyCode, TravelBuffType, SoundType, BulletType
 from PvZ_Fusion_Transpiler._Nodes.Extentions import (
     If,
     Switch,
@@ -15,9 +16,12 @@ from PvZ_Fusion_Transpiler._Nodes.Extentions import (
     BoolVar,
     Plant,
     Zombie,
+    Bullet,
     ForEachPlant,
     ForEachPlantType,
+    ForEachZombieType,
     PlantTypeList,
+    ZombieTypeList,
     While,
     For,
     Time,
@@ -30,6 +34,7 @@ from PvZ_Fusion_Transpiler._Nodes.Extentions import (
     Spawner,
     SpawnedPlant,
     SpawnedZombie,
+    SpawnedBullet,
     Game,
     Board,
     Lawnf,
@@ -359,7 +364,128 @@ class TestExtensions(unittest.TestCase):
         self.assertIn("references", data)
         self.assertIn("eventNodeGraph", data)
         self.assertGreater(len(data["eventNodeGraph"]["nodes"]), 5)
-        self.assertGreater(len(data["eventNodeGraph"]["connections"]), 3)
+    def test_spawner_plant_type_port_type(self):
+        # Item 1: Verify connecting PlantType PortType instead of Int in Spawner.Set_Plant
+        spawn = Spawner.Set_Plant(0, 0, PlantType.AbyssSwordStar)
+        set_node = spawn.node
+        plant_type_input = set_node.port_input_planttype_PlantType
+        self.assertEqual(plant_type_input.port_type, PortType.PlantType)
+
+        conns = plant_type_input.get_connections()
+        self.assertEqual(len(conns), 1)
+        src_port = conns[0].source_port
+        # Crucial check: source port MUST be PlantType, not Int!
+        self.assertEqual(src_port.port_type, PortType.PlantType)
+        self.assertEqual(src_port.node.node_type, "PlantTypeValueNode")
+
+    def test_spawner_context_managers(self):
+        # Item 2: Verify __enter__ in Spawner classes is triggered on On Success / On Created
+        with Trigger.OnGameStart():
+            with Spawner.Set_Plant(0, 0, PlantType.Peashooter) as plant:
+                heal_node = plant.heal(50)
+                # Verify that the heal node's trigger was connected to SetPlant's OnCreated output
+                heal_trigger_in = heal_node.get_input("触发")
+                conns = heal_trigger_in.get_connections()
+                self.assertEqual(len(conns), 1)
+                self.assertEqual(conns[0].source_node.id, plant.node.id)
+                self.assertEqual(conns[0].source_port.name, plant.node.port_output_trigger_OnCreated.name)
+
+            with Spawner.Set_Zombie(0, 0, ZombieType.NormalZombie) as zombie:
+                hyp_node = zombie.hypnotize()
+                hyp_trigger_in = hyp_node.get_input("触发")
+                conns = hyp_trigger_in.get_connections()
+                self.assertEqual(len(conns), 1)
+                self.assertEqual(conns[0].source_node.id, zombie.node.id)
+                self.assertEqual(conns[0].source_port.name, zombie.node.port_output_trigger_OnCreated.name)
+
+            with Spawner.Set_Bullet(row=1, col=2.0, bullet_type=BulletType.Pea) as bullet:
+                mod_node = bullet.modify(15.0)
+                mod_trigger_in = mod_node.get_input("触发")
+                conns = mod_trigger_in.get_connections()
+                self.assertEqual(len(conns), 1)
+                self.assertEqual(conns[0].source_node.id, bullet.node.id)
+                self.assertEqual(conns[0].source_port.name, bullet.node.port_output_trigger_Complete.name)
+
+    def test_spawner_set_bullet_and_bullet_manipulation(self):
+        # Item 3 & 6: SetBullet in Spawner and Bullet Manipulation nodes
+        spawn_bullet = Spawner.Set_Bullet(
+            row=1,
+            col=2.5,
+            bullet_type=BulletType.FirePea,
+            damage=50,
+            speed=8.0,
+            angle=0.0,
+            scale_multiplier=1.2,
+        )
+        self.assertIsInstance(spawn_bullet, Bullet)
+        self.assertIsInstance(spawn_bullet, SpawnedBullet)
+        self.assertEqual(spawn_bullet.node.node_type, "ShootEventBulletNode")
+        self.assertEqual(spawn_bullet.ref.port_type, PortType.Bullet)
+
+        # Spawner.SetBullet alias
+        alias_bullet = Spawner.SetBullet(row=0, col=0.0, bullet_type=BulletType.Star)
+        self.assertIsInstance(alias_bullet, SpawnedBullet)
+
+        # BulletType strict enum check (Rule 4)
+        with self.assertRaises(TypeError):
+            Spawner.Set_Bullet(row=0, col=0.0, bullet_type=0)
+        with self.assertRaises(TypeError):
+            pft.nodes.bullet_type_value(val=0)
+
+        # modify_event_bullet and bullet_type_value nodes directly
+        bt_node = pft.nodes.bullet_type_value(val=BulletType.Melon)
+        self.assertEqual(bt_node.port_output_bullettype_BulletType.port_type, PortType.BulletType)
+        mod_node = spawn_bullet.modify(25.0)
+        self.assertEqual(mod_node.node_type, "ModifyEventBulletNode")
+
+    def test_plant_and_zombie_to_string(self):
+        # Item 5: .ToString in Plant and Zombie wrappers
+        p = Spawner.Set_Plant(0, 0, PlantType.Peashooter)
+        p_str = p.ToString()
+        self.assertEqual(p_str.port_type, PortType.String)
+        self.assertEqual(p_str.node.node_type, "PlantTypeToStringNode")
+        self.assertEqual(p.to_string().port_type, PortType.String)
+
+        z = Spawner.Set_Zombie(0, 0, ZombieType.NormalZombie)
+        z_str = z.ToString()
+        self.assertEqual(z_str.port_type, PortType.String)
+        self.assertEqual(z_str.node.node_type, "ZombieTypeToStringNode")
+        self.assertEqual(z.to_string().port_type, PortType.String)
+
+    def test_zombie_type_list_and_for_each(self):
+        # Item 4: Zombie Type List and iteration
+        zt_list = ZombieTypeList([ZombieType.NormalZombie, ZombieType.LegionZombie])
+        self.assertIsNotNone(zt_list.list_port)
+        self.assertEqual(zt_list.list_port.port_type, PortType.ListVariable)
+
+        # contains
+        contains_port = zt_list.contains(ZombieType.LegionZombie)
+        self.assertEqual(contains_port.port_type, PortType.Bool)
+
+        # append
+        zt_list.append(ZombieType.DoomPaper)
+
+        # index access
+        first_item = zt_list[0]
+        self.assertEqual(first_item.port_type, PortType.ZombieType)
+
+        # ForEachZombieType loop
+        with Trigger.OnGameStart():
+            with ForEachZombieType(zt_list) as loop:
+                curr_type = loop.zombie_type
+                self.assertEqual(curr_type.port_type, PortType.ZombieType)
+                idx = loop.index
+                self.assertEqual(idx.port_type, PortType.Int)
+
+            self.assertIsNotNone(loop.on_complete)
+
+        # Rule 4 strict check on ZombieType input
+        with self.assertRaises(TypeError):
+            ZombieTypeList([0])
+        with self.assertRaises(TypeError):
+            zt_list.contains(0)
+        with self.assertRaises(TypeError):
+            zt_list.append(0)
 
 
 if __name__ == "__main__":

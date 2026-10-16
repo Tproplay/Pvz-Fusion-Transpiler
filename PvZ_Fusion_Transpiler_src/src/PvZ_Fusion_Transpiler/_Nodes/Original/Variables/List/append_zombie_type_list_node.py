@@ -2,7 +2,7 @@ from ...node import Node, EventNodeBase, EventSuggestedNode, PortDirection, Port
 
 
 class AppendZombieTypeListNode(EventSuggestedNode):
-    # Status in Extensions: Not implemented
+    # Status in Extensions: Implemented
     node_type = "AppendZombieTypeListNode"
 
     def __init__(self):

@@ -6,6 +6,7 @@ from typing import Any
 from ....Core.context import _ctx
 from ..Abstract.execution_path import ExecutionPath
 from .... import nodes
+from ....typing import to_port
 
 
 class PlantTypeList:
@@ -68,15 +69,14 @@ class PlantTypeList:
         return self
 
     def _contains_single(self, target_type: Any) -> Any:
-        raw_target = target_type.value if hasattr(target_type, "value") else target_type
-        if isinstance(raw_target, int):
-            target_port = nodes.plant_type_value(val=raw_target).port_output_planttype_PlantType
-        elif hasattr(raw_target, "_get_primary_port"):
-            target_port = raw_target._get_primary_port()
-        elif hasattr(raw_target, "value"):
-            target_port = raw_target.value
+        if isinstance(target_type, (int, float)) and not isinstance(target_type, Enum):
+            raise TypeError("PlantType must be handled through the PlantType enum, direct int input is not allowed.")
+        if isinstance(target_type, Enum):
+            target_port = nodes.plant_type_value(val=target_type).port_output_planttype_PlantType
+        elif hasattr(target_type, "_get_primary_port"):
+            target_port = target_type._get_primary_port()
         else:
-            target_port = raw_target
+            target_port = to_port(target_type)
 
         parent_trigger = _ctx.trigger_stack[-1] if _ctx.trigger_stack else None
 

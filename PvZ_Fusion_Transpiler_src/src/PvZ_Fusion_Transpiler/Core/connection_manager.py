@@ -55,24 +55,24 @@ class Port:
             out_p = self if self.direction == PortDirection.Output else other_port
             in_p = other_port if self.direction == PortDirection.Output else self
             int_enum_pairs = {
-                (PortType.Int, PortType.PlantType),
-                (PortType.PlantType, PortType.Int),
-                (PortType.Int, PortType.ZombieType),
-                (PortType.ZombieType, PortType.Int),
+                (PortType.ListVariable, PortType.ZombieTypeList),
+                (PortType.ZombieTypeList, PortType.ListVariable),
+                (PortType.ListVariable, PortType.PlantTypeList),
+                (PortType.PlantTypeList, PortType.ListVariable),
             }
             if (out_p.port_type, in_p.port_type) in int_enum_pairs:
                 pass
             elif out_p.port_type == PortType.Int and in_p.port_type == PortType.Float:
                 from .._Nodes.Original.TypeConvert.int_to_float_node import IntToFloatNode
                 conv = IntToFloatNode()
-                out_p.connect(conv.port_input_int_IntValue)
-                conv.port_output_float_FloatValue.connect(in_p)
+                out_p.connect(conv.port_input_int_Int)
+                conv.port_output_float_Float.connect(in_p)
                 return
             elif out_p.port_type == PortType.Float and in_p.port_type == PortType.Int:
                 from .._Nodes.Original.TypeConvert.float_to_int_node import FloatToIntNode
                 conv = FloatToIntNode()
-                out_p.connect(conv.port_input_float_FloatValue)
-                conv.port_output_int_IntValue.connect(in_p)
+                out_p.connect(conv.port_input_float_Float)
+                conv.port_output_int_Int.connect(in_p)
                 return
             else:
                 raise ValueError(f"Cannot connect ports with different types: {self.port_type.name} and {other_port.port_type.name}.")
@@ -83,8 +83,8 @@ class Port:
 
     def get_connections(self):
         return [conn for conn in ConnectionManager.get_connections() 
-                if (conn.source_node == self.node and conn.source_port == self) or 
-                   (conn.target_node == self.node and conn.target_port == self)]
+                if (conn.source_node is self.node and conn.source_port is self) or 
+                   (conn.target_node is self.node and conn.target_port is self)]
 
     def _is_float_port(self) -> bool:
         return self.port_type in (PortType.Float, PortType.FloatVariable)

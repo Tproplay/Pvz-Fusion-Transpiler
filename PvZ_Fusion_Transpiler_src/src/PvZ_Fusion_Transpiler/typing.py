@@ -36,6 +36,30 @@ def to_port(val: Any) -> Port:
     if isinstance(val, Port):
         return val
 
+    from ._Nodes.Original.node import Node
+
+    if isinstance(val, Node):
+        for attr in (
+            "port_output_planttype_PlantType",
+            "port_output_zombietype_ZombieType",
+            "port_output_bullettype_BulletType",
+            "port_output_int_Value",
+            "port_output_float_Value",
+            "port_output_bool_Value",
+            "port_output_string_Value",
+            "port_output_plant_Plant",
+            "port_output_zombie_Zombie",
+            "port_output_bullet_Bullet",
+        ):
+            if hasattr(val, attr):
+                return getattr(val, attr)
+        non_trigger_outs = [
+            p for p in getattr(val, "ports", [])
+            if p.direction == PortDirection.Output and p.port_type != PortType.Trigger
+        ]
+        if len(non_trigger_outs) == 1:
+            return non_trigger_outs[0]
+
     if hasattr(val, "_get_primary_port"):
         p = val._get_primary_port() if callable(val._get_primary_port) else val._get_primary_port
         if p is not None:
@@ -47,7 +71,7 @@ def to_port(val: Any) -> Port:
     if hasattr(val, "port") and isinstance(val.port, Port):
         return val.port
 
-    if hasattr(val, "value") and not isinstance(val, (int, float, bool, str, Enum)):
+    if hasattr(val, "value") and not isinstance(val, (int, float, bool, str, Enum, Node)):
         return to_port(val.value)
 
     if isinstance(val, bool):
@@ -69,13 +93,16 @@ def to_port(val: Any) -> Port:
     if isinstance(val, Enum):
         from ._Nodes.Original.PlantFunction.plant_type_value_node import PlantTypeValueNode
         from ._Nodes.Original.ZombieFunction.zombie_type_value_node import ZombieTypeValueNode
+        from ._Nodes.Original.BulletManipulation.bullet_type_value_node import BulletTypeValueNode
         from ._Nodes.Original.Constants.int_value_node import IntValueNode
 
-        val_num = int(val.value) if hasattr(val, "value") else 0
         if val.__class__.__name__ == "PlantType":
-            return PlantTypeValueNode(value=val_num).port_output_planttype_PlantType
+            return PlantTypeValueNode(plant_type=val).port_output_planttype_PlantType
         elif val.__class__.__name__ == "ZombieType":
-            return ZombieTypeValueNode(value=val_num).port_output_zombietype_ZombieType
+            return ZombieTypeValueNode(zombie_type=val).port_output_zombietype_ZombieType
+        elif val.__class__.__name__ == "BulletType":
+            return BulletTypeValueNode(bullet_type=val).port_output_bullettype_BulletType
+        val_num = int(val.value) if hasattr(val, "value") else 0
         return IntValueNode(value=val_num).port_output_int_Value
 
     raise TypeError(f"Cannot coerce object of type '{type(val).__name__}' to a Port: {val!r}")
@@ -83,6 +110,9 @@ def to_port(val: Any) -> Port:
 
 def to_int_port(val: Any) -> Port:
     """Converts a raw value, variable, or node port into a valid integer output port."""
+    if isinstance(val, (int, float)) and not isinstance(val, bool):
+        from ._Nodes.Original.Constants.int_value_node import IntValueNode
+        return IntValueNode(value=int(val)).port_output_int_Value
     port = to_port(val)
     if port.port_type in (PortType.Float, PortType.FloatVariable):
         from ._Nodes.Original.TypeConvert.float_to_int_node import FloatToIntNode
@@ -94,6 +124,9 @@ def to_int_port(val: Any) -> Port:
 
 def to_float_port(val: Any) -> Port:
     """Converts a raw value, variable, or node port into a valid float output port."""
+    if isinstance(val, (int, float)) and not isinstance(val, bool):
+        from ._Nodes.Original.Constants.float_value_node import FloatValueNode
+        return FloatValueNode(value=float(val)).port_output_float_Value
     port = to_port(val)
     if port.port_type in (PortType.Int, PortType.IntVariable):
         from ._Nodes.Original.TypeConvert.int_to_float_node import IntToFloatNode
@@ -135,7 +168,18 @@ def to_string_port(val: Any) -> Port:
         port.connect(conv.port_input_float_Value)
         dec.port_output_int_Value.connect(conv.port_input_int_Decimals)
         return conv.port_output_string_String
+    elif port.port_type == PortType.PlantType:
+        from ._Nodes.Original.TypeConvert.plant_type_to_string_node import PlantTypeToStringNode
+        conv = PlantTypeToStringNode()
+        port.connect(conv.port_input_planttype_Value)
+        return conv.port_output_string_String
+    elif port.port_type == PortType.ZombieType:
+        from ._Nodes.Original.TypeConvert.zombie_type_to_string_node import ZombieTypeToStringNode
+        conv = ZombieTypeToStringNode()
+        port.connect(conv.port_input_zombietype_Value)
+        return conv.port_output_string_String
     return port
+
 
 
 __all__ = [

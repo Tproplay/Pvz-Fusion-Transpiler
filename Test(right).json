@@ -159,17 +159,7 @@
             },
             {
                 "rid": 1004
-            }
-        ],
-        "connections": [
-            {
-                "sourceNodeId": "",
-                "sourcePortName": "",
-                "targetNodeId": "",
-                "targetPortName": ""
-            }
-        ],
-        "variables": [
+            },
             {
                 "rid": 1005
             },
@@ -178,11 +168,59 @@
             },
             {
                 "rid": 1007
-            },
-            {
-                "rid": 1008
             }
         ],
+        "connections": [
+            {
+                "sourceNodeId": "",
+                "sourcePortName": "",
+                "targetNodeId": "",
+                "targetPortName": ""
+            },
+            {
+                "sourceNodeId": "0fe01939-03cc-40e8-a03a-c7405ea48703",
+                "sourcePortName": "触发",
+                "targetNodeId": "e63fce79-406d-4095-be4b-3ef32b7f752c",
+                "targetPortName": "触发"
+            },
+            {
+                "sourceNodeId": "adf4fe2b-219b-4e7b-931e-71bbe5da949a",
+                "sourcePortName": "子弹类型",
+                "targetNodeId": "e63fce79-406d-4095-be4b-3ef32b7f752c",
+                "targetPortName": "子弹类型"
+            },
+            {
+                "sourceNodeId": "cd006984-b821-4ded-90aa-f6aa887ec204",
+                "sourcePortName": "值",
+                "targetNodeId": "e63fce79-406d-4095-be4b-3ef32b7f752c",
+                "targetPortName": "在鼠标处"
+            },
+            {
+                "sourceNodeId": "5828609a-1e20-4307-a801-3c666e8ab2b1",
+                "sourcePortName": "值",
+                "targetNodeId": "e63fce79-406d-4095-be4b-3ef32b7f752c",
+                "targetPortName": "行"
+            },
+            {
+                "sourceNodeId": "78ae2725-91bf-46ca-91af-98491b6c3f2e",
+                "sourcePortName": "值",
+                "targetNodeId": "3c9489a3-068c-4db3-8cc1-907e85776969",
+                "targetPortName": "整数"
+            },
+            {
+                "sourceNodeId": "3c9489a3-068c-4db3-8cc1-907e85776969",
+                "sourcePortName": "浮点数",
+                "targetNodeId": "e63fce79-406d-4095-be4b-3ef32b7f752c",
+                "targetPortName": "列"
+            },
+            {
+                "sourceNodeId": "136e113a-80e3-4cf3-a2f7-6e32b2ee2ede",
+                "sourcePortName": "值",
+                "targetNodeId": "e63fce79-406d-4095-be4b-3ef32b7f752c",
+                "targetPortName": "僵尸阵营"
+            }
+        ],
+        "variables": [],
         "groups": [],
         "executionVersion": 1,
         "graphId": "15eceb77f0b344b29bd70bf4d8042692"
@@ -214,45 +252,62 @@
             {
                 "rid": 1000,
                 "type": {
-                    "class": "IntValueNode",
+                    "class": "OnKeyPressNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "97a43ddd-8c45-4e5c-b554-60b93dfb0429",
-                    "nodeType": "IntValueNode",
+                    "nodeId": "0fe01939-03cc-40e8-a03a-c7405ea48703",
+                    "nodeType": "OnKeyPressNode",
                     "position": {
-                        "x": -381.88897705078127,
-                        "y": 391.0398254394531
+                        "x": -800.0,
+                        "y": 400.0
                     },
-                    "nodeName": "IntValueNode",
-                    "value": 1,
-                    "value_PortName": "值"
+                    "nodeName": "OnKeyPressNode",
+                    "targetKey": 119,
+                    "trigger_PortName": "触发"
                 }
             },
             {
                 "rid": 1001,
                 "type": {
-                    "class": "FloatValueNode",
+                    "class": "BulletTypeValueNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "3c2d314c-2a5b-4356-8d92-96b474c67f82",
-                    "nodeType": "FloatValueNode",
+                    "nodeId": "adf4fe2b-219b-4e7b-931e-71bbe5da949a",
+                    "nodeType": "BulletTypeValueNode",
                     "position": {
-                        "x": -181.88897705078126,
-                        "y": 371.0398254394531
+                        "x": -560.0,
+                        "y": 400.0
                     },
-                    "nodeName": "FloatValueNode",
-                    "value": 3.0,
-                    "value_PortName": "值"
+                    "nodeName": "BulletTypeValueNode",
+                    "bulletType": 71
                 }
             },
             {
                 "rid": 1002,
+                "type": {
+                    "class": "ShootEventBulletNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "e63fce79-406d-4095-be4b-3ef32b7f752c",
+                    "nodeType": "ShootEventBulletNode",
+                    "position": {
+                        "x": -320.0,
+                        "y": 400.0
+                    },
+                    "nodeName": "ShootEventBulletNode"
+                }
+            },
+            {
+                "rid": 1003,
                 "type": {
                     "class": "BoolValueNode",
                     "ns": "GameLevel.EventNodes",
@@ -260,11 +315,11 @@
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "a9a7305f-741a-4839-ba11-8041067b1e40",
+                    "nodeId": "cd006984-b821-4ded-90aa-f6aa887ec204",
                     "nodeType": "BoolValueNode",
                     "position": {
-                        "x": -310.222412109375,
-                        "y": 238.53982543945313
+                        "x": -800.0,
+                        "y": 240.0
                     },
                     "nodeName": "BoolValueNode",
                     "value": false,
@@ -272,103 +327,83 @@
                 }
             },
             {
-                "rid": 1003,
-                "type": {
-                    "class": "StringValueNode",
-                    "ns": "GameLevel.EventNodes",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "inputDefaults": [],
-                    "nodeId": "c74c5840-4e15-4db2-a721-8c8c0a80c263",
-                    "nodeType": "StringValueNode",
-                    "position": {
-                        "x": -14.388969421386719,
-                        "y": 345.2064514160156
-                    },
-                    "nodeName": "StringValueNode",
-                    "value": "默认文本",
-                    "value_PortName": "值"
-                }
-            },
-            {
                 "rid": 1004,
                 "type": {
-                    "class": "IntVariableNode",
+                    "class": "IntValueNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "c793f01e-4c4c-451d-bc36-06a556a2d816",
-                    "nodeType": "IntVariableNode",
+                    "nodeId": "5828609a-1e20-4307-a801-3c666e8ab2b1",
+                    "nodeType": "IntValueNode",
                     "position": {
-                        "x": -250.50015258789063,
-                        "y": -4.960094451904297
+                        "x": -560.0,
+                        "y": 240.0
                     },
-                    "nodeName": "IntVariableNode",
-                    "asset": {
-                        "rid": 1005
-                    },
-                    "variable_PortName": "变量"
+                    "nodeName": "IntValueNode",
+                    "value": 2,
+                    "value_PortName": "值"
                 }
             },
             {
                 "rid": 1005,
                 "type": {
-                    "class": "IntVariableAsset",
+                    "class": "IntValueNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "name": "整数",
-                    "variableId": "5e853522ed8844a9aa56aeb0e0c760ca",
-                    "referencedNodeIds": [
-                        "c793f01e-4c4c-451d-bc36-06a556a2d816"
-                    ],
-                    "value": 0
+                    "inputDefaults": [],
+                    "nodeId": "78ae2725-91bf-46ca-91af-98491b6c3f2e",
+                    "nodeType": "IntValueNode",
+                    "position": {
+                        "x": -320.0,
+                        "y": 240.0
+                    },
+                    "nodeName": "IntValueNode",
+                    "value": 0,
+                    "value_PortName": "值"
                 }
             },
             {
                 "rid": 1006,
                 "type": {
-                    "class": "FloatVariableAsset",
+                    "class": "IntToFloatNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "name": "浮点数",
-                    "variableId": "9842e16502404002a966a3e0ef144110",
-                    "referencedNodeIds": [],
-                    "value": 0.0
+                    "inputDefaults": [],
+                    "nodeId": "3c9489a3-068c-4db3-8cc1-907e85776969",
+                    "nodeType": "IntToFloatNode",
+                    "position": {
+                        "x": -800.0,
+                        "y": 80.0
+                    },
+                    "nodeName": "IntToFloatNode",
+                    "int_PortName": "整数",
+                    "float_PortName": "浮点数"
                 }
             },
             {
                 "rid": 1007,
                 "type": {
-                    "class": "BoolVariableAsset",
+                    "class": "BoolValueNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
-                    "name": "布尔值",
-                    "variableId": "fc8e87a8f12345a79e8436c9efbc1b35",
-                    "referencedNodeIds": [],
-                    "value": false
-                }
-            },
-            {
-                "rid": 1008,
-                "type": {
-                    "class": "StringVariableAsset",
-                    "ns": "GameLevel.EventNodes",
-                    "asm": "Assembly-CSharp"
-                },
-                "data": {
-                    "name": "字符串",
-                    "variableId": "3c6d7d08ad394bb3aa51ab30f76f844e",
-                    "referencedNodeIds": [],
-                    "value": ""
+                    "inputDefaults": [],
+                    "nodeId": "136e113a-80e3-4cf3-a2f7-6e32b2ee2ede",
+                    "nodeType": "BoolValueNode",
+                    "position": {
+                        "x": -560.0,
+                        "y": 80.0
+                    },
+                    "nodeName": "BoolValueNode",
+                    "value": false,
+                    "value_PortName": "值"
                 }
             }
         ]

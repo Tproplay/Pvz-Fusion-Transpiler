@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from enum import Enum
 from typing import Any, Callable, List, Optional, TypeAlias, overload
 try:
     from typing import Self
@@ -7,7 +8,7 @@ except ImportError:
     from typing_extensions import Self  # type: ignore
 from ....Core.context import _ctx
 from ..Abstract.execution_path import ExecutionPath
-from ....Data.TypeMgr import PlantType, ZombieType
+from ...._Data.TypeMgr import PlantType, ZombieType
 from .... import nodes
 
 
@@ -23,28 +24,19 @@ class Option:
         title: str,
         description: str,
         callback: Optional[Callable[[], None]] = None,
-        plant_type: int | PlantType = 254,
-        zombie_type: int | ZombieType = -1,
+        plant_type: Any = None,
+        zombie_type: Any = None,
     ) -> None:
-        p_val = (
-            plant_type.value if isinstance(plant_type, PlantType) else plant_type
-        )
-        z_val = (
-            zombie_type.value
-            if isinstance(zombie_type, ZombieType)
-            else zombie_type
-        )
-
-        if p_val != -1 and p_val != 254 and z_val != -1:
-            z_val = -1
-        elif p_val == -1 and z_val == -1:
-            p_val = 254
+        if isinstance(plant_type, (int, float)) and not isinstance(plant_type, Enum):
+            raise TypeError("PlantType must be handled through the PlantType enum, direct int input is not allowed.")
+        if isinstance(zombie_type, (int, float)) and not isinstance(zombie_type, Enum):
+            raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
 
         self.title: str = title
         self.description: str = description
         self.callback: Optional[Callable[[], None]] = callback
-        self.plant_type: int = p_val
-        self.zombie_type: int = z_val
+        self.plant_type: Any = plant_type
+        self.zombie_type: Any = zombie_type
 
         self.node = nodes.add_multiple_choice_option(
             title=self.title,
@@ -140,10 +132,10 @@ class MultiSelectMenu:
                 args[2] if len(args) > 2 else kwargs.get("callback", None)
             )
             plant_type = (
-                args[3] if len(args) > 3 else kwargs.get("plant_type", 254)
+                args[3] if len(args) > 3 else kwargs.get("plant_type", None)
             )
             zombie_type = (
-                args[4] if len(args) > 4 else kwargs.get("zombie_type", -1)
+                args[4] if len(args) > 4 else kwargs.get("zombie_type", None)
             )
 
             opt = Option(
@@ -161,8 +153,8 @@ class MultiSelectMenu:
         self,
         title: str,
         description: str,
-        plant_type: int | PlantType = 254,
-        zombie_type: int | ZombieType = -1,
+        plant_type: Any = None,
+        zombie_type: Any = None,
     ) -> _OptionDecorator:
         def decorator(func: Callable[[], None]) -> Option:
             opt = Option(

@@ -23,10 +23,10 @@ class InGameUI:
         cost: Any = 100,
         use_default: Any = True,
     ) -> Any:
-        if isinstance(plant_type, int) and not isinstance(plant_type, Enum):
+        if isinstance(plant_type, (int, float)) and not isinstance(plant_type, Enum):
             raise TypeError("PlantType must be an Enum instance (e.g. PlantType.PEASHOOTER); direct int is not allowed.")
         if isinstance(plant_type, Enum):
-            plant_type = nodes.plant_type_value(val=int(plant_type.value))
+            plant_type = nodes.plant_type_value(val=plant_type)
         return nodes.add_plant_card(
             p_type=plant_type,
             cd=cooldown,
@@ -36,18 +36,18 @@ class InGameUI:
 
     @staticmethod
     def remove_plant_card(plant_type: Any) -> Any:
-        if isinstance(plant_type, int) and not isinstance(plant_type, Enum):
+        if isinstance(plant_type, (int, float)) and not isinstance(plant_type, Enum):
             raise TypeError("PlantType must be an Enum instance; direct int is not allowed.")
         if isinstance(plant_type, Enum):
-            plant_type = nodes.plant_type_value(val=int(plant_type.value))
+            plant_type = nodes.plant_type_value(val=plant_type)
         return nodes.delete_card_by_type(plant_type=plant_type)
 
     @staticmethod
     def spawn_dropped_card(row: Any, col: Any, plant_type: Any) -> Any:
-        if isinstance(plant_type, int) and not isinstance(plant_type, Enum):
+        if isinstance(plant_type, (int, float)) and not isinstance(plant_type, Enum):
             raise TypeError("PlantType must be an Enum instance; direct int is not allowed.")
         if isinstance(plant_type, Enum):
-            plant_type = nodes.plant_type_value(val=int(plant_type.value))
+            plant_type = nodes.plant_type_value(val=plant_type)
         return nodes.create_plant_card(row=row, column=col, plant_type=plant_type)
 
     @staticmethod
