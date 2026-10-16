@@ -473,11 +473,10 @@ def set_zombie_mind_controlled(zombie: Any = None, **kwargs: Any) -> SetZombieMi
     return node
 
 def play_zombie_anim(zombie: Any = None, animation_name: Any = "idle", **kwargs: Any) -> PlayZombieAnimNode:
-    node = PlayZombieAnimNode(**kwargs)
+    anim_name_str = getattr(animation_name, "value", str(animation_name)) if animation_name is not None else "idle"
+    node = PlayZombieAnimNode(animationName=kwargs.pop("animationName", anim_name_str), **kwargs)
     if zombie is not None:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
-    if animation_name is not None:
-        to_port(animation_name).connect(node.port_input_string_AnimationName)
     return node
 
 def on_board_start(**kwargs: Any) -> OnBoardStartNode:
@@ -551,7 +550,9 @@ def create_zombie(row: Any = None, column: Any = None, zombie_type: Any = None, 
     return node
 
 def add_multiple_choice_option(title: Any = None, description: Any = None, plant_type: Any = None, zombie_type: Any = None, **kwargs: Any) -> AddMultipleChoiceOptionNode:
-    node = AddMultipleChoiceOptionNode(**kwargs)
+    title_str = title if isinstance(title, str) else kwargs.pop("title", "选项")
+    desc_str = description if isinstance(description, str) else kwargs.pop("description", "选项描述")
+    node = AddMultipleChoiceOptionNode(title=title_str, description=desc_str, **kwargs)
     if _should_connect_arg(title):
         to_port(title).connect(node.port_input_string_Title)
     if _should_connect_arg(description):
@@ -874,8 +875,9 @@ def create_plant_card(row: Any = None, column: Any = None, plant_type: Any = Non
         to_port(plant_type).connect(node.port_input_planttype_PlantType)
     return node
 
-def show_text(text: Any = None, duration: Any = 3.0, **kwargs: Any) -> ShowTextNode:
-    node = ShowTextNode(**kwargs)
+def show_text(text: Any = None, duration: Any = 3.0, display_text: str = "示例文本", **kwargs: Any) -> ShowTextNode:
+    disp = kwargs.pop("displayText", kwargs.pop("display_text", display_text))
+    node = ShowTextNode(displayText=disp, **kwargs)
     if text is not None:
         to_string_port(text).connect(node.port_input_string_Text)
     if duration is not None:
@@ -1234,14 +1236,14 @@ def set_wave_countdown_paused(paused: Any = None, **kwargs: Any) -> SetWaveCount
         to_bool_port(paused).connect(node.port_input_bool_Pause)
     return node
 
-def change_stage(**kwargs: Any) -> ChangeStageNode:
-    return ChangeStageNode(**kwargs)
+def change_stage(stage_name: str = "战斗", **kwargs: Any) -> ChangeStageNode:
+    return ChangeStageNode(stageName=kwargs.pop("stageName", stage_name), **kwargs)
 
 def get_stage(**kwargs: Any) -> GetStageNode:
     return GetStageNode(**kwargs)
 
-def on_stage_enter(**kwargs: Any) -> OnStageEnterNode:
-    return OnStageEnterNode(**kwargs)
+def on_stage_enter(stage_name: str = "战斗", **kwargs: Any) -> OnStageEnterNode:
+    return OnStageEnterNode(stageName=kwargs.pop("stageName", stage_name), **kwargs)
 
 
 # =============================================================================
@@ -1434,23 +1436,23 @@ def zombie_to_object(zombie: Any = None, **kwargs: Any) -> ZombieToObjectNode:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     return node
 
-def bind_plant(plant: Any = None, **kwargs: Any) -> BindPlantNode:
-    node = BindPlantNode(**kwargs)
+def bind_plant(plant: Any = None, binding_name: str = "守护目标", **kwargs: Any) -> BindPlantNode:
+    node = BindPlantNode(bindingName=kwargs.pop("bindingName", binding_name), **kwargs)
     if plant is not None:
         to_port(plant).connect(node.port_input_plant_Plant)
     return node
 
-def bind_zombie(zombie: Any = None, **kwargs: Any) -> BindZombieNode:
-    node = BindZombieNode(**kwargs)
+def bind_zombie(zombie: Any = None, binding_name: str = "首领", **kwargs: Any) -> BindZombieNode:
+    node = BindZombieNode(bindingName=kwargs.pop("bindingName", binding_name), **kwargs)
     if zombie is not None:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     return node
 
-def get_bound_plant(**kwargs: Any) -> GetBoundPlantNode:
-    return GetBoundPlantNode(**kwargs)
+def get_bound_plant(binding_name: str = "守护目标", **kwargs: Any) -> GetBoundPlantNode:
+    return GetBoundPlantNode(bindingName=kwargs.pop("bindingName", binding_name), **kwargs)
 
-def get_bound_zombie(**kwargs: Any) -> GetBoundZombieNode:
-    return GetBoundZombieNode(**kwargs)
+def get_bound_zombie(binding_name: str = "首领", **kwargs: Any) -> GetBoundZombieNode:
+    return GetBoundZombieNode(bindingName=kwargs.pop("bindingName", binding_name), **kwargs)
 
 def bind_object(game_object: Any = None, name: Any = None, **kwargs: Any) -> BindObjectNode:
     node = BindObjectNode(**kwargs)

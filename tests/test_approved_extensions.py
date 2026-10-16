@@ -106,16 +106,14 @@ class TestApprovedExtensions(unittest.TestCase):
         self.assertIsNotNone(obj)
         self.assertIsNotNone(tool_type)
 
-        class DummyTool(Enum):
-            Shovel = 0
-
-        val = pft.nodes.tool_type_value(DummyTool.Shovel)
+        val = pft.nodes.tool_type_value(ToolType.Shovel)
+        self.assertIsNotNone(pft.Tool.is_held(ToolType.Hammer))
         self.assertIsNotNone(pft.Tool.is_held(val))
-        cd = pft.Tool.get_cooldown(val)
+        cd = pft.Tool.get_cooldown(ToolType.Glove)
         self.assertIsNotNone(cd.total_seconds)
         self.assertIsNotNone(cd.remaining_seconds)
         self.assertIsNotNone(cd.exists)
-        self.assertIsNotNone(pft.Tool.set_cooldown(val, ratio=0.5))
+        self.assertIsNotNone(pft.Tool.set_cooldown(ToolType.Shovel, ratio=0.5))
 
     # 9. StringVar
     def test_string_var(self):
@@ -171,6 +169,31 @@ class TestApprovedExtensions(unittest.TestCase):
         self.assertIsNotNone(pft.Float.Cast(10))
         self.assertIsNotNone(pft.String.Cast(100))
         self.assertIsNotNone(pft.Bool.Cast(1))
+
+    def test_string_members_in_extensions(self):
+        # WorldObject binding with custom names
+        p = pft.Spawner.Set_Plant(0, 0, PlantType.Peashooter)
+        node_bp = pft.WorldObject.bind_plant(p, name="VIP目标")
+        self.assertEqual(node_bp.bindingName, "VIP目标")
+        bound_p = pft.WorldObject.get_bound_plant(name="VIP目标")
+        self.assertIsNotNone(bound_p)
+
+        z = pft.Spawner.Set_Zombie(0, 0, ZombieType.NormalZombie)
+        node_bz = pft.WorldObject.bind_zombie(z, name="巨型首领")
+        self.assertEqual(node_bz.bindingName, "巨型首领")
+        bound_z = pft.WorldObject.get_bound_zombie(name="巨型首领")
+        self.assertIsNotNone(bound_z)
+
+        # Stage change and OnStageEnter
+        node_cs = pft.Game.Stage.change("终极决战")
+        self.assertEqual(node_cs.stageName, "终极决战")
+
+        with pft.Trigger.OnStageEnter("终极决战") as trigger:
+            self.assertIsNotNone(trigger)
+
+        # Zombie animation
+        anim_node = z.play_animation("run")
+        self.assertEqual(anim_node.animationName, "run")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,3120 @@
+﻿==================================================
+           EVENT NODES REFLECTION DUMP            
+           Generated: 10/16/2026 21:17:54             
+==================================================
+
+[Node Class]: Il2CppGameLevel.EventNodes.AddMultipleChoiceOptionNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] title = "选项"
+     - [Property] description = "选项描述"
+     - [Property] list_PortName = "选项列表"
+     - [Property] title_PortName = "标题"
+     - [Property] description_PortName = "描述"
+     - [Property] plantType_PortName = "植物类型"
+     - [Property] zombieType_PortName = "僵尸类型"
+     - [Property] optionSelected_PortName = "选项被点击"
+     - [Property] listSourcePort = null
+     - [Property] titleSourcePort = null
+     - [Property] descriptionSourcePort = null
+     - [Property] plantTypeSourcePort = null
+     - [Property] zombieTypeSourcePort = null
+     - [Property] nodeId = "9a5fe411-2e23-462b-8c86-d48650d0fbd2"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AddNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "A"
+     - [Property] b_PortName = "B"
+     - [Property] result_PortName = "结果"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "8bb5f9e4-f1f3-403c-904a-c89057ff233f"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AddPlantCardNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plantType_PortName = "植物类型"
+     - [Property] cooldown_PortName = "冷却时间"
+     - [Property] cost_PortName = "价格"
+     - [Property] useDefaultData_PortName = "使用默认数据"
+     - [Property] success_PortName = "添加成功"
+     - [Property] failed_PortName = "添加失败"
+     - [Property] onPlant_PortName = "种植时触发"
+     - [Property] plantedPlant_PortName = "种植的植物"
+     - [Property] plantTypeSourcePort = null
+     - [Property] cooldownSourcePort = null
+     - [Property] costSourcePort = null
+     - [Property] useDefaultDataSourcePort = null
+     - [Property] nodeId = "7bc90218-816d-4f58-b7af-c150f42468eb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AddZombieCardNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a58b8af6-bcc4-4a4f-a90e-e77d048becf1"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "僵尸类型", Type: ZombieType, Direction: Input
+        [2] Name: "价格", Type: Int, Direction: Input
+        [3] Name: "冷却秒数", Type: Float, Direction: Input
+        [4] Name: "立即可用", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "卡牌对象", Type: GameObject, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AndNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "条件A"
+     - [Property] b_PortName = "条件B"
+     - [Property] output_PortName = "结果"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "d6eb0b7f-e536-4254-aad6-34178cc564ef"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AppendBoolListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "95f2389d-905d-41ea-a78f-7810acb67ad2"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AppendFloatListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a41286e3-85fa-4efa-805f-1bbc84e56ff8"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AppendIntListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "371b6326-f0e8-40d0-bfe8-c6fb95e9a9ae"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AppendObjectListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "82e2bdb6-f8e8-42f3-83d2-0f1086bf0f79"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AppendPlantTypeListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a0af37ac-a079-4904-b427-6fb83398cfc5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: PlantType, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AppendStringListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "95319f6f-852b-42b1-8782-2939f6ec078a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AppendZombieTypeListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "2dd53088-bfd2-41a4-a183-b05857467833"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: ZombieType, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.AsciiToStringNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "ff88df47-edb6-4d07-b440-96fc6f1db49c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "ASCII码", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "字符串", Type: String, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.BindObjectNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "1a19b263-e67e-4914-927b-545736f0917e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "名称", Type: String, Direction: Input
+        [2] Name: "对象", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.BindPlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] bindingName = "守护目标"
+     - [Property] nodeId = "7728e2c9-8779-4aa9-a9b7-42bdb58dd476"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.BindZombieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] bindingName = "首领"
+     - [Property] nodeId = "7b347b28-c6f2-4197-8094-4aca48e45a20"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.BoolValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] value_PortName = "值"
+     - [Property] nodeId = "0c98cc17-c37e-4381-8e7a-a2860dc8320c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.BoolVariableNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] variable_PortName = "变量"
+     - [Property] nodeId = "84f718fd-64e1-4777-83ea-2fd8c00866f9"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.BranchNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] condition_PortName = "条件"
+     - [Property] then_PortName = "真（触发）"
+     - [Property] else_PortName = "假（停止）"
+     - [Property] conditionSourcePort = null
+     - [Property] nodeId = "13b77cde-b1d9-478f-bfa2-03d518f5165e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.BulletTypeValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "b8d79409-f5e4-4012-b1c7-8d49364f4ccb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "子弹类型", Type: BulletType, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ChangeEventMapNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] reason = null
+     - [Property] nodeId = "7e96740d-5830-4607-ae66-b38de663e235"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "失败原因", Type: String, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ChangeEventMusicNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "0bf4bd61-9df5-47ba-bfcf-d194e1c4f315"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ChangeStageNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] stageName = "战斗"
+     - [Property] nodeId = "fc65f4e6-ce93-435e-a8dc-6c2d072898cd"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ClearListValuesNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "1a6742f9-a9ce-4c66-8c5c-959b783cc85c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CompareFloatNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] valueA_PortName = "值A"
+     - [Property] valueB_PortName = "值B"
+     - [Property] greater_PortName = "大于"
+     - [Property] less_PortName = "小于"
+     - [Property] equal_PortName = "等于"
+     - [Property] valueASourcePort = null
+     - [Property] valueBSourcePort = null
+     - [Property] nodeId = "e6132a24-6b1e-4e2f-a70b-b457b8cb530e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CompareGameObjectNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] gameObjectA_PortName = "对象A"
+     - [Property] gameObjectB_PortName = "对象B"
+     - [Property] equal_PortName = "相同"
+     - [Property] gameObjectASourcePort = null
+     - [Property] gameObjectBSourcePort = null
+     - [Property] nodeId = "ece3c842-7264-4610-9332-be9fb1df27f1"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CompareIntNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] valueA_PortName = "值A"
+     - [Property] valueB_PortName = "值B"
+     - [Property] greater_PortName = "大于"
+     - [Property] less_PortName = "小于"
+     - [Property] equal_PortName = "等于"
+     - [Property] valueASourcePort = null
+     - [Property] valueBSourcePort = null
+     - [Property] nodeId = "8b6eac81-706b-44d6-a152-af56cd21ef50"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ComparePlantTypeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] plantTypeA_PortName = "植物类型A"
+     - [Property] plantTypeB_PortName = "植物类型B"
+     - [Property] equal_PortName = "相同"
+     - [Property] plantTypeASourcePort = null
+     - [Property] plantTypeBSourcePort = null
+     - [Property] nodeId = "2e905ab0-bf84-4040-9a76-493288f6f37a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CompareToolTypeNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "60cfd25d-ff47-4aef-b8f6-62f5c281bcb6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "A", Type: ToolType, Direction: Input
+        [1] Name: "B", Type: ToolType, Direction: Input
+     - outputs:
+        [0] Name: "相等", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CompareZombieTypeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] zombieTypeA_PortName = "僵尸类型A"
+     - [Property] zombieTypeB_PortName = "僵尸类型B"
+     - [Property] equal_PortName = "相同"
+     - [Property] zombieTypeASourcePort = null
+     - [Property] zombieTypeBSourcePort = null
+     - [Property] nodeId = "d621b632-5db6-4740-9bbe-c7d6d143b2c5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CopyListValuesNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "12b58298-fa65-4c02-897e-c17fe6616c20"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "源列表", Type: ListVariable, Direction: Input
+        [2] Name: "目标列表", Type: ListVariable, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CounterNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] shouldReset_PortName = "是否重置"
+     - [Property] count_PortName = "计数"
+     - [Property] onCount_PortName = "计数完成"
+     - [Property] shouldResetSourcePort = null
+     - [Property] nodeId = "594c586b-c22d-42e8-9cea-a51aafad2ccc"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateCherryExplodeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] damage_PortName = "伤害值"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] damageSourcePort = null
+     - [Property] nodeId = "91ae1ab3-038a-4b25-ae7f-78407fa72da2"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateCraterNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] nodeId = "8208cc64-00ed-4035-b072-60a0869025ea"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateDoomShroomEffectNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] damage_PortName = "伤害值"
+     - [Property] setPit_PortName = "创建弹坑"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] damageSourcePort = null
+     - [Property] setPitSourcePort = null
+     - [Property] nodeId = "a08392db-be1a-4a34-a3e4-0e0e31a3900b"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateEventObjectNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "0a51f11b-b4df-4db3-b864-a91f3f2d7325"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "名称", Type: String, Direction: Input
+        [2] Name: "位置", Type: Vector3, Direction: Input
+        [3] Name: "图标植物", Type: PlantType, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "对象", Type: GameObject, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateGraveNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] nodeId = "848c2e7e-da08-42b2-80c3-e763f1eba70e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateIceBlockNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] plantType_PortName = "冻住的植物"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] plantTypeSourcePort = null
+     - [Property] nodeId = "c8b664d6-625b-44d8-9767-93382ba6e504"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateIceShroomEffectNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] duration_PortName = "冻结时间"
+     - [Property] durationSourcePort = null
+     - [Property] nodeId = "94e0bc07-f20d-4d4f-8957-de65e8b96c0d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateInfoCardNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] bigTitle_PortName = "大标题"
+     - [Property] smallTitle_PortName = "小标题"
+     - [Property] onCardClicked_PortName = "点击卡牌时触发"
+     - [Property] bigTitleSourcePort = null
+     - [Property] smallTitleSourcePort = null
+     - [Property] nodeId = "e79e827e-9a46-4231-9534-535b3c3e362c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateJalapenoEffectNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] row_PortName = "行"
+     - [Property] damage_PortName = "伤害值"
+     - [Property] rowSourcePort = null
+     - [Property] damageSourcePort = null
+     - [Property] nodeId = "13a9c206-ba9a-4085-b7ee-6dcc70452a97"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateLadderNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] nodeId = "b4573e4d-5b22-45ea-b6ae-d6229a41f025"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateParticleNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] row_PortName = "行"
+     - [Property] column_PortName = "列"
+     - [Property] rowSourcePort = null
+     - [Property] columnSourcePort = null
+     - [Property] nodeId = "8ee2f9ed-e72a-4936-8f6b-220a02a3ac4c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreatePlantCardNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] plantType_PortName = "植物类型"
+     - [Property] onCreated_PortName = "创建成功"
+     - [Property] outPlantType_PortName = "植物类型"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] plantTypeSourcePort = null
+     - [Property] nodeId = "fdf921c8-a208-474f-92fa-eb8b7156dfa5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateZombieExplodeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] nodeId = "278156b8-3eee-4868-b52f-9c2499293389"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CreateZombieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] row_PortName = "行"
+     - [Property] zombieType_PortName = "僵尸类型"
+     - [Property] isMindControlled_PortName = "是否魅惑"
+     - [Property] column_PortName = "列"
+     - [Property] onCreated_PortName = "创建成功"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] rowSourcePort = null
+     - [Property] zombieTypeSourcePort = null
+     - [Property] isMindControlledSourcePort = null
+     - [Property] columnSourcePort = null
+     - [Property] nodeId = "90e43d89-f987-44bc-8b34-820bc1daf2f1"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.CursePlantNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "be2ee762-c6dc-4f24-8fce-cbf9c7584544"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+        [2] Name: "诅咒值", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DamagePlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] damage_PortName = "伤害值"
+     - [Property] onCompleted_PortName = "伤害完成"
+     - [Property] plantSourcePort = null
+     - [Property] damageSourcePort = null
+     - [Property] nodeId = "bd4b0c29-e59b-4a0c-bc30-414fbec4d3f6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DamageZombieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] damage_PortName = "伤害值"
+     - [Property] zombieSourcePort = null
+     - [Property] damageSourcePort = null
+     - [Property] nodeId = "549171fa-8d94-4111-ab5f-c1150bea0477"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DeleteCardByTypeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plantType_PortName = "植物类型"
+     - [Property] completed_PortName = "完成"
+     - [Property] plantTypeSourcePort = null
+     - [Property] nodeId = "3e43c553-b771-491c-b252-2a5c852faa00"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DeleteGridItemsNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "e1bca3cb-f6e2-4179-ad96-c511d9e6831d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "行", Type: Int, Direction: Input
+        [2] Name: "列", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "删除数量", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DeleteInfoCardsNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "63de8570-65ab-4f60-ab6e-ef6c714d6f64"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "卡牌对象", Type: GameObject, Direction: Input
+        [2] Name: "全部", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "删除数量", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DeleteZombieCardsNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "03b9d882-1b08-49ae-917f-ef87b83ea245"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "僵尸类型", Type: ZombieType, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "删除数量", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DestroyEventObjectNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "5debd6e0-6f10-48f6-9212-4a04225818bb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "对象", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DiePlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] onCompleted_PortName = "死亡完成"
+     - [Property] plantSourcePort = null
+     - [Property] nodeId = "84e0972e-54c9-4fa8-b05a-947ecebff48b"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DivideNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "被除数"
+     - [Property] b_PortName = "除数"
+     - [Property] result_PortName = "商"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "4c8c629f-6791-4c42-8e1d-b477fcdbdaeb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.DoOnceNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "c3a15d58-4c9b-4654-baea-bed582c2e25d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.EventNodeBase
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "963465bc-39db-4a8e-9dc8-993d3ef5cc56"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.EventSuggestedNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "25092eef-0d14-4896-8f5b-fee1556ef8ef"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs: (none / null)
+     - outputs: (none / null)
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FeedGoldenBeanNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "ef9deacb-3c7c-4c86-b11c-c7012273190c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "已生效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FindBoolListValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "14ef83e1-d04c-4448-afbc-43b745a3b24b"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "值", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "索引", Type: Int, Direction: Output
+        [1] Name: "包含", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FindFloatListValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "916b9dd0-4322-4926-a80a-f7148a9c126c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "值", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "索引", Type: Int, Direction: Output
+        [1] Name: "包含", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FindIntListValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "d7bd2783-c9ae-4c59-84ec-be99eee9b0f2"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "值", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "索引", Type: Int, Direction: Output
+        [1] Name: "包含", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FindObjectListValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "f69e6229-1d18-4ebf-b867-2a3748f61c2c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "值", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "索引", Type: Int, Direction: Output
+        [1] Name: "包含", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FindPlantTypeListValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "d97afcbb-30a7-4ea1-87c8-3b2146872673"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "值", Type: PlantType, Direction: Input
+     - outputs:
+        [0] Name: "索引", Type: Int, Direction: Output
+        [1] Name: "包含", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FindStringListValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "4fbc9f26-50db-454d-bebb-8462992da66c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "值", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "索引", Type: Int, Direction: Output
+        [1] Name: "包含", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FindZombieTypeListValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "19577cf4-ee86-4fd4-93ea-20069d06b234"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "值", Type: ZombieType, Direction: Input
+     - outputs:
+        [0] Name: "索引", Type: Int, Direction: Output
+        [1] Name: "包含", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FloatToBoolNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "b36b969b-55e1-4928-9749-bdb0fadfbafb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "数值", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "布尔值", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FloatToIntNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] float_PortName = "浮点数"
+     - [Property] int_PortName = "整数"
+     - [Property] floatSourcePort = null
+     - [Property] nodeId = "d78e8f6a-fa08-4922-a6a2-4912e51dbcf1"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FloatToStringNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] value_PortName = "数值"
+     - [Property] decimals_PortName = "小数位数"
+     - [Property] result_PortName = "字符串"
+     - [Property] valueSourcePort = null
+     - [Property] decimalsSourcePort = null
+     - [Property] nodeId = "88779573-9008-4cd2-873e-1031e7a7840b"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FloatValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] value_PortName = "值"
+     - [Property] nodeId = "6f7f1889-ddd0-4bcf-a1f6-0dd08fc5169d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FloatVariableArithmeticNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "fc11ec51-57ea-4d87-b350-a1f1ece35b6e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "变量", Type: FloatVariable, Direction: Input
+        [2] Name: "操作数", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "变量", Type: FloatVariable, Direction: Output
+        [3] Name: "结果", Type: Float, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.FloatVariableNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] variable_PortName = "变量"
+     - [Property] nodeId = "288a0afe-d3b0-40b5-92ab-0c7ccf2207c2"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ForEachAllZombiesNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "2828ab62-779c-4c2f-be94-97c869941343"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+     - outputs:
+        [0] Name: "每次循环", Type: Trigger, Direction: Output
+        [1] Name: "当前僵尸", Type: Zombie, Direction: Output
+        [2] Name: "索引", Type: Int, Direction: Output
+        [3] Name: "完成", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ForEachPlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plantList_PortName = "植物列表"
+     - [Property] loopBody_PortName = "循环体"
+     - [Property] currentPlant_PortName = "当前植物"
+     - [Property] currentIndex_PortName = "当前索引"
+     - [Property] onCompleted_PortName = "循环完成"
+     - [Property] plantListSourcePort = null
+     - [Property] nodeId = "85e05e01-595e-407f-a5d3-f24519482d04"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ForEachPlantTypeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plantTypeList_PortName = "植物类型列表"
+     - [Property] loopBody_PortName = "循环体"
+     - [Property] currentPlantType_PortName = "当前类型"
+     - [Property] currentIndex_PortName = "当前索引"
+     - [Property] onCompleted_PortName = "循环完成"
+     - [Property] plantTypeListSourcePort = null
+     - [Property] nodeId = "1297ec79-201b-45b7-b427-d2f92a1e23fe"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ForEachZombieNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "16a7a6f2-b0bd-4bf0-bed8-12a2c5c191fa"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "僵尸列表", Type: ZombieList, Direction: Input
+     - outputs:
+        [0] Name: "每次循环", Type: Trigger, Direction: Output
+        [1] Name: "当前僵尸", Type: Zombie, Direction: Output
+        [2] Name: "索引", Type: Int, Direction: Output
+        [3] Name: "完成", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ForLoopNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] count_PortName = "循环次数"
+     - [Property] output_PortName = "循环体"
+     - [Property] index_PortName = "当前索引"
+     - [Property] countSourcePort = null
+     - [Property] nodeId = "9f354c58-7eae-4b12-8aae-8ac585a735ce"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GameOverNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] reason_PortName = "失败原因"
+     - [Property] reasonSourcePort = null
+     - [Property] nodeId = "8a2e0e0c-9733-4cac-ad68-44cc6fbe23b0"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GameWinNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] nodeId = "a5685b2f-69ae-436f-aab0-0291682f1d7d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetAllPlantsNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] plants_PortName = "全部植物"
+     - [Property] nodeId = "db5ecb19-1ba6-41f1-8dbb-ca1e2f8a2fea"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetAllZombiesNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "694e7e84-3274-4229-8d10-a6ab6f0cb31c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "僵尸列表", Type: ZombieList, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetBoolListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "c1889fc5-17e6-4d19-a91a-1fb7efabee3d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: Bool, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetBoolVariableValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] variable_PortName = "变量"
+     - [Property] value_PortName = "值"
+     - [Property] variableSourcePort = null
+     - [Property] nodeId = "f0bd87e1-b1dc-4adf-b9d3-6572dda8b2a8"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetBoundPlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] bindingName = "守护目标"
+     - [Property] nodeId = "630524b1-47eb-465f-9b42-e5ef9e5bf459"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetBoundZombieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] bindingName = "首领"
+     - [Property] nodeId = "3ca81336-038d-4427-890c-7823d4cd9ad3"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetEventPositionNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "de330541-fe27-4375-b592-1dfdb08ac066"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetFloatListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "6f57f0d9-5dea-488d-a53a-28a411b229a5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: Float, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetFloatVariableValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] variable_PortName = "变量"
+     - [Property] value_PortName = "值"
+     - [Property] variableSourcePort = null
+     - [Property] nodeId = "d3c271de-7565-44a2-a0a9-0b92ad683a56"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetHeldToolNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "6d8b66fe-62e1-429c-b35a-cb7b6ebb1a0c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "对象", Type: GameObject, Direction: Output
+        [1] Name: "类型", Type: ToolType, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetIntListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "caaa2df0-8d99-483c-9020-77cb732f0686"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: Int, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetIntVariableValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] variable_PortName = "变量"
+     - [Property] value_PortName = "值"
+     - [Property] variableSourcePort = null
+     - [Property] nodeId = "ecb50301-2866-4bd4-b4cc-822026e54106"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetListLengthNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "bb4c448e-3cf4-4211-9e0c-67b03d0c0964"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+     - outputs:
+        [0] Name: "长度", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetMoneyAmountNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a8573899-80f9-41a0-bfb9-7e8f9e686534"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "金币", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetMoneyNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] moneyAmount_PortName = "金币数量"
+     - [Property] moneyAmountSourcePort = null
+     - [Property] nodeId = "1879773b-841c-4284-9631-2d96f081a1d3"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetMouseWorldPositionNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "af17b00c-6c4f-40c5-80d9-551b94d59cc3"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "坐标", Type: Vector3, Direction: Output
+        [1] Name: "行", Type: Int, Direction: Output
+        [2] Name: "列", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetNearestZombieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] row_PortName = "行"
+     - [Property] column_PortName = "列"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] rowSourcePort = null
+     - [Property] columnSourcePort = null
+     - [Property] nodeId = "972ff918-948a-489a-a7e4-d078acbc8e6f"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetObjectListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "fd38dd6c-d01a-4e13-a250-ff8ddcdc42c7"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: GameObject, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetObjectTransformNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "4a6009a8-1232-40bd-8a7b-369134f8ed0c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "对象", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "位置", Type: Vector3, Direction: Output
+        [1] Name: "大小", Type: Vector3, Direction: Output
+        [2] Name: "存在", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetPlantAttackSpeedNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "9d1ece42-0ac4-4807-a06c-b4a0f0a03d12"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "植物", Type: Plant, Direction: Input
+     - outputs:
+        [0] Name: "倍率", Type: Float, Direction: Output
+        [1] Name: "攻击间隔", Type: Float, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetPlantAttributeCountdownNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a00e7fb0-d010-4f94-abf7-bdc260351ff7"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "植物", Type: Plant, Direction: Input
+     - outputs:
+        [0] Name: "剩余秒数", Type: Float, Direction: Output
+        [1] Name: "最大秒数", Type: Float, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetPlantBasicComponentsNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "c815687c-5239-41ed-b31b-20172d3f6db3"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "植物类型", Type: PlantType, Direction: Input
+     - outputs:
+        [0] Name: "植物类型列表", Type: PlantTypeList, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetPlantTypeListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "6b07d8e2-06f3-4707-bed3-20edf1f5caff"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: PlantType, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetPlantsInCellNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] row_PortName = "行"
+     - [Property] column_PortName = "列"
+     - [Property] plants_PortName = "植物列表"
+     - [Property] rowSourcePort = null
+     - [Property] columnSourcePort = null
+     - [Property] nodeId = "ff99c137-a628-47ca-8293-f183c2b54ad3"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetPlantsOnLayerNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "33786429-325a-4a54-b5eb-df74ebffa51d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetRandomPlantTypeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] list_PortName = "植物类型列表"
+     - [Property] result_PortName = "随机植物类型"
+     - [Property] listSourcePort = null
+     - [Property] nodeId = "b7148213-e851-4f34-ab25-5cac96233820"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetStageNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "e99cdbec-8d7a-4cec-8f39-dbf16e4bcaea"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetStringListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "b941c577-fad9-431b-86c5-2dade526fb60"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: String, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetStringVariableValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "b9ed57a6-4b74-4b66-8343-ae7446ede6a4"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "变量", Type: StringVariable, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: String, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetSunAmountNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] sunAmount_PortName = "阳光数量"
+     - [Property] nodeId = "c7e74685-3334-4f21-80fc-c6e53e3edf79"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetSunNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] sunAmount_PortName = "阳光数量"
+     - [Property] sunAmountSourcePort = null
+     - [Property] nodeId = "d9dca465-34ba-4e7f-912a-bf45829c69df"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetToolCooldownNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "ce259018-8995-4ba4-9a18-99cac48604e6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "类型", Type: ToolType, Direction: Input
+     - outputs:
+        [0] Name: "总秒数", Type: Float, Direction: Output
+        [1] Name: "剩余秒数", Type: Float, Direction: Output
+        [2] Name: "存在", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetTravelBuffNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] onSuccess_PortName = "成功"
+     - [Property] nodeId = "dc6199d3-a21d-43ab-9996-3099f8e67cdf"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetTravelEntryNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] nodeId = "e23d54da-e50a-42b6-b09f-323e08f2519f"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetZombieStatsNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "8760a384-0d06-4f05-93c0-059ed91a5668"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "僵尸", Type: Zombie, Direction: Input
+     - outputs:
+        [0] Name: "数值", Type: Float, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetZombieStatusNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "abdd0d9f-4e1e-4398-9446-f2984e1c6a8e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "僵尸", Type: Zombie, Direction: Input
+     - outputs:
+        [0] Name: "数值", Type: Float, Direction: Output
+        [1] Name: "存在", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GetZombieTypeListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "c66a7c5d-063a-4ed2-95ef-095db17c2bec"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "列表", Type: ListVariable, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: ZombieType, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.GivePlantShieldNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] shieldAmount_PortName = "护盾值"
+     - [Property] plantSourcePort = null
+     - [Property] shieldAmountSourcePort = null
+     - [Property] nodeId = "ef051f1e-8f9b-409e-b0a4-b719bdf22792"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.HealPlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] healAmount_PortName = "回血量"
+     - [Property] onHealed_PortName = "回血成功"
+     - [Property] plantSourcePort = null
+     - [Property] healAmountSourcePort = null
+     - [Property] nodeId = "9417321e-9ccd-4309-a2e9-5a7429c55d78"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.NodeInputDefault+InputSource
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "af6bf9e2-41c2-49fe-a148-1c4003c0e286"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.InsertBoolListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "53aa4579-1c30-46b5-9935-7b09d851ee5d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Bool, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.InsertFloatListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "86d762f9-f823-43f5-a561-abd8fd86c396"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Float, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.InsertIntListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "36f2b7e2-8e19-4c02-9796-f54f2d4b5900"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Int, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.InsertObjectListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "12b2c37f-154f-4bd8-9fcb-d807a2b3b667"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: GameObject, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.InsertPlantTypeListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "cc4c9e75-471f-4634-9f20-4a17a62a35c1"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: PlantType, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.InsertStringListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "3ddccbdc-4784-41ec-947f-77167a7e31b3"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: String, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.InsertZombieTypeListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "2b426a82-1822-4a1e-840c-0216d7a94f92"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: ZombieType, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntAddNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "A"
+     - [Property] b_PortName = "B"
+     - [Property] result_PortName = "和"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "1be86202-cc64-432a-94b6-37c66fef2360"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntDivideNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "被除数"
+     - [Property] b_PortName = "除数"
+     - [Property] result_PortName = "商"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "0fac43ee-ed04-40d0-8d4e-dd9474f9dcf7"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntModuloNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "被除数"
+     - [Property] b_PortName = "除数"
+     - [Property] result_PortName = "余数"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "4ae234bc-550d-412f-8fd7-c9d5a4f07fa5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntMultiplyNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "A"
+     - [Property] b_PortName = "B"
+     - [Property] result_PortName = "积"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "a3746f66-38f7-4df2-82f4-81b1bd665f13"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntSubtractNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "被减数"
+     - [Property] b_PortName = "减数"
+     - [Property] result_PortName = "差"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "d98341c2-9d36-45bf-90c1-f896f3f33364"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntToBoolNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "07f1f900-5b33-4810-93e2-f64c5fd797e4"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "数值", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "布尔值", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntToFloatNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] int_PortName = "整数"
+     - [Property] float_PortName = "浮点数"
+     - [Property] intSourcePort = null
+     - [Property] nodeId = "3ebc7e16-7e7b-4686-a3d9-9fc4a9b01fed"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntToStringNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "33bdb775-9093-428f-98da-47e3cebc7c32"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "值", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "字符串", Type: String, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] value_PortName = "值"
+     - [Property] nodeId = "0e32efa2-f28c-460a-9d18-198571f5199e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntVariableArithmeticNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "598c9612-b7fa-4c2c-a00e-e85b0cb6128c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "变量", Type: IntVariable, Direction: Input
+        [2] Name: "操作数", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "变量", Type: IntVariable, Direction: Output
+        [3] Name: "结果", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.IntVariableNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] variable_PortName = "变量"
+     - [Property] nodeId = "71b1c81c-24b0-4239-a0eb-945d11f76c3c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ListVariableNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "1506e368-3bd9-4a69-8e6e-458ce7e46df1"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.LogarithmNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a60a938d-d20c-4327-8b05-fef7b3ed5141"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "数值", Type: Float, Direction: Input
+        [1] Name: "底数", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "结果", Type: Float, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.MakeVector3Node
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "7bdfc700-847e-461b-96a8-1e99b0f3e8ad"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "X", Type: Float, Direction: Input
+        [1] Name: "Y", Type: Float, Direction: Input
+        [2] Name: "Z", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "坐标", Type: Vector3, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.MergeMultipleChoiceOptionListsNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] list1_PortName = "列表1"
+     - [Property] list2_PortName = "列表2"
+     - [Property] list1SourcePort = null
+     - [Property] list2SourcePort = null
+     - [Property] nodeId = "5d9d6f65-2316-446d-95c3-74a0c4fb48e6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.MergePlantTypeListsNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] listA_PortName = "列表A"
+     - [Property] listB_PortName = "列表B"
+     - [Property] mergedList_PortName = "合并列表"
+     - [Property] count_PortName = "列表长度"
+     - [Property] listASourcePort = null
+     - [Property] listBSourcePort = null
+     - [Property] nodeId = "7aca82ba-45c6-4d8d-b16a-e2a630b483c8"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ModifyEventBulletNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "c60bd38c-52f5-4be8-84e0-3f6eaa593bd5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "子弹", Type: Bullet, Direction: Input
+        [2] Name: "数值", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ModifyPlantAttackNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] multiplier_PortName = "攻击力加成x100%"
+     - [Property] onModified_PortName = "修改成功"
+     - [Property] plantOut_PortName = "植物"
+     - [Property] plantSourcePort = null
+     - [Property] multiplierSourcePort = null
+     - [Property] nodeId = "80adee0d-ffac-4f69-8300-e74802ad9b55"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ModifyPlantHealthNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] multiplier_PortName = "血量加成x100%"
+     - [Property] onModified_PortName = "修改成功"
+     - [Property] plantOut_PortName = "植物"
+     - [Property] plantSourcePort = null
+     - [Property] multiplierSourcePort = null
+     - [Property] nodeId = "79170fd6-9a20-493b-8891-419f445b1e53"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ModifyZombieHealthNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] ratio_PortName = "血量倍率"
+     - [Property] onModified_PortName = "修改成功"
+     - [Property] zombieOut_PortName = "僵尸"
+     - [Property] zombieSourcePort = null
+     - [Property] ratioSourcePort = null
+     - [Property] nodeId = "bbe73c2a-a5b4-4712-abb5-6da11704e075"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.MovePlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] force_PortName = "强制"
+     - [Property] onMoved_PortName = "移动成功"
+     - [Property] movedPlant_PortName = "植物"
+     - [Property] plantSourcePort = null
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] forceSourcePort = null
+     - [Property] nodeId = "45b9c59c-1a77-4974-b653-b443dad2b1f5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.MoveZombieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] column_PortName = "目标列"
+     - [Property] row_PortName = "目标行"
+     - [Property] onMoved_PortName = "移动成功"
+     - [Property] movedZombie_PortName = "僵尸"
+     - [Property] zombieSourcePort = null
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] nodeId = "b7839ba2-1cc4-41aa-a285-5832f7632b88"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.MultiPlantTypeListNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] plantTypeList_PortName = "植物类型列表"
+     - [Property] nodeId = "7cf471a8-5c72-4ca5-8bb1-9858dd28b922"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.MultiplyNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "A"
+     - [Property] b_PortName = "B"
+     - [Property] result_PortName = "积"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "dab6a19f-d98a-4e0f-a8a2-b05cbe632da6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.NotNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] input_PortName = "输入"
+     - [Property] output_PortName = "输出"
+     - [Property] inputSourcePort = null
+     - [Property] nodeId = "9e154983-05fc-475b-874e-cd7bf6b16266"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ObjectToPlantNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "b6a791d6-0788-4ad6-9bce-5897334afb77"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "对象", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "植物", Type: Plant, Direction: Output
+        [1] Name: "存在", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ObjectToStringNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "095f114d-1000-4403-802a-5c805ab05275"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "对象", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "文本", Type: String, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ObjectToZombieNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "b4da132c-8b46-4d25-bc24-7b1ee28c218c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "对象", Type: GameObject, Direction: Input
+     - outputs:
+        [0] Name: "僵尸", Type: Zombie, Direction: Output
+        [1] Name: "存在", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnBoardStartNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] nodeId = "5b2d8579-0bc3-4d28-8a4a-221c5e328979"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnGameStartNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] nodeId = "df47a4f7-649c-494e-85fb-b0ada947d437"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnKeyPressNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] nodeId = "5ee1cc63-9a85-4614-9e88-308cab541110"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnMouseClickNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] row_PortName = "行"
+     - [Property] column_PortName = "列"
+     - [Property] item_PortName = "手上的物品"
+     - [Property] isLeftButton_PortName = "是左键"
+     - [Property] nodeId = "fec1e5a5-5df7-4c77-8194-b057c035b5d7"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnPlantClickNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] nodeId = "523c73ed-c185-4a52-809c-df5bad66bb4a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnPlantCreateNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] nodeId = "3c0ad463-b788-4b55-9594-98de40c39322"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnPlantDeathCompleteNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] dieReason_PortName = "死亡原因"
+     - [Property] nodeId = "a9b62b84-1fd4-4f5e-ad2c-4bfbb0bcd5ad"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnPlantDieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] nodeId = "aff0e05d-0ce8-407b-95e5-73bac6f09ec6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnPlantMixedNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] plant_PortName = "植物"
+     - [Property] nodeId = "59c27b37-676e-40c4-93dd-a0c6ceba0d9c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnStageEnterNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] stageName = "战斗"
+     - [Property] nodeId = "98c3bfbe-0e1d-4055-b98b-48cac96c8034"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnWaveClearedNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "3864c95f-5155-42d7-b576-57b970d42360"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnWorldPlantEffectNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "d909ef97-26a6-4a1c-97d3-0ea24f893b88"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "触发", Type: Trigger, Direction: Output
+        [1] Name: "行", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnZombieClickNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "9f938501-39a2-4440-a5d3-2d7177688052"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "触发", Type: Trigger, Direction: Output
+        [1] Name: "僵尸", Type: Zombie, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnZombieDieNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] nodeId = "793b8595-1ff2-48d2-8e28-2b19f5519e6c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnZombieHealthBelowNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "bd853e36-62d7-4625-a60a-e6e7a519ab75"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OnZombieSpawnNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] nodeId = "30c06bc6-0b25-4710-8715-cb48ae4f7a53"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.OrNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "条件A"
+     - [Property] b_PortName = "条件B"
+     - [Property] output_PortName = "结果"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "7b06773c-d6fe-4976-ae47-5035241ea598"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PlantSplitNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] plant_PortName = "植物"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] plantType_PortName = "植物类型"
+     - [Property] health_PortName = "植物血量"
+     - [Property] attributeCountdown_PortName = "属性倒计时"
+     - [Property] plantSourcePort = null
+     - [Property] nodeId = "ea07c57c-badd-430c-8ef7-95e6ff799e52"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PlantToObjectNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a68d982f-4dff-4659-bbf0-6594cff3a7cb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "植物", Type: Plant, Direction: Input
+     - outputs:
+        [0] Name: "对象", Type: GameObject, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PlantTypeListStorageNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] list_PortName = "列表"
+     - [Property] plantType_PortName = "植物类型"
+     - [Property] currentList_PortName = "当前列表"
+     - [Property] count_PortName = "列表长度"
+     - [Property] onComplete_PortName = "完成"
+     - [Property] listSourcePort = null
+     - [Property] plantTypeSourcePort = null
+     - [Property] nodeId = "711a8ec7-d453-4a47-bf05-8034ad7b6825"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PlantTypeToStringNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "07fb85a2-828b-4bd2-b2d4-99653d529bb4"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "值", Type: PlantType, Direction: Input
+     - outputs:
+        [0] Name: "字符串", Type: String, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PlantTypeValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] value_PortName = "植物类型"
+     - [Property] nodeId = "06b1edb5-f91c-4419-820c-3c706d6d4c9a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PlaySoundNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] soundId_PortName = "音效ID"
+     - [Property] soundIdSourcePort = null
+     - [Property] nodeId = "93209d50-3349-4260-a6ab-e53e0441d317"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PlayZombieAnimNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] animationName = "idle"
+     - [Property] trigger_PortName = "触发"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] zombieSourcePort = null
+     - [Property] animNameSourcePort = null
+     - [Property] nodeId = "15593bd5-bdfa-4ae2-9c71-bc21bf1c0c69"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PowerNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "da5a8539-ab75-41f2-9521-881dbc007ae8"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "数值", Type: Float, Direction: Input
+        [1] Name: "指数", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "结果", Type: Float, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.PulseNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] state_PortName = "状态"
+     - [Property] onPulse_PortName = "脉冲触发时"
+     - [Property] nodeId = "09fc42d6-65f9-4e44-bdb1-bda2433bb879"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.RandomFloatNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] min_PortName = "最小值"
+     - [Property] max_PortName = "最大值"
+     - [Property] result_PortName = "随机浮点数"
+     - [Property] minSourcePort = null
+     - [Property] maxSourcePort = null
+     - [Property] nodeId = "29ef9eda-49de-4ced-abf4-de7193c46b34"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.RandomIntNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] min_PortName = "最小值"
+     - [Property] max_PortName = "最大值"
+     - [Property] result_PortName = "随机整数"
+     - [Property] minSourcePort = null
+     - [Property] maxSourcePort = null
+     - [Property] nodeId = "b9acf42d-db3d-430a-8854-a022d59dbff2"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.RandomTriggerNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] count_PortName = "触发数量"
+     - [Property] allowRepeat_PortName = "重复触发"
+     - [Property] output_PortName = "触发"
+     - [Property] countSourcePort = null
+     - [Property] allowRepeatSourcePort = null
+     - [Property] nodeId = "93eb7fad-0fb5-4079-b270-2b7bc5a4ef06"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.RemoveListItemNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "3d97e76b-394f-49b5-9bb6-4b77ede6fd5c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.RemovePlantTypeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] list_PortName = "植物类型列表"
+     - [Property] plantType_PortName = "要删除的类型"
+     - [Property] resultList_PortName = "结果列表"
+     - [Property] success_PortName = "是否成功"
+     - [Property] listSourcePort = null
+     - [Property] plantTypeSourcePort = null
+     - [Property] nodeId = "68f286da-c4dc-414b-bff7-af2865a91b61"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.RemoveTravelEntryNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "6f182186-c77b-4425-a515-a16c993e4186"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "名称或编号", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "已移除", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.RepeatUntilNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "42ff120f-1724-4ce8-a843-b484045e1044"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "条件", Type: Bool, Direction: Input
+        [2] Name: "间隔秒数", Type: Float, Direction: Input
+        [3] Name: "最多检查次数", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "超时", Type: Trigger, Direction: Output
+        [2] Name: "失败", Type: Trigger, Direction: Output
+        [3] Name: "每次循环", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ReplaceBoolListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "62116850-4d39-4cb6-b12f-dc9db08f7cdf"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Bool, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ReplaceFloatListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "750a0d7d-96d3-4407-8545-ef1000df92b0"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Float, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ReplaceIntListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "f7b803ac-3dbc-408f-945c-592e91d3bd52"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: Int, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ReplaceObjectListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "ee65dc5a-01c0-4984-ba98-7ca03ad319fa"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: GameObject, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ReplacePlantTypeListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "5f9e52ac-f4a1-43d8-8207-a873e8e5d251"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: PlantType, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ReplaceStringListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "898b941b-f63d-4551-aacd-f78324566c02"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: String, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ReplaceZombieTypeListNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "e7c73904-9240-480e-b119-1e56189fdcab"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "列表", Type: ListVariable, Direction: Input
+        [2] Name: "值", Type: ZombieType, Direction: Input
+        [3] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "列表", Type: ListVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetBoolVariableValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] variable_PortName = "变量"
+     - [Property] value_PortName = "新值"
+     - [Property] variableOut_PortName = "变量"
+     - [Property] onComplete_PortName = "完成"
+     - [Property] variableSourcePort = null
+     - [Property] valueSourcePort = null
+     - [Property] nodeId = "f4bbd644-5d59-4fd6-b83c-a387fd701fe7"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetEventObjectTransformNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "9e546226-9bca-48c3-963a-594697f13ad8"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "对象", Type: GameObject, Direction: Input
+        [2] Name: "位置", Type: Vector3, Direction: Input
+        [3] Name: "大小倍率", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetFloatVariableValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] variable_PortName = "变量"
+     - [Property] value_PortName = "新值"
+     - [Property] variableOut_PortName = "变量"
+     - [Property] onComplete_PortName = "完成"
+     - [Property] variableSourcePort = null
+     - [Property] valueSourcePort = null
+     - [Property] nodeId = "7da56392-63d0-46ac-8fb7-1587b5672578"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetIntVariableValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] variable_PortName = "变量"
+     - [Property] value_PortName = "新值"
+     - [Property] variableOut_PortName = "变量"
+     - [Property] onComplete_PortName = "完成"
+     - [Property] variableSourcePort = null
+     - [Property] valueSourcePort = null
+     - [Property] nodeId = "6efea85f-5d69-4131-974c-abb673fcea7c"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetPlantAttackIntervalNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "32c42816-8275-4f14-aa17-a4dd30bf3707"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+        [2] Name: "秒数", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetPlantAttackSpeedNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "acd2ff41-2ffd-4a97-b74d-bb4ccd560f2a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+        [2] Name: "倍率", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetPlantAttributeCountdownNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "595d9b4f-e54a-4b45-9c3f-b993261d311a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+        [2] Name: "剩余秒数", Type: Float, Direction: Input
+        [3] Name: "最大秒数", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetPlantNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] plantType_PortName = "植物编号"
+     - [Property] forcePlant_PortName = "强制种植"
+     - [Property] onCreated_PortName = "创建成功"
+     - [Property] onCreateFailed_PortName = "创建失败"
+     - [Property] plant_PortName = "植物"
+     - [Property] columnSourcePort = null
+     - [Property] rowSourcePort = null
+     - [Property] plantTypeSourcePort = null
+     - [Property] forcePlantSourcePort = null
+     - [Property] nodeId = "dcdeb237-3679-485d-a7a3-b557faf0fe16"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetStringVariableValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "c0486635-12c1-42de-aae1-618818768834"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "变量", Type: StringVariable, Direction: Input
+        [2] Name: "新值", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "变量", Type: StringVariable, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetToolCooldownNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "27c34c32-2ec9-41ea-912f-1b669b8de692"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "类型", Type: ToolType, Direction: Input
+        [2] Name: "总秒数", Type: Float, Direction: Input
+        [3] Name: "剩余秒数", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetWaveCountdownPausedNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "70616db2-535d-4e18-9c06-c48b4e5c234e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "暂停", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetZombieCardCooldownNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "e5a98b6f-1f5e-4be8-9ede-553de8499c4b"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "僵尸类型", Type: ZombieType, Direction: Input
+        [2] Name: "总秒数", Type: Float, Direction: Input
+        [3] Name: "剩余秒数", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "修改数量", Type: Int, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetZombieHouseRuleNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "dd359ce4-f57d-476b-84cc-90405864fce0"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "进家失败", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetZombieMindControlledNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] zombieSourcePort = null
+     - [Property] nodeId = "ca508320-7f8c-49b9-9f92-6d07490d90ed"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetZombieStatsNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "a6a26daf-47d6-455f-9969-8516bc66d3ea"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "僵尸", Type: Zombie, Direction: Input
+        [2] Name: "数值", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SetZombieStatusNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "23f5486a-b667-405b-ad96-afb270e5a169"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "僵尸", Type: Zombie, Direction: Input
+        [2] Name: "数值", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ShootEventBulletNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "2b5d0c17-0d55-4814-bf4d-85958fdda2a5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "子弹类型", Type: BulletType, Direction: Input
+        [2] Name: "在鼠标处", Type: Bool, Direction: Input
+        [3] Name: "行", Type: Int, Direction: Input
+        [4] Name: "列", Type: Float, Direction: Input
+        [5] Name: "僵尸阵营", Type: Bool, Direction: Input
+        [6] Name: "伤害", Type: Int, Direction: Input
+        [7] Name: "速度", Type: Float, Direction: Input
+        [8] Name: "角度", Type: Float, Direction: Input
+        [9] Name: "大小倍率", Type: Float, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+        [2] Name: "子弹", Type: Bullet, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ShowMultipleChoiceMenuNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] options_PortName = "选项列表"
+     - [Property] refreshable_PortName = "可刷新"
+     - [Property] refreshCount_PortName = "刷新次数"
+     - [Property] cancelable_PortName = "可取消"
+     - [Property] windowCount_PortName = "窗口数量"
+     - [Property] actionOnExit_PortName = "退出时触发"
+     - [Property] actionOnRefresh_PortName = "刷新时触发"
+     - [Property] optionsSourcePort = null
+     - [Property] refreshableSourcePort = null
+     - [Property] refreshCountSourcePort = null
+     - [Property] cancelableSourcePort = null
+     - [Property] windowCountSourcePort = null
+     - [Property] nodeId = "e70492c6-b052-4cf4-84d9-aa34fd78ed9a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ShowTextNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] displayText = "示例文本"
+     - [Property] trigger_PortName = "触发"
+     - [Property] text_PortName = "文本"
+     - [Property] duration_PortName = "持续时间"
+     - [Property] textSourcePort = null
+     - [Property] durationSourcePort = null
+     - [Property] nodeId = "d90a65bb-3043-42cf-9ff6-be6cfb8406a6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SilencePlantNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "f8ecd07e-c874-4fb9-a8cb-a1d525dde932"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+        [2] Name: "秒数", Type: Float, Direction: Input
+        [3] Name: "强制", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SinglePlantTypeListNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] plantTypeList_PortName = "植物类型列表"
+     - [Property] nodeId = "8ea8f9d5-8bdb-4d5f-82e0-b3ada27970d8"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringConcatNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "A"
+     - [Property] b_PortName = "B"
+     - [Property] result_PortName = "结果"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "cb626c8f-1821-4411-8cf7-85360cea2e2f"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringToAsciiNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "732e4a87-95b6-4a67-bc51-dedcd280d869"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "字符串", Type: String, Direction: Input
+        [1] Name: "索引", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "ASCII码", Type: Int, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringToFloatNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "5c2ffd06-9104-4f69-b4d1-b1a548dce02b"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "字符串", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: Float, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringToIntNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "df17a8f6-6751-4e77-9873-4955709d71fb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "字符串", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: Int, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringToObjectNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "c9b111bf-d541-4e10-92cc-7bd07e1cf567"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "文本", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "对象", Type: GameObject, Direction: Output
+        [1] Name: "存在", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringToPlantTypeNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "1b2ea154-4bdf-4213-b866-14c0092bae0a"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "字符串", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: PlantType, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringToZombieTypeNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "64165dab-417d-4c3c-8c0f-2df18af2d35b"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "字符串", Type: String, Direction: Input
+     - outputs:
+        [0] Name: "值", Type: ZombieType, Direction: Output
+        [1] Name: "有效", Type: Bool, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] value = "默认文本"
+     - [Property] value_PortName = "值"
+     - [Property] nodeId = "417528f4-d67f-4b81-a074-957dd2770ba5"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.StringVariableNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] Value = ""
+     - [Property] nodeId = "b94a29fe-1614-40a6-bcc4-4b4e0a7c20b0"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.SubtractNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] a_PortName = "被减数"
+     - [Property] b_PortName = "减数"
+     - [Property] result_PortName = "差"
+     - [Property] aSourcePort = null
+     - [Property] bSourcePort = null
+     - [Property] nodeId = "663090ff-f693-44a8-b7d4-cdffe45cf35d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ToggleCycleNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] interval_PortName = "周期间隔"
+     - [Property] cycle_PortName = "周期事件"
+     - [Property] onEnable_PortName = "切换开始时"
+     - [Property] onDisable_PortName = "切换关闭时"
+     - [Property] intervalSourcePort = null
+     - [Property] nodeId = "f6e82a00-12bf-4f1c-bdb6-4eda09eb1b61"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ToggleNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] state_PortName = "状态"
+     - [Property] onChanged_PortName = "状态改变时"
+     - [Property] nodeId = "d974cc39-e93a-450a-bd3e-c03f0652c37e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ToolTypeValueNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "651956a3-b878-476f-826c-2bda5dfa5861"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        (empty array)
+     - outputs:
+        [0] Name: "类型", Type: ToolType, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.TryPlantSuperSkillNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "4f05601c-9b21-4638-9621-f5e1779447cf"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.TypedChoiceMenuNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] options_PortName = "选项列表"
+     - [Property] refreshable_PortName = "可刷新"
+     - [Property] refreshCount_PortName = "刷新次数"
+     - [Property] cancelable_PortName = "可取消"
+     - [Property] windowCount_PortName = "窗口数量"
+     - [Property] actionOnExit_PortName = "退出时触发"
+     - [Property] actionOnRefresh_PortName = "刷新时触发"
+     - [Property] optionsSourcePort = null
+     - [Property] refreshableSourcePort = null
+     - [Property] refreshCountSourcePort = null
+     - [Property] cancelableSourcePort = null
+     - [Property] windowCountSourcePort = null
+     - [Property] nodeId = "006a6908-2654-4450-be77-61b8a4c7f2c9"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.TypedChoiceMergeNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] list1_PortName = "列表1"
+     - [Property] list2_PortName = "列表2"
+     - [Property] list1SourcePort = null
+     - [Property] list2SourcePort = null
+     - [Property] nodeId = "1f206af1-6a80-4778-a18c-4dbde181cf7d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.TypedChoiceOptionNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] title = "选项"
+     - [Property] description = "选项描述"
+     - [Property] list_PortName = "选项列表"
+     - [Property] title_PortName = "标题"
+     - [Property] description_PortName = "描述"
+     - [Property] plantType_PortName = "植物类型"
+     - [Property] zombieType_PortName = "僵尸类型"
+     - [Property] optionSelected_PortName = "选项被点击"
+     - [Property] listSourcePort = null
+     - [Property] titleSourcePort = null
+     - [Property] descriptionSourcePort = null
+     - [Property] plantTypeSourcePort = null
+     - [Property] zombieTypeSourcePort = null
+     - [Property] nodeId = "425a3013-7996-4cd5-9695-ba5c1bd01cdb"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.UpgradeEventPlantNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "13b4b71d-263b-4022-9edc-65300f6cbf0d"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "植物", Type: Plant, Direction: Input
+        [2] Name: "目标等级", Type: Int, Direction: Input
+        [3] Name: "星辉", Type: Bool, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.UseMoneyNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] moneyAmount_PortName = "金币数量"
+     - [Property] onSuccess_PortName = "消耗成功"
+     - [Property] onFailed_PortName = "金币不足"
+     - [Property] moneyAmountSourcePort = null
+     - [Property] nodeId = "cc860201-bb2c-4600-93dd-59c85a911ca6"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.UseSunNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] sunAmount_PortName = "阳光数量"
+     - [Property] onSuccess_PortName = "消耗成功"
+     - [Property] onFailed_PortName = "阳光不足"
+     - [Property] sunAmountSourcePort = null
+     - [Property] nodeId = "7b6d5a2d-5a47-481c-b11e-6ea32605fcdc"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.VariableNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] nodeId = "e84c56fc-f9db-4f52-b460-dc980437bdfa"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.WaitNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] duration_PortName = "等待时间"
+     - [Property] output_PortName = "触发"
+     - [Property] durationSourcePort = null
+     - [Property] nodeId = "45c88e0b-e087-468a-8af9-38123815b527"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.WaitUntilNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "e3b973ff-6319-4d5f-9dca-e7a33f178315"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "触发", Type: Trigger, Direction: Input
+        [1] Name: "条件", Type: Bool, Direction: Input
+        [2] Name: "间隔秒数", Type: Float, Direction: Input
+        [3] Name: "最多检查次数", Type: Int, Direction: Input
+     - outputs:
+        [0] Name: "完成", Type: Trigger, Direction: Output
+        [1] Name: "超时", Type: Trigger, Direction: Output
+        [2] Name: "失败", Type: Trigger, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.WaveEventNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] trigger_PortName = "触发"
+     - [Property] wave_PortName = "波次"
+     - [Property] nodeId = "efb865b5-bd75-4e51-a7ae-da13861f4d72"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ZombieSplitNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] zombie_PortName = "僵尸"
+     - [Property] column_PortName = "列"
+     - [Property] row_PortName = "行"
+     - [Property] zombieType_PortName = "僵尸类型"
+     - [Property] isHypnotized_PortName = "是否被魅惑"
+     - [Property] zombieSourcePort = null
+     - [Property] nodeId = "3418a9ec-3b62-437b-8373-d68d946ed2e9"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ZombieToObjectNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "2335a2c1-36d4-46d9-ab22-7a9d53cbb67e"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "僵尸", Type: Zombie, Direction: Input
+     - outputs:
+        [0] Name: "对象", Type: GameObject, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ZombieTypeToStringNode
+  Type Kind: EventSuggestedNode
+  -> String Members:
+     - [Property] nodeId = "948f7f78-09e9-4b7c-b941-b837b8f1c2e2"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+  -> Suggested Node Port Definitions:
+     - inputs:
+        [0] Name: "值", Type: ZombieType, Direction: Input
+     - outputs:
+        [0] Name: "字符串", Type: String, Direction: Output
+--------------------------------------------------
+[Node Class]: Il2CppGameLevel.EventNodes.ZombieTypeValueNode
+  Type Kind: EventNodeBase
+  -> String Members:
+     - [Property] value_PortName = "僵尸类型"
+     - [Property] nodeId = "ac799d21-0ddc-4d16-8df9-9eeab1cf5183"
+     - [Property] nodeType = null
+     - [Property] nodeName = null
+--------------------------------------------------

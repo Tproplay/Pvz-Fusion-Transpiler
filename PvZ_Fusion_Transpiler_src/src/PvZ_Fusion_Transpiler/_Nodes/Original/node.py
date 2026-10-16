@@ -2,10 +2,16 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
+import re
 
 from ...Core import uuid
 from ...Core.connection_manager import PortDirection, PortType, Port
 from ...Core.context import _ctx
+from .definitions import get_node_definition
+
+
+def _camel_to_snake(s: str) -> str:
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", s).lower()
 
 
 def _sanitize_for_json(val: Any) -> Any:
@@ -239,23 +245,53 @@ class Node(ABC):
             elif isinstance(asset_obj, dict):
                 data["asset"] = asset_obj
 
-        # For EventNodeBase, populate port name properties
-        if isinstance(self, EventNodeBase):
-            for attr in dir(self):
-                if attr.startswith("port_"):
-                    val = getattr(self, attr)
-                    if isinstance(val, Port):
-                        parts = attr.split("_")
-                        if len(parts) >= 4:
-                            prop_name = parts[3]
-                            camel_prop = prop_name[0].lower() + prop_name[1:]
-                            data[f"{camel_prop}_PortName"] = val.name
-
         reserved = {
             "id", "x", "y", "position", "ports", "rid", "node_type", "node_name",
             "input_defaults", "inputDefaults", "value", "asset",
             "bulletType", "plantType", "zombieType", "toolType", "targetKey", "target_key",
         }
+
+        # Check reflection dump definitions
+        node_def = get_node_definition(node_type)
+        if node_def is not None:
+            # 1. Custom string/other properties defined on this class in Unity
+            for prop, def_val in node_def.get("custom_props", {}).items():
+                snake_prop = _camel_to_snake(prop)
+                val = getattr(self, prop, getattr(self, snake_prop, def_val))
+                if val is not None or def_val is not None:
+                    data[prop] = _sanitize_for_json(val)
+                reserved.add(prop)
+                reserved.add(snake_prop)
+
+            # 2. PortName properties defined on this class in Unity
+            for port_prop in node_def.get("port_names", []):
+                port_val = node_def.get("port_defaults", {}).get(port_prop)
+                # If the node has a matching Port instance, use its actual name
+                prefix = port_prop[:-9].lower() if port_prop.endswith("_PortName") else ""
+                for attr in dir(self):
+                    if attr.startswith("port_"):
+                        p_val = getattr(self, attr)
+                        if isinstance(p_val, Port):
+                            parts = attr.split("_")
+                            if len(parts) >= 4 and parts[3].lower() == prefix:
+                                port_val = p_val.name
+                                break
+                if port_val is not None:
+                    data[port_prop] = port_val
+                reserved.add(port_prop)
+        else:
+            # Fallback for classes not present in reflection definitions
+            if isinstance(self, EventNodeBase):
+                for attr in dir(self):
+                    if attr.startswith("port_"):
+                        val = getattr(self, attr)
+                        if isinstance(val, Port):
+                            parts = attr.split("_")
+                            if len(parts) >= 4:
+                                prop_name = parts[3]
+                                camel_prop = prop_name[0].lower() + prop_name[1:]
+                                data[f"{camel_prop}_PortName"] = val.name
+
         for k, v in vars(self).items():
             if k not in reserved and not k.startswith("port_") and not k.startswith("_"):
                 if hasattr(v, "rid"):

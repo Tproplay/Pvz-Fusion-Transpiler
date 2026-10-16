@@ -1,0 +1,67 @@
+{
+    "eventNodeGraph": {
+        "nodes": [
+            {
+                "rid": 1000
+            },
+            {
+                "rid": 1001
+            }
+        ],
+        "connections": [
+            {
+                "sourceNodeId": "",
+                "sourcePortName": "",
+                "targetNodeId": "",
+                "targetPortName": ""
+            }
+        ],
+        "variables": [],
+        "groups": [],
+        "executionVersion": 1,
+        "graphId": "42b7094c2dd8479abf991a0777778f7e"
+    },
+    "references": {
+        "version": 2,
+        "RefIds": [
+            {
+                "rid": 1000,
+                "type": {
+                    "class": "BindPlantNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "0253e0d1-d283-43e8-bd18-efb690f14b74",
+                    "nodeType": "BindPlantNode",
+                    "position": {
+                        "x": -436.3636169433594,
+                        "y": 223.63633728027344
+                    },
+                    "nodeName": "BindPlantNode",
+                    "bindingName": "守护目标"
+                }
+            },
+            {
+                "rid": 1001,
+                "type": {
+                    "class": "ChangeStageNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "580e7d6a-5c44-4b67-84a1-5cfb3efe4837",
+                    "nodeType": "ChangeStageNode",
+                    "position": {
+                        "x": -117.50016021728516,
+                        "y": 145.03988647460938
+                    },
+                    "nodeName": "ChangeStageNode",
+                    "stageName": "战斗"
+                }
+            }
+        ]
+    }
+}

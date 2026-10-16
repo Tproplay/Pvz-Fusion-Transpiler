@@ -246,8 +246,8 @@ class Trigger:
     class OnStageEnter:
         """Triggers when entering a new stage in multi-stage levels."""
 
-        def __init__(self) -> None:
-            self.node = nodes.on_stage_enter()
+        def __init__(self, stage_name: str = "战斗") -> None:
+            self.node = nodes.on_stage_enter(stage_name=stage_name)
 
         def __enter__(self) -> Trigger.OnStageEnter:
             _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))

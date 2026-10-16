@@ -92,23 +92,23 @@ class WorldObject:
         return nodes.get_event_position().port_output_vector3_Position
 
     @staticmethod
-    def bind_plant(plant: Any) -> Any:
+    def bind_plant(plant: Any, name: str = "守护目标") -> Any:
         plant_ref = plant.ref if hasattr(plant, "ref") else plant
-        return nodes.bind_plant(plant=plant_ref)
+        return nodes.bind_plant(plant=plant_ref, binding_name=name)
 
     @staticmethod
-    def get_bound_plant() -> Plant:
-        node = nodes.get_bound_plant()
+    def get_bound_plant(name: str = "守护目标") -> Plant:
+        node = nodes.get_bound_plant(binding_name=name)
         return Plant(node.port_output_plant_Plant)
 
     @staticmethod
-    def bind_zombie(zombie: Any) -> Any:
+    def bind_zombie(zombie: Any, name: str = "首领") -> Any:
         zombie_ref = zombie.ref if hasattr(zombie, "ref") else zombie
-        return nodes.bind_zombie(zombie=zombie_ref)
+        return nodes.bind_zombie(zombie=zombie_ref, binding_name=name)
 
     @staticmethod
-    def get_bound_zombie() -> Zombie:
-        node = nodes.get_bound_zombie()
+    def get_bound_zombie(name: str = "首领") -> Zombie:
+        node = nodes.get_bound_zombie(binding_name=name)
         return Zombie(node.port_output_zombie_Zombie)
 
     def bind(self, name: Any = None) -> Any:

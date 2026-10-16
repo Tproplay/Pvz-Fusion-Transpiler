@@ -1,3 +1,4 @@
+from typing import Any
 from ..node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortType, Port
 
 
@@ -5,8 +6,10 @@ class AddMultipleChoiceOptionNode(EventNodeBase):
     # Status in Extensions: Not implemented
     node_type = "AddMultipleChoiceOptionNode"
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, title: str = "选项", description: str = "选项描述", **kwargs: Any):
+        super().__init__(**kwargs)
+        self.title: str = title
+        self.description: str = description
         self.port_output_choiceoptions_OptionList : Port = self.create_port("选项列表", PortDirection.Output, PortType.ChoiceOptions)
         self.port_input_string_Title : Port = self.create_port("标题", PortDirection.Input, PortType.String)
         self.port_input_string_Description : Port = self.create_port("描述", PortDirection.Input, PortType.String)

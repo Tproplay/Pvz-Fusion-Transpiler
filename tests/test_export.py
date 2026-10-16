@@ -415,6 +415,53 @@ raise RuntimeError("Intentional error to test exception handling")
         self.assertEqual(asset_s["data"]["value"], "PvZ Fusion")
         self.assertEqual(asset_s["data"]["referencedNodeIds"], [sn.id])
 
+    def test_string_fields_export(self):
+        """Test dumping string fields like bindingName and stageName matching Test.json."""
+        from PvZ_Fusion_Transpiler._Nodes import (
+            BindPlantNode,
+            ChangeStageNode,
+            OnStageEnterNode,
+            GetBoundZombieNode,
+        )
+
+        Config(output=self.test_dir, name="StringFieldsTest")
+        bp1 = BindPlantNode()  # default "守护目标"
+        bp2 = BindPlantNode(bindingName="守护VIP")
+        cs1 = ChangeStageNode()  # default "战斗"
+        cs2 = ChangeStageNode(stage_name="最终对决")
+        ose = OnStageEnterNode(stage_name="阶段二")
+        gbz = GetBoundZombieNode(binding_name="僵尸王")
+
+        export()
+        file_path = os.path.join(self.test_dir, "StringFieldsTest.json")
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        ref_ids = data["references"]["RefIds"]
+        self.assertEqual(len(ref_ids), 6)
+
+        # bp1: BindPlantNode default
+        self.assertEqual(ref_ids[0]["data"]["bindingName"], "守护目标")
+        self.assertNotIn("trigger_PortName", ref_ids[0]["data"])
+        self.assertNotIn("plant_PortName", ref_ids[0]["data"])
+
+        # bp2: BindPlantNode custom
+        self.assertEqual(ref_ids[1]["data"]["bindingName"], "守护VIP")
+
+        # cs1: ChangeStageNode default
+        self.assertEqual(ref_ids[2]["data"]["stageName"], "战斗")
+        self.assertNotIn("trigger_PortName", ref_ids[2]["data"])
+
+        # cs2: ChangeStageNode custom
+        self.assertEqual(ref_ids[3]["data"]["stageName"], "最终对决")
+
+        # ose: OnStageEnterNode
+        self.assertEqual(ref_ids[4]["data"]["stageName"], "阶段二")
+
+        # gbz: GetBoundZombieNode
+        self.assertEqual(ref_ids[5]["data"]["bindingName"], "僵尸王")
+
 
 if __name__ == "__main__":
     unittest.main()
+

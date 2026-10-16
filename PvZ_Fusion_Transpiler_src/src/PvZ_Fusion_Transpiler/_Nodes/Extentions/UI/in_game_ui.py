@@ -56,6 +56,8 @@ class InGameUI:
         final_text = format_string(*args)
         return nodes.show_text(text=final_text, duration=duration)
 
+    show_text = display_text
+
     @staticmethod
     def give_zombie_card(
         zombie_type: Any,

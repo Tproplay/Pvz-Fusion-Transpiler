@@ -70,8 +70,8 @@ class Game(metaclass=_GameMeta):
             return nodes.get_stage().port_output_string_StageName
 
         @staticmethod
-        def change() -> Any:
-            return nodes.change_stage()
+        def change(stage_name: str = "战斗") -> Any:
+            return nodes.change_stage(stage_name=stage_name)
 
         next = change
 
