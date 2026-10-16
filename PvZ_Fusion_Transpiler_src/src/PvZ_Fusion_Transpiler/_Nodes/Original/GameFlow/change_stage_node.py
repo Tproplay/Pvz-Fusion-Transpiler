@@ -2,7 +2,7 @@ from ..node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortT
 
 
 class ChangeStageNode(EventNodeBase):
-    # Status in Extensions: Not implemented
+    # Status in Extensions: Implemented
     node_type = "ChangeStageNode"
 
     def __init__(self):

@@ -37,6 +37,12 @@ def _validate_bullet_type(val: Any) -> Any:
     return val
 
 
+def _validate_tool_type(val: Any) -> Any:
+    if isinstance(val, (int, float)) and not isinstance(val, Enum):
+        raise TypeError("ToolType must be handled through the ToolType enum, direct int input is not allowed.")
+    return val
+
+
 def _wire_node_kwargs(node: Any, kwargs: dict[str, Any]) -> Any:
     for k, v in kwargs.items():
         if not _should_connect_arg(v):
@@ -76,6 +82,12 @@ def zombie_type_value(val: Any = None, **kwargs: Any) -> ZombieTypeValueNode:
 def bullet_type_value(val: Any = None, **kwargs: Any) -> BulletTypeValueNode:
     _validate_bullet_type(val)
     return BulletTypeValueNode(value=val, **kwargs)
+
+def tool_type_value(val: Any = None, **kwargs: Any) -> ToolTypeValueNode:
+    _validate_tool_type(val)
+    if isinstance(val, Enum):
+        val = val.value
+    return ToolTypeValueNode(value=val if val is not None else 0, **kwargs)
 
 
 # =============================================================================
@@ -230,21 +242,21 @@ def int_modulo(a: Any = None, b: Any = None, **kwargs: Any) -> IntModuloNode:
 def int_to_float(int_val: Any = None, **kwargs: Any) -> IntToFloatNode:
     node = IntToFloatNode(**kwargs)
     if int_val is not None:
-        to_port(int_val).connect(node.port_input_int_IntValue)
+        to_int_port(int_val).connect(node.port_input_int_Int)
     return node
 
 def float_to_int(float_val: Any = None, **kwargs: Any) -> FloatToIntNode:
     node = FloatToIntNode(**kwargs)
     if float_val is not None:
-        to_port(float_val).connect(node.port_input_float_FloatValue)
+        to_float_port(float_val).connect(node.port_input_float_Float)
     return node
 
 def float_to_string(float_val: Any = None, decimals: Any = None, **kwargs: Any) -> FloatToStringNode:
     node = FloatToStringNode(**kwargs)
     if float_val is not None:
-        to_port(float_val).connect(node.port_input_float_FloatValue)
+        to_float_port(float_val).connect(node.port_input_float_Value)
     if decimals is not None:
-        to_port(decimals).connect(node.port_input_int_Decimals)
+        to_int_port(decimals).connect(node.port_input_int_Decimals)
     return node
 
 
@@ -283,9 +295,9 @@ def not_node(input: Any = None, **kwargs: Any) -> NotNode:
 def compare_int(a: Any = None, b: Any = None, **kwargs: Any) -> CompareIntNode:
     node = CompareIntNode(**kwargs)
     if a is not None:
-        to_port(a).connect(node.port_input_int_ValueA)
+        to_int_port(a).connect(node.port_input_int_ValueA)
     if b is not None:
-        to_port(b).connect(node.port_input_int_ValueB)
+        to_int_port(b).connect(node.port_input_int_ValueB)
     return node
 
 def compare_plant_type(a: Any = None, b: Any = None, **kwargs: Any) -> ComparePlantTypeNode:
@@ -943,6 +955,12 @@ def zombie_type_to_string(zombie_type: Any = None, **kwargs: Any) -> ZombieTypeT
         to_port(_validate_zombie_type(zombie_type)).connect(node.port_input_zombietype_Value)
     return node
 
+def int_to_string(value: Any = None, **kwargs: Any) -> IntToStringNode:
+    node = IntToStringNode(**kwargs)
+    if value is not None:
+        to_int_port(value).connect(node.port_input_int_Value)
+    return node
+
 
 # =============================================================================
 # LIST OPERATIONS
@@ -1013,4 +1031,530 @@ def remove_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> 
         to_port(list_var).connect(node.port_input_listvariable_List)
     if index is not None:
         to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+
+# =============================================================================
+# PLANT EXTENSION HELPERS
+# =============================================================================
+
+def curse_plant(plant: Any = None, curse_value: Any = None, **kwargs: Any) -> CursePlantNode:
+    node = CursePlantNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    if curse_value is not None:
+        to_float_port(curse_value).connect(node.port_input_float_CurseValue)
+    return node
+
+def silence_plant(plant: Any = None, silence_value: Any = None, **kwargs: Any) -> SilencePlantNode:
+    node = SilencePlantNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    if silence_value is not None:
+        to_float_port(silence_value).connect(node.port_input_float_Seconds)
+    return node
+
+def feed_golden_bean(plant: Any = None, **kwargs: Any) -> FeedGoldenBeanNode:
+    node = FeedGoldenBeanNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    return node
+
+def try_plant_super_skill(plant: Any = None, **kwargs: Any) -> TryPlantSuperSkillNode:
+    node = TryPlantSuperSkillNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    return node
+
+def upgrade_event_plant(plant: Any = None, target_level: Any = None, star: Any = False, **kwargs: Any) -> UpgradeEventPlantNode:
+    node = UpgradeEventPlantNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    if target_level is not None:
+        to_int_port(target_level).connect(node.port_input_int_TargetLevel)
+    if _should_connect_arg(star):
+        to_bool_port(star).connect(node.port_input_bool_Star)
+    return node
+
+def get_plant_attack_speed(plant: Any = None, **kwargs: Any) -> GetPlantAttackSpeedNode:
+    node = GetPlantAttackSpeedNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    return node
+
+def set_plant_attack_speed(plant: Any = None, speed: Any = None, **kwargs: Any) -> SetPlantAttackSpeedNode:
+    node = SetPlantAttackSpeedNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    if speed is not None:
+        to_float_port(speed).connect(node.port_input_float_Multiplier)
+    return node
+
+def set_plant_attack_interval(plant: Any = None, interval: Any = None, **kwargs: Any) -> SetPlantAttackIntervalNode:
+    node = SetPlantAttackIntervalNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    if interval is not None:
+        to_float_port(interval).connect(node.port_input_float_Seconds)
+    return node
+
+def get_plant_attribute_countdown(plant: Any = None, **kwargs: Any) -> GetPlantAttributeCountdownNode:
+    node = GetPlantAttributeCountdownNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    return node
+
+def set_plant_attribute_countdown(plant: Any = None, remaining: Any = None, max_seconds: Any = None, **kwargs: Any) -> SetPlantAttributeCountdownNode:
+    node = SetPlantAttributeCountdownNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    if remaining is not None:
+        to_float_port(remaining).connect(node.port_input_float_RemainingSeconds)
+    if max_seconds is not None:
+        to_float_port(max_seconds).connect(node.port_input_float_MaxSeconds)
+    return node
+
+def get_plant_basic_components(plant_type: Any = None, **kwargs: Any) -> GetPlantBasicComponentsNode:
+    node = GetPlantBasicComponentsNode(**kwargs)
+    if plant_type is not None:
+        _validate_plant_type(plant_type)
+        if isinstance(plant_type, Enum):
+            plant_type = plant_type_value(val=plant_type)
+        to_port(plant_type).connect(node.port_input_planttype_PlantType)
+    return node
+
+
+# =============================================================================
+# ZOMBIE EXTENSION HELPERS
+# =============================================================================
+
+def get_zombie_stats(zombie: Any = None, **kwargs: Any) -> GetZombieStatsNode:
+    node = GetZombieStatsNode(**kwargs)
+    if zombie is not None:
+        to_port(zombie).connect(node.port_input_zombie_Zombie)
+    return node
+
+def set_zombie_stats(zombie: Any = None, value: Any = None, **kwargs: Any) -> SetZombieStatsNode:
+    node = SetZombieStatsNode(**kwargs)
+    if zombie is not None:
+        to_port(zombie).connect(node.port_input_zombie_Zombie)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    return node
+
+def get_zombie_status(zombie: Any = None, **kwargs: Any) -> GetZombieStatusNode:
+    node = GetZombieStatusNode(**kwargs)
+    if zombie is not None:
+        to_port(zombie).connect(node.port_input_zombie_Zombie)
+    return node
+
+def set_zombie_status(zombie: Any = None, value: Any = None, **kwargs: Any) -> SetZombieStatusNode:
+    node = SetZombieStatusNode(**kwargs)
+    if zombie is not None:
+        to_port(zombie).connect(node.port_input_zombie_Zombie)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    return node
+
+def compare_zombie_type(a: Any = None, b: Any = None, **kwargs: Any) -> CompareZombieTypeNode:
+    node = CompareZombieTypeNode(**kwargs)
+    if a is not None:
+        _validate_zombie_type(a)
+        if isinstance(a, Enum):
+            a = zombie_type_value(val=a)
+        to_port(a).connect(node.port_input_zombietype_ZombieTypeA)
+    if b is not None:
+        _validate_zombie_type(b)
+        if isinstance(b, Enum):
+            b = zombie_type_value(val=b)
+        to_port(b).connect(node.port_input_zombietype_ZombieTypeB)
+    return node
+
+def for_each_zombie(zombies: Any = None, **kwargs: Any) -> ForEachZombieNode:
+    node = ForEachZombieNode(**kwargs)
+    if zombies is not None:
+        to_port(zombies).connect(node.port_input_zombielist_ZombieList)
+    return node
+
+def for_each_all_zombies(**kwargs: Any) -> ForEachAllZombiesNode:
+    return ForEachAllZombiesNode(**kwargs)
+
+def get_all_zombies(**kwargs: Any) -> GetAllZombiesNode:
+    return GetAllZombiesNode(**kwargs)
+
+
+# =============================================================================
+# LAWN & MAP HELPERS
+# =============================================================================
+
+def get_plants_on_layer(row: Any = None, column: Any = None, layer: Any = None, **kwargs: Any) -> GetPlantsOnLayerNode:
+    node = GetPlantsOnLayerNode(**kwargs)
+    return node
+
+def delete_grid_items(row: Any = None, column: Any = None, **kwargs: Any) -> DeleteGridItemsNode:
+    node = DeleteGridItemsNode(**kwargs)
+    if row is not None:
+        to_int_port(row).connect(node.port_input_int_Row)
+    if column is not None:
+        to_int_port(column).connect(node.port_input_int_Col)
+    return node
+
+def change_event_map(**kwargs: Any) -> ChangeEventMapNode:
+    return ChangeEventMapNode(**kwargs)
+
+def change_event_music(**kwargs: Any) -> ChangeEventMusicNode:
+    return ChangeEventMusicNode(**kwargs)
+
+def set_zombie_house_rule(house_entry_defeat: Any = True, **kwargs: Any) -> SetZombieHouseRuleNode:
+    node = SetZombieHouseRuleNode(**kwargs)
+    if _should_connect_arg(house_entry_defeat):
+        to_bool_port(house_entry_defeat).connect(node.port_input_bool_HouseEntryDefeat)
+    return node
+
+def remove_travel_entry(name_or_id: Any = None, **kwargs: Any) -> RemoveTravelEntryNode:
+    node = RemoveTravelEntryNode(**kwargs)
+    if name_or_id is not None:
+        to_string_port(name_or_id).connect(node.port_input_string_NameOrId)
+    return node
+
+
+# =============================================================================
+# GAMEFLOW & TIMERS
+# =============================================================================
+
+def on_world_plant_effect(**kwargs: Any) -> OnWorldPlantEffectNode:
+    return OnWorldPlantEffectNode(**kwargs)
+
+def wave_event(**kwargs: Any) -> WaveEventNode:
+    return WaveEventNode(**kwargs)
+
+def set_wave_countdown_paused(paused: Any = None, **kwargs: Any) -> SetWaveCountdownPausedNode:
+    node = SetWaveCountdownPausedNode(**kwargs)
+    if paused is not None:
+        to_bool_port(paused).connect(node.port_input_bool_Pause)
+    return node
+
+def change_stage(**kwargs: Any) -> ChangeStageNode:
+    return ChangeStageNode(**kwargs)
+
+def get_stage(**kwargs: Any) -> GetStageNode:
+    return GetStageNode(**kwargs)
+
+def on_stage_enter(**kwargs: Any) -> OnStageEnterNode:
+    return OnStageEnterNode(**kwargs)
+
+
+# =============================================================================
+# UI & CARDS
+# =============================================================================
+
+def add_zombie_card(zombie_type: Any = None, cd: Any = None, cost: Any = None, default_data: Any = True, **kwargs: Any) -> AddZombieCardNode:
+    node = AddZombieCardNode(**kwargs)
+    if zombie_type is not None:
+        _validate_zombie_type(zombie_type)
+        if isinstance(zombie_type, Enum):
+            zombie_type = zombie_type_value(val=zombie_type)
+        to_port(zombie_type).connect(node.port_input_zombietype_ZombieType)
+    if cd is not None:
+        to_float_port(cd).connect(node.port_input_float_Cooldown)
+    if cost is not None:
+        to_int_port(cost).connect(node.port_input_int_Price)
+    if _should_connect_arg(default_data):
+        to_bool_port(default_data).connect(node.port_input_bool_AvailableImmediately)
+    return node
+
+def delete_zombie_cards(zombie_type: Any = None, **kwargs: Any) -> DeleteZombieCardsNode:
+    node = DeleteZombieCardsNode(**kwargs)
+    if zombie_type is not None:
+        _validate_zombie_type(zombie_type)
+        if isinstance(zombie_type, Enum):
+            zombie_type = zombie_type_value(val=zombie_type)
+        to_port(zombie_type).connect(node.port_input_zombietype_ZombieType)
+    return node
+
+def set_zombie_card_cooldown(zombie_type: Any = None, total: Any = None, remaining: Any = None, **kwargs: Any) -> SetZombieCardCooldownNode:
+    node = SetZombieCardCooldownNode(**kwargs)
+    if zombie_type is not None:
+        _validate_zombie_type(zombie_type)
+        if isinstance(zombie_type, Enum):
+            zombie_type = zombie_type_value(val=zombie_type)
+        to_port(zombie_type).connect(node.port_input_zombietype_ZombieType)
+    if total is not None:
+        to_float_port(total).connect(node.port_input_float_TotalSeconds)
+    if remaining is not None:
+        to_float_port(remaining).connect(node.port_input_float_RemainingSeconds)
+    return node
+
+def delete_info_cards(card_object: Any = None, all_cards: Any = True, **kwargs: Any) -> DeleteInfoCardsNode:
+    node = DeleteInfoCardsNode(**kwargs)
+    if card_object is not None:
+        to_port(card_object).connect(node.port_input_gameobject_CardObject)
+    if _should_connect_arg(all_cards):
+        to_bool_port(all_cards).connect(node.port_input_bool_All)
+    return node
+
+
+# =============================================================================
+# TOOLS
+# =============================================================================
+
+def get_held_tool(**kwargs: Any) -> GetHeldToolNode:
+    return GetHeldToolNode(**kwargs)
+
+def compare_tool_type(a: Any = None, b: Any = None, **kwargs: Any) -> CompareToolTypeNode:
+    node = CompareToolTypeNode(**kwargs)
+    if a is not None:
+        _validate_tool_type(a)
+        if isinstance(a, Enum):
+            a = tool_type_value(val=a)
+        to_port(a).connect(node.port_input_tooltype_A)
+    if b is not None:
+        _validate_tool_type(b)
+        if isinstance(b, Enum):
+            b = tool_type_value(val=b)
+        to_port(b).connect(node.port_input_tooltype_B)
+    return node
+
+def get_tool_cooldown(tool_type: Any = None, **kwargs: Any) -> GetToolCooldownNode:
+    node = GetToolCooldownNode(**kwargs)
+    if tool_type is not None:
+        _validate_tool_type(tool_type)
+        if isinstance(tool_type, Enum):
+            tool_type = tool_type_value(val=tool_type)
+        to_port(tool_type).connect(node.port_input_tooltype_ToolType)
+    return node
+
+def set_tool_cooldown(tool_type: Any = None, ratio: Any = None, **kwargs: Any) -> SetToolCooldownNode:
+    node = SetToolCooldownNode(**kwargs)
+    if tool_type is not None:
+        _validate_tool_type(tool_type)
+        if isinstance(tool_type, Enum):
+            tool_type = tool_type_value(val=tool_type)
+        to_port(tool_type).connect(node.port_input_tooltype_ToolType)
+    return node
+
+
+# =============================================================================
+# VARIABLE ARITHMETIC
+# =============================================================================
+
+def int_variable_arithmetic(variable: Any = None, operand: Any = None, **kwargs: Any) -> IntVariableArithmeticNode:
+    node = IntVariableArithmeticNode(**kwargs)
+    if variable is not None:
+        to_port(variable).connect(node.port_input_intvariable_Variable)
+    if operand is not None:
+        to_int_port(operand).connect(node.port_input_int_Operand)
+    return node
+
+def float_variable_arithmetic(variable: Any = None, operand: Any = None, **kwargs: Any) -> FloatVariableArithmeticNode:
+    node = FloatVariableArithmeticNode(**kwargs)
+    if variable is not None:
+        to_port(variable).connect(node.port_input_floatvariable_Variable)
+    if operand is not None:
+        to_float_port(operand).connect(node.port_input_float_Operand)
+    return node
+
+
+# =============================================================================
+# OBJECTS & TRANSFORMS
+# =============================================================================
+
+def create_event_object(name: Any = None, position: Any = None, icon_plant: Any = None, **kwargs: Any) -> CreateEventObjectNode:
+    node = CreateEventObjectNode(**kwargs)
+    if name is not None:
+        to_string_port(name).connect(node.port_input_string_Name)
+    if position is not None:
+        to_port(position).connect(node.port_input_vector3_Position)
+    if icon_plant is not None:
+        _validate_plant_type(icon_plant)
+        if isinstance(icon_plant, Enum):
+            icon_plant = plant_type_value(val=icon_plant)
+        to_port(icon_plant).connect(node.port_input_planttype_IconPlant)
+    return node
+
+def destroy_event_object(game_object: Any = None, **kwargs: Any) -> DestroyEventObjectNode:
+    node = DestroyEventObjectNode(**kwargs)
+    if game_object is not None:
+        to_port(game_object).connect(node.port_input_gameobject_GameObject)
+    return node
+
+def get_object_transform(game_object: Any = None, **kwargs: Any) -> GetObjectTransformNode:
+    node = GetObjectTransformNode(**kwargs)
+    if game_object is not None:
+        to_port(game_object).connect(node.port_input_gameobject_GameObject)
+    return node
+
+def set_event_object_transform(game_object: Any = None, position: Any = None, scale: Any = None, **kwargs: Any) -> SetEventObjectTransformNode:
+    node = SetEventObjectTransformNode(**kwargs)
+    if game_object is not None:
+        to_port(game_object).connect(node.port_input_gameobject_GameObject)
+    if position is not None:
+        to_port(position).connect(node.port_input_vector3_Position)
+    if scale is not None:
+        to_float_port(scale).connect(node.port_input_float_ScaleMultiplier)
+    return node
+
+def make_vector3(x: Any = None, y: Any = None, z: Any = None, **kwargs: Any) -> MakeVector3Node:
+    node = MakeVector3Node(**kwargs)
+    if x is not None:
+        to_float_port(x).connect(node.port_input_float_X)
+    if y is not None:
+        to_float_port(y).connect(node.port_input_float_Y)
+    if z is not None:
+        to_float_port(z).connect(node.port_input_float_Z)
+    return node
+
+def get_mouse_world_position(**kwargs: Any) -> GetMouseWorldPositionNode:
+    return GetMouseWorldPositionNode(**kwargs)
+
+def get_event_position(**kwargs: Any) -> GetEventPositionNode:
+    return GetEventPositionNode(**kwargs)
+
+def object_to_plant(game_object: Any = None, **kwargs: Any) -> ObjectToPlantNode:
+    node = ObjectToPlantNode(**kwargs)
+    if game_object is not None:
+        to_port(game_object).connect(node.port_input_gameobject_GameObject)
+    return node
+
+def object_to_zombie(game_object: Any = None, **kwargs: Any) -> ObjectToZombieNode:
+    node = ObjectToZombieNode(**kwargs)
+    if game_object is not None:
+        to_port(game_object).connect(node.port_input_gameobject_GameObject)
+    return node
+
+def plant_to_object(plant: Any = None, **kwargs: Any) -> PlantToObjectNode:
+    node = PlantToObjectNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    return node
+
+def zombie_to_object(zombie: Any = None, **kwargs: Any) -> ZombieToObjectNode:
+    node = ZombieToObjectNode(**kwargs)
+    if zombie is not None:
+        to_port(zombie).connect(node.port_input_zombie_Zombie)
+    return node
+
+def bind_plant(plant: Any = None, **kwargs: Any) -> BindPlantNode:
+    node = BindPlantNode(**kwargs)
+    if plant is not None:
+        to_port(plant).connect(node.port_input_plant_Plant)
+    return node
+
+def bind_zombie(zombie: Any = None, **kwargs: Any) -> BindZombieNode:
+    node = BindZombieNode(**kwargs)
+    if zombie is not None:
+        to_port(zombie).connect(node.port_input_zombie_Zombie)
+    return node
+
+def get_bound_plant(**kwargs: Any) -> GetBoundPlantNode:
+    return GetBoundPlantNode(**kwargs)
+
+def get_bound_zombie(**kwargs: Any) -> GetBoundZombieNode:
+    return GetBoundZombieNode(**kwargs)
+
+def bind_object(game_object: Any = None, name: Any = None, **kwargs: Any) -> BindObjectNode:
+    node = BindObjectNode(**kwargs)
+    if game_object is not None:
+        to_port(game_object).connect(node.port_input_gameobject_GameObject)
+    if name is not None:
+        to_string_port(name).connect(node.port_input_string_Name)
+    return node
+
+
+# =============================================================================
+# MATH & COMPARISONS & CONVERSIONS
+# =============================================================================
+
+def power(value: Any = None, exponent: Any = None, **kwargs: Any) -> PowerNode:
+    node = PowerNode(**kwargs)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    if exponent is not None:
+        to_float_port(exponent).connect(node.port_input_float_Exponent)
+    return node
+
+def logarithm(value: Any = None, base: Any = None, **kwargs: Any) -> LogarithmNode:
+    node = LogarithmNode(**kwargs)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    if base is not None:
+        to_float_port(base).connect(node.port_input_float_Base)
+    return node
+
+def compare_float(a: Any = None, b: Any = None, **kwargs: Any) -> CompareFloatNode:
+    node = CompareFloatNode(**kwargs)
+    if a is not None:
+        to_float_port(a).connect(node.port_input_float_ValueA)
+    if b is not None:
+        to_float_port(b).connect(node.port_input_float_ValueB)
+    return node
+
+def compare_game_object(a: Any = None, b: Any = None, **kwargs: Any) -> CompareGameObjectNode:
+    node = CompareGameObjectNode(**kwargs)
+    if a is not None:
+        to_port(a).connect(node.port_input_gameobject_GameObjectA)
+    if b is not None:
+        to_port(b).connect(node.port_input_gameobject_GameObjectB)
+    return node
+
+def int_to_bool(val: Any = None, **kwargs: Any) -> IntToBoolNode:
+    node = IntToBoolNode(**kwargs)
+    if val is not None:
+        to_int_port(val).connect(node.port_input_int_Value)
+    return node
+
+def float_to_bool(val: Any = None, **kwargs: Any) -> FloatToBoolNode:
+    node = FloatToBoolNode(**kwargs)
+    if val is not None:
+        to_float_port(val).connect(node.port_input_float_Value)
+    return node
+
+def ascii_to_string(code: Any = None, **kwargs: Any) -> AsciiToStringNode:
+    node = AsciiToStringNode(**kwargs)
+    if code is not None:
+        to_int_port(code).connect(node.port_input_int_AsciiCode)
+    return node
+
+def string_to_ascii(text: Any = None, index: Any = None, **kwargs: Any) -> StringToAsciiNode:
+    node = StringToAsciiNode(**kwargs)
+    if text is not None:
+        to_string_port(text).connect(node.port_input_string_String)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def string_to_int(text: Any = None, **kwargs: Any) -> StringToIntNode:
+    node = StringToIntNode(**kwargs)
+    if text is not None:
+        to_string_port(text).connect(node.port_input_string_String)
+    return node
+
+def string_to_float(text: Any = None, **kwargs: Any) -> StringToFloatNode:
+    node = StringToFloatNode(**kwargs)
+    if text is not None:
+        to_string_port(text).connect(node.port_input_string_String)
+    return node
+
+def string_to_plant_type(text: Any = None, **kwargs: Any) -> StringToPlantTypeNode:
+    node = StringToPlantTypeNode(**kwargs)
+    if text is not None:
+        to_string_port(text).connect(node.port_input_string_String)
+    return node
+
+def string_to_zombie_type(text: Any = None, **kwargs: Any) -> StringToZombieTypeNode:
+    node = StringToZombieTypeNode(**kwargs)
+    if text is not None:
+        to_string_port(text).connect(node.port_input_string_String)
+    return node
+
+def string_to_object(text: Any = None, **kwargs: Any) -> StringToObjectNode:
+    node = StringToObjectNode(**kwargs)
+    if text is not None:
+        to_string_port(text).connect(node.port_input_string_String)
+    return node
+
+def object_to_string(obj: Any = None, **kwargs: Any) -> ObjectToStringNode:
+    node = ObjectToStringNode(**kwargs)
+    if obj is not None:
+        to_port(obj).connect(node.port_input_gameobject_GameObject)
     return node

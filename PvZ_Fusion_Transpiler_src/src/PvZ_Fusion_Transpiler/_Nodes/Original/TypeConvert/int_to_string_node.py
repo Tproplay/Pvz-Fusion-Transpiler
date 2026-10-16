@@ -2,7 +2,7 @@ from ..node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortT
 
 
 class IntToStringNode(EventSuggestedNode):
-    # Status in Extensions: Not implemented
+    # Status in Extensions: Implemented
     node_type = "IntToStringNode"
 
     def __init__(self):

@@ -1,7 +1,7 @@
 from .plant import Plant
 from .zombie import Zombie
 from .bullet import Bullet
-from .loops import ForEachPlant, ForEachPlantType, ForEachZombieType
+from .loops import ForEachPlant, ForEachPlantType, ForEachZombie, ForEachAllZombies, ForEachZombieType
 from .plant_type_list import PlantTypeList
 from .zombie_type_list import ZombieTypeList
 
@@ -11,6 +11,8 @@ __all__ = [
     "Bullet",
     "ForEachPlant",
     "ForEachPlantType",
+    "ForEachZombie",
+    "ForEachAllZombies",
     "ForEachZombieType",
     "PlantTypeList",
     "ZombieTypeList",

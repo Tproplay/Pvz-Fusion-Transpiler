@@ -2,7 +2,7 @@
 from enum import Enum
 
 
-class ZombieAnimations:
+class ZombieAnimation:
     class NormalZombie(Enum):
         ATTACK = "attack"
         ATTACK_LOSE = "attack_lose"
@@ -1740,4 +1740,5 @@ class ZombieAnimations:
         IDLE = "idle"
         WALK = "walk"
 
-__all__ = ["ZombieAnimations"]
+ZombieAnimations = ZombieAnimation
+__all__ = ["ZombieAnimations", "ZombieAnimation"]

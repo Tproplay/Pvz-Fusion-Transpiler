@@ -56,5 +56,39 @@ class InGameUI:
         final_text = format_string(*args)
         return nodes.show_text(text=final_text, duration=duration)
 
+    @staticmethod
+    def give_zombie_card(
+        zombie_type: Any,
+        cooldown: Any = 7.5,
+        cost: Any = 50,
+        use_default: Any = True,
+    ) -> Any:
+        if isinstance(zombie_type, (int, float)) and not isinstance(zombie_type, Enum):
+            raise TypeError("ZombieType must be an Enum instance (e.g. ZombieType.NormalZombie); direct int is not allowed.")
+        return nodes.add_zombie_card(
+            zombie_type=zombie_type,
+            cd=cooldown,
+            cost=cost,
+            default_data=use_default,
+        )
+
+    @staticmethod
+    def remove_zombie_cards(zombie_type: Any = None) -> Any:
+        if zombie_type is not None and isinstance(zombie_type, (int, float)) and not isinstance(zombie_type, Enum):
+            raise TypeError("ZombieType must be an Enum instance; direct int is not allowed.")
+        return nodes.delete_zombie_cards(zombie_type=zombie_type)
+
+    @staticmethod
+    def set_zombie_card_cooldown(zombie_type: Any, total: Any = None, remaining: Any = None) -> Any:
+        if isinstance(zombie_type, (int, float)) and not isinstance(zombie_type, Enum):
+            raise TypeError("ZombieType must be an Enum instance; direct int is not allowed.")
+        return nodes.set_zombie_card_cooldown(zombie_type=zombie_type, total=total, remaining=remaining)
+
+    @staticmethod
+    def clear_info_cards(card_object: Any = None, all_cards: Any = True) -> Any:
+        return nodes.delete_info_cards(card_object=card_object, all_cards=all_cards)
+
+    delete_info_cards = clear_info_cards
+
 
 __all__ = ["InGameUI"]

@@ -107,6 +107,60 @@ class ForEachPlantType:
         return self.plant_type != other
 
 
+from .zombie import Zombie
+
+
+class ForEachZombie:
+    """Context manager that loops through a collection of Zombie entities.
+    Yields the wrapped Zombie entity directly.
+    """
+
+    def __init__(self, zombie_list_port: Any) -> None:
+        if hasattr(zombie_list_port, "list_port"):
+            zombie_list_port = zombie_list_port.list_port
+        elif hasattr(zombie_list_port, "value"):
+            zombie_list_port = zombie_list_port.value
+
+        self.node = nodes.for_each_zombie(zombies=zombie_list_port)
+        self._zombie_cache: Optional[Zombie] = None
+
+    def __enter__(self) -> Zombie:
+        _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Loop))
+        if self._zombie_cache is None:
+            self._zombie_cache = Zombie(self.node.port_output_zombie_CurrentZombie)
+        return self._zombie_cache
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        _ctx.trigger_stack.pop()
+
+    @property
+    def on_complete(self) -> ExecutionPath:
+        return ExecutionPath(self.node.port_output_trigger_Complete)
+
+
+class ForEachAllZombies:
+    """Context manager that loops through all zombies currently on the lawn.
+    Yields the wrapped Zombie entity directly.
+    """
+
+    def __init__(self) -> None:
+        self.node = nodes.for_each_all_zombies()
+        self._zombie_cache: Optional[Zombie] = None
+
+    def __enter__(self) -> Zombie:
+        _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Loop))
+        if self._zombie_cache is None:
+            self._zombie_cache = Zombie(self.node.port_output_zombie_CurrentZombie)
+        return self._zombie_cache
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        _ctx.trigger_stack.pop()
+
+    @property
+    def on_complete(self) -> ExecutionPath:
+        return ExecutionPath(self.node.port_output_trigger_Complete)
+
+
 from .zombie_type_list import ForEachZombieType
 
-__all__ = ["ForEachPlant", "ForEachPlantType", "ForEachZombieType"]
+__all__ = ["ForEachPlant", "ForEachPlantType", "ForEachZombie", "ForEachAllZombies", "ForEachZombieType"]

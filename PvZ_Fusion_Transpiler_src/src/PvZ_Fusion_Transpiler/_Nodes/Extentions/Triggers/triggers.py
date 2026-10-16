@@ -178,5 +178,83 @@ class Trigger:
         def __exit__(self, *args: Any) -> None:
             _ctx.trigger_stack.pop()
 
+    class OnPlantMixed:
+        """Triggers when two plants are mixed / fused into a new plant. Yields a Plant instance."""
+
+        def __init__(self) -> None:
+            self.node = nodes.on_plant_mixed()
+
+        def __enter__(self) -> Plant:
+            _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))
+            return Plant(self.node.port_output_plant_Plant)
+
+        def __exit__(self, *args: Any) -> None:
+            _ctx.trigger_stack.pop()
+
+    class OnWorldPlantEffect:
+        """Triggers when a global world plant effect is activated. Yields the affected row."""
+
+        def __init__(self) -> None:
+            self.node = nodes.on_world_plant_effect()
+
+        def __enter__(self) -> Any:
+            _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))
+            return self.node.port_output_int_Row
+
+        def __exit__(self, *args: Any) -> None:
+            _ctx.trigger_stack.pop()
+
+    class OnZombieClick:
+        """Triggers when a player clicks a zombie on screen. Yields a Zombie instance."""
+
+        def __init__(self) -> None:
+            self.node = nodes.on_zombie_click()
+
+        def __enter__(self) -> Zombie:
+            _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))
+            return Zombie(self.node.port_output_zombie_Zombie)
+
+        def __exit__(self, *args: Any) -> None:
+            _ctx.trigger_stack.pop()
+
+    class OnZombieHealthBelow:
+        """Triggers when a zombie's health drops below a specified threshold. Yields a Zombie instance."""
+
+        def __init__(self) -> None:
+            self.node = nodes.on_zombie_health_below()
+
+        def __enter__(self) -> Zombie:
+            _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))
+            return Zombie(self.node.port_output_zombie_Zombie)
+
+        def __exit__(self, *args: Any) -> None:
+            _ctx.trigger_stack.pop()
+
+    class OnWaveEvent:
+        """Triggers on a specific wave milestone event."""
+
+        def __init__(self) -> None:
+            self.node = nodes.wave_event()
+
+        def __enter__(self) -> Any:
+            _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))
+            return self.node.port_output_int_Wave
+
+        def __exit__(self, *args: Any) -> None:
+            _ctx.trigger_stack.pop()
+
+    class OnStageEnter:
+        """Triggers when entering a new stage in multi-stage levels."""
+
+        def __init__(self) -> None:
+            self.node = nodes.on_stage_enter()
+
+        def __enter__(self) -> Trigger.OnStageEnter:
+            _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))
+            return self
+
+        def __exit__(self, *args: Any) -> None:
+            _ctx.trigger_stack.pop()
+
 
 __all__ = ["Trigger"]

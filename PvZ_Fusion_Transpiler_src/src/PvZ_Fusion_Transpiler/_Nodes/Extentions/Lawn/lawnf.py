@@ -114,5 +114,39 @@ class Lawnf:
         def complete(self) -> ExecutionPath:
             return ExecutionPath(self.loop_node.port_output_trigger_LoopComplete)
 
+    @staticmethod
+    def get_plants_on_layer(row: Any = None, col: Any = None, layer: Any = None) -> Any:
+        return nodes.get_plants_on_layer(row=row, column=col, layer=layer).port_output_plantlist_PlantList
+
+    @staticmethod
+    def get_random_plant_type() -> Any:
+        return nodes.get_random_plant_type().port_output_planttype_RandomPlantType
+
+    @staticmethod
+    def get_all_zombies() -> Any:
+        return nodes.get_all_zombies().port_output_zombielist_ZombieList
+
+    @staticmethod
+    def delete_grid_items(row: Any, col: Any) -> Any:
+        return nodes.delete_grid_items(row=row, column=col)
+
+    clear_cell = delete_grid_items
+
+    @staticmethod
+    def change_map() -> Any:
+        return nodes.change_event_map()
+
+    @staticmethod
+    def change_music() -> Any:
+        return nodes.change_event_music()
+
+    @staticmethod
+    def set_zombie_house_rule(house_entry_defeat: Any = True) -> Any:
+        return nodes.set_zombie_house_rule(house_entry_defeat=house_entry_defeat)
+
+    @staticmethod
+    def remove_travel_entry(name_or_id: Any = None) -> Any:
+        return nodes.remove_travel_entry(name_or_id=name_or_id)
+
 
 __all__ = ["Lawnf"]

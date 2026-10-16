@@ -81,6 +81,42 @@ class Plant:
     def attributeCD(self) -> Any:
         return self._split.port_output_int_AttributeCountdown
 
+    def curse(self, curse_value: Any) -> Any:
+        return nodes.curse_plant(plant=self.ref, curse_value=curse_value)
+
+    def silence(self, silence_value: Any) -> Any:
+        return nodes.silence_plant(plant=self.ref, silence_value=silence_value)
+
+    def feed_golden_bean(self) -> Any:
+        return nodes.feed_golden_bean(plant=self.ref)
+
+    def try_super_skill(self) -> Any:
+        return nodes.try_plant_super_skill(plant=self.ref)
+
+    def upgrade(self, target_level: Any, star: Any = False) -> Any:
+        return nodes.upgrade_event_plant(plant=self.ref, target_level=target_level, star=star)
+
+    def get_attack_speed(self) -> Any:
+        return nodes.get_plant_attack_speed(plant=self.ref)
+
+    def set_attack_speed(self, multiplier: Any) -> Any:
+        return nodes.set_plant_attack_speed(plant=self.ref, speed=multiplier)
+
+    def set_attack_interval(self, seconds: Any) -> Any:
+        return nodes.set_plant_attack_interval(plant=self.ref, interval=seconds)
+
+    def get_attribute_countdown(self) -> Any:
+        return nodes.get_plant_attribute_countdown(plant=self.ref)
+
+    def set_attribute_countdown(self, remaining: Any = None, max_seconds: Any = None) -> Any:
+        return nodes.set_plant_attribute_countdown(plant=self.ref, remaining=remaining, max_seconds=max_seconds)
+
+    def get_basic_components(self) -> Any:
+        return nodes.get_plant_basic_components(plant_type=self.plantType).port_output_planttypelist_PlantTypeList
+
+    def to_object(self) -> Any:
+        return nodes.plant_to_object(plant=self.ref).port_output_gameobject_GameObject
+
     def ToString(self) -> Any:
         conv = nodes.plant_type_to_string(plant_type=self.plantType)
         return conv.port_output_string_String

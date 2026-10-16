@@ -1,0 +1,44 @@
+# pvz Fusion Transpiler - Unimplemented Nodes and Status Reasons
+# This file tracks Original nodes intentionally omitted or deferred from Extentions.
+
+================================================================================
+1. REDUNDANT / DUPLICATE NODES
+================================================================================
+- TypedChoiceMenuNode
+- TypedChoiceMergeNode
+- TypedChoiceOptionNode
+  Reason: Duplicate functionality of MultipleChoiceMenu (UI/menu.py).
+
+================================================================================
+2. OPTIMIZATION-ONLY CONTROL FLOW NODES
+================================================================================
+- PulseNode
+- DoOnceNode
+- RepeatUntilNode
+  Reason: Useless as standalone user-facing extension nodes; reserved for internal graph compiler optimizer to reduce node count.
+
+- WaitUntilNode
+  Reason: Deemed redundant / useless as an extension node in PvZ Fusion visual script logic.
+
+================================================================================
+3. DEPRECATED ENGINE NODES
+================================================================================
+- GetTravelEntryNode
+  Reason: Deprecated in the original PvZ Fusion game engine.
+
+================================================================================
+4. DEFERRED PENDING USER SPECIFICATIONS
+================================================================================
+- List Variables (33 nodes):
+  - AppendBoolListNode, AppendFloatListNode, AppendIntListNode, AppendObjectListNode
+  - AppendPlantTypeListNode, AppendStringListNode, AppendZombieTypeListNode
+  - ClearListValuesNode, CopyListValuesNode
+  - FindBoolListValueNode, FindFloatListValueNode, FindIntListValueNode, FindObjectListValueNode
+  - FindPlantTypeListValueNode, FindStringListValueNode, FindZombieTypeListValueNode
+  - GetBoolListItemNode, GetFloatListItemNode, GetIntListItemNode, GetObjectListItemNode
+  - GetPlantTypeListItemNode, GetStringListItemNode, GetZombieTypeListItemNode
+  - InsertBoolListNode, InsertFloatListNode, InsertIntListNode, InsertObjectListNode
+  - InsertPlantTypeListNode, InsertStringListNode, InsertZombieTypeListNode
+  - ReplaceBoolListNode, ReplaceFloatListNode, ReplaceIntListNode, ReplaceObjectListNode
+  - ReplacePlantTypeListNode, ReplaceStringListNode, ReplaceZombieTypeListNode
+  Reason: Waiting for detailed user requirements on how collections/list variables should be structured.

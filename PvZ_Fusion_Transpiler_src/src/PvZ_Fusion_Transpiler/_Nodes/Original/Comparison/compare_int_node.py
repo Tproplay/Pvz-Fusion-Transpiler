@@ -2,7 +2,7 @@ from ..node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortT
 
 
 class CompareIntNode(EventNodeBase):
-    # Status in Extensions: Not implemented
+    # Status in Extensions: Implemented
     node_type = "CompareIntNode"
 
     def __init__(self):

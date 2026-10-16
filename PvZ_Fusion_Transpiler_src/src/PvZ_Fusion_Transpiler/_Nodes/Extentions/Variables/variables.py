@@ -94,6 +94,12 @@ class IntVar:
         self.set(nodes.int_add(a=self.value, b=self._cast_to_int(other)).port_output_int_Sum)
         return self
 
+    def add_in_place(self, amount: Any) -> IntVar:
+        node = nodes.int_variable_arithmetic(variable=self.variable, operand=self._cast_to_int(amount))
+        if _ctx.trigger_stack:
+            _ctx.trigger_stack[-1] = ExecutionPath(node.port_output_trigger_Complete)
+        return self
+
     def __isub__(self, other: Any) -> IntVar:
         self.set(nodes.int_subtract(a=self.value, b=self._cast_to_int(other)).port_output_int_Difference)
         return self
@@ -273,6 +279,12 @@ class FloatVar:
 
     def __iadd__(self, other: Any) -> FloatVar:
         self.set(nodes.add_node(a=self.value, b=self._cast_to_float(other)).port_output_float_Result)
+        return self
+
+    def add_in_place(self, amount: Any) -> FloatVar:
+        node = nodes.float_variable_arithmetic(variable=self.variable, operand=self._cast_to_float(amount))
+        if _ctx.trigger_stack:
+            _ctx.trigger_stack[-1] = ExecutionPath(node.port_output_trigger_Complete)
         return self
 
     def __isub__(self, other: Any) -> FloatVar:

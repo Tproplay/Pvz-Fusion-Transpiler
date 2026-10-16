@@ -56,6 +56,25 @@ class Game(metaclass=_GameMeta):
     def trigger_game_win() -> Any:
         return nodes.game_win()
 
+    @staticmethod
+    def pause_wave_timer(paused: bool = True) -> Any:
+        return nodes.set_wave_countdown_paused(paused=paused)
+
+    pause_wave_countdown = pause_wave_timer
+
+    class Stage:
+        """Namespace for managing level stages and transitions."""
+
+        @staticmethod
+        def get_current() -> Any:
+            return nodes.get_stage().port_output_string_StageName
+
+        @staticmethod
+        def change() -> Any:
+            return nodes.change_stage()
+
+        next = change
+
 
 class Board(Game):
     """Board interface, aliasing Game for full backwards compatibility."""

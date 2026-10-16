@@ -7,6 +7,9 @@ from .KeyCode import KeyCode
 from .ZombieAnimations import ZombieAnimations
 from .TravelBuffType import TravelBuffType
 from .BulletType import BulletType
+from .ToolType import ToolType
+
+ZombieAnimation = ZombieAnimations
 
 __all__ = [
     "SceneType",
@@ -17,6 +20,8 @@ __all__ = [
     "SoundType",
     "KeyCode",
     "ZombieAnimations",
+    "ZombieAnimation",
     "TravelBuffType",
     "BulletType",
+    "ToolType",
 ]

@@ -46,7 +46,7 @@ def dump_zombie_animations(
         "from enum import Enum",
         "",
         "",
-        "class ZombieAnimations:",
+        "class ZombieAnimation:",
     ]
 
     for zombie_type, clips in zombies.items():
@@ -69,7 +69,8 @@ def dump_zombie_animations(
             code_lines.append(f'        {enum_key} = "{clip}"')
         code_lines.append("")
 
-    code_lines.append('__all__ = ["ZombieAnimations"]')
+    code_lines.append("ZombieAnimations = ZombieAnimation")
+    code_lines.append('__all__ = ["ZombieAnimations", "ZombieAnimation"]')
     code_lines.append("")
 
     full_code = "\n".join(code_lines)

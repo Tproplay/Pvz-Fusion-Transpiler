@@ -61,6 +61,24 @@ class Zombie:
     def col(self) -> Any:
         return self.split.port_output_int_Col
 
+    def get_stats(self) -> Any:
+        return nodes.get_zombie_stats(zombie=self.ref).port_output_float_Value
+
+    def set_stats(self, value: Any) -> Any:
+        return nodes.set_zombie_stats(zombie=self.ref, value=value)
+
+    def get_status(self) -> Any:
+        return nodes.get_zombie_status(zombie=self.ref).port_output_float_Value
+
+    def set_status(self, value: Any) -> Any:
+        return nodes.set_zombie_status(zombie=self.ref, value=value)
+
+    def is_type(self, zombie_type: Any) -> Any:
+        return nodes.compare_zombie_type(a=self.zombieType, b=zombie_type).port_output_bool_Same
+
+    def to_object(self) -> Any:
+        return nodes.zombie_to_object(zombie=self.ref).port_output_gameobject_GameObject
+
     def ToString(self) -> Any:
         conv = nodes.zombie_type_to_string(zombie_type=self.zombieType)
         return conv.port_output_string_String
