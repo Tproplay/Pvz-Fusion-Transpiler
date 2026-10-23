@@ -1,164 +1,179 @@
 # ⚡ Event Triggers
 
-Triggers are context managers that listen to in-game lifecycle events, input actions, and entity state changes to execute custom node graphs.
+Triggers are context managers that listen to game lifecycle events, user inputs, combat reactions, and entity milestones to execute visual script streams.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node import Trigger
-from PvzRH_node.Types import KeyCode
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler.Types import KeyCode
 ```
 
-## Lifecycle Triggers
+---
+
+## 1. Lifecycle Triggers
 
 ### `OnBoardStart`
-
-Fires on the very first frame of level initialization, before card selection and intro cinematics.
-
+Fires on the very first frame of level initialization, before card selection or introductory cinematics:
 ```python
-with pvn.Trigger.OnBoardStart():
-    ...
+with pft.Trigger.OnBoardStart():
+    pft.Board.Sun = 500
 ```
 
 ### `OnGameStart`
-
-Fires immediately after the intro countdown ("Ready, Set, Plant!") ends and active gameplay starts.
-
+Fires immediately after the intro sequence ("Ready, Set, Plant!") completes and active gameplay begins:
 ```python
-with pvn.Trigger.OnGameStart():
-    ...
+with pft.Trigger.OnGameStart():
+    pft.InGameUI.display_text("Game Started!", duration=3.0)
 ```
 
 ### `OnWave`
-
-Fires on every wave arrival. Yields the current wave number as a reference port.
-
+Fires on every wave arrival. Yields the current wave number integer output port:
 ```python
-with pvn.Trigger.OnWave() as wave_num:
-    with pvn.If(wave_num == 10):
-        ...
+with pft.Trigger.OnWave() as wave_num:
+    with pft.If(wave_num == 10):
+        pft.InGameUI.display_text("Wave 10 Boss Wave!")
+```
+
+### `OnWaveCleared`
+Fires when all zombies belonging to the current wave have been defeated:
+```python
+with pft.Trigger.OnWaveCleared() as wave_num:
+    pft.Board.Sun += 100
+```
+
+### `OnWaveEvent`
+Fires when an internal wave milestone event is broadcast by the engine:
+```python
+with pft.Trigger.OnWaveEvent() as wave_num:
+    pft.InGameUI.display_text("Wave Milestone Reached!")
+```
+
+### `OnStageEnter`
+Fires when the level transitions to a specified stage name (default `"战斗"`):
+```python
+with pft.Trigger.OnStageEnter(stage_name="二阶段"):
+    pft.InGameUI.display_text("Entering Boss Phase 2!")
 ```
 
 ---
 
-## Input Triggers
+## 2. Input Triggers
 
 ### `OnMouseClick`
-
-Fires when the mouse button is pressed. Yields a `Mouse` helper object providing cursor coordinates and grid positions.
-
+Fires when the user clicks the mouse on the lawn. Yields a `Mouse` helper instance exposing cursor position and click state:
 ```python
-with pvn.Trigger.OnMouseClick() as mouse:
-    ...
+with pft.Trigger.OnMouseClick() as mouse:
+    # mouse.row, mouse.col, mouse.is_left_click, mouse.item
+    with pft.If(mouse.is_left_click):
+        pft.Lawnf.spawn_particle(row=mouse.row, col=mouse.col)
 ```
 
 ### `OnKeyDown`
-
-Fires when the specified key is pressed down. Accepts a `KeyCode` enum member (or a raw int/`Enum` value).
-
+Fires when a specific keyboard key is pressed. Accepts a `KeyCode` enum member:
 ```python
-with pvn.Trigger.OnKeyDown(KeyCode.Space):
-    ...
+with pft.Trigger.OnKeyDown(KeyCode.Space):
+    pft.Board.Sun += 50
 ```
 
 ---
 
-## Plant Triggers
+## 3. Plant Triggers
 
 ### `OnPlantCreate`
-
-Fires whenever a plant is planted or spawned onto the lawn. Yields the created `Plant` entity.
-
+Fires whenever a plant is planted or spawned onto the lawn. Yields the created `Plant` entity:
 ```python
-with pvn.Trigger.OnPlantCreate() as plant:
-    ...
+with pft.Trigger.OnPlantCreate() as plant:
+    plant.add_shield(200)
 ```
 
-### `OnPlantClicked`
-
-Fires when a plant on the lawn is clicked by the player. Yields the clicked `Plant` entity.
-
+### `OnPlantClick` (alias `OnPlantClicked`)
+Fires when the player clicks on a plant on the lawn. Yields the clicked `Plant`:
 ```python
-with pvn.Trigger.OnPlantClicked() as plant:
-    ...
+with pft.Trigger.OnPlantClick() as plant:
+    plant.heal(500)
 ```
 
-### `OnPlantDeath`
-
-Fires right before a plant is destroyed.
-
-> **Note:** Does not fire for instant single-use plants like Cherry Bomb or Doom-shroom.
-
+### `OnPlantDie` (alias `OnPlantDeath`)
+Fires right before a plant is destroyed:
 ```python
-with pvn.Trigger.OnPlantDeath() as plant:
-    ...
+with pft.Trigger.OnPlantDie() as plant:
+    pft.InGameUI.display_text("A plant has fallen!")
 ```
 
 ### `OnPlantDeathComplete`
-
-Fires after a plant's removal/fade animation has fully completed.
-
+Fires after a plant's removal/fade animation has fully completed:
 ```python
-with pvn.Trigger.OnPlantDeathComplete() as plant:
-    ...
+with pft.Trigger.OnPlantDeathComplete() as plant:
+    pft.Board.Sun += 25
+```
+
+### `OnPlantMixed`
+Fires when two plants are fused/mixed into a new fusion hybrid on the lawn. Yields the resulting hybrid `Plant`:
+```python
+with pft.Trigger.OnPlantMixed() as hybrid_plant:
+    pft.InGameUI.display_text("Hybrid plant created!")
+    hybrid_plant.modify_health(1.5)
+```
+
+### `OnWorldPlantEffect`
+Fires when a global plant effect activates. Yields the affected row integer output port:
+```python
+with pft.Trigger.OnWorldPlantEffect() as affected_row:
+    pft.Lawnf.trigger_jalapeno(row=affected_row, damage=1000)
 ```
 
 ---
 
-## Zombie Triggers
+## 4. Zombie Triggers
 
 ### `OnZombieSpawn`
-
-Fires whenever a zombie enters the board. Yields the spawned `Zombie` entity.
-
+Fires whenever a zombie enters the lawn. Yields the spawned `Zombie` entity:
 ```python
-with pvn.Trigger.OnZombieSpawn() as zombie:
-    ...
+with pft.Trigger.OnZombieSpawn() as zombie:
+    zombie.set_speed_multiplier(1.1)
 ```
 
-### `OnZombieDeath`
-
-Fires when a zombie runs out of health and dies. Yields the defeated `Zombie` entity.
-
+### `OnZombieDie` (alias `OnZombieDeath`)
+Fires when a zombie runs out of health and dies. Yields the defeated `Zombie`:
 ```python
-with pvn.Trigger.OnZombieDeath() as zombie:
-    ...
+with pft.Trigger.OnZombieDie() as zombie:
+    pft.Board.Money += 10
 ```
 
----
-
-## Utility: Isolating Trigger Context
-
-### `IsolatedTriggerScope`
-
-Unlike the triggers above, `IsolatedTriggerScope` doesn't listen for a game event — it's a utility context manager for controlling how the *compiler's* trigger stack behaves. Entering it temporarily saves and clears the active trigger stack, so any nodes created inside won't auto-wire to whatever execution chain was active outside the scope. On exit, the original trigger stack is restored exactly as it was.
-
-This is mainly useful when writing helper functions or small libraries: it lets you build self-contained node setups (e.g. registering your own background trigger) without accidentally splicing them into the caller's current execution flow.
-
+### `OnZombieClick`
+Fires when the player clicks on a zombie. Yields the clicked `Zombie`:
 ```python
-with pvn.IsolatedTriggerScope():
-    with pvn.Trigger.OnBoardStart():
-        # This trigger and its nodes are fully self-contained —
-        # they won't connect to any trigger active before this block.
-        ...
+with pft.Trigger.OnZombieClick() as zombie:
+    zombie.damage(100)
+```
 
-# Execution here resumes exactly where it left off before the isolated scope.
+### `OnZombieHealthBelow`
+Fires when a zombie's health drops below its critical threshold. Yields the `Zombie`:
+```python
+with pft.Trigger.OnZombieHealthBelow() as zombie:
+    zombie.set_speed_multiplier(1.5)  # Enrage mechanic
 ```
 
 ---
 
 ## Quick Reference
 
-| Trigger Class | Returns / Yields | Description |
-| --- | --- | --- |
+| Trigger | Yields | Description |
+| :--- | :--- | :--- |
 | `OnBoardStart` | `None` | Fires on first level initialization frame |
-| `OnGameStart` | `None` | Fires after the "Ready, Set, Plant!" sequence |
+| `OnGameStart` | `None` | Fires after "Ready, Set, Plant!" sequence |
 | `OnWave` | `int` (wave index) | Fires on each wave spawn |
+| `OnWaveCleared` | `int` (wave index) | Fires when active wave is wiped |
+| `OnWaveEvent` | `int` (wave index) | Fires on wave milestone events |
+| `OnStageEnter` | `None` | Fires when entering a named stage |
 | `OnMouseClick` | `Mouse` | Fires on mouse clicks |
-| `OnKeyDown` | `None` | Fires on keyboard key press |
-| `OnPlantCreate` | `Plant` | Fires when a plant is placed or created |
-| `OnPlantClicked` | `Plant` | Fires when a plant is clicked |
-| `OnPlantDeath` | `Plant` | Fires before non-instant plant death |
-| `OnPlantDeathComplete` | `Plant` | Fires after plant death animation ends |
+| `OnKeyDown` | `None` | Fires when specified `KeyCode` is pressed |
+| `OnPlantCreate` | `Plant` | Fires when a plant is planted/spawned |
+| `OnPlantClick` | `Plant` | Fires when a player clicks a plant |
+| `OnPlantDie` | `Plant` | Fires before non-instant plant death |
+| `OnPlantDeathComplete` | `Plant` | Fires after plant death animation |
+| `OnPlantMixed` | `Plant` | Fires when plants are fused/mixed |
+| `OnWorldPlantEffect` | `int` (row) | Fires on global world plant effects |
 | `OnZombieSpawn` | `Zombie` | Fires when a zombie spawns |
-| `OnZombieDeath` | `Zombie` | Fires when a zombie dies |
-| `IsolatedTriggerScope` | `self` (not a game event) | Isolates the compiler trigger stack for self-contained node setups |
+| `OnZombieDie` | `Zombie` | Fires when a zombie dies |
+| `OnZombieClick` | `Zombie` | Fires when player clicks a zombie |
+| `OnZombieHealthBelow` | `Zombie` | Fires when zombie health is critical |

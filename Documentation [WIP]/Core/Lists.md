@@ -1,34 +1,37 @@
-# 🔁 Lists & Loops
+# 🔁 Lists & Collections
 
-The transpiler provides native node-based iteration constructs, allowing you to manipulate groups of runtime entities or define dynamic pools of data via execution graphs.
+The transpiler provides native node-based iteration constructs and type lists, allowing you to manipulate groups of runtime entities or define dynamic card and zombie pools.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node import PlantType
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler import (
+    PlantTypeList,
+    ZombieTypeList,
+    ForEachPlant,
+    ForEachZombie,
+    ForEachAllZombies,
+    ForEachPlantType,
+    ForEachZombieType,
+)
+from PvZ_Fusion_Transpiler.Types import PlantType, ZombieType
 ```
 
 ---
 
 ## 1. Plant Type Lists (`PlantTypeList`)
 
-The `PlantTypeList` acts as a dynamic array of plant enums that exist purely on the generated node canvas. You can use it to build rogue-lite card pools, random spawner bags, or category lists.
+`PlantTypeList` represents a dynamic collection of plant type enums on the node canvas. Use it to build rogue-lite card pools, random spawner bags, or category lists.
 
-### Initialization
+### Initialization & Mutation
 
 ```python
-# Create from standard Python lists
-seed_pool = pvn.PlantTypeList([PlantType.Peashooter, PlantType.WallNut, PlantType.SunFlower])
+# Create from standard Python list
+seed_pool = pft.PlantTypeList([PlantType.Peashooter, PlantType.WallNut, PlantType.SunFlower])
 
 # Create an empty dynamic list
-custom_deck = pvn.PlantTypeList()
-```
+custom_deck = pft.PlantTypeList()
 
-### Modifying Lists In-Place
-
-You can add, subtract, or merge types using native Python operators (`+=`, `-=`).
-
-```python
-with pvn.Trigger.OnGameStart():
+with pft.Trigger.OnGameStart():
     # Add a single type
     custom_deck += PlantType.CherryBomb
     
@@ -39,62 +42,84 @@ with pvn.Trigger.OnGameStart():
     custom_deck -= PlantType.SunFlower
 ```
 
-### Logic Checks & Retrieval
-
-Check if a list contains a type, or pull a random value from it:
+### Logic Checks & Random Retrieval
 
 ```python
-with pvn.Trigger.OnPlantCreate() as plant:
-    # Check if the placed plant is part of our custom deck pool
-    with pvn.If(custom_deck.contains(plant.plantType)):
-        ...
-        
-with pvn.Trigger.OnWave():
-    # Pull a random plant type from the pool and spawn it
+with pft.Trigger.OnPlantCreate() as plant:
+    # Check if placed plant is part of the deck
+    with pft.If(custom_deck.contains(plant.plantType)):
+        plant.add_shield(500)
+
+with pft.Trigger.OnWave():
+    # Pull a random plant type and spawn it
     random_plant = custom_deck.get_random()
-    pvn.Spawner.Set_Plant(row=2, col=3, plant_type=random_plant)
+    pft.Spawner.Set_Plant(row=2, col=3, plant_type=random_plant)
 ```
 
 ---
 
-## 2. Iterating Plant Types (`ForEachPlantType`)
+## 2. Zombie Type Lists (`ZombieTypeList`)
 
-Use the `ForEachPlantType` context manager (or `.for_each()` on a `PlantTypeList`) to execute a block of logic for every item inside a type list.
+`ZombieTypeList` maintains a collection of zombie types, transpiling into optimized logical checks when queried:
 
 ```python
-# Define a list of explosive plants
-explosives = pvn.PlantTypeList([PlantType.CherryBomb, PlantType.DoomShroom, PlantType.Jalapeno])
+bosses = pft.ZombieTypeList([ZombieType.Gargantuar, ZombieType.PolevaulterZombie])
+bosses += ZombieType.NewspaperZombie
 
-with pvn.Trigger.OnBoardStart():
-    with explosives.for_each() as loop:
-        # Loop body executes for each plant type in the list
-        ...
-        
-    # Execute logic after the entire loop finishes
-    with loop.on_complete:
-        ...
+with pft.Trigger.OnZombieSpawn() as zombie:
+    with pft.If(bosses.contains(zombie.zombieType)):
+        zombie.set_speed_multiplier(1.2)
+        zombie.set_health_multiplier(2.0)
 ```
 
 ---
 
-## 3. Iterating Plant Entities (`ForEachPlant`)
+## 3. Iterating Over Entities
 
-When querying the board for existing `Plant` instances (e.g., getting all plants in a specific row or lane), the game returns a list of plant pointers. Use `ForEachPlant` to loop over these actual live entities.
+### Iterating All Zombies on Board (`ForEachAllZombies`)
 
-> **💡 Smart Proxy:** The `ForEachPlant` context block acts as a transparent proxy to the current `Plant` object. You can call `.die()`, `.heal()`, or check `.row` directly on the loop variable!
+Loop through every living zombie currently on the lawn:
 
 ```python
-with pvn.Trigger.OnGameStart():
-    all_plants = pvn.Lawnf.get_all_plants()
+with pft.Trigger.OnKeyDown(pft.KeyCode.Space):
+    with pft.ForEachAllZombies() as zombie:
+        zombie.damage(200)
+```
+
+### Iterating Plant Entities (`ForEachPlant`)
+
+When receiving a list of plants from board queries (e.g. `Lawnf.get_all_plants()` or `Lawnf.get_plants_at(row, col)`), use `ForEachPlant` to loop over live entities:
+
+```python
+with pft.Trigger.OnGameStart():
+    all_plants = pft.Lawnf.get_all_plants()
     
-    with pvn.ForEachPlant(all_plants) as plant:
-        # Check coordinates directly on the iterator
-        with pvn.If(plant.row == 2):
-            # Call actions directly on the iterator
+    with pft.ForEachPlant(all_plants) as plant:
+        with pft.If(plant.row == 2):
             plant.heal(500)
             plant.add_shield(1000)
-            plant.modify_attack(1.5)
-            
-    with plant.on_complete:
-        ...
 ```
+
+### Iterating All Plants on Lawn (`Lawnf.for_each_plant_on_lawn`)
+
+Convenience context manager directly on `Lawnf`:
+
+```python
+with pft.Trigger.OnWave():
+    with pft.Lawnf.for_each_plant_on_lawn() as plant:
+        plant.heal(50)
+```
+
+---
+
+## Quick Reference
+
+| Class | Type | Description |
+| :--- | :--- | :--- |
+| `PlantTypeList` | Collection | Dynamic array of `PlantType` enums |
+| `ZombieTypeList` | Collection | Dynamic set of `ZombieType` enums |
+| `ForEachPlant` | Context Manager | Loops over a plant list port |
+| `ForEachZombie` | Context Manager | Loops over a zombie list port |
+| `ForEachAllZombies`| Context Manager | Loops over all living zombies on the board |
+| `ForEachPlantType` | Context Manager | Loops over items in a `PlantTypeList` |
+| `ForEachZombieType`| Context Manager | Loops over items in a `ZombieTypeList` |

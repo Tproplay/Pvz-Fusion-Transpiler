@@ -1,122 +1,109 @@
-# 🏷️ Types, Enums & Builders
+# 🏷️ Types, Enums & Constants
 
-The `PvzRH_node.Types` module exposes all essential game enumerations, input codes, animation constants, and data factory builders required to configure custom levels and script node logic.
+The `PvZ_Fusion_Transpiler.Types` module exposes all essential game enumerations, keycodes, bullet types, tool types, and zombie animation clip constants.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node.Types import PlantType, ZombieType, KeyCode, PlantEntry
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler.Types import (
+    PlantType,
+    ZombieType,
+    ToolType,
+    BulletType,
+    KeyCode,
+    SoundType,
+    SceneType,
+    LevelType,
+    TravelBuffType,
+    ZombieAnimations,
+    ZombieAnimation,
+    Plant_DieReason,
+)
 ```
 
 ---
 
-## 1. Game Enums
+## 1. Core Entity Enums
 
-Use these Enums to reference game assets and states safely without memorizing raw integer IDs. The transpiler automatically unwraps them into JSON-compatible values.
+> [!IMPORTANT]
+> **Strict Enum Enforcement**: The transpiler enforces type safety by requiring enum instances for `PlantType`, `ZombieType`, `ToolType`, and `BulletType`. Direct integer literals are rejected at compile time.
 
-### Core Entities & States
+### `PlantType`
+Encompasses all vanilla and fusion plants:
+```python
+pft.Spawner.Set_Plant(row=2, col=2, plant_type=PlantType.Peashooter)
+pft.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.SuperMachineNut)
+```
 
-* **`PlantType`**: Contains IDs for all vanilla and custom modded plants (e.g., `PlantType.Peashooter`, `PlantType.UltimateGatling`, `PlantType.SuperMachineNut`).
+### `ZombieType`
+Encompasses all vanilla and custom fusion zombies:
+```python
+pft.Spawner.Set_Zombie(row=3, col=9, zombie_type=ZombieType.Gargantuar)
+pft.Spawner.Set_Zombie(row=1, col=9, zombie_type=ZombieType.UltimateFootballZombie)
+```
 
+### `BulletType`
+Identifies projectile models when firing via `Spawner.Set_Bullet`:
+```python
+pft.Spawner.Set_Bullet(row=2, col=3.0, bullet_type=BulletType.FirePea, damage=80.0)
+```
 
-* **`ZombieType`**: Contains IDs for all zombies and bosses (e.g., `ZombieType.NormalZombie`, `ZombieType.Gargantuar`, `ZombieType.UltimateFootballZombie`).
+### `ToolType`
+Represents the 11 player tool types handled by the game engine:
 
-
-* **`SceneType`**: Defines the visual background and lane behavior of the level (e.g., `SceneType.Day`, `SceneType.Pool`, `SceneType.SnowPool`).
-
-
-* **`LevelType`**: Defines the gameplay mode and UI (e.g., `LevelType.CustomLevel`, `LevelType.Survival`).
-
-
-* **`SoundType`**: Audio clip IDs for playing SFX (e.g., `SoundType.Splat`, `SoundType.CherryBomb`, `SoundType.HugeWave`).
-
-
-* **`Plant_DieReason`**: Constants representing how a plant was removed (e.g., `ByZombie`, `ByShovel`, `ByLevelUp`).
-
-
-* **`TravelBuffType`**: Registry of rogue-lite modifiers and mastery synergies (e.g., `ADV_PLANT_RECHARGE_HALVED`, `ULTI_DOOMINATOR_SPEED_X3`).
-
-
+| Enum Member | Game Name | Description |
+| :--- | :--- | :--- |
+| `ToolType.None_` | 无 | No tool currently held |
+| `ToolType.Shovel` | 铲子 | Dig up / remove plants |
+| `ToolType.Glove` | 手套 | Move / reposition plants |
+| `ToolType.Hammer` | 锤子 | Smash objects or zombies |
+| `ToolType.LawnCleaner` | 小推车 | Deploy lawn cleaner mower |
+| `ToolType.GoldCoffeeBean` | 金咖啡豆 | Awaken mushrooms in daytime |
+| `ToolType.Bucket` | 桶 | Water bucket / fertilizer |
+| `ToolType.CannonTarget` | 加农炮目标 | Target reticle for Cob Cannons |
+| `ToolType.PlantPreview` | 植物预览 | Plant placement preview |
+| `ToolType.ZombiePreview` | 僵尸预览 | Zombie cursor preview |
+| `ToolType.Other` | 其他 | Miscellaneous engine tools |
 
 ---
 
-## 2. Input & Animations
+## 2. Input & Environment Enums
 
 ### `KeyCode`
-
-Maps standard keyboard keys to numerical IDs for use with `pvn.Trigger.OnKeyDown` and `OnKeyPress`.
-
+Maps keyboard inputs for use with `Trigger.OnKeyDown`:
 ```python
-with pvn.Trigger.OnKeyDown(KeyCode.Space):
-    pvn.Print("Spacebar pressed!")
+with pft.Trigger.OnKeyDown(KeyCode.Space):
+    pft.Board.Sun += 100
 ```
 
-### `ZombieAnimation`
+### `SceneType`
+Defines lawn background and pool layouts:
+`SceneType.Day`, `SceneType.Night`, `SceneType.Pool`, `SceneType.Fog`, `SceneType.Roof`, `SceneType.SnowPool`, etc.
 
-Provides nested enums containing accurate animation clip string names for every specific zombie model. Use these with `zombie.play_animation()`.
+### `LevelType`
+Defines the gameplay mode:
+`LevelType.CustomLevel`, `LevelType.Survival`, `LevelType.IZombie`, etc.
 
-```python
-with pvn.Trigger.OnZombieSpawn() as zombie:
-    with pvn.If(zombie.zombieType == ZombieType.PolevaulterZombie):
-        # Play a specific animation clip safely
-        zombie.play_animation(ZombieAnimation.PolevaulterZombie.ZOMBIE_POLEVAULTER_RUN)
-```
+### `SoundType`
+Audio clip sound IDs for `Lawnf.play_sound`:
+`SoundType.Buzzer`, `SoundType.CherryBomb`, `SoundType.Splat`, `SoundType.HugeWave`, etc.
+
+### `TravelBuffType`
+Registry of rogue-lite travel buffs and mastery synergy perks:
+`TravelBuffType.ADV_PLANT_RECHARGE_HALVED`, `TravelBuffType.ULTI_DOOMINATOR_SPEED_X3`, etc.
+
+### `Plant_DieReason`
+Constants representing reasons for plant destruction:
+`ByZombie`, `ByShovel`, `ByLevelUp`, etc.
 
 ---
 
-## 3. Data Builders (`DataFactory`)
+## 3. Zombie Animations (`ZombieAnimations`)
 
-The `Types` module exposes factory classes to build structured dictionary data for `pvn.level_config`.
-
-### `PlantEntry.create()`
-
-Generates configuration dictionaries for pre-placing plants onto the board before the level begins.
+`ZombieAnimations` (aliased as `ZombieAnimation`) provides nested enumerations containing the exact animation clip names for every zombie model dumped from the game engine.
 
 ```python
-# Places a WallNut with 8000 health at row 2, col 5
-entry = PlantEntry.create(row=2, col=5, plant_type=PlantType.WallNut, health=8000)
-pvn.level_config.add_plant(entry)
-```
-
-### `OrderedSpawn.create()`
-
-Generates wave-specific zombie spawn tables. Allows mixing random row assignments with fixed row assignments.
-
-```python
-# Spawns a Gargantuar on row 3 and a random Flag Zombie on wave 10
-spawn_data = OrderedSpawn.create(
-    wave=10, 
-    zombies=[ZombieType.FlagZombie], 
-    zombies_with_row=[(ZombieType.Gargantuar, 3)]
-)
-pvn.level_config.add_ordered_spawn(spawn_data)
-```
-
-### `GodPlant` Builder
-
-Constructs upgrade paths and scaling stages for modular "God Mode" plants.
-
-```python
-god_pea = GodPlant(PlantType.Peashooter)
-god_pea.add_route("Gatling Path")
-god_pea.add_stage(plant_type=PlantType.Repeater, cost=200, attack_damage=40)
-pvn.level_config.add_god_plant(god_pea)
-```
-
----
-
-## 4. Fusion Recipes (`RecipeData`)
-
-Provides a query interface to programmatically traverse the Plants vs. Zombies Fusion recipe trees.
-
-| Method | Returns | Description |
-| --- | --- | --- |
-| `get_fusions_from(plant)` | `List[PlantType]` | Returns all plants that can be crafted using the input plant. |
-| `get_all_ingredients(plant)` | `List[PlantType]` | Recursively finds all base ingredients required to craft the input plant. |
-| `get_fusion_result(p1, p2)` | `PlantType | None` | Returns the resulting plant when combining the two inputs, or None if invalid. |
-| `get_direct_parents(plant)` | `List[Tuple]` | Returns pairs of plants that immediately fuse into the target plant. |
-
-```python
-# Example: Find out what Pea-Nut is made of
-parents = pvn.Types.RecipeData.get_direct_parents(PlantType.PeaNut)
-# Returns: [(PlantType.Peashooter, PlantType.WallNut)]
+with pft.Trigger.OnZombieSpawn() as zombie:
+    with pft.If(zombie.zombieType == ZombieType.PolevaulterZombie):
+        # Play exact animation clip safely
+        zombie.play_animation(ZombieAnimations.PolevaulterZombie.ZOMBIE_POLEVAULTER_RUN)
 ```

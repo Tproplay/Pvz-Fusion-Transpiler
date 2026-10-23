@@ -1,175 +1,67 @@
 # ⚙️ Level & Compiler Configuration
 
-The `pvn.level_config` proxy and `pvn.settings` allow you to define level metadata, board dynamics, randomizer constraints, and output formatting for your generated level JSON files.
+The `pft.Config` function and export pipeline manage output file destinations, graph layout, and seamless merging into existing game save files.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node import PlantType, ZombieType
-from PvzRH_node.Types import SceneType, LevelType
+import PvZ_Fusion_Transpiler as pft
 ```
 
 ---
 
-## 1. Compiler & Export Settings
+## 1. Configuring Export Destination (`Config`)
 
-### Export Location
-
-Set the destination path and file name for the compiled JSON level. If the file exists, the transpiler will update its graph and configuration data.
+Use `Config()` at the top of your level script to declare where the compiled JSON file will be written:
 
 ```python
-pvn.Config(
-    output=r"C:\Path\To\Saves\LevelData\Levels",
+pft.Config(
+    output=r"C:\Users\User\Games\Pvz Fusion\Levels",
     name="MyCustomLevel"
 )
 ```
 
-### Visual Layout (`pvn.settings`)
+### Parameters
 
-The `CompilerSetting` class controls how the node graph is arranged in the visual editor.
-
-* **`group_level`**: Set to `0` (default) for a flat grid, or `1+` to group nodes hierarchically by code statements and scopes.
-
-
-* **`fold_all_groups`**: When `True`, generated groups collapse into a compact 1-node footprint.
-
-
-* **`spacing_x` / `spacing_y`**: The horizontal/vertical padding between ungrouped nodes (defaults: 220.0, 170.0).
-
-
-* **`hierarchical_spacing_x` / `hierarchical_spacing_y`**: The spacing between nodes inside visual groups (defaults: 240.0, 180.0).
-
-
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `output` | `str` | `"./"` | Target directory for the generated JSON file. |
+| `name` | `str` | `"Untitled"` | File name. Appends `.json` automatically if omitted. |
 
 ---
 
-## 2. Level Metadata
+## 2. Compilation & Export (`export`)
 
-The `pvn.level_config` object acts as a proxy to configure the core attributes of the level.
+Exporting can be performed in two ways:
 
-```python
-pvn.level_config.level_number = 8001
-pvn.level_config.scene_type = SceneType.SnowPool
-pvn.level_config.level_type = LevelType.CustomLevel
-pvn.level_config.start_sun = 1500
-pvn.level_config.max_wave = 10
-pvn.level_config.card_count = 8
-pvn.level_config.victory_type = 0  # 0: Normal, 1: IZombie
-```
+1. **Automatic (`atexit`)**: Running your script directly with Python automatically triggers `pft.export()` when the script finishes executing.
+2. **Explicit (`pft.export()`)**: You can invoke `pft.export()` at any point:
+   ```python
+   # Export to configured path
+   pft.export()
 
-### Card Decks & Zombie Pools
-
-Define which plants and zombies are available or forced in the level.
-
-```python
-# Unremovable pre-selected cards
-pvn.level_config.pre_select_cards = [PlantType.SunFlower, PlantType.Peashooter]
-pvn.level_config.pre_select_cards_zombie = [ZombieType.NormalZombie]
-
-# The allowed zombie types that can spawn
-pvn.level_config.spawn_zombies = [ZombieType.NormalZombie, ZombieType.ConeZombie]
-```
+   # Or specify an explicit target path
+   pft.export(filepath="./output/BossRush.json")
+   ```
 
 ---
 
-## 3. Board Dynamics (`board_config`)
+## 3. Preserving Existing Level Settings
 
-The `board_config` attribute modifies runtime timing, stat multipliers, and Gacha randomization rules.
+When the target `.json` file already exists on disk:
+- The transpiler **preserves** all game-level configurations, including:
+  - Starting sun, card counts, scene background, victory conditions (`victory_type`)
+  - Pre-selected card decks and allowed zombie pools
+  - Scary pot definitions and minigame setup tables
+  - Custom wave tables and spawn weights
+- The transpiler **updates only**:
+  - `references`: Dynamic object bindings, variable assets (`IntVariableAsset`, etc.), and node references.
+  - `eventNodeGraph`: The complete serialized node graph (`nodes`, `connections`).
 
-```python
-# Timers & UI 
-pvn.level_config.board_config.startTip = "Survive the winter!"
-pvn.level_config.board_config.tipTime = 6.0                 # Seconds tip is shown
-pvn.level_config.board_config.waveInterval = 30.0           # Seconds between waves
-pvn.level_config.board_config.firstWaveArrivedTimer = 15.0  # Initial spawn delay
-
-# Stat Multipliers
-pvn.level_config.board_config.zombieHealthMultiplier = 1.2
-pvn.level_config.board_config.zombieSpeedMultiplier = 1.1
-
-# Enable Randomizer bounds
-pvn.level_config.board_config.applyRandomData = True
-pvn.level_config.board_config.zombieScaleMin = 0.8
-pvn.level_config.board_config.zombieScaleMax = 1.8
-```
+If the destination file does not exist, a new standalone level JSON containing the compiled node graph and references is created.
 
 ---
 
-## 4. Game Modifiers (`board_tag`)
+## 4. Automatic Node Layout
 
-The `board_tag` attribute stores boolean flags for enabling specialized modes or mechanics.
+By default, all instantiated nodes are positioned in a clean square grid pattern using automatic coordinate calculation (`math.ceil(sqrt(N))` columns with spacing), ensuring that the visual node canvas in PvZ Fusion's editor is organized and readable.
 
-| Flag | Description |
-| --- | --- |
-| `isNight` | Sets the level rule to night (mushrooms don't sleep). |
-| `disableNormalSun` | Stops natural sun from falling from the sky. |
-| `zombieDropSun` | Zombies drop sun upon taking damage or dying. |
-| `disableSelectCard` | Skips the seed selection screen entirely. |
-| `disableInInterlude` | Skips the initial pan-camera movement sequence. |
-| `disableMower` | Removes lawnmowers from the board. |
-
-
-```python
-pvn.level_config.board_tag.isNight = True
-pvn.level_config.board_tag.disableMower = True
-```
-
----
-
-## 5. Custom Entities & Spawns
-
-### Pre-Placed Plants
-
-Use `PlantEntry.create()` to place plants on the grid before the level begins.
-
-```python
-pvn.level_config.add_plant(
-    PlantEntry.create(
-        row=3,
-        col=2,
-        plant_type=PlantType.WallNut,
-        health=8000
-    )
-)
-```
-
-### Custom Plant Stats
-
-Use `add_plant_data()` to inject modified base stats (cost, cooldown, damage) for specific plants.
-
-```python
-pvn.level_config.add_plant_data(
-    PlantData.create(
-        plant_type=PlantType.Peashooter,
-        cost=100,
-        cd=5.0,
-        max_health=300,
-        attack_damage=40
-    )
-)
-```
-
-### Custom Wave Spawns
-
-Use `OrderedSpawn.create()` to dictate exactly which zombies spawn on specific waves and rows.
-
-```python
-pvn.level_config.add_ordered_spawn(
-    OrderedSpawn.create(
-        wave=5,
-        zombies=[ZombieType.FlagZombie],                   # Random row placement
-        zombies_with_row=[(ZombieType.Gargantuar, 2)]      # Fixed row placement (Type, Row)
-    )
-)
-```
-
-### God Mode Plants
-
-Use the `GodPlant` builder to configure upgrade routes and scaling stages for custom modular plants.
-
-```python
-god_peashooter = pvn.GodPlant(PlantType.Peashooter)
-god_peashooter.add_route("Gatling Route")
-god_peashooter.add_stage(plant_type=PlantType.Repeater, cost=200, attack_damage=40)
-
-pvn.level_config.add_god_plant(god_peashooter)
-```
+If specific nodes have their `x` and `y` coordinates set manually, the compiler respects and preserves your custom layout.

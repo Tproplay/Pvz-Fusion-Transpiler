@@ -1,88 +1,88 @@
+# PvZ Fusion Transpiler Documentation [WIP]
 
-# Importing & Exporting Guide
-
-## Core
-
-```python
-import PvzRH_node as pvn
-```
-
-This import contains everything you need for creating most simple levels — triggers, control flow, variables, board/economy helpers, spawning, and UI.
-
-> All of the methods/classes from this library are listed [here](https://github.com/Tproplay/Pvz-Fusion-Transpiler/tree/main/Documentation%20%5BWIP%5D/Core)
-
-### Additional Imports
-
-A few pieces live in separate modules and are not part of the main `pvn` namespace. Import whichever of these you need:
-
-```python
-from PvzRH_node.Types import *   # KeyCode, SoundType, SceneType, LevelType,
-                                  # TravelBuffType, ZombieAnimation, Plant_DieReason, RecipeData
-from PvzRH_node.Math import *    # Math helper functions (abs, max, min, ...) and constants (PI, E, TAU, ...)
-from PvzRH_node.StdLib import *  # String/utility helpers such as format_string
-```
-
-> **Note:** `PlantType` and `ZombieType` are the exception — they're already available directly from `pvn` (`pvn.PlantType`, `pvn.ZombieType`), so you don't need `PvzRH_node.Types` for those two.
+Welcome to the documentation suite for the **PvZ Fusion Transpiler** (`PvZ_Fusion_Transpiler`). This library provides a Python-based visual scripting compiler and Domain-Specific Language (DSL) that transpiles high-level Python scripts directly into native level event node graphs (`.json` level data) for *Plants vs. Zombies: Fusion* (PvZ Fusion).
 
 ---
 
-## Exporting the Level
+## 📖 Documentation Index
 
-Exporting your level is fully automated. You do not need to manually create JSON files or format strings.
+### Guides & Architecture
+- [**AI Agent Workflow Guide**](AI_AGENT_WORKFLOW.md) — 6 non-negotiable rules, agent prompt templates, git workflow, and developer instructions for AI agents and forks.
+- [**System Architecture & Design**](ARCHITECTURE.md) — 3-layer architecture, reflection engine, trigger auto-wiring stack, and JSON serialization format.
+- [**Contributing Guidelines**](CONTRIBUTING.md) — Environment setup, dependency installation, running Pyright and unit tests, and commit guidelines.
+- [**WIP Roadmap & Node Status**](WIP_ROADMAP.md) — Implemented nodes, extension mappings, and nodes reserved for optimizer/compiler internals.
 
-- **The Process**: Simply execute your Python script file.
-- **The Output**: The compiler looks for the specific JSON path configured in your script. It will **either overwrite the existing file** with your updated graph data or **create a brand-new file** if it does not yet exist.
+### Core Documentation (`Core/`)
+- [**Spawning Entities**](Core/Spawning.md) — Spawning plants, zombies, and bullets (`Spawner.Set_Plant`, `Spawner.Set_Zombie`, `Spawner.Set_Bullet`), enum enforcement, and context managers.
+- [**Board State & Economy**](Core/Board.md) — Sun balance, coins/money management, wave tracking, and stage transitions (`Board`, `Game`, `Game.Stage`).
+- [**Event Triggers**](Core/Triggers.md) — Board lifecycle, wave triggers, mouse and keyboard input, plant and zombie event hooks (`OnStageEnter`, `OnPlantMixed`, `OnZombieClick`, etc.).
+- [**Game Functions & Tools**](Core/Game%20functions.md) — Lawn props, board queries, area explosions, `InGameUI` popups, and the player `Tool` namespace (`Tool.get_held`, `ToolType`).
+- [**Variables & Casting**](Core/Variables.md) — Stateful variables (`IntVar`, `FloatVar`, `BoolVar`, `StringVar`), in-place mutation, and conversion classes (`Int`, `Float`, `String`, `Bool`).
+- [**Conditional Statements**](Core/Conditional%20statements.md) — Branching execution via `If`, `Elif`, `Else`, and `Switch` / `case`.
+- [**Loops & Iteration**](Core/Loops.md) — Frame-level iteration using `For` and `While`.
+- [**Lists & Collections**](Core/Lists.md) — Dynamic plant and zombie type lists (`PlantTypeList`, `ZombieTypeList`) and entity iteration (`ForEachPlant`, `ForEachZombie`).
+- [**Multiple Choice Menus**](Core/Multiple%20choice%20menu.md) — In-game perk selection cards, dialogs, and rogue-lite upgrade choices (`MultiSelectMenu`, `Option`).
+- [**Randomization**](Core/Random.md) — Random values, execution path scrambling (`TriggerChance`, `RandomTrigger`), and deterministic seeded RNG (`Random.Seeded`).
+- [**Time & Delays**](Core/Time.md) — Asynchronous delays (`Time.Wait`), recurring interval loops (`Time.OnFixedUpdate`), and elapsed game timers.
+- [**Configuration & Export**](Core/Config.md) — Compiler target configuration (`Config`), graph export mechanics (`export`), and preserving existing level data.
 
-## Export Settings
-
-### Output Folder
-
-```python
-pvn.Config(output="Levels", name="My Level")
-```
-
-You can specify the output folder and level file name. If the file already exists, its level configuration and graph data will be updated.
-
-### Output Formatting
-
-This library allows you to customize the organization, folding, and visual layout of the generated node canvas.
-
-`pvn.settings` contains all compiler layout configurations:
-
-* **`group_level`** *(int)* — Controls how nodes are organized into visual groups on the canvas:
-  * **`0` (Default)**: Disables code grouping. Nodes are placed in a flat execution grid.
-  * **`1+`**: Enables hierarchical grouping. Groups nodes by code statements and scopes, arranging them in a clean square grid pattern.
-
-* **`fold_all_groups`** *(bool)* — Default: `False`. When set to `True`, all generated groups are collapsed by default in the visual editor. Folded groups occupy a compact single-node slot on the canvas grid.
-
-* **`spacing_x` / `spacing_y`** *(float)* — Horizontal and vertical grid spacing for ungrouped nodes (`group_level = 0`).
-
-* **`hierarchical_spacing_x` / `hierarchical_spacing_y`** *(float)* — Grid spacing for nodes inside groups (`group_level >= 1`).
+### Libraries (`Libraries/`)
+- [**Types & Enums**](Libraries/Types.md) — Enums for `PlantType`, `ZombieType`, `ToolType`, `BulletType`, `KeyCode`, `SoundType`, `SceneType`, `LevelType`, `TravelBuffType`, and `ZombieAnimations`.
+- [**Standard Library**](Libraries/StdLib.md) — Virtual data structures (`Dictionary`, `Array`), `format_string`, and player controls (`WASDPlant`).
+- [**Math & Comparisons**](Libraries/Math.md) — Mathematical operations (`pow`, `log`), comparative helpers (`Math.greater`, `Math.less`, `Math.equal`), and GameObject equality.
 
 ---
 
-## Grouping Tools
+## 🚀 Quick Start
 
-### `@pvn.single_group` Decorator
-
-When building helper functions or third-party libraries across multiple files, use the `@pvn.single_group` decorator. It intercepts all nodes generated during that function's execution, pulls them out of their default line-by-line groups, and bundles them into a single isolated group:
-
+### 1. Basic Import
 ```python
-from typing import Optional
-import PvzRH_node as pvn
-from PvzRH_node import FloatVar, IntVar
-
-
-@pvn.single_group("Custom Damage Calculation", folded=True)
-def calculate_damage(base_damage: IntVar, multiplier: float) -> IntVar:
-    result = IntVar(name="Calculated_Damage")
-    result.set(base_damage * multiplier)
-    return result
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler.Types import (
+    PlantType,
+    ZombieType,
+    ToolType,
+    BulletType,
+    KeyCode,
+)
 ```
 
-Parameters:
+The top-level `PvZ_Fusion_Transpiler` (`pft`) namespace exports all core gameplay extensions, triggers, variables, and engine facades. Enumerations are imported cleanly from `PvZ_Fusion_Transpiler.Types`.
 
-* **`name`** *(Optional[str])*: The display title of the node group box. If omitted or `None`, it defaults to the function name.
-* **`folded`** *(Optional[bool])*: Explicitly collapses or expands the group box. If `None`, it defaults to `pvn.settings.fold_all_groups`.
+### 2. Creating a Custom Level Script
+```python
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler.Types import PlantType, ZombieType, KeyCode
 
-> **Note:** Groups are only visible in the exported canvas when `pvn.settings.group_level` is `1` or higher (see [Output Formatting](#output-formatting) above). With the default `group_level = 0`, nodes are still tagged internally but rendered in the flat grid instead.
+# 1. Configure output target
+pft.Config(output="./output", name="MyCustomLevel")
+
+# 2. Add an initialization trigger
+with pft.Trigger.OnGameStart():
+    # Set starting resources
+    pft.Board.Sun = 500
+    
+    # Spawn a defensive plant
+    plant = pft.Spawner.Set_Plant(row=2, col=2, plant_type=PlantType.WallNut)
+    
+    # Display welcome message
+    pft.InGameUI.display_text("Survive the onslaught!", duration=4.0)
+
+# 3. Add wave reactive logic
+with pft.Trigger.OnWave() as wave_num:
+    with pft.If(wave_num == 5):
+        pft.Spawner.Set_Zombie(row=2, col=9, zombie_type=ZombieType.Gargantuar)
+        pft.InGameUI.display_text("A Gargantuar approaches!", duration=3.0)
+
+# 4. Export to JSON (also auto-exports upon script exit)
+pft.export()
+```
+
+---
+
+## 🛠️ Export Mechanics
+
+Exporting is completely automated:
+- **Compile & Save**: Run your script with Python. Upon script termination, an `atexit` hook automatically calls `pft.export()`. You can also trigger compilation manually via `pft.export()`.
+- **Merge into Existing Levels**: If the target `.json` file already exists, the transpiler **preserves** existing board settings, scary pot layouts, cards, and custom wave lists while updating only the `eventNodeGraph` and `references` sections.
+- **New Files**: If the destination file does not exist, a clean level JSON containing the compiled node graph and references is created.

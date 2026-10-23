@@ -6,6 +6,8 @@ Welcome to the documentation for the **PvZ Fusion Transpiler** codebase. This pr
 
 ## Documentation Index
 
+- [**Full Documentation Suite**](<../Documentation [WIP]/README.md>)
+  Comprehensive guides for all core modules (`Spawning`, `Board`, `Triggers`, `Tools`, `Variables`, `Conditionals`, `Loops`, `Lists`, `Menus`, `Random`, `Time`, `Config`), types, and standard library.
 - [**AI Agent Workflow Guide** (`AI_AGENT_WORKFLOW.md`)](AI_AGENT_WORKFLOW.md)
   *Essential reading if you or an AI agent are forking, extending, or maintaining this codebase.* Contains the 6 Core Rules, agent prompting templates, verification requirements, git branching strategy, and common traps.
 - [**Architecture & System Design** (`ARCHITECTURE.md`)](ARCHITECTURE.md)

@@ -1,205 +1,202 @@
-# 🛠️ Game Functions (`InGameUI` & `Lawnf`)
+# 🛠️ Game Functions, Tools & World Objects
 
-`pvn.InGameUI` covers on-screen UI: info cards, seed packet cards, and text popups.
-`pvn.Lawnf` covers lawn props, area-of-effect abilities, sound, game state, and plant/zombie queries.
+This document covers high-level engine services provided by `InGameUI`, `Lawnf`, `Tool`, and `WorldObject`.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node import PlantType, ZombieType
-from PvzRH_node.Types import SoundType, TravelBuffType
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler.Types import PlantType, ZombieType, ToolType, SoundType, TravelBuffType
 ```
 
 ---
 
-## 1. Info Cards
+## 1. On-Screen UI (`InGameUI`)
 
-There are two equivalent ways to show an info card popup — both drive the same underlying node, so pick whichever style reads better for your logic.
+### Info Cards
 
-### Callback Style (`display_info_card`)
+Display modal info cards with titles and click callbacks:
 
 ```python
-pvn.InGameUI.display_info_card(
-    "New Wave!",
-    "A horde approaches",
-    on_clicked=lambda: pvn.Print("Card dismissed"),
+# Callback syntax
+pft.InGameUI.display_info_card(
+    "Warning!",
+    "Massive Zombie Horde Incoming",
+    on_clicked=lambda: pft.InGameUI.display_text("Acknowledged"),
 )
+
+# Context manager syntax
+with pft.InGameUI.InfoCard("Perk Unlocked", "Double Sun Production"):
+    pft.InGameUI.display_text("Card Dismissed")
 ```
 
-You can also attach the click handler after the fact with `.on_click(...)`, or reach the execution path directly via `.Output.OnCardClicked`.
+### Plant Seed Packets
 
-### Context Manager Style (`InGameUI.InfoCard`)
+Control player seed packets during runtime:
 
 ```python
-with pvn.InGameUI.InfoCard("New Wave!", "A horde approaches"):
-    pvn.Print("Card dismissed")
+# Give a card with custom cooldown/cost
+pft.InGameUI.give_plant_card(PlantType.SunFlower, cooldown=5.0, cost=50, use_default=False)
+
+# Remove a plant card from the deck
+pft.InGameUI.remove_plant_card(PlantType.SunFlower)
+
+# Spawn a dropped seed packet card pickup on the lawn
+pft.InGameUI.spawn_dropped_card(row=2, col=5, plant_type=PlantType.WallNut)
 ```
 
-### Parameters
+### Text Displays (`display_text` / `Print`)
 
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `big_title` | `Any` | *Required* | Main header text, or a text/variable port. |
-| `small_title` | `Any` | `""` for the `with` form; *Required* for `display_info_card` | Secondary/subtitle text. |
-| `on_clicked` | `Callable` | `None` | *(`display_info_card` only)* Logic run when the card is clicked. |
+Display text notifications, variable values, or port strings on screen:
+
+```python
+with pft.Trigger.OnWave() as wave_num:
+    pft.InGameUI.display_text("Wave ", wave_num, " incoming!", duration=4.0)
+```
 
 ---
 
-## 2. Plant Cards
+## 2. Lawn Props, Spells & Audio (`Lawnf`)
 
-Manage the seed packet cards available to the player during a level.
+### Lawn Props
+
+Spawn decorative and interactive board props:
 
 ```python
-# Grants a new card, overriding cost/cooldown
-pvn.InGameUI.give_plant_card(PlantType.SunFlower, cooldown=5.0, cost=50, use_default=False)
-
-# Removes a card entirely
-pvn.InGameUI.remove_plant_card(PlantType.SunFlower)
-
-# Spawns a pickup-able card drop on the lawn (e.g. from a defeated zombie)
-pvn.InGameUI.spawn_dropped_card(row=2, col=5, plant_type=PlantType.WallNut)
+pft.Lawnf.spawn_grave(row=1, col=4)
+pft.Lawnf.spawn_crater(row=2, col=6)
+pft.Lawnf.spawn_ladder(row=3, col=0)
+pft.Lawnf.spawn_particle(row=0, col=8)
+pft.Lawnf.spawn_ice_block(row=2, col=3, plant_type=PlantType.Peashooter)
 ```
 
-| Function | Parameters | Description |
-| --- | --- | --- |
-| `give_plant_card` | `plant_type, cooldown=7.5, cost=100, use_default=True` | Adds a seed packet card to the player's selection. |
-| `remove_plant_card` | `plant_type` | Removes a plant's card from the player's selection. |
-| `spawn_dropped_card` | `row, col, plant_type` | Spawns a pickup-able card at a board location. |
+### Explosions & Area Spells
 
-> **Note:** `use_default=True` uses the plant's official base stats for display instead of `cooldown`/`cost`.
-
----
-
-## 3. Text (`Print`)
-
-`pvn.Print` (an alias for `InGameUI.display_text`) formats and displays a mix of text, variables, and node ports on screen.
+Trigger instant board effects:
 
 ```python
-with pvn.Trigger.OnWave() as wave_num:
-    pvn.Print("Wave ", wave_num, " incoming!")
+pft.Lawnf.trigger_cherry_explosion(row=2, col=4, damage=1800)
+pft.Lawnf.trigger_doom_explosion(row=2, col=4, damage=1800, create_pit=True)
+pft.Lawnf.trigger_jalapeno(row=3, damage=1800)
+pft.Lawnf.trigger_ice_shroom(duration=5.0)
+pft.Lawnf.trigger_zombie_explosion(row=2, col=4)
 ```
 
-If any argument is a boolean expression (`BoolVar`, or a comparison/logic node port), the message is automatically compiled into two branches — the correct wording is shown depending on the runtime value, without you writing an `If` yourself:
+### Sound Effects
 
 ```python
-hard_mode = pvn.BoolVar(start_val=False, name="HardMode")
-pvn.Print("Hard mode: ", hard_mode)   # Displays "Hard mode: True" or "Hard mode: False"
+pft.Lawnf.play_sound(SoundType.Buzzer)
 ```
 
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `*args` | `Any` | *Required* | Strings, numbers, variables, or node ports — concatenated in order. |
-| `duration` | `float` | `3.0` | Seconds the text stays on screen. |
-
----
-
-## 4. Lawn Props
-
-Cosmetic props placed directly onto lawn tiles.
+### Queries & Iterators
 
 ```python
-pvn.Lawnf.spawn_grave(row=1, col=4)
-pvn.Lawnf.spawn_crater(row=2, col=6)
-pvn.Lawnf.spawn_ladder(row=3, col=0)
-pvn.Lawnf.spawn_particle(row=0, col=8)
-pvn.Lawnf.spawn_ice_block(row=2, col=3, plant_type=PlantType.Peashooter)
-```
-
-| Function | Parameters | Description |
-| --- | --- | --- |
-| `spawn_particle` | `row, col` | Decorative particle effect at a tile. |
-| `spawn_grave` | `row, col` | Gravestone prop. |
-| `spawn_crater` | `row, col` | Crater prop (e.g. explosion aftermath). |
-| `spawn_ladder` | `row, col` | Pool ladder, letting zombies climb out of the pool at that tile. |
-| `spawn_ice_block` | `row, col, plant_type=-1` | Ice block prop, optionally encasing a plant model (`-1` = bare ice block). |
-
----
-
-## 5. Explosions & Area Effects
-
-```python
-pvn.Lawnf.trigger_cherry_explosion(row=2, col=4, damage=1800)
-pvn.Lawnf.trigger_doom_explosion(row=2, col=4, damage=1800, create_pit=True)
-pvn.Lawnf.trigger_zombie_explosion(row=2, col=4)
-pvn.Lawnf.trigger_jalapeno(row=3, damage=1800)
-pvn.Lawnf.trigger_ice_shroom(duration=5.0)
-```
-
-| Function | Parameters | Description |
-| --- | --- | --- |
-| `trigger_cherry_explosion` | `row, col, damage=1800` | Cherry Bomb-style explosion at a tile. |
-| `trigger_doom_explosion` | `row, col, damage=1800, create_pit=True` | Doom-shroom-style explosion, optionally leaving a pit. |
-| `trigger_zombie_explosion` | `row, col` | Zombie-explosion visual (no damage). |
-| `trigger_jalapeno` | `row, damage=1800` | Jalapeno-style row-wide fire effect. |
-| `trigger_ice_shroom` | `duration` | Freezes all zombies on the board for `duration` seconds. |
-
----
-
-## 6. Sound
-
-```python
-pvn.Lawnf.play_sound(SoundType.Buzzer)
-```
-
-Accepts a `SoundType` enum member (from `PvzRH_node.Types`) or a raw integer ID.
-
----
-
-## 7. Game State
-
-```python
-with pvn.If(pvn.Board.Sun < 0):
-    pvn.Lawnf.trigger_game_over(reason="Ran out of Sun!")
-
-with pvn.If(pvn.Board.Wave >= final_wave):
-    pvn.Lawnf.trigger_game_win()
-```
-
-| Function | Parameters | Description |
-| --- | --- | --- |
-| `trigger_game_over` | `reason="Defeated!"` | Ends the level in defeat, displaying `reason`. |
-| `trigger_game_win` | — | Ends the level in victory. |
-
----
-
-## 8. Buffs
-
-```python
-pvn.Lawnf.get_buff(TravelBuffType.SomeBuff)
-```
-
-Grants a travel buff for the current level. Accepts a `TravelBuffType` enum member (from `PvzRH_node.Types`) or a raw integer ID.
-
----
-
-## 9. Plant & Zombie Queries
-
-```python
-zombie = pvn.Lawnf.get_closest_zombie(row=2, col=8)
+# Nearest zombie to a tile
+zombie = pft.Lawnf.get_closest_zombie(row=2, col=8)
 zombie.damage(500)
 
-with pvn.Lawnf.for_each_plant_on_lawn() as plant:
+# Iterate all live plants on the board
+with pft.Lawnf.for_each_plant_on_lawn() as plant:
     plant.heal(50)
 ```
 
-| Function | Parameters | Returns | Description |
-| --- | --- | --- | --- |
-| `get_closest_zombie` | `row, col` | `Zombie` | Nearest zombie to the given tile. |
-| `get_plants_at` | `row, col` | list port | Plants in a specific cell — feed into a list-consuming node/loop. |
-| `get_all_plants` | — | list port | All plants on the board — feed into a list-consuming node/loop. |
-| `for_each_plant_on_lawn` | — (context manager) | `Plant` per iteration | Loops over every plant on the board. |
+---
+
+## 3. Player Tools (`Tool`)
+
+The `Tool` interface allows inspecting and manipulating tools held by the player (shovel, hammer, glove, etc.) and their cooldown ratios.
+
+```python
+# 1. Query currently held tool
+game_obj, held_type = pft.Tool.get_held()
+
+# 2. Check if a specific tool is currently held
+with pft.Trigger.OnMouseClick():
+    is_shovel = pft.Tool.is_held(ToolType.Shovel)
+    with pft.If(is_shovel):
+        pft.InGameUI.display_text("Player clicked while holding the Shovel!")
+
+# 3. Inspect tool cooldown
+cooldown = pft.Tool.get_cooldown(ToolType.Hammer)
+# cooldown.total_seconds
+# cooldown.remaining_seconds
+# cooldown.exists
+
+# 4. Set tool cooldown ratio (0.0 = ready, 1.0 = full cooldown)
+pft.Tool.set_cooldown(ToolType.Glove, ratio=0.0)
+```
+
+### `ToolType` Enum Reference
+
+| Enum Value | Name | Description |
+| :--- | :--- | :--- |
+| `ToolType.None_` | 无 | No tool held |
+| `ToolType.Shovel` | 铲子 | Plant removal shovel |
+| `ToolType.Glove` | 手套 | Plant moving glove |
+| `ToolType.Hammer` | 锤子 | Smashing hammer |
+| `ToolType.LawnCleaner` | 小推车 | Lawn mower cleaner tool |
+| `ToolType.GoldCoffeeBean`| 金咖啡豆 | Golden coffee bean awaken tool |
+| `ToolType.Bucket` | 桶 | Water / nutrient bucket |
+| `ToolType.CannonTarget` | 加农炮目标 | Target reticle for Cob Cannons |
+| `ToolType.PlantPreview` | 植物预览 | Plant cursor preview |
+| `ToolType.ZombiePreview`| 僵尸预览 | Zombie cursor preview |
+| `ToolType.Other` | 其他 | Other miscellaneous tools |
+
+---
+
+## 4. World Objects & Entity Binding (`WorldObject`)
+
+`WorldObject` (aliased as `GameObject` and `Object`) encapsulates Unity GameObjects, 3D transforms, and entity binding/casting.
+
+```python
+# Create a custom event object
+obj = pft.WorldObject.create(name="BossMarker", position=pft.WorldObject.vector3(0, 0, 0))
+
+# Query or adjust 3D transform
+transform = obj.get_transform()
+# transform.position, transform.scale, transform.exists
+obj.set_transform(position=pft.WorldObject.vector3(100, 200, 0), scale_multiplier=1.5)
+
+# Cast GameObject to Plant or Zombie
+plant_target = obj.to_plant()          # CastTo
+plant_target, ok = obj.try_cast_to_plant()  # TryCast (returns plant and exists port)
+
+# Destroy object
+obj.destroy()
+```
+
+### Named Entity Bindings (`bind_plant` / `bind_zombie`)
+
+Bind specific plant or zombie instances by name (e.g. "守护目标" / "首领") to easily look them up from other triggers:
+
+```python
+# Bind target plant
+with pft.Trigger.OnPlantCreate() as plant:
+    with pft.If(plant.plantType == PlantType.WallNut):
+        pft.WorldObject.bind_plant(plant, name="守护目标")
+
+# Retrieve bound plant in another trigger
+with pft.Trigger.OnWave() as wave_num:
+    guarded_plant = pft.WorldObject.get_bound_plant(name="守护目标")
+    guarded_plant.heal(200)
+
+# Bind and retrieve zombie
+with pft.Trigger.OnZombieSpawn() as zombie:
+    with pft.If(zombie.zombieType == ZombieType.Gargantuar):
+        pft.WorldObject.bind_zombie(zombie, name="首领")
+
+boss_zombie = pft.WorldObject.get_bound_zombie(name="首领")
+```
 
 ---
 
 ## Quick Reference
 
-| Class | Category | Members |
+| Class | Category | Key Members |
 | --- | --- | --- |
-| `InGameUI` | Info cards | `display_info_card`, `InfoCard` |
-| `InGameUI` | Plant cards | `give_plant_card`, `remove_plant_card`, `spawn_dropped_card` |
-| `InGameUI` | Text | `display_text` (aka `pvn.Print`) |
-| `Lawnf` | Props | `spawn_particle`, `spawn_grave`, `spawn_crater`, `spawn_ladder`, `spawn_ice_block` |
-| `Lawnf` | Effects | `trigger_cherry_explosion`, `trigger_doom_explosion`, `trigger_zombie_explosion`, `trigger_jalapeno`, `trigger_ice_shroom` |
+| `InGameUI` | UI Popups | `display_info_card`, `InfoCard`, `display_text` |
+| `InGameUI` | Cards | `give_plant_card`, `remove_plant_card`, `spawn_dropped_card` |
+| `Lawnf` | Props | `spawn_grave`, `spawn_crater`, `spawn_ladder`, `spawn_particle`, `spawn_ice_block` |
+| `Lawnf` | Effects | `trigger_cherry_explosion`, `trigger_doom_explosion`, `trigger_jalapeno`, `trigger_ice_shroom` |
 | `Lawnf` | Sound | `play_sound` |
-| `Lawnf` | Game state | `trigger_game_over`, `trigger_game_win` |
-| `Lawnf` | Buffs | `get_buff` |
-| `Lawnf` | Queries & loops | `get_closest_zombie`, `get_plants_at`, `get_all_plants`, `for_each_plant_on_lawn` |
+| `Tool` | Tools | `get_held()`, `is_held(tool_type)`, `get_cooldown()`, `set_cooldown()` |
+| `WorldObject` | Objects | `create()`, `destroy()`, `get_transform()`, `set_transform()`, `to_plant()`, `to_zombie()` |
+| `WorldObject` | Binding | `bind_plant()`, `get_bound_plant()`, `bind_zombie()`, `get_bound_zombie()` |

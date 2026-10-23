@@ -1,29 +1,39 @@
-# 📦 Variables (`IntVar`, `FloatVar`, `BoolVar`)
+# 📦 Variables & Type Casting
 
-Variables represent stateful runtime values that persist and update across game events. They transpile into engine variable asset definitions along with getter and setter nodes.
+Variables represent stateful runtime values that persist across events. They transpile into engine variable asset definitions (`IntVariableAsset`, `FloatVariableAsset`, `BoolVariableAsset`, `StringVariableAsset`) along with getters, setters, and arithmetic nodes.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node import BoolVar, FloatVar, IntVar
-from PvzRH_node.Types import KeyCode
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler import (
+    IntVar,
+    FloatVar,
+    BoolVar,
+    StringVar,
+    Int,
+    Float,
+    String,
+    Bool,
+)
+from PvZ_Fusion_Transpiler.Types import KeyCode
 ```
 
 ---
 
-## 1. Core Rule: Assignment vs Setting
+## 1. Core Rule: Assignment (`=`) vs Mutation (`.set()`)
 
-> ⚠️ **Important:** Do not reassign variables using Python's standard assignment operator (`=`). Use `.set()` or in-place operators (`+=`, `-=`, `*=`, `/=`) to record runtime mutations into the visual script graph.
+> [!CAUTION]
+> **Do not reassign variables using Python's standard `=` operator.** Reassigning (`x = 5`) replaces the Python object and detaches it from the visual node graph. Use `.set()` or in-place operators (`+=`, `-=`, `*=`, `/=`) to record mutations into the compiled graph.
 
 ```python
-# ❌ Incorrect: Overwrites the Python reference and disconnects the node graph
+# ❌ Incorrect: Disconnects the node graph
 count = IntVar(start_val=0)
 count = 5
 
-# ✅ Correct: Emits a SetVariableValue node in the execution graph
+# ✅ Correct: Emits a SetVariableValue node
 count = IntVar(start_val=0)
 count.set(5)
 
-# ✅ Correct: Uses in-place modification
+# ✅ Correct: Emits an in-place operator node
 count += 1
 ```
 
@@ -31,126 +41,154 @@ count += 1
 
 ## 2. Integer Variables (`IntVar`)
 
-Stores 32-bit signed integers for counters, wave tracking, and numeric logic.
-
-### Initialization
+Stores signed integers for counters, wave indices, and score tracking.
 
 ```python
-# Initialized with a default constant
-kills = IntVar(start_val=0, name="ZombieKills")
+score = IntVar(start_val=100, name="PlayerScore")
 
-# Initialized from a dynamic expression (auto-evaluated on level load)
-offset = IntVar(start_val=pvn.Random.randint(1, 10), name="WaveOffset")
-```
-
-### Arithmetic & Modifiers
-
-`IntVar` supports full operator overloading for both math and condition expressions:
-
-```python
-score = IntVar(start_val=100)
-
-with pvn.Trigger.OnZombieDeath():
-    score += 25       # In-place addition
-    score -= 5        # In-place subtraction
-    score *= 2        # In-place multiplication
-    score //= 2       # In-place integer division
-    score %= 10       # In-place modulo
+with pft.Trigger.OnZombieDeath():
+    score += 25                  # In-place addition
+    score -= 5                   # In-place subtraction
+    score *= 2                   # In-place multiplication
+    score.add_in_place(10)       # Direct arithmetic node helper
 ```
 
 ### Type Conversion
-
-* **`to_string(decimals=0)`**: Converts the integer value to a string output port for UI labels or debug logs.
+- `score.to_string(decimals=0)`: Formats the integer value to a string output port.
 
 ---
 
 ## 3. Float Variables (`FloatVar`)
 
-Stores floating-point numbers for speeds, timers, coordinates, and multipliers.
-
-### Initialization
+Stores floating-point values for speeds, delays, coordinates, and scaling factors.
 
 ```python
-multiplier = FloatVar(start_val=1.0, name="SpeedMultiplier")
-timer = FloatVar(start_val=5.5, name="SpawnDelay")
-```
+speed = FloatVar(start_val=1.0, name="MoveSpeed")
 
-### Arithmetic Operations
-
-```python
-rate = FloatVar(start_val=1.5)
-
-with pvn.Trigger.OnGameStart():
-    rate += 0.25      # In-place addition
-    rate *= 1.1       # In-place multiplication
-    rate /= 2.0       # In-place true division
+with pft.Trigger.OnGameStart():
+    speed += 0.2
+    speed *= 1.5
+    speed /= 2.0
 ```
 
 ### Type Conversion
-
-* **`to_string(decimals=2)`**: Formats the floating-point value to a string output port with a specified decimal precision.
+- `speed.to_string(decimals=2)`: Formats the float to a string output port with specified decimal precision.
 
 ---
 
 ## 4. Boolean Variables (`BoolVar`)
 
-Stores boolean flags for toggles, one-time switches, and trigger gating.
-
-### Initialization & Setting
+Stores boolean flags for switches, one-time conditions, and toggles.
 
 ```python
-is_boss_spawned = BoolVar(start_val=False, name="BossActive")
+boss_active = BoolVar(start_val=False, name="BossActive")
 
-with pvn.Trigger.OnWave() as wave_num:
-    with pvn.If(wave_num == 10):
-        is_boss_spawned.set(True)
-```
+# Set boolean value
+with pft.Trigger.OnWave() as wave_num:
+    with pft.If(wave_num == 10):
+        boss_active.set(True)
 
-### Toggling & Logical Operators
-
-`BoolVar` supports standard bitwise syntax (`&`, `|`, `~`) and a dedicated `.toggle()` helper:
-
-```python
-hard_mode = BoolVar(start_val=False, name="HardMode")
-wave_cleared = BoolVar(start_val=True, name="WaveCleared")
-
-# Invert state (True -> False / False -> True)
-with pvn.Trigger.OnKeyDown(KeyCode.H):
-    hard_mode.toggle()
+# Toggle state (True <-> False)
+with pft.Trigger.OnKeyDown(KeyCode.B):
+    boss_active.toggle()
 
 # Bitwise Logical Operations
-with pvn.Trigger.OnWave():
-    combined_flag = hard_mode & wave_cleared   # AND node
-    either_flag = hard_mode | wave_cleared     # OR node
-    inverted = ~hard_mode                      # NOT node
-    
-    with pvn.If(combined_flag):
-        pvn.Board.Sun += 50
+flag_a = BoolVar(start_val=True)
+flag_b = BoolVar(start_val=False)
+
+combined = flag_a & flag_b   # AND
+either = flag_a | flag_b     # OR
+inverted = ~flag_a           # NOT
 ```
 
 ---
 
-## 5. Scope Resolution
+## 5. String Variables (`StringVar`)
 
-Variables created at module level are registered into the `global` scope. When a variable is accessed or modified within a nested execution scope (such as inside a `with pvn.Trigger` block), the variable dynamically references or duplicates its accessor node to match the local execution context while pointing to the exact same underlying memory asset.
+Stores text values for banners, custom stage names, player names, and UI labels.
 
 ```python
-# Shared global asset reference
-shared_counter = IntVar(start_val=0, name="SharedCounter")
+status_msg = StringVar(start_val="Normal Mode", name="Status")
 
-with pvn.Trigger.OnPlantCreate():
-    shared_counter += 1
+# Update string value
+with pft.Trigger.OnWave() as wave_num:
+    with pft.If(wave_num == 5):
+        status_msg.set("Danger: Wave 5!")
 
-with pvn.Trigger.OnZombieDeath():
-    shared_counter += 1
+# Append text in-place
+with pft.Trigger.OnZombieDeath():
+    status_msg += " (Defeated)"
+
+# Print dynamically
+with pft.Trigger.OnGameStart():
+    pft.InGameUI.display_text(status_msg)
+```
+
+---
+
+## 6. Type Conversion & Constructor Classes
+
+Use `Int`, `Float`, `String`, and `Bool` to construct value nodes or statically cast ports between different engine types:
+
+### `Int`
+```python
+# Construct a constant Int value node
+val_node = Int(5)
+
+# Cast float or string to int port
+int_port = Int.Cast(float_val)
+
+# Extract ASCII code from character at index
+ascii_code = Int.from_ascii("Hello", index=0)  # Returns 72 ('H')
+```
+
+### `Float`
+```python
+# Construct a constant Float value node
+float_node = Float(3.14)
+
+# Cast int or string to float port
+float_port = Float.Cast(int_val)
+```
+
+### `String`
+```python
+# Construct a constant String value node
+str_node = String("Welcome!")
+
+# Cast any numeric, entity, or enum port to String
+text_port = String.Cast(entity_or_num_port, decimals=2)
+
+# ASCII conversions
+char_str = String.from_ascii(ascii_code)        # Int ASCII code -> String char
+code = String.to_ascii("World", index=0)         # String char -> Int ASCII code
+
+# Parse string to enum / object ports
+plant_type_port = String.to_plant_type("Peashooter")
+zombie_type_port = String.to_zombie_type("NormalZombie")
+game_object_port = String.to_object("EventObject")
+```
+
+### `Bool`
+```python
+# Construct a constant Bool value node
+bool_node = Bool(True)
+
+# Cast numeric int/float port to Bool port
+bool_port = Bool.Cast(num_port)
 ```
 
 ---
 
 ## Quick Reference
 
-| Class | Default Start Value | Primary Setter | String Formatting |
-| --- | --- | --- | --- |
-| `IntVar` | `0` | `.set(int)` | `.to_string(decimals=0)` |
-| `FloatVar` | `0.0` | `.set(float)` | `.to_string(decimals=2)` |
-| `BoolVar` | `False` | `.set(bool)`, `.toggle()` | `.to_string()` |
+| Class | Default Start | Primary Setter | Operations |
+| :--- | :--- | :--- | :--- |
+| `IntVar` | `0` | `.set(int)` | `+=`, `-=`, `*=`, `//=`, `%=`, `.add_in_place()` |
+| `FloatVar` | `0.0` | `.set(float)` | `+=`, `-=`, `*=`, `/=` |
+| `BoolVar` | `False` | `.set(bool)`, `.toggle()` | `&`, `\|`, `~` |
+| `StringVar` | `""` | `.set(str)` | `+=`, `+`, `.to_string()` |
+| `Int` | — | `Int(val)` constructor | `Int.Cast(val)`, `Int.from_ascii(text, idx)` |
+| `Float` | — | `Float(val)` constructor | `Float.Cast(val)` |
+| `String` | — | `String(val)` constructor | `String.Cast(val)`, `String.from_ascii()`, `String.to_ascii()`, `String.to_plant_type()`, etc. |
+| `Bool` | — | `Bool(val)` constructor | `Bool.Cast(val)` |

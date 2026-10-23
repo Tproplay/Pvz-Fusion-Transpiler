@@ -1,104 +1,157 @@
-# 🌱 Spawning Plants & Zombies
+# 🌱 Spawning Plants, Zombies & Bullets
 
-The `pvn.Spawner` interface places plants and zombies onto the board at runtime, returning the spawned entity directly (with extra attributes attached for handling the spawn outcome).
+The `pft.Spawner` interface places plants, zombies, and bullets onto the board at runtime, returning wrapped entity objects directly with lifecycle execution paths.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node import PlantType, ZombieType
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler.Types import PlantType, ZombieType, BulletType, KeyCode
 ```
+
+> [!IMPORTANT]
+> **Strict Enum Requirement**: Raw integer IDs are strictly forbidden for `plant_type`, `zombie_type`, and `bullet_type`. Passing integers raises a `TypeError`. Always use the corresponding `PlantType`, `ZombieType`, or `BulletType` enum member.
 
 ---
 
 ## 1. Spawning Plants (`Spawner.Set_Plant`)
 
-Spawns a plant at the specified grid coordinates and returns a `Plant` object.
+Spawns a plant at the specified lawn grid coordinates and returns a `SpawnedPlant` object (which inherits all methods of `Plant`).
 
 ```python
-plant = pvn.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut)
+plant = pft.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut)
 ```
 
 ### Parameters
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `row` | `int` | *Required* | Target row on the lawn grid. |
-| `col` | `int` | *Required* | Target column on the lawn grid. |
-| `plant_type` | `PlantType \| int` | *Required* | Plant to spawn. Accepts a `PlantType` enum member or a raw integer ID. |
-| `force` | `bool` | `False` | If `True`, forces placement even if a plant already occupies the cell (e.g. replacing existing plants). |
+| `row` | `int \| Any` | *Required* | Target row on the lawn grid (0-indexed). |
+| `col` / `column` | `int \| float \| Any` | *Required* | Target column on the lawn grid. |
+| `plant_type` | `PlantType` | *Required* | Plant to spawn. **Must be a `PlantType` enum member.** |
+| `force` | `bool` | `False` | If `True`, forces placement even if the cell is occupied. |
 
-### Using the Spawned Plant
+### Context Manager Syntax
 
-Since `Set_Plant` returns a `Plant` directly, you can act on it immediately with any `Plant` method:
+You can use `Spawner.Set_Plant` directly as a context manager:
 
 ```python
-plant = pvn.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut)
-plant.modify_health(2.0)   # Double the Wall-Nut's health right after creation
+with pft.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut) as plant:
+    pft.InGameUI.display_text("Wall-Nut successfully planted!")
+    plant.add_shield(500)
 ```
 
-### Success & Failure Paths
+### Success & Failure Execution Paths
 
-The returned `Plant` also carries two execution-path context managers for handling the outcome of the spawn attempt:
+The returned `SpawnedPlant` instance provides dedicated execution paths to branch on spawn success or failure:
 
 ```python
-with pvn.Trigger.OnKeyDown(KeyCode.Space):
-    plant = pvn.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut, force=True)
+with pft.Trigger.OnKeyDown(KeyCode.Space):
+    plant = pft.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut, force=False)
 
-    with plant.on_created:
-        pvn.Print("Wall-Nut planted!")
+    with plant.on_created:  # alias: plant.on_success
+        pft.InGameUI.display_text("Wall-Nut planted!")
+        plant.modify_health(2.0)
 
     with plant.on_failed:
-        pvn.Print("Could not plant here!")
+        pft.InGameUI.display_text("Could not plant here (cell occupied)!")
 ```
-
-* **`on_created`** — Fires if the plant was successfully placed.
-* **`on_failed`** — Fires if placement failed (e.g. the cell is blocked and `force=False`).
 
 ---
 
 ## 2. Spawning Zombies (`Spawner.Set_Zombie`)
 
-Spawns a zombie at the specified grid coordinates and returns a `Zombie` object.
+Spawns a zombie at the specified grid coordinates and returns a `SpawnedZombie` object (inheriting all methods of `Zombie`).
 
 ```python
-zombie = pvn.Spawner.Set_Zombie(row=4, col=8, zombie_type=ZombieType.Gargantuar)
+zombie = pft.Spawner.Set_Zombie(row=4, col=8, zombie_type=ZombieType.Gargantuar)
 ```
 
 ### Parameters
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `row` | `int` | *Required* | Target row on the lawn grid. |
-| `col` | `int` | *Required* | Target column on the lawn grid. |
-| `zombie_type` | `ZombieType \| int` | *Required* | Zombie to spawn. Accepts a `ZombieType` enum member or a raw integer ID. |
-| `mind_controlled` | `bool` | `False` | If `True`, spawns the zombie as mind-controlled (fights for the player's side). |
+| `row` | `int \| Any` | *Required* | Target row on the lawn grid (0-indexed). |
+| `col` / `column` | `int \| float \| Any` | *Required* | Target column on the lawn grid. |
+| `zombie_type` | `ZombieType` | *Required* | Zombie to spawn. **Must be a `ZombieType` enum member.** |
+| `mind_controlled` | `bool` | `False` | If `True`, spawns the zombie fighting for the player's side. |
 
-### Using the Spawned Zombie
-
-```python
-zombie = pvn.Spawner.Set_Zombie(row=4, col=8, zombie_type=ZombieType.Gargantuar)
-zombie.set_health_multiplier(1.5)   # Buff the Gargantuar's health right after spawning
-```
-
-### Success Path
+### Context Manager & Success Path
 
 ```python
-with pvn.Trigger.OnWave() as wave_num:
-    with pvn.If(wave_num == 10):
-        zombie = pvn.Spawner.Set_Zombie(row=2, col=9, zombie_type=ZombieType.Gargantuar)
-
-        with zombie.on_created:
-            pvn.Print("Gargantuar has arrived!")
+with pft.Trigger.OnWave() as wave_num:
+    with pft.If(wave_num == 10):
+        with pft.Spawner.Set_Zombie(row=2, col=9, zombie_type=ZombieType.Gargantuar) as zombie:
+            pft.InGameUI.display_text("Gargantuar has arrived!")
+            zombie.set_speed_multiplier(1.2)
+            zombie.set_health_multiplier(1.5)
 ```
 
-* **`on_created`** — Fires if the zombie was successfully spawned.
+Alternatively, attach to `.on_created`:
+```python
+zombie = pft.Spawner.Set_Zombie(row=2, col=9, zombie_type=ZombieType.Gargantuar)
+with zombie.on_created:
+    pft.InGameUI.display_text("Spawned via on_created path!")
+```
 
-> **Note:** Unlike `Set_Plant`, `Set_Zombie` does not currently expose an `on_failed` path.
+---
+
+## 3. Spawning Bullets (`Spawner.Set_Bullet`)
+
+Shoots an event bullet with custom physics, damage, direction, or tracking. Returns a `SpawnedBullet` object (inheriting from `Bullet`).
+
+```python
+bullet = pft.Spawner.Set_Bullet(
+    row=2,
+    col=3.0,
+    bullet_type=BulletType.Pea,
+    damage=40.0,
+    speed=300.0,
+    angle=0.0,
+)
+```
+
+### Parameters
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `row` | `int \| Any` | `0` | Origin row coordinate. |
+| `col` / `column` | `float \| Any` | `0.0` | Origin column coordinate. |
+| `bullet_type` | `BulletType` | *Required* | Type of projectile. **Must be a `BulletType` enum member.** |
+| `damage` | `float \| Any` | `None` | Custom damage value override. |
+| `speed` | `float \| Any` | `None` | Custom projectile speed override. |
+| `angle` | `float \| Any` | `None` | Flight trajectory angle in degrees. |
+| `scale_multiplier`| `float \| Any` | `None` | Size scale multiplier. |
+| `at_mouse` | `bool \| Any` | `False` | If `True`, fires toward current mouse position. |
+| `zombie_camp` | `bool \| Any` | `False` | If `True`, bullet is owned by zombie faction (damages plants). |
+
+### Context Manager & Lifecycle Paths
+
+```python
+with pft.Trigger.OnMouseClick() as mouse:
+    with pft.Spawner.Set_Bullet(
+        row=mouse.row,
+        col=mouse.col,
+        bullet_type=BulletType.FirePea,
+        damage=80.0,
+        at_mouse=True,
+    ) as bullet:
+        pft.InGameUI.display_text("Bullet shot towards mouse!")
+```
+
+Supports `.on_created` and `.on_failed` execution branches:
+```python
+with bullet.on_created:
+    pft.InGameUI.display_text("Bullet launched!")
+
+with bullet.on_failed:
+    pft.InGameUI.display_text("Bullet creation failed!")
+```
 
 ---
 
 ## Quick Reference
 
-| Method | Signature | Returns | Extra Attributes |
-| --- | --- | --- | --- |
-| `Spawner.Set_Plant` | `(row, col, plant_type, force=False)` | `Plant` | `.on_created`, `.on_failed` |
-| `Spawner.Set_Zombie` | `(row, col, zombie_type, mind_controlled=False)` | `Zombie` | `.on_created` |
+| Method | Returns | Context Manager | Lifecycle Paths | Strict Enum |
+| --- | --- | --- | --- | --- |
+| `Spawner.Set_Plant` | `SpawnedPlant` | `with Spawner.Set_Plant(...) as plant:` | `.on_created`, `.on_failed` | `PlantType` |
+| `Spawner.Set_Zombie` | `SpawnedZombie` | `with Spawner.Set_Zombie(...) as zombie:` | `.on_created` | `ZombieType` |
+| `Spawner.Set_Bullet` | `SpawnedBullet` | `with Spawner.Set_Bullet(...) as bullet:` | `.on_created`, `.on_failed` | `BulletType` |

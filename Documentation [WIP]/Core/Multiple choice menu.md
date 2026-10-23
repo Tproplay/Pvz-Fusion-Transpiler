@@ -1,10 +1,11 @@
 # 📋 Multiple Choice UI Menus
 
-The Multiple Choice system lets you design in-game perk cards, rogue-lite selection pop-ups, and interactive dialogs.
+The Multiple Choice system lets you design in-game perk cards, rogue-lite selection pop-ups, and interactive upgrade dialogs.
 
 ```python
-import PvzRH_node as pvn
-from PvzRH_node import MultiSelectMenu, Option, PlantType, ZombieType
+import PvZ_Fusion_Transpiler as pft
+from PvZ_Fusion_Transpiler import MultiSelectMenu, Option
+from PvZ_Fusion_Transpiler.Types import PlantType, ZombieType
 ```
 
 ---
@@ -23,40 +24,38 @@ menu = MultiSelectMenu(
 
 @menu.option(title="Solar Surplus", description="Gain +150 Sun instantly", plant_type=PlantType.SunFlower)
 def choose_sun():
-    pvn.Board.Sun += 150
+    pft.Board.Sun += 150
 
 @menu.option(title="Reinforce Line", description="Spawn a Wall-Nut at row 3, col 4", plant_type=PlantType.WallNut)
 def choose_defense():
-    pvn.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut)
+    pft.Spawner.Set_Plant(row=2, col=3, plant_type=PlantType.WallNut)
 
 @menu.option(title="Tactical Bomb", description="Trigger Cherry Bomb explosion", plant_type=PlantType.CherryBomb)
 def choose_bomb():
-    pvn.Spawner.Set_Plant(row=2, col=9, plant_type=PlantType.CherryBomb)
+    pft.Lawnf.trigger_cherry_explosion(row=2, col=4, damage=1800)
 
 # Open the menu during a wave
-with pvn.Trigger.OnWave() as wave_num:
-    with pvn.If(wave_num == 5):
+with pft.Trigger.OnWave() as wave_num:
+    with pft.If(wave_num == 5):
         menu.show()
 ```
 
-> **Note:** A menu can carry a `plant_type` *or* a `zombie_type` icon, never both — if both are set, the plant icon takes priority and the zombie type is dropped with a warning.
+> **Note:** A choice card can carry a `plant_type` *or* a `zombie_type` icon, never both — if both are set, the plant icon takes priority.
 
 ---
 
 ## 2. Reusable Option Cards
 
-For complex rogue-lite setups, you can define standalone `Option` instances once and share them across multiple different menus:
+For complex rogue-lite setups, define standalone `Option` instances once and share them across multiple different menus:
 
 ```python
-# Standalone Option definition
 speed_boost = Option(
     title="Nitro Turf",
     description="Boost plant attack speed by 25%",
-    callback=lambda: pvn.Print("Speed boost active!"),
-    plant_type=PlantType.DoubleShooter,
+    callback=lambda: pft.InGameUI.display_text("Speed boost active!"),
+    plant_type=PlantType.Repeater,
 )
 
-# Attach the pre-instantiated option to multiple menus
 menu_a = MultiSelectMenu()
 menu_a.add_option(speed_boost)
 
@@ -64,49 +63,40 @@ menu_b = MultiSelectMenu()
 menu_b.add_option(speed_boost)
 ```
 
-`add_option` also accepts the same inline arguments as `Option(...)` directly, so `menu.add_option(title=..., description=..., callback=..., plant_type=...)` works without constructing an `Option` first.
-
 ---
 
 ## 3. Menu Exit & Refresh Events
 
-You can hook additional logic to fire when a player closes or rerolls a menu using `.Output`. These must be accessed **after** `menu.show()` has run, since the underlying node isn't created until then:
+Hook additional logic to fire when a player closes or rerolls a menu using `.Output`. These must be accessed **after** `menu.show()` has run:
 
 ```python
 menu = MultiSelectMenu(is_rerollable=True, reroll_count=2)
 
-with pvn.Trigger.OnWave() as wave_num:
-    with pvn.If(wave_num == 5):
+with pft.Trigger.OnWave() as wave_num:
+    with pft.If(wave_num == 5):
         menu.show()
 
-# Trigger logic when the window finishes closing
+# Fires when the window finishes closing
 with menu.Output.OnExit:
-    pvn.Print("Menu closed, resuming gameplay.")
+    pft.InGameUI.display_text("Menu closed, resuming gameplay.")
 
-# Trigger logic every time the user clicks reroll
+# Fires every time the user clicks reroll
 with menu.Output.OnRefresh:
-    pvn.Print("Player used a reroll.")
+    pft.InGameUI.display_text("Player used a reroll.")
 ```
 
 ---
 
-## Configuration Reference
+## Quick Reference
 
-### MultiSelectMenu Settings
-
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `is_rerollable` | `bool` | `True` | Enables the reroll/refresh button on the window |
-| `reroll_count` | `int` | `3` | Number of times the player is allowed to reroll |
-| `is_skippable` | `bool` | `False` | Allows the player to close the window without selecting |
-| `window_count` | `int` | `3` | Total number of card options presented simultaneously |
-
-### Option Settings
-
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `str` | *Required* | Card header title |
-| `description` | `str` | *Required* | Card description or perk detail |
-| `callback` | `Callable` | `None` | Logic executed when the player clicks this card |
-| `plant_type` | `PlantType` | `254` (None) | Plant icon shown on the card |
-| `zombie_type` | `ZombieType` | `-1` (None) | Zombie icon shown on the card |
+| Class | Parameter | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `MultiSelectMenu` | `is_rerollable` | `True` | Enables the reroll/refresh button |
+| `MultiSelectMenu` | `reroll_count` | `3` | Maximum number of allowed rerolls |
+| `MultiSelectMenu` | `is_skippable` | `False` | Allows closing the window without selecting |
+| `MultiSelectMenu` | `window_count` | `3` | Number of cards shown simultaneously |
+| `Option` | `title` | *Required* | Card header text |
+| `Option` | `description` | *Required* | Card perk description |
+| `Option` | `callback` | `None` | Execution logic when card is clicked |
+| `Option` | `plant_type` | `254` (None) | Plant icon displayed on card |
+| `Option` | `zombie_type` | `-1` (None) | Zombie icon displayed on card |
