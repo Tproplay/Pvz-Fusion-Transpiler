@@ -6,11 +6,11 @@ Welcome to the documentation for the **PvZ Fusion Transpiler** codebase. This pr
 
 ## Documentation Index
 
-- [**AI Agent Workflow Guide** (`AI_AGENT_WORKFLOW.md`)](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/docs/AI_AGENT_WORKFLOW.md)
+- [**AI Agent Workflow Guide** (`AI_AGENT_WORKFLOW.md`)](AI_AGENT_WORKFLOW.md)
   *Essential reading if you or an AI agent are forking, extending, or maintaining this codebase.* Contains the 6 Core Rules, agent prompting templates, verification requirements, git branching strategy, and common traps.
-- [**Architecture & System Design** (`ARCHITECTURE.md`)](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/docs/ARCHITECTURE.md)
+- [**Architecture & System Design** (`ARCHITECTURE.md`)](ARCHITECTURE.md)
   Deep dive into the 3-layer architecture, IL2CPP reflection schema, context & trigger autowiring, and level JSON serialization format.
-- [**Contributing & Forking Guide** (`CONTRIBUTING.md`)](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/docs/CONTRIBUTING.md)
+- [**Contributing & Forking Guide** (`CONTRIBUTING.md`)](CONTRIBUTING.md)
   Setup guide for local development, dependency management, adding tests, and pull request workflows.
 
 ---

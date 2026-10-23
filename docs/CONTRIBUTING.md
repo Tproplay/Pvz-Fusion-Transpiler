@@ -36,7 +36,7 @@ Thank you for your interest in contributing to or forking the **PvZ Fusion Trans
    ```
 
 4. **Verify Type Checker Configuration**:
-   The project contains a [`pyrightconfig.json`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/pyrightconfig.json) configuring include paths and virtual environment resolution.
+   The project contains a [`pyrightconfig.json`](../pyrightconfig.json) configuring include paths and virtual environment resolution.
    Test pyright via:
    ```bash
    npx pyright
@@ -47,7 +47,7 @@ Thank you for your interest in contributing to or forking the **PvZ Fusion Trans
 
 ## 2. Running Tests
 
-All unit tests reside in the [`tests/`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/tests/) directory:
+All unit tests reside in the [`tests/`](../tests/) directory:
 
 ```bash
 # Run all unit tests

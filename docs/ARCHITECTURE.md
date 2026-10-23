@@ -54,7 +54,7 @@ In *Plants vs. Zombies: Fusion*, visual scripting nodes inherit either from `Eve
 - **`EventNodeBase`**: Older or specialized nodes. In IL2CPP, some of these define string properties for port names (e.g., `trigger_PortName = "触发"`), while others (such as `BindPlantNode` and `ChangeStageNode`) define custom string fields without port name properties.
 
 ### Schema Resolution (`definitions.py`)
-Rather than hardcoding field rules per class, [`definitions.py`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Original/definitions.py) reads [`EventNodes_Definitions.txt`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Original/EventNodes_Definitions.txt) directly:
+Rather than hardcoding field rules per class, [`definitions.py`](../PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Original/definitions.py) reads [`EventNodes_Definitions.txt`](../PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Original/EventNodes_Definitions.txt) directly:
 1. **Port Names (`port_names`)**: If and only if a node class explicitly defined `_PortName` properties in the reflection dump, they are emitted into the serialized JSON.
 2. **Custom String Fields (`custom_props`)**: Class-specific fields (e.g. `bindingName = "守护目标"`, `stageName = "战斗"`, `displayText = "示例文本"`, `animationName = "idle"`) are registered with their reflection defaults and serialized into `data`.
 3. **Dedicated Value Nodes**: `IntValueNode`, `FloatValueNode`, `BoolValueNode`, `StringValueNode`, `PlantTypeValueNode`, `ZombieTypeValueNode`, `ToolTypeValueNode`, `BulletTypeValueNode` emit their dedicated field payload (`value`, `plantType`, `zombieType`, `toolType`, `bulletType`).
@@ -64,7 +64,7 @@ Rather than hardcoding field rules per class, [`definitions.py`](file:///c:/User
 ## 3. The Execution Context & Auto-Wiring
 
 ### Context Manager (`_ctx`)
-The singleton [`_ctx`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/Core/context.py) maintains:
+The singleton [`_ctx`](../PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/Core/context.py) maintains:
 - `_ctx.nodes`: List of all instantiated `Node` objects.
 - `_ctx.variables`: List of all `VariableAsset` instances.
 - `_ctx.connections`: List of directed port connections.
@@ -85,10 +85,10 @@ This eliminates the need for manual sequential wiring of trigger lines, producin
 ## 4. Entity Wrapper Pattern
 
 To enforce separation of concerns and prevent raw node output ports from leaking into user code:
-- **`Plant`** ([`Extentions/Entity/plant.py`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/Entity/plant.py)): Wraps a plant entity reference. Exposes combat operations (`curse`, `silence`, `feed_golden_bean`, `try_super_skill`, `upgrade`), speed modifiers (`attack_speed`, `set_attack_interval`), attribute countdowns, and component inspection.
-- **`Zombie`** ([`Extentions/Entity/zombie.py`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/Entity/zombie.py)): Wraps a zombie entity reference. Exposes damage, stat modifiers (`set_stats`), status effects (`set_status`), hypnotize, move, split destructuring, and animations (`play_animation`).
-- **`Bullet`** ([`Extentions/Entity/bullet.py`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/Entity/bullet.py)): Wraps bullet entity manipulation (destroy, redirect, damage scale).
-- **`WorldObject`** ([`Extentions/World/world_object.py`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/World/world_object.py)): Universal wrapper for `GameObject`. Supports `create`, `destroy`, `get_transform`, `set_transform`, casting to `Plant`/`Zombie` (`cast_to_plant`, `try_cast_to_plant`), and named entity bindings (`bind_plant`, `get_bound_plant`).
+- **`Plant`** ([`Extentions/Entity/plant.py`](../PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/Entity/plant.py)): Wraps a plant entity reference. Exposes combat operations (`curse`, `silence`, `feed_golden_bean`, `try_super_skill`, `upgrade`), speed modifiers (`attack_speed`, `set_attack_interval`), attribute countdowns, and component inspection.
+- **`Zombie`** ([`Extentions/Entity/zombie.py`](../PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/Entity/zombie.py)): Wraps a zombie entity reference. Exposes damage, stat modifiers (`set_stats`), status effects (`set_status`), hypnotize, move, split destructuring, and animations (`play_animation`).
+- **`Bullet`** ([`Extentions/Entity/bullet.py`](../PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/Entity/bullet.py)): Wraps bullet entity manipulation (destroy, redirect, damage scale).
+- **`WorldObject`** ([`Extentions/World/world_object.py`](../PvZ_Fusion_Transpiler_src/src/PvZ_Fusion_Transpiler/_Nodes/Extentions/World/world_object.py)): Universal wrapper for `GameObject`. Supports `create`, `destroy`, `get_transform`, `set_transform`, casting to `Plant`/`Zombie` (`cast_to_plant`, `try_cast_to_plant`), and named entity bindings (`bind_plant`, `get_bound_plant`).
 
 ---
 

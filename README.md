@@ -16,11 +16,11 @@ An advanced Python-based visual scripting compiler and Domain-Specific Language 
 
 ## Documentation
 
-Full documentation is available in the [`docs/`](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/docs/) directory:
+Full documentation is available in the [`docs/`](docs/) directory:
 
-- [**AI Agent Workflow Guide**](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/docs/AI_AGENT_WORKFLOW.md): Complete instructions, core rules, system prompt templates, and best practices for developers and AI coding agents forking or maintaining this repository.
-- [**Architecture & System Design**](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/docs/ARCHITECTURE.md): Deep dive into the 3-layer architecture, reflection engine, context manager, and JSON level serialization.
-- [**Contributing Guidelines**](file:///c:/Users/Tproplay/Desktop/Programming/Pvz%20Fusion%20Transpiler/docs/CONTRIBUTING.md): Environment setup, testing instructions, and pull request procedures.
+- [**AI Agent Workflow Guide**](docs/AI_AGENT_WORKFLOW.md): Complete instructions, core rules, system prompt templates, and best practices for developers and AI coding agents forking or maintaining this repository.
+- [**Architecture & System Design**](docs/ARCHITECTURE.md): Deep dive into the 3-layer architecture, reflection engine, context manager, and JSON level serialization.
+- [**Contributing Guidelines**](docs/CONTRIBUTING.md): Environment setup, testing instructions, and pull request procedures.
 
 ---
 
