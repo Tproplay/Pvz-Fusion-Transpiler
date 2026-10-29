@@ -11,6 +11,9 @@ from PvZ_Fusion_Transpiler.Types import (
     LevelType,
     SoundType,
     TravelBuffType,
+    AdvBuff,
+    UltiBuff,
+    TravelDebuff,
     ZombieAnimation,
 )
 
@@ -191,6 +194,58 @@ class TestNewRequirements(unittest.TestCase):
         self.assertEqual(len(conns), 1)
         self.assertEqual(conns[0].source_node.node_type, "FloatValueNode")
         self.assertEqual(conns[0].source_node.value, 2.0)
+
+    # Requirement: AdvBuff, UltiBuff, TravelDebuff enums and TravelBuffType updates
+    def test_buff_and_debuff_enums(self):
+        # 1. AdvBuff membership and values
+        self.assertEqual(AdvBuff.撒豆成兵.value, 0)
+        self.assertEqual(AdvBuff.Shooting_磁坚祝福.value, 15007)
+        self.assertIs(AdvBuff.ADV_ENCHANTRESS_SUBSPECIES, AdvBuff.撒豆成兵)
+
+        # 2. UltiBuff membership and values
+        self.assertEqual(UltiBuff.嗜血如命.value, 0)
+        self.assertEqual(UltiBuff.究炉恢复.value, 55)
+        self.assertIs(UltiBuff.ULTI_CHERRIZILLA_RECOVERY, UltiBuff.嗜血如命)
+
+        # 3. TravelDebuff membership and values
+        self.assertEqual(TravelDebuff.二爷无视植物.value, 0)
+        self.assertEqual(TravelDebuff.Shooting_命运无常.value, 10044)
+        self.assertIs(TravelDebuff.DEBUFF_SUN_RESET_TO_0, TravelDebuff.阳光归零)
+
+        # 4. TravelBuffType combined enum
+        self.assertEqual(TravelBuffType.撒豆成兵.value, ("AdvBuff", 0))
+        self.assertEqual(TravelBuffType.嗜血如命.value, ("UltiBuff", 0))
+        self.assertEqual(TravelBuffType.二爷无视植物.value, ("TravelDebuff", 0))
+
+        # 5. nodes.get_travel_buff handling with all enum types
+        _ctx.clear()
+        node_adv = pft.nodes.get_travel_buff(AdvBuff.撒豆成兵)
+        self.assertIsNotNone(node_adv.buff)
+        self.assertEqual(node_adv.buff.asset_class, "AdvBuff")
+        self.assertEqual(node_adv.buff.value, 0)
+        dump_adv = node_adv.buff.dump_ref()
+        self.assertEqual(dump_adv["type"]["class"], "AdvBuff")
+        self.assertEqual(dump_adv["data"]["value__"], 0)
+
+        node_ulti = pft.nodes.get_travel_buff(UltiBuff.嗜血如命)
+        self.assertIsNotNone(node_ulti.buff)
+        self.assertEqual(node_ulti.buff.asset_class, "UltiBuff")
+        self.assertEqual(node_ulti.buff.value, 0)
+        dump_ulti = node_ulti.buff.dump_ref()
+        self.assertEqual(dump_ulti["type"]["class"], "UltiBuff")
+        self.assertEqual(dump_ulti["data"]["value__"], 0)
+
+        node_debuff = pft.nodes.get_travel_buff(TravelDebuff.二爷无视植物)
+        self.assertIsNotNone(node_debuff.buff)
+        self.assertEqual(node_debuff.buff.asset_class, "TravelDebuff")
+        self.assertEqual(node_debuff.buff.value, 0)
+        dump_debuff = node_debuff.buff.dump_ref()
+        self.assertEqual(dump_debuff["type"]["class"], "TravelDebuff")
+        self.assertEqual(dump_debuff["data"]["value__"], 0)
+
+        # 6. High level Game.get_buff & Lawnf.get_buff
+        pft.Game.get_buff(AdvBuff.核能威慑)
+        pft.Lawnf.get_buff(UltiBuff.流星雨)
 
 
 if __name__ == "__main__":

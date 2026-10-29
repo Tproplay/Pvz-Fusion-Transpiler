@@ -6,6 +6,9 @@ from ._Data.SoundType import SoundType
 from ._Data.KeyCode import KeyCode
 from ._Data.ZombieAnimations import ZombieAnimations
 from ._Data.TravelBuffType import TravelBuffType
+from ._Data.AdvBuff import AdvBuff
+from ._Data.UltiBuff import UltiBuff
+from ._Data.TravelDebuff import TravelDebuff
 from ._Data.BulletType import BulletType
 from ._Data.ToolType import ToolType
 
@@ -22,6 +25,9 @@ __all__ = [
     "ZombieAnimations",
     "ZombieAnimation",
     "TravelBuffType",
+    "AdvBuff",
+    "UltiBuff",
+    "TravelDebuff",
     "BulletType",
     "ToolType",
 ]

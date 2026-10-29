@@ -14,6 +14,9 @@ from PvZ_Fusion_Transpiler.Types import (
     SceneType,
     LevelType,
     TravelBuffType,
+    AdvBuff,
+    UltiBuff,
+    TravelDebuff,
     ZombieAnimations,
     ZombieAnimation,
     Plant_DieReason,
@@ -87,9 +90,20 @@ Defines the gameplay mode:
 Audio clip sound IDs for `Lawnf.play_sound`:
 `SoundType.Buzzer`, `SoundType.CherryBomb`, `SoundType.Splat`, `SoundType.HugeWave`, etc.
 
-### `TravelBuffType`
-Registry of rogue-lite travel buffs and mastery synergy perks:
-`TravelBuffType.ADV_PLANT_RECHARGE_HALVED`, `TravelBuffType.ULTI_DOOMINATOR_SPEED_X3`, etc.
+### `AdvBuff`, `UltiBuff`, `TravelDebuff` & `TravelBuffType`
+Registries of rogue-lite travel buffs, ultimate abilities, and debuff modifiers (from game reflection `TypeDefIndex: 2757`, `2758`, `2759`):
+
+- **`AdvBuff`**: 232 advanced travel buffs (e.g. `AdvBuff.撒豆成兵`, `AdvBuff.核能威慑`, `AdvBuff.UltimateDoomGatling`, `AdvBuff.Shooting_火神质变`).
+- **`UltiBuff`**: 56 ultimate buffs (e.g. `UltiBuff.嗜血如命`, `UltiBuff.流星雨`, `UltiBuff.究炉恢复`).
+- **`TravelDebuff`**: 143 travel debuffs (e.g. `TravelDebuff.二爷无视植物`, `TravelDebuff.阳光归零`, `TravelDebuff.Shooting_命运无常`).
+- **`TravelBuffType`**: Unified composite enum linking all buff/debuff types with backward-compatible English and Chinese identifiers.
+
+```python
+# Apply buffs via Game or Lawnf
+pft.Game.get_buff(AdvBuff.撒豆成兵)
+pft.Lawnf.get_buff(UltiBuff.流星雨)
+pft.Game.get_buff(TravelDebuff.二爷无视植物)
+```
 
 ### `Plant_DieReason`
 Constants representing reasons for plant destruction:

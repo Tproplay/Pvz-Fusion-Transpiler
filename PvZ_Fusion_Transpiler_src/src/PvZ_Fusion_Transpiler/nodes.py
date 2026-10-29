@@ -778,7 +778,11 @@ def get_travel_buff(buff_enum: Any = None, **kwargs: Any) -> GetTravelBuffNode:
             asset_class = str(val[0])
             internal_id = int(val[1])
         elif isinstance(val, (int, str)):
-            asset_class = "AdvBuff"
+            cls_name = getattr(buff_enum.__class__, "__name__", "")
+            if cls_name in ("AdvBuff", "UltiBuff", "TravelDebuff"):
+                asset_class = cls_name
+            else:
+                asset_class = "AdvBuff"
             internal_id = int(val)
         else:
             asset_class = "AdvBuff"
