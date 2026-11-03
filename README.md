@@ -19,6 +19,8 @@ An advanced Python-based visual scripting compiler and Domain-Specific Language 
 The complete documentation suite is available in the [<ins>**Documentation [WIP]**</ins>](<Documentation [WIP]/README.md>) directory:
 
 - [**Documentation [WIP] Index**](<Documentation [WIP]/README.md>): Complete index covering all core features, triggers, libraries, and guides.
+- [**Base Game Nodes Inventory**](<Documentation [WIP]/BASE_GAME_NODES_LIST.md>): Complete inventory of all 240 native visual nodes in PvZ Fusion.
+- [**Extensions Implementation List**](<Documentation [WIP]/EXTENSIONS_IMPLEMENTATION_LIST.md>): Catalog of high-level extensions, DSL syntax, and implementation gap analysis.
 - [**AI Agent Workflow Guide**](<Documentation [WIP]/AI_AGENT_WORKFLOW.md>): Complete instructions, core rules, system prompt templates, and best practices for developers and AI coding agents forking or maintaining this repository.
 - [**Architecture & System Design**](<Documentation [WIP]/ARCHITECTURE.md>): Deep dive into the 3-layer architecture, reflection engine, context manager, and JSON level serialization.
 - [**Contributing Guidelines**](<Documentation [WIP]/CONTRIBUTING.md>): Environment setup, testing instructions, and pull request procedures.

@@ -11,6 +11,8 @@ Welcome to the documentation suite for the **PvZ Fusion Transpiler** (`PvZ_Fusio
 - [**System Architecture & Design**](ARCHITECTURE.md) — 3-layer architecture, reflection engine, trigger auto-wiring stack, and JSON serialization format.
 - [**Contributing Guidelines**](CONTRIBUTING.md) — Environment setup, dependency installation, running Pyright and unit tests, and commit guidelines.
 - [**WIP Roadmap & Node Status**](WIP_ROADMAP.md) — Implemented nodes, extension mappings, and nodes reserved for optimizer/compiler internals.
+- [**Base Game Nodes Inventory**](BASE_GAME_NODES_LIST.md) — Complete inventory of all 240 base game IL2CPP node classes, input/output ports, fields, and implementation status.
+- [**Extensions Implementation List & Gap Analysis**](EXTENSIONS_IMPLEMENTATION_LIST.md) — Exhaustive map of high-level extensions, DSL syntax, and actionable gap analysis of remaining nodes.
 
 ### Core Documentation (`Core/`)
 - [**Spawning Entities**](Core/Spawning.md) — Spawning plants, zombies, and bullets (`Spawner.Set_Plant`, `Spawner.Set_Zombie`, `Spawner.Set_Bullet`), enum enforcement, and context managers.
