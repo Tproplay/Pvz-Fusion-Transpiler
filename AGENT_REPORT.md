@@ -81,7 +81,43 @@ Created `tools/check_rules_and_coverage.py`:
 
 ---
 
-## 6. Verification Results
+## 6. In-Editor UI Controls Alignment & Typed Dropdown Enums
 
-- **Unit Test Suite:** `Ran 75 tests in 0.956s — OK` (75 passing, 0 failures, 0 errors).
+Reverse engineering of PvZ Fusion (`ShowEditorUI(RuntimeNodeUI ui)`) cataloged all 34 classes overriding editor GUI controls:
+- **14 `EventSuggestedNode` Subclasses (All Enum Dropdowns)**:
+  - `ChangeEventMusicNode`: Dropdown for `music: MusicType` (serialized as `"music"`)
+  - `ChangeEventMapNode`: Dropdown for `scene: SceneType` (serialized as `"scene"`)
+  - `BulletTypeValueNode`: Dropdown for `bulletType: BulletType` (serialized as `"bulletType"`)
+  - `ToolTypeValueNode`: Dropdown for `toolType: ToolType` (serialized as `"toolType"`)
+  - `DeleteGridItemsNode`: Dropdown for `kind: EventGridObstacle` (serialized as `"kind"`)
+  - `FloatVariableArithmeticNode`: Dropdown for `operation: EventArithmeticOperation` (serialized as `"operation"`)
+  - `IntVariableArithmeticNode`: Dropdown for `operation: EventArithmeticOperation` (serialized as `"operation"`)
+  - `GetZombieStatsNode` & `SetZombieStatsNode`: Dropdown for `stat: EventZombieStat` (serialized as `"stat"`)
+  - `GetZombieStatusNode` & `SetZombieStatusNode`: Dropdown for `status: EventZombieStatus` (serialized as `"status"`)
+  - `ModifyEventBulletNode`: Dropdown for `property: EventBulletProperty` (serialized as `"property"`)
+  - `OnWorldPlantEffectNode`: Dropdown for `effect: EventWorldEffect` (serialized as `"effect"`)
+  - `RemoveTravelEntryNode`: Dropdown for `kind: EventTravelEntryKind` (serialized as `"kind"`)
+- **Key `EventNodeBase` Subclasses with Controls**:
+  - `GetPlantsOnLayerNode`: Dropdown for `layer: Layer` (serialized as `"layer"`)
+  - `PlantTypeListStorageNode`: Dropdown for `operation: ListStorageOperation` (serialized as `"operation"`)
+  - `GetTravelEntryNode`: Dropdown for `buffType: BuffType` and input for `entryIndex: int`
+- **New & Updated Data Enums (`_Data/`)**:
+  - Created `MusicType.py`, `EventGridObstacle.py`, `EventZombieStat.py`, `EventZombieStatus.py`, `EventBulletProperty.py`, `EventWorldEffect.py`, `EventTravelEntryKind.py`, `EventArithmeticOperation.py`, `Layer.py`, `ListStorageOperation.py`, `BuffType.py`.
+  - Updated `SceneType.py` to include `ClassicTowerLawn` (44), `ClassicTowerLawn2` (45), and `Swamp` (46).
+  - Aliased `EventToolType = ToolType` in `ToolType.py`.
+  - Re-exported all enums through `_Data/__init__.py`, `_Data/TypeMgr.py`, and `Types.py`.
+- **Validation & Rule 4 Enforcement**:
+  - Added `validate_enum_field` in `_Nodes/Original/node.py` ensuring type-strict enum inputs, dual-import resilience (`sys.modules` alias safety), and `DeprecationWarning` for legacy raw integers.
+- **Factory Functions & High-Level Extensions**:
+  - Updated `nodes.py` factory functions to accept typed enums with default values matching the engine defaults.
+  - Added convenience properties and methods on `Zombie` (`hp`, `max_hp`, `speed`, `size`, `attack_power`, `armor1_hp`, `armor2_hp`, `set_hp`, `set_speed`, `set_size`, `set_attack_power`) with PascalCase aliases.
+  - Added convenience methods on `Bullet` (`set_speed`, `set_damage`, `set_scale`, `set_direction`).
+  - Added snapshot unit tests in `tests/test_ui_controls_nodes.py`.
+
+---
+
+## 7. Verification Results
+
+- **Unit Test Suite:** `Ran 79 tests in 2.318s — OK` (79 passing, 0 failures, 0 errors).
+- **Rules & Coverage Auditor:** `ALL BINDING RULES AND COVERAGE CHECKS PASSED!` (240 / 240 native nodes wrapped, 0 rule violations).
 - **Pyright Type Checking:** `0 errors, 0 warnings, 0 informations` across the entire codebase.
