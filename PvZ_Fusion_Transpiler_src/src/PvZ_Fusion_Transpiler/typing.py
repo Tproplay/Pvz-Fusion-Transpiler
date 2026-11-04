@@ -60,6 +60,9 @@ def to_port(val: Any) -> Port:
         if len(non_trigger_outs) == 1:
             return non_trigger_outs[0]
 
+    if hasattr(val, "ref") and getattr(val, "ref") is not None:
+        return to_port(getattr(val, "ref"))
+
     if hasattr(val, "_get_primary_port"):
         p = val._get_primary_port() if callable(val._get_primary_port) else val._get_primary_port
         if p is not None:

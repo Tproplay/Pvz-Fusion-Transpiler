@@ -1019,6 +1019,285 @@ def replace_zombie_type_list(list_var: Any = None, index: Any = None, value: Any
         to_port(value).connect(node.port_input_zombietype_Value)
     return node
 
+# --- Bool List ---
+def append_bool_list(list_var: Any = None, value: Any = None, **kwargs: Any) -> AppendBoolListNode:
+    node = AppendBoolListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_bool_port(value).connect(node.port_input_bool_Value)
+    return node
+
+def find_bool_list_value(list_var: Any = None, value: Any = None, **kwargs: Any) -> FindBoolListValueNode:
+    node = FindBoolListValueNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_bool_port(value).connect(node.port_input_bool_Value)
+    return node
+
+def get_bool_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> GetBoolListItemNode:
+    node = GetBoolListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def insert_bool_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> InsertBoolListNode:
+    node = InsertBoolListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_bool_port(value).connect(node.port_input_bool_Value)
+    return node
+
+def replace_bool_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> ReplaceBoolListNode:
+    node = ReplaceBoolListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_bool_port(value).connect(node.port_input_bool_Value)
+    return node
+
+# --- Float List ---
+def append_float_list(list_var: Any = None, value: Any = None, **kwargs: Any) -> AppendFloatListNode:
+    node = AppendFloatListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    return node
+
+def find_float_list_value(list_var: Any = None, value: Any = None, **kwargs: Any) -> FindFloatListValueNode:
+    node = FindFloatListValueNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    return node
+
+def get_float_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> GetFloatListItemNode:
+    node = GetFloatListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def insert_float_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> InsertFloatListNode:
+    node = InsertFloatListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    return node
+
+def replace_float_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> ReplaceFloatListNode:
+    node = ReplaceFloatListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_float_port(value).connect(node.port_input_float_Value)
+    return node
+
+# --- Int List ---
+def append_int_list(list_var: Any = None, value: Any = None, **kwargs: Any) -> AppendIntListNode:
+    node = AppendIntListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_int_port(value).connect(node.port_input_int_Value)
+    return node
+
+def find_int_list_value(list_var: Any = None, value: Any = None, **kwargs: Any) -> FindIntListValueNode:
+    node = FindIntListValueNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_int_port(value).connect(node.port_input_int_Value)
+    return node
+
+def get_int_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> GetIntListItemNode:
+    node = GetIntListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def insert_int_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> InsertIntListNode:
+    node = InsertIntListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_int_port(value).connect(node.port_input_int_Value)
+    return node
+
+def replace_int_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> ReplaceIntListNode:
+    node = ReplaceIntListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_int_port(value).connect(node.port_input_int_Value)
+    return node
+
+# --- String List ---
+def append_string_list(list_var: Any = None, value: Any = None, **kwargs: Any) -> AppendStringListNode:
+    node = AppendStringListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_string_port(value).connect(node.port_input_string_Value)
+    return node
+
+def find_string_list_value(list_var: Any = None, value: Any = None, **kwargs: Any) -> FindStringListValueNode:
+    node = FindStringListValueNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_string_port(value).connect(node.port_input_string_Value)
+    return node
+
+def get_string_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> GetStringListItemNode:
+    node = GetStringListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def insert_string_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> InsertStringListNode:
+    node = InsertStringListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_string_port(value).connect(node.port_input_string_Value)
+    return node
+
+def replace_string_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> ReplaceStringListNode:
+    node = ReplaceStringListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_string_port(value).connect(node.port_input_string_Value)
+    return node
+
+# --- GameObject / Object List ---
+def append_object_list(list_var: Any = None, value: Any = None, **kwargs: Any) -> AppendObjectListNode:
+    node = AppendObjectListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_port(value).connect(node.port_input_gameobject_Value)
+    return node
+
+def find_object_list_value(list_var: Any = None, value: Any = None, **kwargs: Any) -> FindObjectListValueNode:
+    node = FindObjectListValueNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_port(value).connect(node.port_input_gameobject_Value)
+    return node
+
+def get_object_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> GetObjectListItemNode:
+    node = GetObjectListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def insert_object_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> InsertObjectListNode:
+    node = InsertObjectListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_port(value).connect(node.port_input_gameobject_Value)
+    return node
+
+def replace_object_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> ReplaceObjectListNode:
+    node = ReplaceObjectListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_port(value).connect(node.port_input_gameobject_Value)
+    return node
+
+# --- PlantType List ---
+def append_plant_type_list(list_var: Any = None, value: Any = None, **kwargs: Any) -> AppendPlantTypeListNode:
+    node = AppendPlantTypeListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_port(value).connect(node.port_input_planttype_Value)
+    return node
+
+def find_plant_type_list_value(list_var: Any = None, value: Any = None, **kwargs: Any) -> FindPlantTypeListValueNode:
+    node = FindPlantTypeListValueNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if value is not None:
+        to_port(value).connect(node.port_input_planttype_Value)
+    return node
+
+def get_plant_type_list_item(list_var: Any = None, index: Any = None, **kwargs: Any) -> GetPlantTypeListItemNode:
+    node = GetPlantTypeListItemNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    return node
+
+def insert_plant_type_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> InsertPlantTypeListNode:
+    node = InsertPlantTypeListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_port(value).connect(node.port_input_planttype_Value)
+    return node
+
+def replace_plant_type_list(list_var: Any = None, index: Any = None, value: Any = None, **kwargs: Any) -> ReplacePlantTypeListNode:
+    node = ReplacePlantTypeListNode(**kwargs)
+    if list_var is not None:
+        to_port(list_var).connect(node.port_input_listvariable_List)
+    if index is not None:
+        to_int_port(index).connect(node.port_input_int_Index)
+    if value is not None:
+        to_port(value).connect(node.port_input_planttype_Value)
+    return node
+
+# --- Shared List Operations ---
+def copy_list_values(source_list: Any = None, target_list: Any = None, **kwargs: Any) -> CopyListValuesNode:
+    node = CopyListValuesNode(**kwargs)
+    if source_list is not None:
+        to_port(source_list).connect(node.port_input_listvariable_SourceList)
+    if target_list is not None:
+        to_port(target_list).connect(node.port_input_listvariable_TargetList)
+    return node
+
 def get_list_length(list_var: Any = None, **kwargs: Any) -> GetListLengthNode:
     node = GetListLengthNode(**kwargs)
     if list_var is not None:

@@ -9,7 +9,21 @@ from .Abstract import (
     IVariable,
 )
 from .Branching import If, Switch
-from .Variables import IntVar, FloatVar, BoolVar, StringVar
+from .Variables import (
+    IntVar,
+    FloatVar,
+    BoolVar,
+    StringVar,
+    List,
+    ListOperation,
+    ForEach,
+    IntList,
+    FloatList,
+    BoolList,
+    StringList,
+    ObjectList,
+    PlantTypeListVar,
+)
 from .Entity import Plant, Zombie, Bullet, ForEachPlant, ForEachPlantType, ForEachZombie, ForEachAllZombies, ForEachZombieType, PlantTypeList, ZombieTypeList
 from .Loops import While, For
 from .Time import Time
@@ -42,6 +56,15 @@ __all__ = [
     "FloatVar",
     "BoolVar",
     "StringVar",
+    "List",
+    "ListOperation",
+    "ForEach",
+    "IntList",
+    "FloatList",
+    "BoolList",
+    "StringList",
+    "ObjectList",
+    "PlantTypeListVar",
     # Entity
     "Plant",
     "Zombie",

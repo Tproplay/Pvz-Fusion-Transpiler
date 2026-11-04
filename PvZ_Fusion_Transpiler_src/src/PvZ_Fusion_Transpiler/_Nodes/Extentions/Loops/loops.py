@@ -64,6 +64,14 @@ class For:
     def _get_primary_port(self) -> Any:
         return self.index
 
+    @property
+    def on_complete(self) -> ExecutionPath:
+        return ExecutionPath(self.loop_node.port_output_trigger_Complete)
+
+    @property
+    def Complete(self) -> ExecutionPath:
+        return self.on_complete
+
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         _ctx.trigger_stack.pop()
 

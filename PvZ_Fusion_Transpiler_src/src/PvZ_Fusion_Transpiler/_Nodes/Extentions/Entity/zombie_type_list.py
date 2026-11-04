@@ -7,9 +7,10 @@ from ....Core.context import _ctx
 from ..Abstract.execution_path import ExecutionPath
 from .... import nodes
 from ....typing import to_port, to_int_port
+from ..Variables.list_var import List, ListOperation
 
 
-class ZombieTypeList:
+class ZombieTypeList(List):
     """A smart wrapper representing a dynamic or static list of Zombie Types on the node canvas.
 
     Supports native collection operations (addition, searching, indexing, contains checks)
@@ -17,51 +18,26 @@ class ZombieTypeList:
     """
 
     def __init__(self, initial: Any | None = None, initialize_empty: bool = True) -> None:
-        self._current_port: Any = None
+        super().__init__(initial=initial, name="僵尸类型列表", element_type="zombie_type")
         self._count_port: Any = None
-
         if initial is None:
-            var_node = nodes.list_variable(name="僵尸类型列表", value=[])
-            self._current_port = var_node.port_output_listvariable_Variable
             self._count_port = nodes.int_value(val=0).port_output_int_Value
-
         elif isinstance(initial, (Enum, int)):
-            if isinstance(initial, int) and not isinstance(initial, Enum):
-                raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
-            val = int(initial.value)
-            var_node = nodes.list_variable(name="僵尸类型列表", value=[val])
-            self._current_port = var_node.port_output_listvariable_Variable
             self._count_port = nodes.int_value(val=1).port_output_int_Value
-
         elif isinstance(initial, (list, tuple, set)):
-            items = list(initial)
-            for item in items:
-                if isinstance(item, int) and not isinstance(item, Enum):
-                    raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
-            raw_types = [
-                int(item.value) if isinstance(item, Enum) else int(item)
-                for item in items
-            ]
-            var_node = nodes.list_variable(name="僵尸类型列表", value=raw_types)
-            self._current_port = var_node.port_output_listvariable_Variable
-            self._count_port = nodes.int_value(val=len(raw_types)).port_output_int_Value
-
-        elif isinstance(initial, ZombieTypeList):
-            self._current_port = initial.list_port
-            self._count_port = initial.count
-        else:
-            self._current_port = to_port(initial)
-            self._count_port = nodes.get_list_length(list_var=self._current_port).port_output_int_Length
-
-    @property
-    def list_port(self) -> Any:
-        return self._current_port
+            self._count_port = nodes.int_value(val=len(initial)).port_output_int_Value
+        elif isinstance(initial, ZombieTypeList) and initial._count_port is not None:
+            self._count_port = initial._count_port
 
     @property
     def count(self) -> Any:
         if self._count_port is not None:
             return self._count_port
-        return self._current_port
+        return super().Count
+
+    @property
+    def Count(self) -> Any:
+        return self.count
 
     def set(self, other: ZombieTypeList | Iterable | Enum | int | Any) -> ZombieTypeList:
         new_list = ZombieTypeList(other)
@@ -70,18 +46,7 @@ class ZombieTypeList:
         return self
 
     def _contains_single(self, target_type: Any) -> Any:
-        if isinstance(target_type, (int, float)) and not isinstance(target_type, Enum):
-            raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
-        if isinstance(target_type, Enum):
-            target_port = nodes.zombie_type_value(val=target_type).port_output_zombietype_ZombieType
-        else:
-            target_port = to_port(target_type)
-
-        find_node = nodes.find_zombie_type_list_value(
-            list_var=self._current_port,
-            value=target_port,
-        )
-        return find_node.port_output_bool_Contains
+        return self.Contains(target_type)
 
     def contains(self, zombie_type: Enum | int | Iterable | Any) -> Any:
         if isinstance(zombie_type, (list, set, tuple)):
@@ -94,33 +59,8 @@ class ZombieTypeList:
             return acc
         return self._contains_single(zombie_type)
 
-    def find_index(self, zombie_type: Any) -> Any:
-        if isinstance(zombie_type, (int, float)) and not isinstance(zombie_type, Enum):
-            raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
-        if isinstance(zombie_type, Enum):
-            target_port = nodes.zombie_type_value(val=zombie_type).port_output_zombietype_ZombieType
-        else:
-            target_port = to_port(zombie_type)
-
-        find_node = nodes.find_zombie_type_list_value(
-            list_var=self._current_port,
-            value=target_port,
-        )
-        return find_node.port_output_int_Index
-
     def append(self, zombie_type: Any) -> ZombieTypeList:
-        if isinstance(zombie_type, (int, float)) and not isinstance(zombie_type, Enum):
-            raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
-        if isinstance(zombie_type, Enum):
-            target_port = nodes.zombie_type_value(val=zombie_type).port_output_zombietype_ZombieType
-        else:
-            target_port = to_port(zombie_type)
-
-        app_node = nodes.append_zombie_type_list(
-            list_var=self._current_port,
-            value=target_port,
-        )
-        self._current_port = app_node.port_output_listvariable_List
+        self.Add(zombie_type)
         self._count_port = nodes.int_add(a=self.count, b=1).port_output_int_Sum
         return self
 
@@ -136,36 +76,19 @@ class ZombieTypeList:
             for item in other:
                 self.append(item)
         elif isinstance(other, ZombieTypeList):
-            # Loop and append items or connect
             with ForEachZombieType(other) as loop:
                 self.append(loop.zombie_type)
         return self
 
-    def __getitem__(self, index: Any) -> Any:
-        idx_port = to_int_port(index)
-        item_node = nodes.get_zombie_type_list_item(
-            list_var=self._current_port,
-            index=idx_port,
-        )
-        return item_node.port_output_zombietype_Value
-
-    get_item = __getitem__
-
     def clear(self) -> ZombieTypeList:
-        clr = nodes.clear_list_values(list_var=self._current_port)
-        self._current_port = clr.port_output_listvariable_List
+        self.Clear()
         self._count_port = nodes.int_value(val=0).port_output_int_Value
         return self
 
     def remove_at(self, index: Any) -> ZombieTypeList:
-        idx_port = to_int_port(index)
-        rem = nodes.remove_list_item(list_var=self._current_port, index=idx_port)
-        self._current_port = rem.port_output_listvariable_List
-        self._count_port = nodes.int_subtract(a=self.count, b=1).port_output_int_Difference
+        self.RemoveAt(index)
+        self._count_port = nodes.int_subtract(a=self.count, b=1).port_output_int_Diff
         return self
-
-    def _get_primary_port(self) -> Any:
-        return self.list_port
 
 
 class ForEachZombieType:
