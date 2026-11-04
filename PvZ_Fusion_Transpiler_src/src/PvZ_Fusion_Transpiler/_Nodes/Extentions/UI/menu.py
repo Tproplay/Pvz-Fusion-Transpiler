@@ -12,6 +12,12 @@ from ...._Data.TypeMgr import PlantType, ZombieType
 from .... import nodes
 
 
+class MenuKind(Enum):
+    """Specifies the visual node family used to construct choice menus."""
+    Standard = 0
+    Typed = 1
+
+
 class Option:
     """Standalone multiple-choice option card.
 
@@ -26,6 +32,7 @@ class Option:
         callback: Optional[Callable[[], None]] = None,
         plant_type: Any = None,
         zombie_type: Any = None,
+        kind: MenuKind = MenuKind.Standard,
     ) -> None:
         if isinstance(plant_type, (int, float)) and not isinstance(plant_type, Enum):
             raise TypeError("PlantType must be handled through the PlantType enum, direct int input is not allowed.")
@@ -37,13 +44,22 @@ class Option:
         self.callback: Optional[Callable[[], None]] = callback
         self.plant_type: Any = plant_type
         self.zombie_type: Any = zombie_type
+        self.kind: MenuKind = kind
 
-        self.node = nodes.add_multiple_choice_option(
-            title=self.title,
-            description=self.description,
-            plant_type=self.plant_type,
-            zombie_type=self.zombie_type,
-        )
+        if self.kind == MenuKind.Typed:
+            self.node = nodes.typed_choice_option(
+                title=self.title,
+                description=self.description,
+                plant_type=self.plant_type,
+                zombie_type=self.zombie_type,
+            )
+        else:
+            self.node = nodes.add_multiple_choice_option(
+                title=self.title,
+                description=self.description,
+                plant_type=self.plant_type,
+                zombie_type=self.zombie_type,
+            )
         self.node_id: str = self.node.id
 
         if self.callback:
@@ -80,11 +96,13 @@ class MultiSelectMenu:
         reroll_count: int = 3,
         is_skippable: bool = False,
         window_count: int = 3,
+        kind: MenuKind = MenuKind.Standard,
     ) -> None:
         self.refreshable: bool = is_rerollable
         self.refreshCount: int = reroll_count
         self.cancelable: bool = is_skippable
         self.windowCount: int = window_count
+        self.kind: MenuKind = kind
 
         self._options: List[Option] = []
         self._show_node_id: Optional[str] = None
@@ -101,7 +119,7 @@ class MultiSelectMenu:
     def _get_show_node_id(self) -> str:
         if self._show_node_id is None:
             raise RuntimeError(
-                "ShowMultipleChoiceMenuNode has not been generated yet. Call menu.show() first."
+                "Multiple choice menu node has not been generated yet. Call menu.show() first."
             )
         return self._show_node_id
 
@@ -144,6 +162,7 @@ class MultiSelectMenu:
                 callback=callback,
                 plant_type=plant_type,
                 zombie_type=zombie_type,
+                kind=self.kind,
             )
 
         self._options.append(opt)
@@ -163,6 +182,7 @@ class MultiSelectMenu:
                 callback=func,
                 plant_type=plant_type,
                 zombie_type=zombie_type,
+                kind=self.kind,
             )
             self._options.append(opt)
             return opt
@@ -170,7 +190,11 @@ class MultiSelectMenu:
         return decorator
 
     def show(self) -> None:
-        self.node = nodes.show_multiple_choice_menu()
+        if self.kind == MenuKind.Typed:
+            self.node = nodes.typed_choice_menu()
+        else:
+            self.node = nodes.show_multiple_choice_menu()
+
         self.node.refreshable = self.refreshable
         self.node.refreshCount = self.refreshCount
         self.node.cancelable = self.cancelable
@@ -197,14 +221,19 @@ class MultiSelectMenu:
                     "选项列表",
                 )
             else:
-                first_merge = nodes.merge_multiple_choice_option_lists(
+                merge_func = (
+                    nodes.typed_choice_merge
+                    if self.kind == MenuKind.Typed
+                    else nodes.merge_multiple_choice_option_lists
+                )
+                first_merge = merge_func(
                     list1=self._options[0].output_port,
                     list2=self._options[1].output_port,
                 )
                 prev_port = first_merge.port_output_choiceoptions_MergedList
 
                 for next_opt in self._options[2:]:
-                    next_merge = nodes.merge_multiple_choice_option_lists(
+                    next_merge = merge_func(
                         list1=prev_port,
                         list2=next_opt.output_port,
                     )
@@ -234,4 +263,4 @@ class MultiSelectMenu:
             return self.OnRefresh
 
 
-__all__ = ["Option", "MultiSelectMenu"]
+__all__ = ["Option", "MultiSelectMenu", "MenuKind"]

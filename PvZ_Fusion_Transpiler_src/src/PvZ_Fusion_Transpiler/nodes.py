@@ -644,6 +644,33 @@ def merge_multiple_choice_option_lists(list_a: Any = None, list_b: Any = None, l
 def show_multiple_choice_menu(**kwargs: Any) -> ShowMultipleChoiceMenuNode:
     return ShowMultipleChoiceMenuNode(**kwargs)
 
+def typed_choice_option(title: Any = None, description: Any = None, plant_type: Any = None, zombie_type: Any = None, **kwargs: Any) -> TypedChoiceOptionNode:
+    title_str = title if isinstance(title, str) else kwargs.pop("title", "选项")
+    desc_str = description if isinstance(description, str) else kwargs.pop("description", "选项描述")
+    node = TypedChoiceOptionNode(title=title_str, description=desc_str, **kwargs)
+    if _should_connect_arg(title):
+        to_port(title).connect(node.port_input_string_Title)
+    if _should_connect_arg(description):
+        to_port(description).connect(node.port_input_string_Description)
+    if plant_type is not None:
+        to_port(_validate_plant_type(plant_type)).connect(node.port_input_planttype_PlantType)
+    if zombie_type is not None:
+        to_port(_validate_zombie_type(zombie_type)).connect(node.port_input_zombietype_ZombieType)
+    return node
+
+def typed_choice_merge(list_a: Any = None, list_b: Any = None, list1: Any = None, list2: Any = None, **kwargs: Any) -> TypedChoiceMergeNode:
+    node = TypedChoiceMergeNode(**kwargs)
+    first = list1 if list1 is not None else list_a
+    second = list2 if list2 is not None else list_b
+    if first is not None:
+        to_port(first).connect(node.port_input_choiceoptions_List1)
+    if second is not None:
+        to_port(second).connect(node.port_input_choiceoptions_List2)
+    return node
+
+def typed_choice_menu(**kwargs: Any) -> TypedChoiceMenuNode:
+    return TypedChoiceMenuNode(**kwargs)
+
 
 # =============================================================================
 # SUN & MONEY

@@ -311,6 +311,28 @@ class TestNewRequirements(unittest.TestCase):
             with pft.Pulse(state=is_active):
                 pft.InGameUI.display_text("Direct enter pulse!")
 
+    def test_typed_choice_menu(self):
+        with pft.Trigger.OnBoardStart():
+            menu = pft.MultiSelectMenu(
+                is_rerollable=True,
+                reroll_count=2,
+                kind=pft.MenuKind.Typed,
+            )
+
+            @menu.option(title="Sun", description="+500 sun", plant_type=PlantType.SunFlower)
+            def pick_sun():
+                pft.Board.Sun.Add(500)
+
+            @menu.option(title="Nut", description="WallNut", plant_type=PlantType.WallNut)
+            def pick_nut():
+                pft.Board.Sun.Add(100)
+
+            menu.show()
+
+            self.assertEqual(menu._options[0].node.node_type, "TypedChoiceOptionNode")
+            self.assertEqual(menu._options[1].node.node_type, "TypedChoiceOptionNode")
+            self.assertEqual(menu.node.node_type, "TypedChoiceMenuNode")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -29,7 +29,7 @@ from .Loops import While, For
 from .Time import Time
 from .Input import Mouse, Tool, ToolCooldown
 from .Random import Random
-from .UI import Option, MultiSelectMenu, InfoCard, InGameUI, format_string
+from .UI import Option, MultiSelectMenu, MenuKind, InfoCard, InGameUI, format_string
 from .Triggers import Trigger
 from .Spawner import Spawner, SpawnedPlant, SpawnedZombie, SpawnedBullet
 from .Game import Game, Board, _SunManager, _MoneyManager
@@ -92,6 +92,7 @@ __all__ = [
     # UI
     "Option",
     "MultiSelectMenu",
+    "MenuKind",
     "InfoCard",
     "InGameUI",
     "format_string",
