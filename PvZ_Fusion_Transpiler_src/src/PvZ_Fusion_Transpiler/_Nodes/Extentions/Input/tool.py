@@ -43,5 +43,18 @@ class Tool:
         """Sets the cooldown ratio for the specified tool type."""
         return nodes.set_tool_cooldown(tool_type=tool_type, ratio=ratio)
 
+    @staticmethod
+    def Value(tool_type: ToolType | Any) -> Any:
+        """Returns the ToolType port from a ToolTypeValueNode."""
+        return nodes.tool_type_value(val=tool_type).port_output_tooltype_ToolType
+
+    value = Value
+
+    # C#-style aliases
+    GetHeld = get_held
+    IsHeld = is_held
+    GetCooldown = get_cooldown
+    SetCooldown = set_cooldown
+
 
 __all__ = ["Tool", "ToolCooldown"]

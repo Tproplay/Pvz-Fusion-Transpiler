@@ -259,6 +259,26 @@ class TestNewRequirements(unittest.TestCase):
 
             pft.Board.Money += 50
 
+    def test_tool_type_value_and_implicit_lowering(self):
+        from PvZ_Fusion_Transpiler.Types import ToolType
+        from PvZ_Fusion_Transpiler.typing import to_port
+
+        # Explicit Tool.Value
+        port1 = pft.Tool.Value(ToolType.Shovel)
+        self.assertEqual(port1.port_type, PortType.ToolType)
+
+        port2 = pft.Tool.Value(ToolType.铲子)
+        self.assertEqual(port2.port_type, PortType.ToolType)
+
+        # Implicit lowering via to_port
+        port_implicit = to_port(ToolType.Hammer)
+        self.assertEqual(port_implicit.port_type, PortType.ToolType)
+
+        # High-level tool methods
+        with pft.Trigger.OnBoardStart():
+            is_held = pft.Tool.is_held(ToolType.Shovel)
+            self.assertEqual(is_held.port_type, PortType.Bool)
+
 
 if __name__ == "__main__":
     unittest.main()

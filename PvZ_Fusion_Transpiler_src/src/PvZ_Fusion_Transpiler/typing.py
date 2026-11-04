@@ -105,6 +105,10 @@ def to_port(val: Any) -> Port:
             return ZombieTypeValueNode(zombie_type=val).port_output_zombietype_ZombieType
         elif val.__class__.__name__ == "BulletType":
             return BulletTypeValueNode(bullet_type=val).port_output_bullettype_BulletType
+        elif val.__class__.__name__ == "ToolType":
+            from ._Nodes.Original.GeneralFunction.tool_type_value_node import ToolTypeValueNode
+            val_num = int(val.value) if hasattr(val, "value") else 0
+            return ToolTypeValueNode(value=val_num).port_output_tooltype_ToolType
         val_num = int(val.value) if hasattr(val, "value") else 0
         return IntValueNode(value=val_num).port_output_int_Value
 
