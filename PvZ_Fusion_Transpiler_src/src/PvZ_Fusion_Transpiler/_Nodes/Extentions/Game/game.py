@@ -49,6 +49,23 @@ class Game(metaclass=_GameMeta):
         return nodes.get_travel_buff(buff_enum=buff_enum)
 
     @staticmethod
+    def get_travel_entry() -> Any:
+        import warnings
+        warnings.warn(
+            "Game.get_travel_entry is deprecated in PvZ Fusion. Use Game.get_buff() instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        node = nodes.get_travel_entry()
+        from ..Abstract.execution_path import ExecutionPath
+        from ....Core.context import _ctx
+        if _ctx.trigger_stack:
+            _ctx.trigger_stack[-1] = ExecutionPath(node.port_output_trigger_Complete)
+        return node
+
+    GetTravelEntry = get_travel_entry
+
+    @staticmethod
     def trigger_game_over(reason: Any = "Defeated!") -> Any:
         return nodes.game_over(reason=reason)
 

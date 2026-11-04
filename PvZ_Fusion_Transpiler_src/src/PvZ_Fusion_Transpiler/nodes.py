@@ -869,6 +869,9 @@ def get_travel_buff(buff_enum: Any = None, **kwargs: Any) -> GetTravelBuffNode:
         node.buff = buff_asset
     return node
 
+def get_travel_entry(**kwargs: Any) -> GetTravelEntryNode:
+    return GetTravelEntryNode(**kwargs)
+
 
 # =============================================================================
 # ENTITY QUERY & UI

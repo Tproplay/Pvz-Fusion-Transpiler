@@ -333,6 +333,23 @@ class TestNewRequirements(unittest.TestCase):
             self.assertEqual(menu._options[1].node.node_type, "TypedChoiceOptionNode")
             self.assertEqual(menu.node.node_type, "TypedChoiceMenuNode")
 
+    def test_get_travel_entry_deprecated(self):
+        import warnings
+        with pft.Trigger.OnBoardStart():
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                node = pft.Game.GetTravelEntry()
+                self.assertEqual(node.node_type, "GetTravelEntryNode")
+                self.assertTrue(len(w) >= 1)
+                self.assertTrue(issubclass(w[-1].category, DeprecationWarning))
+
+            with warnings.catch_warnings(record=True) as w2:
+                warnings.simplefilter("always")
+                node2 = pft.Lawnf.GetTravelEntry()
+                self.assertEqual(node2.node_type, "GetTravelEntryNode")
+                self.assertTrue(len(w2) >= 1)
+                self.assertTrue(issubclass(w2[-1].category, DeprecationWarning))
+
 
 if __name__ == "__main__":
     unittest.main()
