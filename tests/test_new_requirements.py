@@ -261,7 +261,7 @@ class TestNewRequirements(unittest.TestCase):
 
     def test_tool_type_value_and_implicit_lowering(self):
         from PvZ_Fusion_Transpiler.Types import ToolType
-        from PvZ_Fusion_Transpiler.typing import to_port
+        from PvZ_Fusion_Transpiler.port_types import to_port
 
         # Explicit Tool.Value
         port1 = pft.Tool.Value(ToolType.Shovel)

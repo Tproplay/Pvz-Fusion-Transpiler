@@ -1,7 +1,12 @@
 # pyright: reportUnsupportedDunderAll=none
+import sys
 from .Original import *
 from . import Original
-from . import Extentions
-from .Extentions import *
+from . import Extensions
+from .Extensions import *
 
-__all__ = list(Original.__all__) + list(Extentions.__all__) + ["Original", "Extentions"]
+Extentions = Extensions
+sys.modules["_Nodes.Extentions"] = Extensions
+sys.modules["PvZ_Fusion_Transpiler._Nodes.Extentions"] = Extensions
+
+__all__ = list(Original.__all__) + list(Extensions.__all__) + ["Original", "Extensions", "Extentions"]

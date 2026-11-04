@@ -6,7 +6,14 @@ from .connection_manager import (
     PortDirection,
     PortType,
 )
-from .uuid import generate_uuid
+from .node_id import generate_uuid
+from .annotations import (
+    experimental,
+    Obsolete,
+    obsolete,
+    ExperimentalWarning,
+    ObsoleteWarning,
+)
 from .._Nodes.Original.VariableAsset import (
     VariableAsset,
     IntVariableAsset,
@@ -26,6 +33,11 @@ __all__ = [
     "PortDirection",
     "PortType",
     "generate_uuid",
+    "experimental",
+    "Obsolete",
+    "obsolete",
+    "ExperimentalWarning",
+    "ObsoleteWarning",
     "VariableAsset",
     "IntVariableAsset",
     "FloatVariableAsset",

@@ -24,8 +24,9 @@ from . import _Data as Data
 from . import nodes
 from . import StdLib
 from . import Types
+from . import port_types
 
-from ._Nodes.Extentions import (
+from ._Nodes.Extensions import (
     If,
     Switch,
     DoOnce,
@@ -43,6 +44,7 @@ from ._Nodes.Extentions import (
     StringList,
     ObjectList,
     PlantTypeListVar,
+    ZombieTypeListVar,
     Plant,
     Zombie,
     Bullet,
@@ -93,9 +95,17 @@ if "_Nodes" not in sys.modules:
 if "PvZ_Fusion_Transpiler.Data" not in sys.modules:
     sys.modules["PvZ_Fusion_Transpiler.Data"] = _Data
 
+Extensions = _Nodes.Extensions
+Extentions = _Nodes.Extensions
+sys.modules["PvZ_Fusion_Transpiler._Nodes.Extentions"] = _Nodes.Extensions
+sys.modules["PvZ_Fusion_Transpiler.Extensions"] = _Nodes.Extensions
+sys.modules["PvZ_Fusion_Transpiler.Extentions"] = _Nodes.Extensions
+
 __all__ = [
     "Config",
     "export",
+    "Extensions",
+    "Extentions",
     "_ctx",
     "Core",
     "_Nodes",
@@ -104,6 +114,7 @@ __all__ = [
     "nodes",
     "StdLib",
     "Types",
+    "port_types",
     "ConnectionManager",
     "Connection",
     "Port",
@@ -133,6 +144,7 @@ __all__ = [
     "StringList",
     "ObjectList",
     "PlantTypeListVar",
+    "ZombieTypeListVar",
     "Plant",
     "Zombie",
     "Bullet",

@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 import re
 
-from ...Core import uuid
+from ...Core.node_id import generate_uuid
 from ...Core.connection_manager import PortDirection, PortType, Port
 from ...Core.context import _ctx
 from .definitions import get_node_definition
@@ -29,7 +29,7 @@ def _sanitize_for_json(val: Any) -> Any:
 class Node(ABC):
     
     def __init__(self, x: float = 0.0, y: float = 0.0, **kwargs: Any):
-        self.id: str = str(uuid.generate_uuid())
+        self.id: str = str(generate_uuid())
         self.x: float = float(x)
         self.y: float = float(y)
         self.ports: List[Port] = []
@@ -57,7 +57,7 @@ class Node(ABC):
                 prev_id = getattr(prev, "id", str(prev))
                 prev_trigger = getattr(prev, "out_trigger", "触发")
                 _ctx.add_connection(prev_id, prev_trigger, self.id, name)
-                from ..Extentions.Abstract.execution_path import ExecutionPath
+                from ..Extensions.Abstract.execution_path import ExecutionPath
                 if not isinstance(prev, ExecutionPath):
                     _ctx.trigger_stack[-1] = self
         return port
@@ -113,11 +113,11 @@ class Node(ABC):
 
     @property
     def Output(self) -> Any:
-        from ..Extentions.Abstract.execution_path import PathAccessor
+        from ..Extensions.Abstract.execution_path import PathAccessor
         return PathAccessor(self)
 
     def path(self, trigger_name: str) -> Any:
-        from ..Extentions.Abstract.execution_path import ExecutionPath
+        from ..Extensions.Abstract.execution_path import ExecutionPath
         return ExecutionPath(self.id, trigger_name)
 
     def __getattr__(self, name: str) -> Any:

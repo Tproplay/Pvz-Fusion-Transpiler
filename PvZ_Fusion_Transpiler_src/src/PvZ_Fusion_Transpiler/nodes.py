@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Optional, List
 from ._Nodes.Original import *
-from .typing import to_port, to_int_port, to_float_port, to_bool_port, to_string_port
+from .port_types import to_port, to_int_port, to_float_port, to_bool_port, to_string_port
 
 
 from enum import Enum

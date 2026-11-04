@@ -106,7 +106,7 @@ class Port:
         return conv.get_output("IntValue")
 
     def __add__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         other_p = to_port(other)
         if self.port_type == PortType.String or other_p.port_type == PortType.String:
             from .._Nodes.Original.Calculate.string_concat_node import StringConcatNode
@@ -117,51 +117,51 @@ class Port:
         return self._execute_op(other_p, "add")
 
     def __radd__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other).__add__(self)
 
     def __sub__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return self._execute_op(to_port(other), "sub")
 
     def __rsub__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other)._execute_op(self, "sub")
 
     def __mul__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return self._execute_op(to_port(other), "mul")
 
     def __rmul__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other)._execute_op(self, "mul")
 
     def __truediv__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return self._execute_op(to_port(other), "div")
 
     def __rtruediv__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other)._execute_op(self, "div")
 
     def __floordiv__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return self._execute_op(to_port(other), "floordiv")
 
     def __rfloordiv__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other)._execute_op(self, "floordiv")
 
     def __mod__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return self._execute_op(to_port(other), "mod")
 
     def __rmod__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other)._execute_op(self, "mod")
 
     def __pow__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         from .._Nodes.Original.Calculate.power_node import PowerNode
         other_port = to_port(other)
         f_a = self._ensure_float(self)
@@ -172,11 +172,11 @@ class Port:
         return node.get_output("结果")
 
     def __rpow__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other).__pow__(self)
 
     def __neg__(self) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         zero = 0.0 if self._is_float_port() else 0
         return to_port(zero) - self
 
@@ -256,7 +256,7 @@ class Port:
 
     def __eq__(self, other: Any) -> Port:
         from enum import Enum
-        from ..typing import to_port
+        from ..port_types import to_port
         if self.port_type == PortType.PlantType or (isinstance(other, Enum) and other.__class__.__name__ == "PlantType"):
             from .._Nodes.Original.PlantFunction.compare_plant_type_node import ComparePlantTypeNode
             cmp = ComparePlantTypeNode()
@@ -313,7 +313,7 @@ class Port:
         return not_n.get_output("输出")
 
     def _compare_order(self, other: Any, mode: str) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         other_port = to_port(other)
         is_float = self._is_float_port() or other_port._is_float_port()
         if is_float:
@@ -330,7 +330,7 @@ class Port:
             return cmp.get_output("大于" if mode == "gt" else "小于")
 
     def __and__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         from .._Nodes.Original.Logic.and_node import AndNode
         other_port = to_port(other)
         node = AndNode()
@@ -339,11 +339,11 @@ class Port:
         return node.get_output("结果")
 
     def __rand__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other).__and__(self)
 
     def __or__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         from .._Nodes.Original.Logic.or_node import OrNode
         other_port = to_port(other)
         node = OrNode()
@@ -352,7 +352,7 @@ class Port:
         return node.get_output("结果")
 
     def __ror__(self, other: Any) -> Port:
-        from ..typing import to_port
+        from ..port_types import to_port
         return to_port(other).__or__(self)
 
     def __invert__(self) -> Port:

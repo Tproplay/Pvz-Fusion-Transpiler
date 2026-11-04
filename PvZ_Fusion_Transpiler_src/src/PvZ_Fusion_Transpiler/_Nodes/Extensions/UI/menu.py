@@ -1,0 +1,272 @@
+from __future__ import annotations
+
+from enum import Enum
+from typing import Any, Callable, List, Optional, TypeAlias, overload
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self  # type: ignore
+import warnings
+from ....Core.context import _ctx
+from ....Core.annotations import ExperimentalWarning
+from ..Abstract.execution_path import ExecutionPath
+from ...._Data.TypeMgr import PlantType, ZombieType
+from .... import nodes
+
+
+class MenuKind(Enum):
+    """Specifies the visual node family used to construct choice menus."""
+    Standard = 0
+    Typed = 1
+
+
+class Option:
+    """Standalone multiple-choice option card.
+
+    Instantiates an option node and compiles its callback graph once for reuse
+    across multiple menus.
+    """
+
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        callback: Optional[Callable[[], None]] = None,
+        plant_type: Any = None,
+        zombie_type: Any = None,
+        kind: MenuKind = MenuKind.Standard,
+    ) -> None:
+        if isinstance(plant_type, (int, float)) and not isinstance(plant_type, Enum):
+            raise TypeError("PlantType must be handled through the PlantType enum, direct int input is not allowed.")
+        if isinstance(zombie_type, (int, float)) and not isinstance(zombie_type, Enum):
+            raise TypeError("ZombieType must be handled through the ZombieType enum, direct int input is not allowed.")
+
+        self.title: str = title
+        self.description: str = description
+        self.callback: Optional[Callable[[], None]] = callback
+        self.plant_type: Any = plant_type
+        self.zombie_type: Any = zombie_type
+        self.kind: MenuKind = kind
+
+        if self.kind == MenuKind.Typed:
+            warnings.warn("MenuKind.Typed is experimental and unverified against standard game menus.", category=ExperimentalWarning, stacklevel=2)
+            self.node = nodes.typed_choice_option(
+                title=self.title,
+                description=self.description,
+                plant_type=self.plant_type,
+                zombie_type=self.zombie_type,
+            )
+        else:
+            self.node = nodes.add_multiple_choice_option(
+                title=self.title,
+                description=self.description,
+                plant_type=self.plant_type,
+                zombie_type=self.zombie_type,
+            )
+        self.node_id: str = self.node.id
+
+        if self.callback:
+            saved_stack = _ctx.trigger_stack[:]
+            _ctx.trigger_stack.clear()
+            _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_OnOptionClicked))
+            try:
+                self.callback()
+            finally:
+                _ctx.trigger_stack.clear()
+                _ctx.trigger_stack.extend(saved_stack)
+
+    @property
+    def output_port(self) -> Any:
+        return self.node.port_output_choiceoptions_OptionList
+
+    def _get_primary_port(self) -> Any:
+        return self.output_port
+
+
+class MultiSelectMenu:
+    """Deferred UI builder for pop-up selection windows.
+
+    Collects multiple `Option` cards, merges them into an option list graph, and displays
+    a selection window during gameplay.
+    """
+
+    _Callback: TypeAlias = Callable[[], None]
+    _OptionDecorator: TypeAlias = Callable[[_Callback], Option]
+
+    def __init__(
+        self,
+        is_rerollable: bool = True,
+        reroll_count: int = 3,
+        is_skippable: bool = False,
+        window_count: int = 3,
+        kind: MenuKind = MenuKind.Standard,
+    ) -> None:
+        self.refreshable: bool = is_rerollable
+        self.refreshCount: int = reroll_count
+        self.cancelable: bool = is_skippable
+        self.windowCount: int = window_count
+        self.kind: MenuKind = kind
+
+        if self.kind == MenuKind.Typed:
+            warnings.warn("MultiSelectMenu with MenuKind.Typed is experimental and unverified against standard game menus.", category=ExperimentalWarning, stacklevel=2)
+
+        self._options: List[Option] = []
+        self._show_node_id: Optional[str] = None
+        self.node: Any = None
+        self.Output: MultiSelectMenu._Outputs = self._Outputs(self)
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        pass
+
+    @property
+    def _get_show_node_id(self) -> str:
+        if self._show_node_id is None:
+            raise RuntimeError(
+                "Multiple choice menu node has not been generated yet. Call menu.show() first."
+            )
+        return self._show_node_id
+
+    @overload
+    def add_option(self, option: Option) -> Option: ...
+
+    @overload
+    def add_option(
+        self,
+        title: str,
+        description: str,
+        callback: Optional[Callable[[], None]] = None,
+        plant_type: int | PlantType = 254,
+        zombie_type: int | ZombieType = -1,
+    ) -> Option: ...
+
+    def add_option(self, *args: Any, **kwargs: Any) -> Option:
+        if args and isinstance(args[0], Option):
+            opt = args[0]
+        elif "option" in kwargs and isinstance(kwargs["option"], Option):
+            opt = kwargs["option"]
+        else:
+            title = args[0] if len(args) > 0 else kwargs.get("title", "")
+            description = (
+                args[1] if len(args) > 1 else kwargs.get("description", "")
+            )
+            callback = (
+                args[2] if len(args) > 2 else kwargs.get("callback", None)
+            )
+            plant_type = (
+                args[3] if len(args) > 3 else kwargs.get("plant_type", None)
+            )
+            zombie_type = (
+                args[4] if len(args) > 4 else kwargs.get("zombie_type", None)
+            )
+
+            opt = Option(
+                title=title,
+                description=description,
+                callback=callback,
+                plant_type=plant_type,
+                zombie_type=zombie_type,
+                kind=self.kind,
+            )
+
+        self._options.append(opt)
+        return opt
+
+    def option(
+        self,
+        title: str,
+        description: str,
+        plant_type: Any = None,
+        zombie_type: Any = None,
+    ) -> _OptionDecorator:
+        def decorator(func: Callable[[], None]) -> Option:
+            opt = Option(
+                title=title,
+                description=description,
+                callback=func,
+                plant_type=plant_type,
+                zombie_type=zombie_type,
+                kind=self.kind,
+            )
+            self._options.append(opt)
+            return opt
+
+        return decorator
+
+    def show(self) -> None:
+        if self.kind == MenuKind.Typed:
+            self.node = nodes.typed_choice_menu()
+        else:
+            self.node = nodes.show_multiple_choice_menu()
+
+        self.node.refreshable = self.refreshable
+        self.node.refreshCount = self.refreshCount
+        self.node.cancelable = self.cancelable
+        self.node.windowCount = self.windowCount
+        self._show_node_id = self.node.id
+
+        if _ctx.trigger_stack:
+            current_execution = _ctx.trigger_stack[-1]
+            prev_id = getattr(current_execution, "id", str(current_execution))
+            prev_trig = getattr(current_execution, "out_trigger", "触发")
+            _ctx.add_connection(
+                prev_id,
+                prev_trig,
+                self._show_node_id,
+                "触发",
+            )
+
+        if self._options:
+            if len(self._options) == 1:
+                _ctx.add_connection(
+                    self._options[0].node_id,
+                    "选项列表",
+                    self._show_node_id,
+                    "选项列表",
+                )
+            else:
+                merge_func = (
+                    nodes.typed_choice_merge
+                    if self.kind == MenuKind.Typed
+                    else nodes.merge_multiple_choice_option_lists
+                )
+                first_merge = merge_func(
+                    list1=self._options[0].output_port,
+                    list2=self._options[1].output_port,
+                )
+                prev_port = first_merge.port_output_choiceoptions_MergedList
+
+                for next_opt in self._options[2:]:
+                    next_merge = merge_func(
+                        list1=prev_port,
+                        list2=next_opt.output_port,
+                    )
+                    prev_port = next_merge.port_output_choiceoptions_MergedList
+
+                prev_port.connect(self.node.port_input_choiceoptions_OptionList)
+
+        if _ctx.trigger_stack and self.node is not None:
+            _ctx.trigger_stack[-1] = ExecutionPath(self.node.port_output_trigger_OnExit)
+
+    class _Outputs:
+        def __init__(self, parent: MultiSelectMenu) -> None:
+            self._parent = parent
+
+        @property
+        def OnExit(self) -> ExecutionPath:
+            return ExecutionPath(self._parent.node.port_output_trigger_OnExit)
+
+        @property
+        def OnRefresh(self) -> ExecutionPath:
+            return ExecutionPath(self._parent.node.port_output_trigger_OnRefresh)
+
+        def on_exit(self) -> ExecutionPath:
+            return self.OnExit
+
+        def on_refresh(self) -> ExecutionPath:
+            return self.OnRefresh
+
+
+__all__ = ["Option", "MultiSelectMenu", "MenuKind"]

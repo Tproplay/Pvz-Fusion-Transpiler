@@ -8,7 +8,7 @@ import PvZ_Fusion_Transpiler as pft
 from PvZ_Fusion_Transpiler.Core.context import _ctx
 from PvZ_Fusion_Transpiler.Core.connection_manager import PortType, ConnectionManager
 from PvZ_Fusion_Transpiler.Data.TypeMgr import PlantType, ZombieType, KeyCode, TravelBuffType, SoundType, BulletType
-from PvZ_Fusion_Transpiler._Nodes.Extentions import (
+from PvZ_Fusion_Transpiler._Nodes.Extensions import (
     If,
     Switch,
     IntVar,

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from typing import Any, Callable, Dict, List, Optional
-from ._Nodes.Extentions.UI.format_string import format_string
-from ._Nodes.Extentions.Branching import If
-from ._Nodes.Extentions.Variables import IntVar, FloatVar, BoolVar
-from ._Nodes.Extentions.Entity import Plant
-from ._Nodes.Extentions.Triggers import Trigger
+from ._Nodes.Extensions.UI.format_string import format_string
+from ._Nodes.Extensions.Branching import If
+from ._Nodes.Extensions.Variables import IntVar, FloatVar, BoolVar
+from ._Nodes.Extensions.Entity import Plant
+from ._Nodes.Extensions.Triggers import Trigger
 from ._Data.TypeMgr import KeyCode
 
 

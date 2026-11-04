@@ -1,0 +1,97 @@
+from __future__ import annotations
+
+from typing import Any
+from ....Core.annotations import Obsolete
+from .sun import _SunManager
+from .money import _MoneyManager
+from .... import nodes
+
+
+class _GameMeta(type):
+    """Metaclass that exposes properties directly on Game and Board classes."""
+
+    @property
+    def Sun(cls) -> _SunManager:
+        return _SunManager()
+
+    @Sun.setter
+    def Sun(cls, value: Any) -> None:
+        if isinstance(value, _SunManager):
+            return
+        _SunManager().set(value)
+
+    @property
+    def Money(cls) -> _MoneyManager:
+        return _MoneyManager()
+
+    @Money.setter
+    def Money(cls, value: Any) -> None:
+        if isinstance(value, _MoneyManager):
+            return
+        _MoneyManager().set(value)
+
+    @property
+    def Wave(cls) -> Any:
+        return nodes.on_wave().port_output_int_Wave
+
+
+class Game(metaclass=_GameMeta):
+    """Global game state and stage interface."""
+
+    def __new__(cls, *args: Any, **kwargs: Any) -> Any:
+        raise TypeError(f"{cls.__name__} is a static interface and cannot be instantiated.")
+
+    @staticmethod
+    def get_buff(buff_enum: Any) -> Any:
+        return nodes.get_travel_buff(buff_enum=buff_enum)
+
+    @staticmethod
+    def get_travel_buff(buff_enum: Any) -> Any:
+        return nodes.get_travel_buff(buff_enum=buff_enum)
+
+    @staticmethod
+    @Obsolete("Game.get_travel_entry is deprecated in PvZ Fusion. Use Game.get_buff() instead.")
+    def get_travel_entry() -> Any:
+        node = nodes.get_travel_entry()
+        from ..Abstract.execution_path import ExecutionPath
+        from ....Core.context import _ctx
+        if _ctx.trigger_stack:
+            _ctx.trigger_stack[-1] = ExecutionPath(node.port_output_trigger_Complete)
+        return node
+
+    GetTravelEntry = get_travel_entry
+
+    @staticmethod
+    def trigger_game_over(reason: Any = "Defeated!") -> Any:
+        return nodes.game_over(reason=reason)
+
+    @staticmethod
+    def trigger_game_win() -> Any:
+        return nodes.game_win()
+
+    @staticmethod
+    def pause_wave_timer(paused: bool = True) -> Any:
+        return nodes.set_wave_countdown_paused(paused=paused)
+
+    pause_wave_countdown = pause_wave_timer
+
+    class Stage:
+        """Namespace for managing level stages and transitions."""
+
+        @staticmethod
+        def get_current() -> Any:
+            return nodes.get_stage().port_output_string_StageName
+
+        @staticmethod
+        def change(stage_name: str = "战斗") -> Any:
+            return nodes.change_stage(stage_name=stage_name)
+
+        next = change
+
+
+class Board(Game):
+    """Board interface, aliasing Game for full backwards compatibility."""
+    pass
+
+
+__all__ = ["Game", "Board"]
