@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 from ....Core.annotations import Obsolete
+from ...._Data import SceneType, MusicType, EventGridObstacle, EventTravelEntryKind
 from ..Abstract.execution_path import ExecutionPath
 from ..Entity.plant import Plant
 from ..Entity.zombie import Zombie
@@ -140,26 +141,36 @@ class Lawnf:
         return nodes.get_all_zombies().port_output_zombielist_ZombieList
 
     @staticmethod
-    def delete_grid_items(row: Any, col: Any) -> Any:
-        return nodes.delete_grid_items(row=row, column=col)
+    def delete_grid_items(row: Any, col: Any, kind: Any = EventGridObstacle.Grave) -> Any:
+        return nodes.delete_grid_items(row=row, column=col, kind=kind)
 
+    DeleteGridItems = delete_grid_items
     clear_cell = delete_grid_items
+    ClearCell = delete_grid_items
 
     @staticmethod
-    def change_map() -> Any:
-        return nodes.change_event_map()
+    def change_map(scene: Any = SceneType.Day) -> Any:
+        return nodes.change_event_map(scene=scene)
+
+    ChangeMap = change_map
 
     @staticmethod
-    def change_music() -> Any:
-        return nodes.change_event_music()
+    def change_music(music: Any = MusicType.Day) -> Any:
+        return nodes.change_event_music(music=music)
+
+    ChangeMusic = change_music
 
     @staticmethod
     def set_zombie_house_rule(house_entry_defeat: Any = True) -> Any:
         return nodes.set_zombie_house_rule(house_entry_defeat=house_entry_defeat)
 
+    SetZombieHouseRule = set_zombie_house_rule
+
     @staticmethod
-    def remove_travel_entry(name_or_id: Any = None) -> Any:
-        return nodes.remove_travel_entry(name_or_id=name_or_id)
+    def remove_travel_entry(name_or_id: Any = None, kind: Any = EventTravelEntryKind.CommonModifier) -> Any:
+        return nodes.remove_travel_entry(name_or_id=name_or_id, kind=kind)
+
+    RemoveTravelEntry = remove_travel_entry
 
 
 __all__ = ["Lawnf"]

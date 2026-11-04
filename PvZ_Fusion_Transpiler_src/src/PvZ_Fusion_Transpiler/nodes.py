@@ -1,11 +1,28 @@
 from __future__ import annotations
 
 from typing import Any, Optional, List
+from enum import Enum
 from ._Nodes.Original import *
 from .port_types import to_port, to_int_port, to_float_port, to_bool_port, to_string_port
-
-
-from enum import Enum
+from ._Data import (
+    PlantType,
+    ZombieType,
+    BulletType,
+    MusicType,
+    SceneType,
+    ToolType,
+    EventToolType,
+    EventGridObstacle,
+    EventZombieStat,
+    EventZombieStatus,
+    EventBulletProperty,
+    EventWorldEffect,
+    EventTravelEntryKind,
+    EventArithmeticOperation,
+    Layer,
+    ListStorageOperation,
+    BuffType,
+)
 
 
 def _should_connect_arg(val: Any) -> bool:
@@ -79,15 +96,15 @@ def zombie_type_value(val: Any = None, **kwargs: Any) -> ZombieTypeValueNode:
     _validate_zombie_type(val)
     return ZombieTypeValueNode(value=val, **kwargs)
 
-def bullet_type_value(val: Any = None, **kwargs: Any) -> BulletTypeValueNode:
-    _validate_bullet_type(val)
-    return BulletTypeValueNode(value=val, **kwargs)
+def bullet_type_value(bullet_type: Any = BulletType.Bullet_pea, val: Any = None, **kwargs: Any) -> BulletTypeValueNode:
+    bt = val if val is not None else kwargs.pop("bullet_type", kwargs.pop("bulletType", bullet_type))
+    _validate_bullet_type(bt)
+    return BulletTypeValueNode(bullet_type=bt, **kwargs)
 
-def tool_type_value(val: Any = None, **kwargs: Any) -> ToolTypeValueNode:
-    _validate_tool_type(val)
-    if isinstance(val, Enum):
-        val = val.value
-    return ToolTypeValueNode(value=val if val is not None else 0, **kwargs)
+def tool_type_value(tool_type: Any = ToolType.Shovel, val: Any = None, **kwargs: Any) -> ToolTypeValueNode:
+    tt = val if val is not None else kwargs.pop("tool_type", kwargs.pop("toolType", tool_type))
+    _validate_tool_type(tt)
+    return ToolTypeValueNode(tool_type=tt, **kwargs)
 
 
 # =============================================================================
@@ -609,8 +626,9 @@ def single_plant_type_list(plant_type: Any = None, **kwargs: Any) -> SinglePlant
         to_port(plant_type).connect(node.port_input_planttype_PlantType)
     return node
 
-def plant_type_list_storage(op: int = 0, init_empty: bool = True, **kwargs: Any) -> PlantTypeListStorageNode:
-    return PlantTypeListStorageNode(**kwargs)
+def plant_type_list_storage(operation: Any = ListStorageOperation.Add, op: Any = None, **kwargs: Any) -> PlantTypeListStorageNode:
+    actual_op = op if op is not None else kwargs.pop("operation", operation)
+    return PlantTypeListStorageNode(operation=actual_op, **kwargs)
 
 def merge_plant_type_lists(list_a: Any = None, list_b: Any = None, **kwargs: Any) -> MergePlantTypeListsNode:
     node = MergePlantTypeListsNode(**kwargs)
@@ -869,8 +887,10 @@ def get_travel_buff(buff_enum: Any = None, **kwargs: Any) -> GetTravelBuffNode:
         node.buff = buff_asset
     return node
 
-def get_travel_entry(**kwargs: Any) -> GetTravelEntryNode:
-    return GetTravelEntryNode(**kwargs)
+def get_travel_entry(buff_type: Any = BuffType.UnlockPlant, entry_index: int = 0, **kwargs: Any) -> GetTravelEntryNode:
+    bt = kwargs.pop("buff_type", kwargs.pop("buffType", buff_type))
+    idx = kwargs.pop("entry_index", kwargs.pop("entryIndex", entry_index))
+    return GetTravelEntryNode(buff_type=bt, entry_index=idx, **kwargs)
 
 
 # =============================================================================
@@ -960,8 +980,9 @@ def string_concat(a: Any = None, b: Any = None, **kwargs: Any) -> StringConcatNo
 # BULLET MANIPULATION
 # =============================================================================
 
-def modify_event_bullet(bullet: Any = None, value: Any = None, **kwargs: Any) -> ModifyEventBulletNode:
-    node = ModifyEventBulletNode(**kwargs)
+def modify_event_bullet(bullet: Any = None, value: Any = None, prop: Any = EventBulletProperty.ScaleMultiplier, **kwargs: Any) -> ModifyEventBulletNode:
+    p = kwargs.pop("prop", kwargs.pop("property", prop))
+    node = ModifyEventBulletNode(prop=p, **kwargs)
     if bullet is not None:
         to_port(bullet).connect(node.port_input_bullet_Bullet)
     if value is not None:
@@ -1472,28 +1493,32 @@ def get_plant_basic_components(plant_type: Any = None, **kwargs: Any) -> GetPlan
 # ZOMBIE EXTENSION HELPERS
 # =============================================================================
 
-def get_zombie_stats(zombie: Any = None, **kwargs: Any) -> GetZombieStatsNode:
-    node = GetZombieStatsNode(**kwargs)
+def get_zombie_stats(zombie: Any = None, stat: Any = EventZombieStat.AttackPower, **kwargs: Any) -> GetZombieStatsNode:
+    s = kwargs.pop("stat", stat)
+    node = GetZombieStatsNode(stat=s, **kwargs)
     if zombie is not None:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     return node
 
-def set_zombie_stats(zombie: Any = None, value: Any = None, **kwargs: Any) -> SetZombieStatsNode:
-    node = SetZombieStatsNode(**kwargs)
+def set_zombie_stats(zombie: Any = None, value: Any = None, stat: Any = EventZombieStat.AttackPower, **kwargs: Any) -> SetZombieStatsNode:
+    s = kwargs.pop("stat", stat)
+    node = SetZombieStatsNode(stat=s, **kwargs)
     if zombie is not None:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     if value is not None:
         to_float_port(value).connect(node.port_input_float_Value)
     return node
 
-def get_zombie_status(zombie: Any = None, **kwargs: Any) -> GetZombieStatusNode:
-    node = GetZombieStatusNode(**kwargs)
+def get_zombie_status(zombie: Any = None, status: Any = EventZombieStatus.ChillSeconds, **kwargs: Any) -> GetZombieStatusNode:
+    st = kwargs.pop("status", status)
+    node = GetZombieStatusNode(status=st, **kwargs)
     if zombie is not None:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     return node
 
-def set_zombie_status(zombie: Any = None, value: Any = None, **kwargs: Any) -> SetZombieStatusNode:
-    node = SetZombieStatusNode(**kwargs)
+def set_zombie_status(zombie: Any = None, value: Any = None, status: Any = EventZombieStatus.ChillSeconds, **kwargs: Any) -> SetZombieStatusNode:
+    st = kwargs.pop("status", status)
+    node = SetZombieStatusNode(status=st, **kwargs)
     if zombie is not None:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     if value is not None:
@@ -1531,23 +1556,26 @@ def get_all_zombies(**kwargs: Any) -> GetAllZombiesNode:
 # LAWN & MAP HELPERS
 # =============================================================================
 
-def get_plants_on_layer(row: Any = None, column: Any = None, layer: Any = None, **kwargs: Any) -> GetPlantsOnLayerNode:
-    node = GetPlantsOnLayerNode(**kwargs)
-    return node
+def get_plants_on_layer(layer: Any = Layer.Default, **kwargs: Any) -> GetPlantsOnLayerNode:
+    l = kwargs.pop("layer", layer)
+    return GetPlantsOnLayerNode(layer=l, **kwargs)
 
-def delete_grid_items(row: Any = None, column: Any = None, **kwargs: Any) -> DeleteGridItemsNode:
-    node = DeleteGridItemsNode(**kwargs)
+def delete_grid_items(row: Any = None, column: Any = None, kind: Any = EventGridObstacle.Grave, **kwargs: Any) -> DeleteGridItemsNode:
+    k = kwargs.pop("kind", kind)
+    node = DeleteGridItemsNode(kind=k, **kwargs)
     if row is not None:
         to_int_port(row).connect(node.port_input_int_Row)
     if column is not None:
         to_int_port(column).connect(node.port_input_int_Col)
     return node
 
-def change_event_map(**kwargs: Any) -> ChangeEventMapNode:
-    return ChangeEventMapNode(**kwargs)
+def change_event_map(scene: Any = SceneType.Day, **kwargs: Any) -> ChangeEventMapNode:
+    s = kwargs.pop("scene", scene)
+    return ChangeEventMapNode(scene=s, **kwargs)
 
-def change_event_music(**kwargs: Any) -> ChangeEventMusicNode:
-    return ChangeEventMusicNode(**kwargs)
+def change_event_music(music: Any = MusicType.Day, **kwargs: Any) -> ChangeEventMusicNode:
+    m = kwargs.pop("music", music)
+    return ChangeEventMusicNode(music=m, **kwargs)
 
 def set_zombie_house_rule(house_entry_defeat: Any = True, **kwargs: Any) -> SetZombieHouseRuleNode:
     node = SetZombieHouseRuleNode(**kwargs)
@@ -1555,8 +1583,9 @@ def set_zombie_house_rule(house_entry_defeat: Any = True, **kwargs: Any) -> SetZ
         to_bool_port(house_entry_defeat).connect(node.port_input_bool_HouseEntryDefeat)
     return node
 
-def remove_travel_entry(name_or_id: Any = None, **kwargs: Any) -> RemoveTravelEntryNode:
-    node = RemoveTravelEntryNode(**kwargs)
+def remove_travel_entry(name_or_id: Any = None, kind: Any = EventTravelEntryKind.CommonModifier, **kwargs: Any) -> RemoveTravelEntryNode:
+    k = kwargs.pop("kind", kind)
+    node = RemoveTravelEntryNode(kind=k, **kwargs)
     if name_or_id is not None:
         to_string_port(name_or_id).connect(node.port_input_string_NameOrId)
     return node
@@ -1566,8 +1595,9 @@ def remove_travel_entry(name_or_id: Any = None, **kwargs: Any) -> RemoveTravelEn
 # GAMEFLOW & TIMERS
 # =============================================================================
 
-def on_world_plant_effect(**kwargs: Any) -> OnWorldPlantEffectNode:
-    return OnWorldPlantEffectNode(**kwargs)
+def on_world_plant_effect(effect: Any = EventWorldEffect.IceShroom, **kwargs: Any) -> OnWorldPlantEffectNode:
+    e = kwargs.pop("effect", effect)
+    return OnWorldPlantEffectNode(effect=e, **kwargs)
 
 def wave_event(**kwargs: Any) -> WaveEventNode:
     return WaveEventNode(**kwargs)
@@ -1682,16 +1712,18 @@ def set_tool_cooldown(tool_type: Any = None, ratio: Any = None, **kwargs: Any) -
 # VARIABLE ARITHMETIC
 # =============================================================================
 
-def int_variable_arithmetic(variable: Any = None, operand: Any = None, **kwargs: Any) -> IntVariableArithmeticNode:
-    node = IntVariableArithmeticNode(**kwargs)
+def int_variable_arithmetic(variable: Any = None, operand: Any = None, operation: Any = EventArithmeticOperation.Add, **kwargs: Any) -> IntVariableArithmeticNode:
+    op = kwargs.pop("operation", operation)
+    node = IntVariableArithmeticNode(operation=op, **kwargs)
     if variable is not None:
         to_port(variable).connect(node.port_input_intvariable_Variable)
     if operand is not None:
         to_int_port(operand).connect(node.port_input_int_Operand)
     return node
 
-def float_variable_arithmetic(variable: Any = None, operand: Any = None, **kwargs: Any) -> FloatVariableArithmeticNode:
-    node = FloatVariableArithmeticNode(**kwargs)
+def float_variable_arithmetic(variable: Any = None, operand: Any = None, operation: Any = EventArithmeticOperation.Add, **kwargs: Any) -> FloatVariableArithmeticNode:
+    op = kwargs.pop("operation", operation)
+    node = FloatVariableArithmeticNode(operation=op, **kwargs)
     if variable is not None:
         to_port(variable).connect(node.port_input_floatvariable_Variable)
     if operand is not None:

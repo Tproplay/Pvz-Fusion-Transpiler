@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Any, Optional
 from ....Core.context import _ctx
 from ..Abstract.execution_path import ExecutionPath
-from ...._Data.TypeMgr import KeyCode
+from ...._Data.TypeMgr import KeyCode, EventWorldEffect
 from ..Input.mouse_ext import Mouse
 from ..Entity.plant import Plant
 from ..Entity.zombie import Zombie
@@ -194,8 +194,8 @@ class Trigger:
     class OnWorldPlantEffect:
         """Triggers when a global world plant effect is activated. Yields the affected row."""
 
-        def __init__(self) -> None:
-            self.node = nodes.on_world_plant_effect()
+        def __init__(self, effect: Any = EventWorldEffect.IceShroom) -> None:
+            self.node = nodes.on_world_plant_effect(effect=effect)
 
         def __enter__(self) -> Any:
             _ctx.trigger_stack.append(ExecutionPath(self.node.port_output_trigger_Trigger))

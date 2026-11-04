@@ -1,12 +1,18 @@
-from ...node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortType, Port
+from typing import Any
+from ....._Data.ListStorageOperation import ListStorageOperation
+from ...node import Node, EventNodeBase, EventSuggestedNode, PortDirection, PortType, Port, validate_enum_field
 
 
 class PlantTypeListStorageNode(EventNodeBase):
     # Status in Extensions: Not implemented
     node_type = "PlantTypeListStorageNode"
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, operation: Any = ListStorageOperation.Add, **kwargs: Any):
+        super().__init__(**kwargs)
+        op = kwargs.get("operation", operation)
+        self.operation: ListStorageOperation = validate_enum_field(
+            op, ListStorageOperation, "operation", default=ListStorageOperation.Add
+        )
         self.port_input_trigger_Trigger : Port = self.create_port("触发", PortDirection.Input, PortType.Trigger)
         self.port_input_planttypelist_List : Port = self.create_port("列表", PortDirection.Input, PortType.PlantTypeList)
         self.port_input_planttype_PlantType : Port = self.create_port("植物类型", PortDirection.Input, PortType.PlantType)

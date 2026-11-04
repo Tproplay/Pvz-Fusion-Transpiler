@@ -46,6 +46,9 @@ class SceneType(Enum):
     ShootingDay = 41
     NightWinter = 42
     Desert = 43
+    ClassicTowerLawn = 44
+    ClassicTowerLawn2 = 45
+    Swamp = 46
 
 
 __all__ = ["SceneType"]

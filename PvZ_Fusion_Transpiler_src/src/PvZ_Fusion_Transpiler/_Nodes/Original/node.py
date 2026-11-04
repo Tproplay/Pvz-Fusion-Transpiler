@@ -26,6 +26,49 @@ def _sanitize_for_json(val: Any) -> Any:
     return str(val)
 
 
+def validate_enum_field(
+    val: Any,
+    enum_cls: Any,
+    field_name: str,
+    default: Any = None,
+) -> Any:
+    """Validates an enum field value per Rule 4 and Rule 8.
+
+    - Returns val directly if it is an instance of enum_cls.
+    - If val is None and default is provided, returns default.
+    - If val is an Enum of an incompatible type, raises TypeError.
+    - If val is a raw int, warns with DeprecationWarning and resolves to enum_cls(val).
+    - If val is invalid, raises TypeError or ValueError.
+    """
+    import warnings
+    from enum import Enum
+
+    if val is None:
+        if default is not None:
+            return default
+        raise ValueError(f"{field_name} cannot be None; expected an instance of {enum_cls.__name__}.")
+    if isinstance(val, enum_cls) or (isinstance(val, Enum) and type(val).__name__ == enum_cls.__name__):
+        return val
+    if isinstance(val, Enum):
+        raise TypeError(
+            f"Expected {enum_cls.__name__} for {field_name}, but received {type(val).__name__}.{val.name}"
+        )
+    if isinstance(val, int) and not isinstance(val, bool):
+        warnings.warn(
+            f"Passing raw int {val} for {field_name} is deprecated per Rule 4; "
+            f"use {enum_cls.__name__} instead.",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+        try:
+            return enum_cls(val)
+        except ValueError:
+            raise ValueError(f"Value {val} is not a valid member of {enum_cls.__name__}")
+    raise TypeError(
+        f"Expected {enum_cls.__name__} for {field_name}, but received {type(val).__name__} ({val!r})"
+    )
+
+
 class Node(ABC):
     
     def __init__(self, x: float = 0.0, y: float = 0.0, **kwargs: Any):

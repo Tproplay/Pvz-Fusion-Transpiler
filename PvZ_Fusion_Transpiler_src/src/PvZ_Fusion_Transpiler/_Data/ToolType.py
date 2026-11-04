@@ -35,5 +35,6 @@ ToolType.植物预览 = ToolType.PlantPreview  # type: ignore[attr-defined]
 ToolType.僵尸预览 = ToolType.ZombiePreview  # type: ignore[attr-defined]
 ToolType.其他 = ToolType.Other  # type: ignore[attr-defined]
 
+EventToolType = ToolType
 
-__all__ = ["ToolType"]
+__all__ = ["ToolType", "EventToolType"]
