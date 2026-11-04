@@ -38,6 +38,17 @@ class _SunManager:
         def failed(self) -> ExecutionPath:
             return self.Failed
 
+    def Add(self, amount: Any) -> Any:
+        """Gain/Add sun (emits GetSunNode)."""
+        node = nodes.add_sun(amount=amount)
+        _ctx.trigger_stack[-1] = ExecutionPath(node.port_output_trigger_Complete)
+        return node
+
+    add = Add
+
+    Spend = SpendSun
+    spend = SpendSun
+
     def __add__(self, other: Any) -> Any:
         return self.value + other
 
@@ -103,7 +114,7 @@ class _SunManager:
         return self.value
 
     def __iadd__(self, other: Any) -> _SunManager:
-        nodes.add_sun(amount=other)
+        self.Add(other)
         return self
 
     def __isub__(self, other: Any) -> _SunManager:

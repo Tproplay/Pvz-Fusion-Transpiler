@@ -247,6 +247,18 @@ class TestNewRequirements(unittest.TestCase):
         pft.Game.get_buff(AdvBuff.核能威慑)
         pft.Lawnf.get_buff(UltiBuff.流星雨)
 
+    def test_sun_money_add_extensions(self):
+        with pft.Trigger.OnBoardStart():
+            node_sun = pft.Board.Sun.Add(250)
+            self.assertEqual(node_sun.node_type, "GetSunNode")
+
+            pft.Board.Sun += 100
+
+            node_money = pft.Board.Money.Add(500)
+            self.assertEqual(node_money.node_type, "GetMoneyNode")
+
+            pft.Board.Money += 50
+
 
 if __name__ == "__main__":
     unittest.main()

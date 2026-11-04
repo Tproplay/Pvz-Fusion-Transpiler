@@ -54,6 +54,17 @@ class _MoneyManager:
         def failed(self) -> ExecutionPath:
             return self.Failed
 
+    def Add(self, amount: Any) -> Any:
+        """Gain/Add money (emits GetMoneyNode)."""
+        node = nodes.add_money(amount=amount)
+        _ctx.trigger_stack[-1] = ExecutionPath(node.port_output_trigger_Complete)
+        return node
+
+    add = Add
+
+    Spend = SpendMoney
+    spend = SpendMoney
+
     def __add__(self, other: Any) -> Any:
         return self.value + other
 
@@ -119,7 +130,7 @@ class _MoneyManager:
         return self.value
 
     def __iadd__(self, other: Any) -> _MoneyManager:
-        nodes.add_money(amount=other)
+        self.Add(other)
         return self
 
     def __isub__(self, other: Any) -> _MoneyManager:
