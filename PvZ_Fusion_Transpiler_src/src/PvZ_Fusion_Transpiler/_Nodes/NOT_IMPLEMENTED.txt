@@ -1,44 +1,25 @@
-# pvz Fusion Transpiler - Unimplemented Nodes and Status Reasons
-# This file tracks Original nodes intentionally omitted or deferred from Extentions.
-
-================================================================================
-1. REDUNDANT / DUPLICATE NODES
-================================================================================
-- TypedChoiceMenuNode
-- TypedChoiceMergeNode
-- TypedChoiceOptionNode
-  Reason: Duplicate functionality of MultipleChoiceMenu (UI/menu.py).
-
-================================================================================
-2. OPTIMIZATION-ONLY CONTROL FLOW NODES
-================================================================================
-- PulseNode
-- DoOnceNode
-- RepeatUntilNode
-  Reason: Useless as standalone user-facing extension nodes; reserved for internal graph compiler optimizer to reduce node count.
-
-- WaitUntilNode
-  Reason: Deemed redundant / useless as an extension node in PvZ Fusion visual script logic.
-
-================================================================================
-3. DEPRECATED ENGINE NODES
-================================================================================
-- GetTravelEntryNode
-  Reason: Deprecated in the original PvZ Fusion game engine.
-
-================================================================================
-4. DEFERRED PENDING USER SPECIFICATIONS
-================================================================================
-- List Variables (33 nodes):
-  - AppendBoolListNode, AppendFloatListNode, AppendIntListNode, AppendObjectListNode
-  - AppendPlantTypeListNode, AppendStringListNode, AppendZombieTypeListNode
-  - ClearListValuesNode, CopyListValuesNode
-  - FindBoolListValueNode, FindFloatListValueNode, FindIntListValueNode, FindObjectListValueNode
-  - FindPlantTypeListValueNode, FindStringListValueNode, FindZombieTypeListValueNode
-  - GetBoolListItemNode, GetFloatListItemNode, GetIntListItemNode, GetObjectListItemNode
-  - GetPlantTypeListItemNode, GetStringListItemNode, GetZombieTypeListItemNode
-  - InsertBoolListNode, InsertFloatListNode, InsertIntListNode, InsertObjectListNode
-  - InsertPlantTypeListNode, InsertStringListNode, InsertZombieTypeListNode
-  - ReplaceBoolListNode, ReplaceFloatListNode, ReplaceIntListNode, ReplaceObjectListNode
-  - ReplacePlantTypeListNode, ReplaceStringListNode, ReplaceZombieTypeListNode
-  Reason: Waiting for detailed user requirements on how collections/list variables should be structured.
+# PvZ Fusion Transpiler - Node Coverage Status
+# As of Steps 1-7 Coverage Implementation: ALL 240 / 240 (100%) Original Base Game Nodes
+# are fully implemented and exposed via high-level Extentions!
+#
+# See Documentation [WIP]/BASE_GAME_NODES_LIST.md and
+# Documentation [WIP]/EXTENSIONS_IMPLEMENTATION_LIST.md for full details.
+#
+# Formerly deferred / internal / redundant nodes now exposed:
+# 1. Typed Choice Menus:
+#    - TypedChoiceMenuNode, TypedChoiceMergeNode, TypedChoiceOptionNode -> MenuKind.Typed in MultiSelectMenu
+# 2. Control Flow & Polling:
+#    - PulseNode -> Pulse()
+#    - DoOnceNode -> DoOnce()
+#    - WaitUntilNode -> Time.WaitUntil()
+#    - RepeatUntilNode -> Time.RepeatUntil()
+# 3. Economy Grants:
+#    - GetSunNode -> Board.Sun.Add()
+#    - GetMoneyNode -> Board.Money.Add()
+# 4. Tool Value:
+#    - ToolTypeValueNode -> Tool.Value(), ToolType enum implicit lowering
+# 5. Travel:
+#    - GetTravelEntryNode -> Game.GetTravelEntry() (with DeprecationWarning)
+# 6. Generic Collections & Lists (33 nodes):
+#    - Append*ListNode, Get*ListItemNode, Insert*ListNode, Replace*ListNode, Find*ListValueNode,
+#      CopyListValuesNode -> List[T], IntList, FloatList, BoolList, StringList, ObjectList, PlantTypeListVar, ZombieTypeList

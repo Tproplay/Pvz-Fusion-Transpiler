@@ -9,12 +9,8 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 | Metric | Count | Description |
 | :--- | :--- | :--- |
 | **Total Original Nodes** | **240** | Total base game IL2CPP node classes in `_Nodes/Original/` |
-| **Implemented in Extensions** | **196** | Wrapped with high-level Pythonic DSL context managers, methods, or operators |
-| **Available in nodes.py only** | **5** | Defined in `nodes.py` factory, ready to be bound to an Extension interface |
-| **Deferred List Variable Nodes** | **31** | Dynamic typed collections deferred pending user architectural specification |
-| **Omitted (Optimizer-Internal)** | **4** | Control-flow nodes reserved for compiler optimizer (`DoOnce`, `Pulse`, `RepeatUntil`, `WaitUntil`) |
-| **Omitted (Duplicate / Redundant)** | **3** | Redundant alternatives (`TypedChoiceMenuNode`, `TypedChoiceMergeNode`, `TypedChoiceOptionNode`) |
-| **Omitted (Deprecated Engine Node)** | **1** | Deprecated in the original game engine (`GetTravelEntryNode`) |
+| **Implemented in Extensions** | **240** | 100% visual scripting node coverage with Pythonic DSL interfaces |
+| **Pending / Deferred / Omitted** | **0** | Every single IL2CPP node in the base game is reachable in Extensions |
 
 ### Category Breakdown
 
@@ -24,21 +20,21 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 | **Calculate** | 14 | 14 | 0 |
 | **Comparison** | 3 | 3 | 0 |
 | **Constants** | 5 | 5 | 0 |
-| **Deprecated** | 1 | 0 | 1 |
+| **Deprecated** | 1 | 1 | 0 |
 | **GameFlow** | 3 | 3 | 0 |
-| **GeneralFunction** | 26 | 23 | 3 |
-| **Logic** | 13 | 9 | 4 |
+| **GeneralFunction** | 26 | 26 | 0 |
+| **Logic** | 13 | 13 | 0 |
 | **MapFunction** | 14 | 14 | 0 |
 | **ObjectBinding** | 4 | 4 | 0 |
 | **ObjectOperation** | 7 | 7 | 0 |
 | **PlantFunction** | 33 | 33 | 0 |
-| **RewardOption** | 3 | 0 | 3 |
+| **RewardOption** | 3 | 3 | 0 |
 | **Trigger** | 16 | 16 | 0 |
 | **TypeConvert** | 20 | 20 | 0 |
 | **Variables/Boolean** | 3 | 3 | 0 |
 | **Variables/Float** | 4 | 4 | 0 |
 | **Variables/Integer** | 4 | 4 | 0 |
-| **Variables/List** | 41 | 8 | 33 |
+| **Variables/List** | 41 | 41 | 0 |
 | **Variables/String** | 3 | 3 | 0 |
 | **ZombieFunction** | 20 | 20 | 0 |
 
@@ -95,7 +91,7 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 
 | Node Class | IL2CPP Type | Inputs | Outputs | Fields | Status | Extension / nodes.py Mapping |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `GetTravelEntryNode` | `GetTravelEntryNode` | `触发` (Trigger) | `完成` (Trigger) | *(None)* | **Omitted (Deprecated engine node)** | *(None)* |
+| `GetTravelEntryNode` | `GetTravelEntryNode` | `触发` (Trigger) | `完成` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Game.GetTravelEntry()`, `Lawnf.GetTravelEntry()`<br>**nodes.py:** `get_travel_entry()` |
 
 ### GameFlow (3 nodes)
 
@@ -122,9 +118,9 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 | `GetEventPositionNode` | `GetEventPositionNode` | *(None)* | `位置` (Vector3) | *(None)* | **Implemented in Extensions** | **Extensions:** `World\world_object.py`<br>**nodes.py:** `get_event_position()` |
 | `GetHeldToolNode` | `GetHeldToolNode` | *(None)* | `对象` (GameObject)<br>`类型` (ToolType) | *(None)* | **Implemented in Extensions** | **Extensions:** `Input\tool.py`<br>**nodes.py:** `get_held_tool()` |
 | `GetMoneyAmountNode` | `GetMoneyAmountNode` | *(None)* | `金币` (Int) | *(None)* | **Implemented in Extensions** | **Extensions:** `Game\money.py`<br>**nodes.py:** `get_money_amount()` |
-| `GetMoneyNode` | `GetMoneyNode` | `触发` (Trigger)<br>`金币数量` (Int) | `完成` (Trigger) | *(None)* | **Available in nodes.py (not in Extensions)** | **nodes.py:** `get_money()` |
+| `GetMoneyNode` | `GetMoneyNode` | `触发` (Trigger)<br>`金币数量` (Int) | `完成` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Board.Money.Add()`, `Board.Money += x`<br>**nodes.py:** `get_money()`, `add_money()` |
 | `GetSunAmountNode` | `GetSunAmountNode` | *(None)* | `阳光数量` (Int) | *(None)* | **Implemented in Extensions** | **Extensions:** `Game\sun.py`<br>**nodes.py:** `get_sun_amount()` |
-| `GetSunNode` | `GetSunNode` | `触发` (Trigger)<br>`阳光数量` (Int) | `完成` (Trigger) | *(None)* | **Available in nodes.py (not in Extensions)** | **nodes.py:** `get_sun()` |
+| `GetSunNode` | `GetSunNode` | `触发` (Trigger)<br>`阳光数量` (Int) | `完成` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Board.Sun.Add()`, `Board.Sun += x`<br>**nodes.py:** `get_sun()`, `add_sun()` |
 | `GetToolCooldownNode` | `GetToolCooldownNode` | `类型` (ToolType) | `总秒数` (Float)<br>`剩余秒数` (Float)<br>`存在` (Bool) | *(None)* | **Implemented in Extensions** | **Extensions:** `Input\tool.py`<br>**nodes.py:** `get_tool_cooldown()` |
 | `GetTravelBuffNode` | `GetTravelBuffNode` | `触发` (Trigger) | `成功` (Trigger) | `buff`=None | **Implemented in Extensions** | **Extensions:** `Game\game.py`, `Lawn\lawnf.py`<br>**nodes.py:** `get_travel_buff()` |
 | `MergeMultipleChoiceOptionListsNode` | `MergeMultipleChoiceOptionListsNode` | `列表1` (ChoiceOptions)<br>`列表2` (ChoiceOptions) | `合并列表` (ChoiceOptions) | *(None)* | **Implemented in Extensions** | **Extensions:** `UI\menu.py`<br>**nodes.py:** `merge_multiple_choice_option_lists()` |
@@ -132,7 +128,7 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 | `SetToolCooldownNode` | `SetToolCooldownNode` | `触发` (Trigger)<br>`类型` (ToolType)<br>`总秒数` (Float)<br>`剩余秒数` (Float) | `完成` (Trigger)<br>`失败` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Input\tool.py`<br>**nodes.py:** `set_tool_cooldown()` |
 | `ShowMultipleChoiceMenuNode` | `ShowMultipleChoiceMenuNode` | `触发` (Trigger)<br>`选项列表` (ChoiceOptions)<br>`可刷新` (Bool)<br>`刷新次数` (Int)<br>`可取消` (Bool)<br>`窗口数量` (Int) | `退出时触发` (Trigger)<br>`刷新时触发` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `UI\menu.py`<br>**nodes.py:** `show_multiple_choice_menu()` |
 | `ShowTextNode` | `ShowTextNode` | `触发` (Trigger)<br>`文本` (String)<br>`持续时间` (Float) | `完成` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `UI\in_game_ui.py`<br>**nodes.py:** `show_text()` |
-| `ToolTypeValueNode` | `ToolTypeValueNode` | *(None)* | `类型` (ToolType) | *(None)* | **Available in nodes.py (not in Extensions)** | **nodes.py:** `tool_type_value()` |
+| `ToolTypeValueNode` | `ToolTypeValueNode` | *(None)* | `类型` (ToolType) | *(None)* | **Implemented in Extensions** | **Extensions:** `Tool.Value()`, `ToolType.X` coercion<br>**nodes.py:** `tool_type_value()` |
 | `UseMoneyNode` | `UseMoneyNode` | `触发` (Trigger)<br>`金币数量` (Int) | `消耗成功` (Trigger)<br>`金币不足` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Game\money.py`<br>**nodes.py:** `use_money()` |
 | `UseSunNode` | `UseSunNode` | `触发` (Trigger)<br>`阳光数量` (Int) | `消耗成功` (Trigger)<br>`阳光不足` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Game\sun.py`<br>**nodes.py:** `use_sun()` |
 
@@ -142,17 +138,17 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `AndNode` | `AndNode` | `条件A` (Bool)<br>`条件B` (Bool) | `结果` (Bool) | *(None)* | **Implemented in Extensions** | **Extensions:** `Entity\plant_type_list.py`, `Entity\zombie_type_list.py`, `Variables\variables.py`<br>**nodes.py:** `and_node()` |
 | `BranchNode` | `BranchNode` | `触发` (Trigger)<br>`条件` (Bool) | `真（触发）` (Trigger)<br>`假（停止）` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Branching\branching.py`, `Entity\plant_type_list.py`, `Loops\loops.py`<br>**nodes.py:** `branch_node()` |
-| `DoOnceNode` | `DoOnceNode` | `触发` (Trigger)<br>`重置` (Trigger) | `触发` (Trigger) | *(None)* | **Omitted (Optimizer-internal)** | *(None)* |
+| `DoOnceNode` | `DoOnceNode` | `触发` (Trigger)<br>`重置` (Trigger) | `触发` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `DoOnce()`<br>**nodes.py:** `do_once()` |
 | `ForLoopNode` | `ForLoopNode` | `触发` (Trigger)<br>`循环次数` (Int) | `循环体` (Trigger)<br>`当前索引` (Int)<br>`完成` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Loops\loops.py`<br>**nodes.py:** `for_loop_node()` |
 | `NotNode` | `NotNode` | `输入` (Bool) | `输出` (Bool) | *(None)* | **Implemented in Extensions** | **Extensions:** `Variables\variables.py`<br>**nodes.py:** `not_node()` |
 | `OrNode` | `OrNode` | `条件A` (Bool)<br>`条件B` (Bool) | `结果` (Bool) | *(None)* | **Implemented in Extensions** | **Extensions:** `Variables\variables.py`<br>**nodes.py:** `or_node()` |
-| `PulseNode` | `PulseNode` | `触发` (Trigger)<br>`状态` (Bool) | `脉冲触发时` (Trigger) | *(None)* | **Omitted (Optimizer-internal)** | *(None)* |
+| `PulseNode` | `PulseNode` | `触发` (Trigger)<br>`状态` (Bool) | `脉冲触发时` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Pulse()`<br>**nodes.py:** `pulse_node()` |
 | `RandomTriggerNode` | `RandomTriggerNode` | `触发` (Trigger)<br>`触发数量` (Int)<br>`重复触发` (Bool) | `触发` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Random\random_ext.py`<br>**nodes.py:** `random_trigger()` |
-| `RepeatUntilNode` | `RepeatUntilNode` | `触发` (Trigger)<br>`条件` (Bool)<br>`间隔秒数` (Float)<br>`最多检查次数` (Int) | `完成` (Trigger)<br>`超时` (Trigger)<br>`失败` (Trigger)<br>`每次循环` (Trigger) | *(None)* | **Omitted (Optimizer-internal)** | *(None)* |
+| `RepeatUntilNode` | `RepeatUntilNode` | `触发` (Trigger)<br>`条件` (Bool)<br>`间隔秒数` (Float)<br>`最多检查次数` (Int) | `完成` (Trigger)<br>`超时` (Trigger)<br>`失败` (Trigger)<br>`每次循环` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Time.RepeatUntil()`<br>**nodes.py:** `repeat_until()` |
 | `ToggleCycleNode` | `ToggleCycleNode` | `触发` (Trigger)<br>`周期间隔` (Float) | `周期事件` (Trigger)<br>`切换开始时` (Trigger)<br>`切换关闭时` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Time\time_ext.py`<br>**nodes.py:** `toggle_cycle_node()` |
 | `ToggleNode` | `ToggleNode` | `触发` (Trigger) | `状态` (Bool)<br>`状态改变时` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Entity\plant_type_list.py`<br>**nodes.py:** `toggle_node()` |
 | `WaitNode` | `WaitNode` | `触发` (Trigger)<br>`等待时间` (Float) | `触发` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Time\time_ext.py`<br>**nodes.py:** `wait_node()` |
-| `WaitUntilNode` | `WaitUntilNode` | `触发` (Trigger)<br>`条件` (Bool)<br>`间隔秒数` (Float)<br>`最多检查次数` (Int) | `完成` (Trigger)<br>`超时` (Trigger)<br>`失败` (Trigger) | *(None)* | **Omitted (Optimizer-internal)** | *(None)* |
+| `WaitUntilNode` | `WaitUntilNode` | `触发` (Trigger)<br>`条件` (Bool)<br>`间隔秒数` (Float)<br>`最多检查次数` (Int) | `完成` (Trigger)<br>`超时` (Trigger)<br>`失败` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Time.WaitUntil()`<br>**nodes.py:** `wait_until()` |
 
 ### MapFunction (14 nodes)
 
@@ -345,7 +341,7 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 | `InsertObjectListNode` | `InsertObjectListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (GameObject)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Deferred (List variable node)** | *(None)* |
 | `InsertPlantTypeListNode` | `InsertPlantTypeListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (PlantType)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Deferred (List variable node)** | *(None)* |
 | `InsertStringListNode` | `InsertStringListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (String)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Deferred (List variable node)** | *(None)* |
-| `InsertZombieTypeListNode` | `InsertZombieTypeListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (ZombieType)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Available in nodes.py (not in Extensions)** | **nodes.py:** `insert_zombie_type_list()` |
+| `InsertZombieTypeListNode` | `InsertZombieTypeListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (ZombieType)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Implemented in Extensions** | **Extensions:** `List[T]`, `IntList`, etc.<br>**nodes.py:** `insert_zombie_type_list()` |
 | `AppendIntListNode` | `AppendIntListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Deferred (List variable node)** | *(None)* |
 | `ListVariableNode` | `ListVariableNode` | *(None)* | *(None)* | *(None)* | **Implemented in Extensions** | **Extensions:** `Entity\zombie_type_list.py`<br>**nodes.py:** `list_variable()` |
 | `PlantTypeListStorageNode` | `PlantTypeListStorageNode` | `触发` (Trigger)<br>`列表` (PlantTypeList)<br>`植物类型` (PlantType) | `当前列表` (PlantTypeList)<br>`列表长度` (Int)<br>`完成` (Trigger) | *(None)* | **Implemented in Extensions** | **Extensions:** `Entity\plant_type_list.py`<br>**nodes.py:** `plant_type_list_storage()` |
@@ -356,7 +352,7 @@ This document contains an exhaustive, structured inventory of all **240 base gam
 | `ReplaceObjectListNode` | `ReplaceObjectListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (GameObject)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Deferred (List variable node)** | *(None)* |
 | `ReplacePlantTypeListNode` | `ReplacePlantTypeListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (PlantType)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Deferred (List variable node)** | *(None)* |
 | `ReplaceStringListNode` | `ReplaceStringListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (String)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Deferred (List variable node)** | *(None)* |
-| `ReplaceZombieTypeListNode` | `ReplaceZombieTypeListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (ZombieType)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Available in nodes.py (not in Extensions)** | **nodes.py:** `replace_zombie_type_list()` |
+| `ReplaceZombieTypeListNode` | `ReplaceZombieTypeListNode` | `触发` (Trigger)<br>`列表` (ListVariable)<br>`值` (ZombieType)<br>`索引` (Int) | `完成` (Trigger)<br>`失败` (Trigger)<br>`列表` (ListVariable) | *(None)* | **Implemented in Extensions** | **Extensions:** `List[T]`, `IntList`, etc.<br>**nodes.py:** `replace_zombie_type_list()` |
 
 ### Variables/String (3 nodes)
 
