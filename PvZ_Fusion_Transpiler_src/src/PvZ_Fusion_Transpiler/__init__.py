@@ -28,6 +28,7 @@ from . import Types
 from ._Nodes.Extentions import (
     If,
     Switch,
+    DoOnce,
     IntVar,
     FloatVar,
     BoolVar,
@@ -115,6 +116,7 @@ __all__ = [
     # Extensions
     "If",
     "Switch",
+    "DoOnce",
     "IntVar",
     "FloatVar",
     "BoolVar",

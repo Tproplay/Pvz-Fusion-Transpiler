@@ -328,6 +328,29 @@ def wait_node(duration: float = 1.0, **kwargs: Any) -> WaitNode:
     to_port(duration).connect(node.port_input_float_Duration)
     return node
 
+def do_once(**kwargs: Any) -> DoOnceNode:
+    return DoOnceNode(**kwargs)
+
+def wait_until(condition: Any = None, interval: Any = None, max_checks: Any = None, **kwargs: Any) -> WaitUntilNode:
+    node = WaitUntilNode(**kwargs)
+    if condition is not None:
+        to_bool_port(condition).connect(node.port_input_bool_Condition)
+    if interval is not None:
+        to_float_port(interval).connect(node.port_input_float_IntervalSeconds)
+    if max_checks is not None:
+        to_int_port(max_checks).connect(node.port_input_int_MaxChecks)
+    return node
+
+def repeat_until(condition: Any = None, interval: Any = None, max_checks: Any = None, **kwargs: Any) -> RepeatUntilNode:
+    node = RepeatUntilNode(**kwargs)
+    if condition is not None:
+        to_bool_port(condition).connect(node.port_input_bool_Condition)
+    if interval is not None:
+        to_float_port(interval).connect(node.port_input_float_IntervalSeconds)
+    if max_checks is not None:
+        to_int_port(max_checks).connect(node.port_input_int_MaxChecks)
+    return node
+
 def random_int(min_val: int = 0, max_val: int = 10, **kwargs: Any) -> RandomIntNode:
     node = RandomIntNode(**kwargs)
     to_port(min_val).connect(node.port_input_int_Min)

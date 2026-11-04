@@ -97,6 +97,99 @@ class Time:
         def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
             _ctx.trigger_stack.pop()
 
+    class WaitUntil:
+        """Context manager to wait asynchronously until a condition is met or timeout is reached."""
+
+        def __init__(self, condition: Any, interval: Any = 0.5, max_checks: Any = 100) -> None:
+            self.node = nodes.wait_until(condition=condition, interval=interval, max_checks=max_checks)
+            self._complete_path = ExecutionPath(self.node.port_output_trigger_Complete)
+            self._timeout_path = ExecutionPath(self.node.port_output_trigger_Timeout)
+            self._failed_path = ExecutionPath(self.node.port_output_trigger_Failed)
+
+        def __enter__(self) -> Time.WaitUntil:
+            self._complete_path.__enter__()
+            return self
+
+        def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+            self._complete_path.__exit__(exc_type, exc_val, exc_tb)
+
+        @property
+        def OnComplete(self) -> ExecutionPath:
+            return self._complete_path
+
+        @property
+        def on_complete(self) -> ExecutionPath:
+            return self._complete_path
+
+        @property
+        def OnTimeout(self) -> ExecutionPath:
+            return self._timeout_path
+
+        @property
+        def on_timeout(self) -> ExecutionPath:
+            return self._timeout_path
+
+        @property
+        def OnFailed(self) -> ExecutionPath:
+            return self._failed_path
+
+        @property
+        def on_failed(self) -> ExecutionPath:
+            return self._failed_path
+
+    class RepeatUntil:
+        """Context manager to poll a condition repeatedly with loop body, completion, timeout, and failure branches."""
+
+        def __init__(self, condition: Any, interval: Any = 0.5, max_checks: Any = 100) -> None:
+            self.node = nodes.repeat_until(condition=condition, interval=interval, max_checks=max_checks)
+            self._loop_path = ExecutionPath(self.node.port_output_trigger_Loop)
+            self._complete_path = ExecutionPath(self.node.port_output_trigger_Complete)
+            self._timeout_path = ExecutionPath(self.node.port_output_trigger_Timeout)
+            self._failed_path = ExecutionPath(self.node.port_output_trigger_Failed)
+
+        def __enter__(self) -> Time.RepeatUntil:
+            self._loop_path.__enter__()
+            return self
+
+        def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+            self._loop_path.__exit__(exc_type, exc_val, exc_tb)
+
+        @property
+        def OnEach(self) -> ExecutionPath:
+            return self._loop_path
+
+        @property
+        def on_each(self) -> ExecutionPath:
+            return self._loop_path
+
+        @property
+        def OnComplete(self) -> ExecutionPath:
+            return self._complete_path
+
+        @property
+        def on_complete(self) -> ExecutionPath:
+            return self._complete_path
+
+        @property
+        def OnTimeout(self) -> ExecutionPath:
+            return self._timeout_path
+
+        @property
+        def on_timeout(self) -> ExecutionPath:
+            return self._timeout_path
+
+        @property
+        def OnFailed(self) -> ExecutionPath:
+            return self._failed_path
+
+        @property
+        def on_failed(self) -> ExecutionPath:
+            return self._failed_path
+
+    wait = Wait
+    wait_until = WaitUntil
+    repeat_until = RepeatUntil
+
     @_staticproperty
     def time_since_start(owner: Any = None) -> Any:
         if Time._time_since_start_var is None:

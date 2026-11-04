@@ -279,6 +279,28 @@ class TestNewRequirements(unittest.TestCase):
             is_held = pft.Tool.is_held(ToolType.Shovel)
             self.assertEqual(is_held.port_type, PortType.Bool)
 
+    def test_flow_nodes_do_once_wait_until_repeat_until(self):
+        with pft.Trigger.OnBoardStart():
+            once = pft.DoOnce()
+            with once:
+                pft.Board.Sun.Add(500)
+            once.Reset()
+
+            with pft.Time.WaitUntil(pft.Board.Sun >= 100, interval=0.5, max_checks=40) as wait:
+                pft.InGameUI.display_text("Ready!")
+                with wait.OnTimeout:
+                    pft.InGameUI.display_text("Timed out")
+                with wait.OnFailed:
+                    pft.InGameUI.display_text("Failed")
+
+            with pft.Time.RepeatUntil(pft.Board.Sun >= 500, interval=1.0, max_checks=60) as loop:
+                with loop.OnEach:
+                    pft.InGameUI.display_text("Checking...")
+                with loop.OnComplete:
+                    pft.InGameUI.display_text("Goal reached!")
+                with loop.OnTimeout:
+                    pft.InGameUI.display_text("Timeout")
+
 
 if __name__ == "__main__":
     unittest.main()
