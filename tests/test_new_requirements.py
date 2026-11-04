@@ -301,6 +301,16 @@ class TestNewRequirements(unittest.TestCase):
                 with loop.OnTimeout:
                     pft.InGameUI.display_text("Timeout")
 
+    def test_pulse_node(self):
+        with pft.Trigger.OnBoardStart():
+            is_active = pft.BoolVar(True, name="IsActive")
+            pulse = pft.Pulse(state=is_active)
+            with pulse.OnPulse:
+                pft.InGameUI.display_text("Pulse fired!")
+
+            with pft.Pulse(state=is_active):
+                pft.InGameUI.display_text("Direct enter pulse!")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -8,7 +8,7 @@ from .Abstract import (
     ILogical,
     IVariable,
 )
-from .Branching import If, Switch, DoOnce
+from .Branching import If, Switch, DoOnce, Pulse
 from .Variables import (
     IntVar,
     FloatVar,
@@ -52,6 +52,7 @@ __all__ = [
     "If",
     "Switch",
     "DoOnce",
+    "Pulse",
     # Variables
     "IntVar",
     "FloatVar",

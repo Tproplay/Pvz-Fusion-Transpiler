@@ -351,6 +351,12 @@ def repeat_until(condition: Any = None, interval: Any = None, max_checks: Any = 
         to_int_port(max_checks).connect(node.port_input_int_MaxChecks)
     return node
 
+def pulse_node(state: Any = None, **kwargs: Any) -> PulseNode:
+    node = PulseNode(**kwargs)
+    if state is not None:
+        to_bool_port(state).connect(node.port_input_bool_State)
+    return node
+
 def random_int(min_val: int = 0, max_val: int = 10, **kwargs: Any) -> RandomIntNode:
     node = RandomIntNode(**kwargs)
     to_port(min_val).connect(node.port_input_int_Min)
