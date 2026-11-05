@@ -92,6 +92,37 @@ with zombie.on_created:
     pft.InGameUI.display_text("Spawned via on_created path!")
 ```
 
+### Zombie Stats & Status Controls (`Zombie`)
+
+The returned `Zombie` wrapper provides comprehensive stat and status inspection and alteration methods:
+
+```python
+with pft.Trigger.OnZombieSpawn() as zombie:
+    # 1. Direct Stat Inspection Properties
+    body_hp = zombie.hp              # EventZombieStat.BodyHP
+    max_hp = zombie.max_hp           # EventZombieStat.MaxBodyHP
+    move_speed = zombie.speed        # EventZombieStat.BaseSpeed
+    scale_size = zombie.size         # EventZombieStat.Size
+    atk_pwr = zombie.attack_power    # EventZombieStat.AttackPower
+    armor1 = zombie.armor1_hp        # EventZombieStat.Armor1HP
+    armor2 = zombie.armor2_hp        # EventZombieStat.Armor2HP
+
+    # 2. Stat Setters
+    zombie.set_hp(500.0)
+    zombie.set_speed(1.5)
+    zombie.set_size(1.2)
+    zombie.set_attack_power(40.0)
+
+    # 3. Explicit Stat Queries (with EventZombieStat enum)
+    current_stat = zombie.get_stats(pft.EventZombieStat.BodyHP)
+    zombie.set_stats(1000.0, stat=pft.EventZombieStat.BodyHP)
+
+    # 4. Status Effect Queries & Application (with EventZombieStatus enum)
+    chill_time = zombie.get_status(pft.EventZombieStatus.ChillSeconds)
+    zombie.set_status(5.0, status=pft.EventZombieStatus.FreezeSeconds)
+    zombie.set_status(10.0, status=pft.EventZombieStatus.PoisonSeconds)
+```
+
 ---
 
 ## 3. Spawning Bullets (`Spawner.Set_Bullet`)
@@ -144,6 +175,23 @@ with bullet.on_created:
 
 with bullet.on_failed:
     pft.InGameUI.display_text("Bullet creation failed!")
+```
+
+### Bullet Physics & Property Alteration (`Bullet`)
+
+The returned `Bullet` wrapper allows modifying projectile properties on the fly:
+
+```python
+with pft.Trigger.OnMouseClick() as mouse:
+    with pft.Spawner.Set_Bullet(row=mouse.row, col=mouse.col, bullet_type=BulletType.Pea) as bullet:
+        # Convenience methods
+        bullet.set_speed(500.0)
+        bullet.set_damage(120.0)
+        bullet.set_scale(2.0)
+        bullet.set_direction(45.0)
+
+        # Explicit property modification using EventBulletProperty
+        bullet.modify(2.5, prop=pft.EventBulletProperty.ScaleMultiplier)
 ```
 
 ---

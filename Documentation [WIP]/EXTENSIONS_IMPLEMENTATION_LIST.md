@@ -1,6 +1,6 @@
 # 🧩 Transpiler Extensions Implementation Guide & Complete Coverage
 
-This document details all **high-level Extension implementations** in `PvZ_Fusion_Transpiler` (`_Nodes/Extentions/`, `StdLib.py`, `Core/`), showing how they abstract raw IL2CPP nodes into Pythonic DSL syntax.
+This document details all **high-level Extension implementations** in `PvZ_Fusion_Transpiler` (`_Nodes/Extensions/`, `StdLib.py`, `Core/`), showing how they abstract raw IL2CPP nodes into Pythonic DSL syntax.
 
 > [!NOTE]
 > **Full Native Node Coverage: 240 / 240 (100%)**
@@ -48,8 +48,10 @@ This document details all **high-level Extension implementations** in `PvZ_Fusio
 | `list.Clear()` / `list.clear()` | Removes all elements from list | Clears storage | `ClearListValuesNode` |
 | `list.CopyTo(target_list)` | Deep copies all items into target list | Sequential copy operation | `CopyListValuesNode` |
 | `list.Clone(new_name)` | Creates new list and copies items into it | Instantiates new list & copies | `CopyListValuesNode` |
-| `list.TryGetValue(index)` | Looks up element at index | Returns `ListLookup[T]` with `.Success`, `.Failed`, `.Found`, and `.Value` | `Get*ListItemNode` (`GetIntListItemNode`, etc.) |
-| `list.TryFindIndex(value)` | Searches for index of value | Returns `ListSearch` with `.Found`, `.NotFound`, and `.Index` | `Find*ListValueNode` (`FindIntListValueNode`, etc.) |
+| `list.TryGetValue(index)` | Looks up element at index | Single native node returning `(Value, Valid)` ports | `Get*ListItemNode` (`GetIntListItemNode`, etc.) |
+| `list.TryFindIndex(value)` | Searches for index of value | Single native node returning `(Index, Found)` ports | `Find*ListValueNode` (`FindIntListValueNode`, etc.) |
+| `list.Count` / `list.Length` | Number of elements in list | Returns integer port | `GetListLengthNode` |
+| `list.Contains(value)` | Tests if value is present in list | Returns boolean condition port | `Find*ListValueNode` |
 | `list.ForEach() as (item, index)` | Iterates list items | Context manager with `.OnComplete` exit branch | `GetListLengthNode`, `LoopNode`, `Get*ListItemNode` |
 | `ZombieTypeList([types])` | Specialized zombie type list | Inherits from `List[ZombieType]`, supporting all list operations | `*ZombieTypeListNode`, `RemoveListItemNode`, `ClearListValuesNode` |
 
@@ -59,8 +61,8 @@ This document details all **high-level Extension implementations** in `PvZ_Fusio
 | Interface / Method | Purpose | Capabilities | Underlying Original Nodes |
 | :--- | :--- | :--- | :--- |
 | `Plant(ref)` | Entity wrapper for plant pointers | Exposes `.heal(amount)`, `.damage(amount)`, `.curse(duration)`, `.silence(duration)`, `.feed_golden_bean()`, `.upgrade()`, `.try_super_skill()`, `.add_shield(amount)`, `.modify_health(mult)`, `.modify_attack(mult)`, `.set_attack_speed(speed)`, `.set_attack_interval(interval)`, `.get_components()`, `.get_attribute_countdown()`, `.split()`, `.die(reason)` | `CursePlantNode, DamagePlantNode, DiePlantNode, FeedGoldenBeanNode, GetPlantAttackSpeedNode, GetPlantAttributeCountdownNode, GetPlantBasicComponentsNode, GivePlantShieldNode, HealPlantNode, ModifyPlantAttackNode, ModifyPlantHealthNode, MovePlantNode, PlantSplitNode, SetPlantAttackIntervalNode, SetPlantAttackSpeedNode, SetPlantAttributeCountdownNode, SilencePlantNode, TryPlantSuperSkillNode, UpgradeEventPlantNode` |
-| `Zombie(ref)` | Entity wrapper for zombie pointers | Exposes `.damage(amount)`, `.modify_health(mult)`, `.set_stats(hp, speed, ...)` (`SetZombieStatsNode`), `.get_stats()` (`GetZombieStatsNode`), `.set_status(flag, ...)` (`SetZombieStatusNode`), `.get_status()` (`GetZombieStatusNode`), `.hypnotize()` (`SetZombieMindControlledNode`), `.move(row, col)` (`MoveZombieNode`), `.play_animation(name)` (`PlayZombieAnimNode`), `.split()` (`ZombieSplitNode`) | `DamageZombieNode, GetZombieStatsNode, GetZombieStatusNode, ModifyZombieHealthNode, MoveZombieNode, PlayZombieAnimNode, SetZombieMindControlledNode, SetZombieStatsNode, SetZombieStatusNode, ZombieSplitNode` |
-| `Bullet(ref)` | Entity wrapper for projectile pointers | Exposes `.destroy()`, `.modify(value)` | `ModifyEventBulletNode` |
+| `Zombie(ref)` | Entity wrapper for zombie pointers | Exposes `.damage(amount)`, `.modify_health(mult)`, `.set_hp(hp)`, `.set_speed(speed)`, `.set_size(size)`, `.set_attack_power(power)`, `.get_stats(stat=EventZombieStat.Hp)` (`GetZombieStatsNode`), `.set_stats(stat, val)` (`SetZombieStatsNode`), `.get_status(status=EventZombieStatus.Freeze)` (`GetZombieStatusNode`), `.set_status(status, val)` (`SetZombieStatusNode`), `.hypnotize()` (`SetZombieMindControlledNode`), `.move(row, col)` (`MoveZombieNode`), `.play_animation(name)` (`PlayZombieAnimNode`), `.split()` (`ZombieSplitNode`). Live properties: `.hp`, `.max_hp`, `.speed`, `.size`, `.attack_power`, `.armor1_hp`, `.armor2_hp`. | `DamageZombieNode, GetZombieStatsNode, GetZombieStatusNode, ModifyZombieHealthNode, MoveZombieNode, PlayZombieAnimNode, SetZombieMindControlledNode, SetZombieStatsNode, SetZombieStatusNode, ZombieSplitNode` |
+| `Bullet(ref)` | Entity wrapper for projectile pointers | Exposes `.destroy()`, `.modify(value, property=EventBulletProperty.Speed)`, `.set_speed(speed)`, `.set_damage(damage)`, `.set_scale(scale)`, `.set_direction(direction)` | `ModifyEventBulletNode` |
 | `ForEachPlant(list_port)` | Context manager looping over plant entity list | Iterates live plant entities; loop variable acts as transparent `Plant` proxy. Has `.on_complete` branch. | `ForEachPlantNode` |
 | `ForEachZombie(list_port)` | Context manager looping over zombie entity list | Iterates live zombie entities; loop variable acts as transparent `Zombie` proxy. Has `.on_complete` branch. | `ForEachZombieNode` |
 | `ForEachAllZombies()` | Context manager looping over ALL living zombies on lawn | Loops over every zombie on the board without querying first. | `ForEachAllZombiesNode` |
@@ -113,9 +115,10 @@ This document details all **high-level Extension implementations** in `PvZ_Fusio
 | `Lawnf.get_plants_at(row, col)` | Returns list port of plants in grid cell | Query plants in cell | `GetPlantsInCellNode` |
 | `Lawnf.get_all_plants()` | Returns list port of all living plants | Query all plants | `GetAllPlantsNode` |
 | `Lawnf.for_each_plant_on_lawn()` | Context manager looping over all plants on board | Convenience iterator | `GetAllPlantsNode, ForEachPlantNode` |
-| `Lawnf.delete_grid_items(row, col)` | Clears grid item props at tile | Removes graves/ladders | `DeleteGridItemsNode` |
-| `Lawnf.change_event_map(map_id)` | Changes visual event map background | Map change | `ChangeEventMapNode` |
-| `Lawnf.change_event_music(music_id)` | Changes active background music | BGM change | `ChangeEventMusicNode` |
+| `Lawnf.delete_grid_items(row, col, kind=EventGridObstacle.All)` | Clears grid item props at tile | Removes graves/ladders/craters/all | `DeleteGridItemsNode` |
+| `Lawnf.change_map(scene=SceneType.Day)` | Changes visual event map background | Map change (typed `SceneType`, alias `change_event_map`) | `ChangeEventMapNode` |
+| `Lawnf.change_music(music=MusicType.Day)` | Changes active background music | BGM change (typed `MusicType`, alias `change_event_music`) | `ChangeEventMusicNode` |
+| `Lawnf.remove_travel_entry(name_or_id, kind=EventTravelEntryKind.All)` | Removes travel/rogue entry by name/ID | Travel entry removal (typed `EventTravelEntryKind`) | `RemoveTravelEntryNode` |
 | `Lawnf.set_zombie_house_rule(rule_id)` | Sets zombie house rules | Custom gameplay rule | `SetZombieHouseRuleNode` |
 
 ### 6. Event Triggers (`Triggers/`)
@@ -132,6 +135,7 @@ This document details all **high-level Extension implementations** in `PvZ_Fusio
 | `Trigger.OnZombieDie` | Zombie defeat | `zombie` (`Zombie` wrapper) | `OnZombieDieNode` |
 | `Trigger.OnStageEnter` | Stage transition | `stage_name` | `OnStageEnterNode` |
 | `Trigger.OnPlantMixed` | Plant fusion | `plant` (`Plant` wrapper) | `OnPlantMixedNode` |
+| `Trigger.OnWorldPlantEffect(effect=EventWorldEffect.Explode)` | World-wide plant effect | `lane` (Row index integer port) | `OnWorldPlantEffectNode` |
 | `Trigger.OnZombieClick` | Player clicks zombie | `zombie` (`Zombie` wrapper) | `OnZombieClickNode` |
 | `Trigger.OnCustomKey` | Custom keyboard input | `key` | `OnKeyPressNode` |
 | `Trigger.OnMouseClick` | Mouse click on board | `x`, `y` coordinates | `OnMouseClickNode` |
@@ -261,50 +265,50 @@ The table below documents how all 44 previously unextended base game nodes are i
 
 | Original Base Game Node | Extension Interface / Method | Module Location |
 | :--- | :--- | :--- |
-| `AppendBoolListNode` | `BoolList.Add(val)` / `BoolList.append(val)` / `BoolList += val` | `_Nodes/Extentions/Variables/list_var.py` |
-| `AppendFloatListNode` | `FloatList.Add(val)` / `FloatList.append(val)` / `FloatList += val` | `_Nodes/Extentions/Variables/list_var.py` |
-| `AppendIntListNode` | `IntList.Add(val)` / `IntList.append(val)` / `IntList += val` | `_Nodes/Extentions/Variables/list_var.py` |
-| `AppendObjectListNode` | `ObjectList.Add(val)` / `ObjectList.append(val)` / `ObjectList += val` | `_Nodes/Extentions/Variables/list_var.py` |
-| `AppendPlantTypeListNode` | `PlantTypeListVar.Add(val)` / `PlantTypeListVar += val` | `_Nodes/Extentions/Variables/list_var.py` |
-| `AppendStringListNode` | `StringList.Add(val)` / `StringList.append(val)` / `StringList += val` | `_Nodes/Extentions/Variables/list_var.py` |
-| `AppendZombieTypeListNode` | `ZombieTypeList.Add(val)` / `ZombieTypeList.append(val)` / `ZombieTypeList += val` | `_Nodes/Extentions/Entity/zombie_type_list.py` |
-| `GetBoolListItemNode` | `BoolList.TryGetValue(index)` / `BoolList.get_item(index)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `GetFloatListItemNode` | `FloatList.TryGetValue(index)` / `FloatList.get_item(index)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `GetIntListItemNode` | `IntList.TryGetValue(index)` / `IntList.get_item(index)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `GetObjectListItemNode` | `ObjectList.TryGetValue(index)` / `ObjectList.get_item(index)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `GetPlantTypeListItemNode` | `PlantTypeListVar.TryGetValue(index)` / `PlantTypeListVar.get_item(index)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `GetStringListItemNode` | `StringList.TryGetValue(index)` / `StringList.get_item(index)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `GetZombieTypeListItemNode` | `ZombieTypeList.TryGetValue(index)` / `ZombieTypeList.get_item(index)` | `_Nodes/Extentions/Entity/zombie_type_list.py` |
-| `InsertBoolListNode` | `BoolList.Insert(index, val)` / `BoolList.insert(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `InsertFloatListNode` | `FloatList.Insert(index, val)` / `FloatList.insert(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `InsertIntListNode` | `IntList.Insert(index, val)` / `IntList.insert(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `InsertObjectListNode` | `ObjectList.Insert(index, val)` / `ObjectList.insert(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `InsertPlantTypeListNode` | `PlantTypeListVar.Insert(index, val)` / `PlantTypeListVar.insert(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `InsertStringListNode` | `StringList.Insert(index, val)` / `StringList.insert(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `InsertZombieTypeListNode` | `ZombieTypeList.Insert(index, val)` / `ZombieTypeList.insert(index, val)` | `_Nodes/Extentions/Entity/zombie_type_list.py` |
-| `ReplaceBoolListNode` | `BoolList.Replace(index, val)` / `BoolList.replace(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `ReplaceFloatListNode` | `FloatList.Replace(index, val)` / `FloatList.replace(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `ReplaceIntListNode` | `IntList.Replace(index, val)` / `IntList.replace(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `ReplaceObjectListNode` | `ObjectList.Replace(index, val)` / `ObjectList.replace(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `ReplacePlantTypeListNode` | `PlantTypeListVar.Replace(index, val)` / `PlantTypeListVar.replace(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `ReplaceStringListNode` | `StringList.Replace(index, val)` / `StringList.replace(index, val)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `ReplaceZombieTypeListNode` | `ZombieTypeList.Replace(index, val)` / `ZombieTypeList.replace(index, val)` | `_Nodes/Extentions/Entity/zombie_type_list.py` |
-| `FindBoolListValueNode` | `BoolList.TryFindIndex(value)` / `BoolList.find_index(value)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `FindFloatListValueNode` | `FloatList.TryFindIndex(value)` / `FloatList.find_index(value)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `FindIntListValueNode` | `IntList.TryFindIndex(value)` / `IntList.find_index(value)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `FindObjectListValueNode` | `ObjectList.TryFindIndex(value)` / `ObjectList.find_index(value)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `FindPlantTypeListValueNode` | `PlantTypeListVar.TryFindIndex(value)` / `PlantTypeListVar.find_index(value)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `FindStringListValueNode` | `StringList.TryFindIndex(value)` / `StringList.find_index(value)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `FindZombieTypeListValueNode` | `ZombieTypeList.TryFindIndex(value)` / `ZombieTypeList.find_index(value)` | `_Nodes/Extentions/Entity/zombie_type_list.py` |
-| `CopyListValuesNode` | `list.CopyTo(target)` / `list.Clone(name)` | `_Nodes/Extentions/Variables/list_var.py` |
-| `GetSunNode` | `Board.Sun.Add(amount)` / `Board.Sun += amount` / `Board.Sun.Spend(...)` | `_Nodes/Extentions/Game/sun.py` |
-| `GetMoneyNode` | `Board.Money.Add(amount)` / `Board.Money += amount` / `Board.Money.Spend(...)` | `_Nodes/Extentions/Game/money.py` |
-| `ToolTypeValueNode` | `Tool.Value(tool_type)` / automatic `to_port` coercion of `ToolType` | `_Nodes/Extentions/Input/tool.py`, `typing.py` |
-| `DoOnceNode` | `DoOnce(name)` / `with DoOnce():` / `with do.OnExecute:` | `_Nodes/Extentions/Branching/do_once.py` |
-| `PulseNode` | `Pulse(interval)` / `with Pulse(0.5):` / `with p.OnPulse:` | `_Nodes/Extentions/Branching/pulse.py` |
-| `WaitUntilNode` | `Time.WaitUntil(condition, interval, max_checks)` (.OnComplete, .OnTimeout, .OnFailed) | `_Nodes/Extentions/Time/time_ext.py` |
-| `RepeatUntilNode` | `Time.RepeatUntil(condition, interval, max_checks)` (.OnEach, .OnComplete, .OnTimeout, .OnFailed) | `_Nodes/Extentions/Time/time_ext.py` |
-| `TypedChoiceMenuNode` | `MultiSelectMenu(..., kind=MenuKind.Typed)` | `_Nodes/Extentions/UI/menu.py` |
-| `TypedChoiceOptionNode` | `MultiSelectMenu(..., kind=MenuKind.Typed).option(...)` | `_Nodes/Extentions/UI/menu.py` |
-| `TypedChoiceMergeNode` | `MultiSelectMenu(..., kind=MenuKind.Typed)` (internal option merge) | `_Nodes/Extentions/UI/menu.py` |
-| `GetTravelEntryNode` | `Game.GetTravelEntry()` / `Lawnf.GetTravelEntry()` (with `DeprecationWarning`) | `_Nodes/Extentions/Game/game.py`, `_Nodes/Extentions/Lawn/lawnf.py` |
+| `AppendBoolListNode` | `BoolList.Add(val)` / `BoolList.append(val)` / `BoolList += val` | `_Nodes/Extensions/Variables/list_var.py` |
+| `AppendFloatListNode` | `FloatList.Add(val)` / `FloatList.append(val)` / `FloatList += val` | `_Nodes/Extensions/Variables/list_var.py` |
+| `AppendIntListNode` | `IntList.Add(val)` / `IntList.append(val)` / `IntList += val` | `_Nodes/Extensions/Variables/list_var.py` |
+| `AppendObjectListNode` | `ObjectList.Add(val)` / `ObjectList.append(val)` / `ObjectList += val` | `_Nodes/Extensions/Variables/list_var.py` |
+| `AppendPlantTypeListNode` | `PlantTypeListVar.Add(val)` / `PlantTypeListVar += val` | `_Nodes/Extensions/Variables/list_var.py` |
+| `AppendStringListNode` | `StringList.Add(val)` / `StringList.append(val)` / `StringList += val` | `_Nodes/Extensions/Variables/list_var.py` |
+| `AppendZombieTypeListNode` | `ZombieTypeList.Add(val)` / `ZombieTypeList.append(val)` / `ZombieTypeList += val` | `_Nodes/Extensions/Entity/zombie_type_list.py` |
+| `GetBoolListItemNode` | `BoolList.TryGetValue(index)` / `BoolList.get_item(index)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `GetFloatListItemNode` | `FloatList.TryGetValue(index)` / `FloatList.get_item(index)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `GetIntListItemNode` | `IntList.TryGetValue(index)` / `IntList.get_item(index)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `GetObjectListItemNode` | `ObjectList.TryGetValue(index)` / `ObjectList.get_item(index)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `GetPlantTypeListItemNode` | `PlantTypeListVar.TryGetValue(index)` / `PlantTypeListVar.get_item(index)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `GetStringListItemNode` | `StringList.TryGetValue(index)` / `StringList.get_item(index)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `GetZombieTypeListItemNode` | `ZombieTypeList.TryGetValue(index)` / `ZombieTypeList.get_item(index)` | `_Nodes/Extensions/Entity/zombie_type_list.py` |
+| `InsertBoolListNode` | `BoolList.Insert(index, val)` / `BoolList.insert(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `InsertFloatListNode` | `FloatList.Insert(index, val)` / `FloatList.insert(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `InsertIntListNode` | `IntList.Insert(index, val)` / `IntList.insert(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `InsertObjectListNode` | `ObjectList.Insert(index, val)` / `ObjectList.insert(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `InsertPlantTypeListNode` | `PlantTypeListVar.Insert(index, val)` / `PlantTypeListVar.insert(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `InsertStringListNode` | `StringList.Insert(index, val)` / `StringList.insert(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `InsertZombieTypeListNode` | `ZombieTypeList.Insert(index, val)` / `ZombieTypeList.insert(index, val)` | `_Nodes/Extensions/Entity/zombie_type_list.py` |
+| `ReplaceBoolListNode` | `BoolList.Replace(index, val)` / `BoolList.replace(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `ReplaceFloatListNode` | `FloatList.Replace(index, val)` / `FloatList.replace(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `ReplaceIntListNode` | `IntList.Replace(index, val)` / `IntList.replace(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `ReplaceObjectListNode` | `ObjectList.Replace(index, val)` / `ObjectList.replace(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `ReplacePlantTypeListNode` | `PlantTypeListVar.Replace(index, val)` / `PlantTypeListVar.replace(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `ReplaceStringListNode` | `StringList.Replace(index, val)` / `StringList.replace(index, val)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `ReplaceZombieTypeListNode` | `ZombieTypeList.Replace(index, val)` / `ZombieTypeList.replace(index, val)` | `_Nodes/Extensions/Entity/zombie_type_list.py` |
+| `FindBoolListValueNode` | `BoolList.TryFindIndex(value)` / `BoolList.find_index(value)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `FindFloatListValueNode` | `FloatList.TryFindIndex(value)` / `FloatList.find_index(value)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `FindIntListValueNode` | `IntList.TryFindIndex(value)` / `IntList.find_index(value)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `FindObjectListValueNode` | `ObjectList.TryFindIndex(value)` / `ObjectList.find_index(value)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `FindPlantTypeListValueNode` | `PlantTypeListVar.TryFindIndex(value)` / `PlantTypeListVar.find_index(value)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `FindStringListValueNode` | `StringList.TryFindIndex(value)` / `StringList.find_index(value)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `FindZombieTypeListValueNode` | `ZombieTypeList.TryFindIndex(value)` / `ZombieTypeList.find_index(value)` | `_Nodes/Extensions/Entity/zombie_type_list.py` |
+| `CopyListValuesNode` | `list.CopyTo(target)` / `list.Clone(name)` | `_Nodes/Extensions/Variables/list_var.py` |
+| `GetSunNode` | `Board.Sun.Add(amount)` / `Board.Sun += amount` / `Board.Sun.Spend(...)` | `_Nodes/Extensions/Game/sun.py` |
+| `GetMoneyNode` | `Board.Money.Add(amount)` / `Board.Money += amount` / `Board.Money.Spend(...)` | `_Nodes/Extensions/Game/money.py` |
+| `ToolTypeValueNode` | `Tool.Value(tool_type)` / automatic `to_port` coercion of `ToolType` | `_Nodes/Extensions/Input/tool.py`, `port_types.py` |
+| `DoOnceNode` | `DoOnce(name)` / `with DoOnce():` / `with do.OnExecute:` | `_Nodes/Extensions/Branching/do_once.py` |
+| `PulseNode` | `Pulse(interval)` / `with Pulse(0.5):` / `with p.OnPulse:` | `_Nodes/Extensions/Branching/pulse.py` |
+| `WaitUntilNode` | `Time.WaitUntil(condition, interval, max_checks)` (.OnComplete, .OnTimeout, .OnFailed) | `_Nodes/Extensions/Time/time_ext.py` |
+| `RepeatUntilNode` | `Time.RepeatUntil(condition, interval, max_checks)` (.OnEach, .OnComplete, .OnTimeout, .OnFailed) | `_Nodes/Extensions/Time/time_ext.py` |
+| `TypedChoiceMenuNode` | `MultiSelectMenu(..., kind=MenuKind.Typed)` | `_Nodes/Extensions/UI/menu.py` |
+| `TypedChoiceOptionNode` | `MultiSelectMenu(..., kind=MenuKind.Typed).option(...)` | `_Nodes/Extensions/UI/menu.py` |
+| `TypedChoiceMergeNode` | `MultiSelectMenu(..., kind=MenuKind.Typed)` (internal option merge) | `_Nodes/Extensions/UI/menu.py` |
+| `GetTravelEntryNode` | `Game.GetTravelEntry()` / `Lawnf.GetTravelEntry()` (with `DeprecationWarning`) | `_Nodes/Extensions/Game/game.py`, `_Nodes/Extensions/Lawn/lawnf.py` |

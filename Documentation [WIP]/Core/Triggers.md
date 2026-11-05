@@ -115,10 +115,15 @@ with pft.Trigger.OnPlantMixed() as hybrid_plant:
 ```
 
 ### `OnWorldPlantEffect`
-Fires when a global plant effect activates. Yields the affected row integer output port:
+Fires when a global plant effect activates (e.g. Ice-shroom freeze or Jalapeno fire lane). Accepts an `EventWorldEffect` enum (default: `EventWorldEffect.IceShroom`). Yields the affected row integer output port:
 ```python
-with pft.Trigger.OnWorldPlantEffect() as affected_row:
+# Listen for Jalapeno row wipe effect
+with pft.Trigger.OnWorldPlantEffect(pft.EventWorldEffect.Jalapeno) as affected_row:
     pft.Lawnf.trigger_jalapeno(row=affected_row, damage=1000)
+
+# Listen for Ice-shroom freeze effect
+with pft.Trigger.OnWorldPlantEffect(pft.EventWorldEffect.IceShroom) as affected_row:
+    pft.InGameUI.display_text("Ice-shroom freeze activated on row ", affected_row)
 ```
 
 ---

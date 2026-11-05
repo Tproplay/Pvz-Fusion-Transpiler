@@ -53,6 +53,9 @@ with pft.Trigger.OnZombieDeath():
     score.add_in_place(10)       # Direct arithmetic node helper
 ```
 
+### Native In-Place Arithmetic
+`score.add_in_place(amount)` emits a native `IntVariableArithmeticNode` (with `operation=EventArithmeticOperation.Add`), mutating the variable storage in a single sequential node step. The underlying IL2CPP node supports all `EventArithmeticOperation` variants (`Add`, `Subtract`, `Multiply`, `Divide`, `Modulo`).
+
 ### Type Conversion
 - `score.to_string(decimals=0)`: Formats the integer value to a string output port.
 
@@ -70,6 +73,9 @@ with pft.Trigger.OnGameStart():
     speed *= 1.5
     speed /= 2.0
 ```
+
+### Native In-Place Arithmetic
+`speed.add_in_place(amount)` emits a native `FloatVariableArithmeticNode` (with `operation=EventArithmeticOperation.Add`), mutating the variable storage sequentially in the engine.
 
 ### Type Conversion
 - `speed.to_string(decimals=2)`: Formats the float to a string output port with specified decimal precision.

@@ -52,3 +52,41 @@ All previously unextended native nodes were implemented and verified across 7 se
    - `Game.GetTravelEntry()` / `Lawnf.GetTravelEntry()` wraps `GetTravelEntryNode` with explicit `DeprecationWarning`.
 
 Detailed documentation and code samples are in [`BASE_GAME_NODES_LIST.md`](./BASE_GAME_NODES_LIST.md) and [`EXTENSIONS_IMPLEMENTATION_LIST.md`](./EXTENSIONS_IMPLEMENTATION_LIST.md).
+
+
+---
+
+## 3. Architecture Refactors & In-Editor UI Controls Alignment
+
+### A. Spec v2 Generic `List[T]` Refactor (F1–F16)
+- **Root-Port Immutability (`_root_port`)**: Implements immutable root output port references to prevent canvas divergence across branching execution contexts.
+- **Single-Node Lookup & Search**: `TryGetValue(index)` returns `(Value, Valid)` ports directly from `Get*ListItemNode`. `TryFindIndex(value)` returns `(Index, Found)` ports directly from `Find*ListValueNode`.
+- **Strict Whitelisting**: Parameterized strictly to supported types (`int`, `float`, `bool`, `str`, `GameObject`, `PlantType`, `ZombieType`).
+- **Table Dispatch**: All collection operations dispatch via `_OPS` dictionary table, keeping each method under 10 lines.
+- **Bound Class Caching**: `_BOUND_LIST_CACHE` guarantees `List[int] is List[int]`.
+- **Operator Traps**: Python runtime operators `len(l)`, `x in l`, `bool(l)` raise descriptive `TypeError`s guiding users to `.Count`, `.Contains()`, etc.
+- **Generic Typing Stubs**: Full IDE auto-completion provided via `list_var.pyi`.
+- **Type Aliases**: Added `ZombieTypeListVar = List[ZombieType]` alongside `IntList`, `FloatList`, `BoolList`, `StringList`, `ObjectList`, and `PlantTypeListVar`.
+
+### B. Phase 11 Structural Renames
+- **Stdlib Shadowing Elimination**:
+  - `typing.py` -> `port_types.py` (resolves conflicts with Python's standard `typing` module).
+  - `Core/uuid.py` -> `Core/node_id.py` (resolves conflicts with Python's standard `uuid` module).
+- **Spelling Normalization**:
+  - `_Nodes/Extentions` -> `_Nodes/Extensions` (with backward-compatible re-export shims).
+- **Consolidated Entity Loops**:
+  - Loops migrated to `_Nodes/Extensions/Loops/for_each.py` (`ForEachPlant`, `ForEachZombie`, `ForEachAllZombies`, `ForEachPlantType`, `ForEachZombieType`).
+
+### C. In-Editor UI Controls Alignment (Slot 12 `ShowEditorUI`)
+- **Engine Reflection Analysis**: Audited all 34 classes in PvZ Fusion IL2CPP assembly overriding virtual method slot 12 (`ShowEditorUI`).
+- **11 New Typed Enums in `_Data/` & `Types`**:
+  - `MusicType`, `SceneType` (extended with 44 `ClassicTowerLawn`, 45 `ClassicTowerLawn2`, 46 `Swamp`), `EventGridObstacle`, `EventZombieStat`, `EventZombieStatus`, `EventBulletProperty`, `EventWorldEffect`, `EventTravelEntryKind`, `EventArithmeticOperation`, `Layer`, `ListStorageOperation`, `BuffType`, and aliased `EventToolType = ToolType`.
+- **Field Validation & Dual-Import Safety**:
+  - `validate_enum_field()` in `node.py` enforces Rule 4 strict enum typing, supports both direct `_Data` and `Types` imports, and issues `DeprecationWarning` on raw int fallback.
+- **14 In-Editor Dropdown Node Classes Updated**:
+  - All 14 `EventSuggestedNode` subclasses declare their field attributes with defaults and serialize cleanly into level event JSON.
+- **Convenience Facades**:
+  - Extended `Zombie` (properties `.hp`, `.speed`, `.size`, `.attack_power`; methods `.set_hp`, `.set_speed`, `.set_stats`, `.get_stats`, `.set_status`, `.get_status`).
+  - Extended `Bullet` (`.modify`, `.set_speed`, `.set_damage`, `.set_scale`, `.set_direction`).
+  - Extended `Lawnf` (`.change_map`, `.change_music`, `.delete_grid_items`, `.remove_travel_entry`).
+  - Extended `Trigger.OnWorldPlantEffect(effect)`.

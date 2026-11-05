@@ -80,6 +80,30 @@ pft.Lawnf.trigger_ice_shroom(duration=5.0)
 pft.Lawnf.trigger_zombie_explosion(row=2, col=4)
 ```
 
+### Map, Music & Grid Clearing (`Lawnf`)
+
+```python
+# Change level background scene
+pft.Lawnf.change_map(pft.SceneType.Night)
+pft.Lawnf.ChangeMap(pft.SceneType.Roof)
+
+# Change background soundtrack
+pft.Lawnf.change_music(pft.MusicType.Night)
+pft.Lawnf.ChangeMusic(pft.MusicType.Boss)
+
+# Clear obstacles from grid cells (Graves, Craters, Ladders, Ice Blocks)
+pft.Lawnf.delete_grid_items(row=1, col=2, kind=pft.EventGridObstacle.Grave)
+pft.Lawnf.DeleteGridItems(row=1, col=2, kind=pft.EventGridObstacle.Crater)
+pft.Lawnf.clear_cell(row=1, col=2)  # Alias for delete_grid_items
+
+# Remove rogue-lite travel buff modifiers
+pft.Lawnf.remove_travel_entry(name_or_id="buff_speed", kind=pft.EventTravelEntryKind.CommonModifier)
+pft.Lawnf.RemoveTravelEntry(name_or_id="buff_boss", kind=pft.EventTravelEntryKind.UltimateModifier)
+
+# Toggle instant defeat upon zombie entering player house
+pft.Lawnf.set_zombie_house_rule(house_entry_defeat=False)
+```
+
 ### Sound Effects
 
 ```python
@@ -195,6 +219,7 @@ boss_zombie = pft.WorldObject.get_bound_zombie(name="首领")
 | `InGameUI` | UI Popups | `display_info_card`, `InfoCard`, `display_text` |
 | `InGameUI` | Cards | `give_plant_card`, `remove_plant_card`, `spawn_dropped_card` |
 | `Lawnf` | Props | `spawn_grave`, `spawn_crater`, `spawn_ladder`, `spawn_particle`, `spawn_ice_block` |
+| `Lawnf` | Map & Music | `change_map`, `change_music`, `delete_grid_items`, `remove_travel_entry`, `set_zombie_house_rule` |
 | `Lawnf` | Effects | `trigger_cherry_explosion`, `trigger_doom_explosion`, `trigger_jalapeno`, `trigger_ice_shroom` |
 | `Lawnf` | Sound | `play_sound` |
 | `Tool` | Tools | `get_held()`, `is_held(tool_type)`, `get_cooldown()`, `set_cooldown()` |

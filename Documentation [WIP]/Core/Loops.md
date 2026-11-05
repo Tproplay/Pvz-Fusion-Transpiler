@@ -50,11 +50,48 @@ with pft.Trigger.OnKeyDown(KeyCode.Space):
         pft.Board.Money += 10
 ```
 
+
+---
+
+## 3. Entity & Collection Iteration (`Loops/for_each.py`)
+
+In addition to numeric loops, the transpiler provides high-level iteration context managers over live entities and generic collections:
+
+### Looping Over Plants & Zombies
+```python
+# Iterate through all living plants
+all_plants = pft.Lawnf.get_all_plants()
+with pft.ForEachPlant(all_plants) as plant:
+    plant.heal(500)
+
+# Iterate through all living zombies on the board directly
+with pft.ForEachAllZombies() as zombie:
+    zombie.damage(200)
+
+# Iterate through a specific zombie collection
+with pft.ForEachZombie(zombie_list) as zombie:
+    zombie.set_speed(0.5)
+```
+
+### Generic `List[T]` Iteration
+```python
+my_list = pft.List[int]("MyScores")
+with my_list.ForEach() as (item, idx):
+    pft.InGameUI.display_text(pft.String.Cast(item))
+```
+
 ---
 
 ## Quick Reference
 
-| Class | Syntax | Key Properties | Description |
+| Class / Method | Syntax | Iteration Variable | Description |
 | :--- | :--- | :--- | :--- |
-| `For` | `with For(count) as loop:` | `loop.index` | Loops `count` times synchronously |
-| `While` | `with While(condition):` | — | Loops while `condition` remains `True` |
+| `For` | `with For(count) as loop:` | `loop.index` (Int) | Fixed-count synchronous loop |
+| `While` | `with While(condition):` | — | Condition-based synchronous loop |
+| `ForEachPlant` | `with ForEachPlant(plant_list) as plant:` | `Plant` wrapper | Loops over entities in a plant list |
+| `ForEachZombie` | `with ForEachZombie(zombie_list) as zombie:` | `Zombie` wrapper | Loops over entities in a zombie list |
+| `ForEachAllZombies` | `with ForEachAllZombies() as zombie:` | `Zombie` wrapper | Loops over all active zombies on the lawn |
+| `ForEachPlantType` | `with ForEachPlantType(type_list) as ptype:` | `PlantType` port | Loops over plant type collection |
+| `ForEachZombieType`| `with ForEachZombieType(type_list) as ztype:` | `ZombieType` port | Loops over zombie type collection |
+| `List[T].ForEach` | `with my_list.ForEach() as (item, idx):` | `(T, Int)` | Iterates generic list variable elements |
+

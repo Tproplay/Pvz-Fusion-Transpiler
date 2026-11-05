@@ -7,7 +7,7 @@ Welcome to the documentation suite for the **PvZ Fusion Transpiler** (`PvZ_Fusio
 ## 📖 Documentation Index
 
 ### Guides & Architecture
-- [**AI Agent Workflow Guide**](AI_AGENT_WORKFLOW.md) — 6 non-negotiable rules, agent prompt templates, git workflow, and developer instructions for AI agents and forks.
+- [**AI Agent Workflow Guide**](AI_AGENT_WORKFLOW.md) — 11 binding project rules, agent prompt templates, git workflow, and developer instructions for AI agents and forks.
 - [**System Architecture & Design**](ARCHITECTURE.md) — 3-layer architecture, reflection engine, trigger auto-wiring stack, and JSON serialization format.
 - [**Contributing Guidelines**](CONTRIBUTING.md) — Environment setup, dependency installation, running Pyright and unit tests, and commit guidelines.
 - [**WIP Roadmap & Node Status**](WIP_ROADMAP.md) — Implemented nodes, extension mappings, and nodes reserved for optimizer/compiler internals.
