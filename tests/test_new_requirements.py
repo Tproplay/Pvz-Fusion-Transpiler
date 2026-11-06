@@ -197,10 +197,16 @@ class TestNewRequirements(unittest.TestCase):
 
     # Requirement: AdvBuff, UltiBuff, TravelDebuff enums and TravelBuffType updates
     def test_buff_and_debuff_enums(self):
-        # 1. AdvBuff membership and values
+        # 1. AdvBuff membership and values (English names, docstrings, and Chinese aliases)
+        self.assertEqual(AdvBuff.CallToArms.value, 0)
+        self.assertEqual(AdvBuff.BlessingOfEndurance.value, 15007)
+        self.assertEqual(AdvBuff.SPEvolution_DoomGatling.value, 7000)
+        self.assertEqual(AdvBuff.Ascend_Inferno.value, 12000)
+        self.assertEqual(AdvBuff.VoodooDummy_A.value, 13003)
         self.assertEqual(AdvBuff.撒豆成兵.value, 0)
         self.assertEqual(AdvBuff.Shooting_磁坚祝福.value, 15007)
-        self.assertIs(AdvBuff.ADV_ENCHANTRESS_SUBSPECIES, AdvBuff.撒豆成兵)
+        self.assertIs(AdvBuff.CallToArms, AdvBuff.撒豆成兵)
+        self.assertIs(AdvBuff.ADV_ENCHANTRESS_SUBSPECIES, AdvBuff.CallToArms)
 
         # 2. UltiBuff membership and values
         self.assertEqual(UltiBuff.嗜血如命.value, 0)
@@ -213,6 +219,8 @@ class TestNewRequirements(unittest.TestCase):
         self.assertIs(TravelDebuff.DEBUFF_SUN_RESET_TO_0, TravelDebuff.阳光归零)
 
         # 4. TravelBuffType combined enum
+        self.assertEqual(TravelBuffType.CallToArms.value, ("AdvBuff", 0))
+        self.assertEqual(TravelBuffType.BlessingOfEndurance.value, ("AdvBuff", 15007))
         self.assertEqual(TravelBuffType.撒豆成兵.value, ("AdvBuff", 0))
         self.assertEqual(TravelBuffType.嗜血如命.value, ("UltiBuff", 0))
         self.assertEqual(TravelBuffType.二爷无视植物.value, ("TravelDebuff", 0))

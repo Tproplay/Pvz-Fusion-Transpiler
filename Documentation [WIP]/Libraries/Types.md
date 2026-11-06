@@ -217,10 +217,16 @@ Keyboard keycodes for `Trigger.OnKeyDown`:
 
 ## 4. Buff Registries (`AdvBuff`, `UltiBuff`, `TravelDebuff`)
 
-- **`AdvBuff`**: 232 advanced travel buffs (e.g. `AdvBuff.撒豆成兵`, `AdvBuff.核能威慑`, `AdvBuff.UltimateDoomGatling`).
+- **`AdvBuff`**: 232 advanced travel buffs with official English PascalCase names, full in-editor effect descriptions in attribute docstrings, and Chinese / legacy aliases (e.g. `AdvBuff.CallToArms`, `AdvBuff.Overclock`, `AdvBuff.Overkill`, `AdvBuff.SPEvolution_DoomGatling`, `AdvBuff.Ascend_Inferno`, `AdvBuff.BlessingOfEndurance`).
 - **`UltiBuff`**: 56 ultimate buffs (e.g. `UltiBuff.嗜血如命`, `UltiBuff.流星雨`, `UltiBuff.究炉恢复`).
 - **`TravelDebuff`**: 143 travel debuffs (e.g. `TravelDebuff.二爷无视植物`, `TravelDebuff.阳光归零`).
-- **`TravelBuffType`**: Unified composite enum linking all buff/debuff types with backward-compatible English and Chinese identifiers.
+- **`TravelBuffType`**: Unified composite enum linking all buff/debuff types with bilingual English and Chinese identifiers.
+
+```python
+# Granting an advanced travel buff
+pft.Game.get_buff(AdvBuff.CallToArms)
+pft.Game.get_buff(AdvBuff.Overkill)
+```
 
 ---
 
