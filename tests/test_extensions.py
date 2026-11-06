@@ -269,7 +269,7 @@ class TestExtensions(unittest.TestCase):
 
     def test_game_buff_and_lifecycle(self):
         with Trigger.OnGameStart():
-            Game.get_buff(TravelBuffType.ADV_ENCHANTRESS_SUBSPECIES)
+            Game.get_buff(TravelBuffType.CallToArms)
             Game.trigger_game_over("Defeated!")
             Game.trigger_game_win()
 
@@ -288,7 +288,7 @@ class TestExtensions(unittest.TestCase):
             Lawnf.play_sound(SoundType.Tap)
             Lawnf.trigger_game_over("Lost!")
             Lawnf.trigger_game_win()
-            Lawnf.get_buff(TravelBuffType.ADV_OBSIDIAN_SPIKE_DAMAGE)
+            Lawnf.get_buff(TravelBuffType.PathOfPain)
 
             closest_z = Lawnf.get_closest_zombie(1, 2)
             self.assertIsInstance(closest_z, Zombie)

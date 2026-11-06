@@ -197,37 +197,34 @@ class TestNewRequirements(unittest.TestCase):
 
     # Requirement: AdvBuff, UltiBuff, TravelDebuff enums and TravelBuffType updates
     def test_buff_and_debuff_enums(self):
-        # 1. AdvBuff membership and values (English names, docstrings, and Chinese aliases)
+        # 1. AdvBuff membership and values (English PascalCase names & docstrings)
         self.assertEqual(AdvBuff.CallToArms.value, 0)
         self.assertEqual(AdvBuff.BlessingOfEndurance.value, 15007)
         self.assertEqual(AdvBuff.SPEvolution_DoomGatling.value, 7000)
         self.assertEqual(AdvBuff.Ascend_Inferno.value, 12000)
         self.assertEqual(AdvBuff.VoodooDummy_A.value, 13003)
-        self.assertEqual(AdvBuff.撒豆成兵.value, 0)
-        self.assertEqual(AdvBuff.Shooting_磁坚祝福.value, 15007)
-        self.assertIs(AdvBuff.CallToArms, AdvBuff.撒豆成兵)
-        self.assertIs(AdvBuff.ADV_ENCHANTRESS_SUBSPECIES, AdvBuff.CallToArms)
+        self.assertEqual(len(AdvBuff.__members__), 232)
 
         # 2. UltiBuff membership and values
         self.assertEqual(UltiBuff.嗜血如命.value, 0)
         self.assertEqual(UltiBuff.究炉恢复.value, 55)
-        self.assertIs(UltiBuff.ULTI_CHERRIZILLA_RECOVERY, UltiBuff.嗜血如命)
+        self.assertEqual(len(UltiBuff.__members__), 56)
 
         # 3. TravelDebuff membership and values
         self.assertEqual(TravelDebuff.二爷无视植物.value, 0)
         self.assertEqual(TravelDebuff.Shooting_命运无常.value, 10044)
-        self.assertIs(TravelDebuff.DEBUFF_SUN_RESET_TO_0, TravelDebuff.阳光归零)
+        self.assertEqual(len(TravelDebuff.__members__), 143)
 
         # 4. TravelBuffType combined enum
         self.assertEqual(TravelBuffType.CallToArms.value, ("AdvBuff", 0))
         self.assertEqual(TravelBuffType.BlessingOfEndurance.value, ("AdvBuff", 15007))
-        self.assertEqual(TravelBuffType.撒豆成兵.value, ("AdvBuff", 0))
         self.assertEqual(TravelBuffType.嗜血如命.value, ("UltiBuff", 0))
         self.assertEqual(TravelBuffType.二爷无视植物.value, ("TravelDebuff", 0))
+        self.assertEqual(len(TravelBuffType.__members__), 431)
 
         # 5. nodes.get_travel_buff handling with all enum types
         _ctx.clear()
-        node_adv = pft.nodes.get_travel_buff(AdvBuff.撒豆成兵)
+        node_adv = pft.nodes.get_travel_buff(AdvBuff.CallToArms)
         self.assertIsNotNone(node_adv.buff)
         self.assertEqual(node_adv.buff.asset_class, "AdvBuff")
         self.assertEqual(node_adv.buff.value, 0)
@@ -252,7 +249,7 @@ class TestNewRequirements(unittest.TestCase):
         self.assertEqual(dump_debuff["data"]["value__"], 0)
 
         # 6. High level Game.get_buff & Lawnf.get_buff
-        pft.Game.get_buff(AdvBuff.核能威慑)
+        pft.Game.get_buff(AdvBuff.Doomsday)
         pft.Lawnf.get_buff(UltiBuff.流星雨)
 
     def test_sun_money_add_extensions(self):
