@@ -7,8 +7,8 @@ class PlantToObjectNode(EventSuggestedNode):
 
     def __init__(self):
         super().__init__()
-        self.port_input_plant_Plant : Port = self.create_port("植物", PortDirection.Input, PortType.Plant)
-        self.port_output_gameobject_GameObject : Port = self.create_port("对象", PortDirection.Output, PortType.GameObject)
+        self.port_input_plant_Plant : Port = self.create_port("Plant", PortDirection.Input, PortType.Plant)
+        self.port_output_gameobject_GameObject : Port = self.create_port("Object", PortDirection.Output, PortType.GameObject)
 
 
 __all__ = ["PlantToObjectNode"]

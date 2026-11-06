@@ -7,8 +7,8 @@ class ObjectToStringNode(EventSuggestedNode):
 
     def __init__(self):
         super().__init__()
-        self.port_input_gameobject_GameObject : Port = self.create_port("对象", PortDirection.Input, PortType.GameObject)
-        self.port_output_string_String : Port = self.create_port("文本", PortDirection.Output, PortType.String)
+        self.port_input_gameobject_GameObject : Port = self.create_port("Object", PortDirection.Input, PortType.GameObject)
+        self.port_output_string_String : Port = self.create_port("Text", PortDirection.Output, PortType.String)
 
 
 __all__ = ["ObjectToStringNode"]

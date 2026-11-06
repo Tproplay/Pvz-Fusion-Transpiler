@@ -7,9 +7,12 @@ class FloatToStringNode(EventNodeBase):
 
     def __init__(self):
         super().__init__()
-        self.port_input_float_Value : Port = self.create_port("数值", PortDirection.Input, PortType.Float)
-        self.port_input_int_Decimals : Port = self.create_port("小数位数", PortDirection.Input, PortType.Int)
-        self.port_output_string_String : Port = self.create_port("字符串", PortDirection.Output, PortType.String)
+        self.value_PortName: str = "Value"
+        self.decimals_PortName: str = "Decimal Place"
+        self.result_PortName: str = "String"
+        self.port_input_float_Value : Port = self.create_port("Value", PortDirection.Input, PortType.Float)
+        self.port_input_int_Decimals : Port = self.create_port("Decimal Place", PortDirection.Input, PortType.Int)
+        self.port_output_string_String : Port = self.create_port("String", PortDirection.Output, PortType.String)
 
 
 __all__ = ["FloatToStringNode"]

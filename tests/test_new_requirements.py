@@ -355,6 +355,47 @@ class TestNewRequirements(unittest.TestCase):
                 self.assertTrue(len(w2) >= 1)
                 self.assertTrue(issubclass(w2[-1].category, DeprecationWarning))
 
+    def test_type_convert_node_ports_and_display_text(self):
+        from PvZ_Fusion_Transpiler.Core.connection_manager import ConnectionManager
+        _ctx.clear()
+        ConnectionManager.clear()
+        with pft.Trigger.OnGameStart():
+            pft.InGameUI.display_text(5)
+
+        # Check IntToStringNode ports & connections
+        int_to_str_nodes = [n for n in _ctx.nodes if n.node_type == "IntToStringNode"]
+        self.assertEqual(len(int_to_str_nodes), 1)
+        node = int_to_str_nodes[0]
+        self.assertEqual(node.port_input_int_Value.name, "Value")
+        self.assertEqual(node.port_output_string_String.name, "String")
+
+        # Check dump_data does not serialize port into 'value'
+        dumped = node.dump_data()
+        self.assertNotIn("value", dumped)
+
+        # Check connections
+        all_conns = ConnectionManager.get_connections()
+        incoming = [c for c in all_conns if c.target_node.id == node.id]
+        self.assertEqual(len(incoming), 1)
+        self.assertEqual(incoming[0].target_port.name, "Value")
+
+        outgoing = [c for c in all_conns if c.source_node.id == node.id]
+        self.assertEqual(len(outgoing), 1)
+        self.assertEqual(outgoing[0].source_port.name, "String")
+        self.assertEqual(outgoing[0].target_port.name, "文本")
+
+        # Verify other conversion node port names
+        from PvZ_Fusion_Transpiler._Nodes.Original.TypeConvert.float_to_string_node import FloatToStringNode
+        from PvZ_Fusion_Transpiler._Nodes.Original.TypeConvert.plant_to_object_node import PlantToObjectNode
+        f2s = FloatToStringNode()
+        self.assertEqual(f2s.port_input_float_Value.name, "Value")
+        self.assertEqual(f2s.port_input_int_Decimals.name, "Decimal Place")
+        self.assertEqual(f2s.port_output_string_String.name, "String")
+
+        p2o = PlantToObjectNode()
+        self.assertEqual(p2o.port_input_plant_Plant.name, "Plant")
+        self.assertEqual(p2o.port_output_gameobject_GameObject.name, "Object")
+
 
 if __name__ == "__main__":
     unittest.main()

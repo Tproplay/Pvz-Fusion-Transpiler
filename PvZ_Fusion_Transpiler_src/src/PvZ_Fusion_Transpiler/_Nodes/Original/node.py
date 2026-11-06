@@ -262,7 +262,7 @@ class Node(ABC):
         elif node_type == "ToolTypeValueNode":
             tt = getattr(self, "toolType", getattr(self, "value", 0))
             data["toolType"] = _sanitize_for_json(tt)
-        elif hasattr(self, "value"):
+        elif hasattr(self, "value") and not isinstance(getattr(self, "value"), Port):
             data["value"] = _sanitize_for_json(getattr(self, "value"))
         elif node_type.endswith("ValueNode"):
             if "Int" in node_type:

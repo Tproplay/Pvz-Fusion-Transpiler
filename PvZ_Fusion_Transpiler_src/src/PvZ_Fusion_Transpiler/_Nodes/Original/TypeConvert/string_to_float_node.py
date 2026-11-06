@@ -7,9 +7,9 @@ class StringToFloatNode(EventSuggestedNode):
 
     def __init__(self):
         super().__init__()
-        self.port_input_string_String : Port = self.create_port("字符串", PortDirection.Input, PortType.String)
-        self.port_output_float_Value : Port = self.create_port("值", PortDirection.Output, PortType.Float)
-        self.port_output_bool_Valid : Port = self.create_port("有效", PortDirection.Output, PortType.Bool)
+        self.port_input_string_String : Port = self.create_port("String", PortDirection.Input, PortType.String)
+        self.port_output_float_Value : Port = self.create_port("Value", PortDirection.Output, PortType.Float)
+        self.port_output_bool_Valid : Port = self.create_port("Valid", PortDirection.Output, PortType.Bool)
 
 
 __all__ = ["StringToFloatNode"]

@@ -7,8 +7,8 @@ class IntToBoolNode(EventSuggestedNode):
 
     def __init__(self):
         super().__init__()
-        self.port_input_int_Value : Port = self.create_port("数值", PortDirection.Input, PortType.Int)
-        self.port_output_bool_Bool : Port = self.create_port("布尔值", PortDirection.Output, PortType.Bool)
+        self.port_input_int_Value : Port = self.create_port("Value", PortDirection.Input, PortType.Int)
+        self.port_output_bool_Bool : Port = self.create_port("Boolean", PortDirection.Output, PortType.Bool)
 
 
 __all__ = ["IntToBoolNode"]

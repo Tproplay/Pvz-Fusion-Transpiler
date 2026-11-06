@@ -7,8 +7,10 @@ class FloatToIntNode(EventNodeBase):
 
     def __init__(self):
         super().__init__()
-        self.port_input_float_Float : Port = self.create_port("浮点数", PortDirection.Input, PortType.Float)
-        self.port_output_int_Int : Port = self.create_port("整数", PortDirection.Output, PortType.Int)
+        self.float_PortName: str = "Float"
+        self.int_PortName: str = "Integer"
+        self.port_input_float_Float : Port = self.create_port("Float", PortDirection.Input, PortType.Float)
+        self.port_output_int_Int : Port = self.create_port("Integer", PortDirection.Output, PortType.Int)
 
 
 __all__ = ["FloatToIntNode"]

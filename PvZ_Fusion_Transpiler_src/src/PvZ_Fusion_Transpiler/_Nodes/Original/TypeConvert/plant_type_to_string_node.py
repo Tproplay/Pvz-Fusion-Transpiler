@@ -7,8 +7,8 @@ class PlantTypeToStringNode(EventSuggestedNode):
 
     def __init__(self):
         super().__init__()
-        self.port_input_planttype_Value : Port = self.create_port("值", PortDirection.Input, PortType.PlantType)
-        self.port_output_string_String : Port = self.create_port("字符串", PortDirection.Output, PortType.String)
+        self.port_input_planttype_Value : Port = self.create_port("Value", PortDirection.Input, PortType.PlantType)
+        self.port_output_string_String : Port = self.create_port("String", PortDirection.Output, PortType.String)
 
 
 __all__ = ["PlantTypeToStringNode"]

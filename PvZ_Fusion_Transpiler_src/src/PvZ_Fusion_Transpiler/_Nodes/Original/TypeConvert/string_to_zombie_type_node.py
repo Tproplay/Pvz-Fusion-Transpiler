@@ -7,9 +7,9 @@ class StringToZombieTypeNode(EventSuggestedNode):
 
     def __init__(self):
         super().__init__()
-        self.port_input_string_String : Port = self.create_port("字符串", PortDirection.Input, PortType.String)
-        self.port_output_zombietype_Value : Port = self.create_port("值", PortDirection.Output, PortType.ZombieType)
-        self.port_output_bool_Valid : Port = self.create_port("有效", PortDirection.Output, PortType.Bool)
+        self.port_input_string_String : Port = self.create_port("String", PortDirection.Input, PortType.String)
+        self.port_output_zombietype_Value : Port = self.create_port("Value", PortDirection.Output, PortType.ZombieType)
+        self.port_output_bool_Valid : Port = self.create_port("Valid", PortDirection.Output, PortType.Bool)
 
 
 __all__ = ["StringToZombieTypeNode"]
