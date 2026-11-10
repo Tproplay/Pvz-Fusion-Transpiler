@@ -1,0 +1,126 @@
+{
+  "eventNodeGraph": {
+    "nodes": [
+      {
+        "rid": "@rid_0"
+      },
+      {
+        "rid": "@rid_1"
+      },
+      {
+        "rid": "@rid_2"
+      },
+      {
+        "rid": "@rid_3"
+      },
+      {
+        "rid": "@rid_4"
+      }
+    ],
+    "connections": [
+      {
+        "sourceNodeId": "",
+        "sourcePortName": "",
+        "targetNodeId": "",
+        "targetPortName": ""
+      },
+      {
+        "sourceNodeId": "@node_1",
+        "sourcePortName": "值",
+        "targetNodeId": "@node_2",
+        "targetPortName": "Value"
+      },
+      {
+        "sourceNodeId": "@node_0",
+        "sourcePortName": "触发",
+        "targetNodeId": "@node_3",
+        "targetPortName": "触发"
+      },
+      {
+        "sourceNodeId": "@node_2",
+        "sourcePortName": "String",
+        "targetNodeId": "@node_3",
+        "targetPortName": "文本"
+      },
+      {
+        "sourceNodeId": "@node_4",
+        "sourcePortName": "值",
+        "targetNodeId": "@node_3",
+        "targetPortName": "持续时间"
+      }
+    ],
+    "variables": [],
+    "executionVersion": 1,
+    "graphId": {
+      "$regex": "^[0-9a-f-]{32,36}$"
+    }
+  },
+  "references": {
+    "version": 2,
+    "RefIds": [
+      {
+        "rid": "@rid_0",
+        "type": {
+          "class": "OnGameStartNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_0",
+          "nodeType": "OnGameStartNode"
+        }
+      },
+      {
+        "rid": "@rid_1",
+        "type": {
+          "class": "IntValueNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_1",
+          "nodeType": "IntValueNode",
+          "value": 5
+        }
+      },
+      {
+        "rid": "@rid_2",
+        "type": {
+          "class": "IntToStringNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_2",
+          "nodeType": "IntToStringNode"
+        }
+      },
+      {
+        "rid": "@rid_3",
+        "type": {
+          "class": "ShowTextNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_3",
+          "nodeType": "ShowTextNode",
+          "displayText": "示例文本"
+        }
+      },
+      {
+        "rid": "@rid_4",
+        "type": {
+          "class": "FloatValueNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_4",
+          "nodeType": "FloatValueNode",
+          "value": 3.0
+        }
+      }
+    ]
+  }
+}

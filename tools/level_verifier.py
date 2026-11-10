@@ -12,7 +12,9 @@ import io
 import json
 import math
 import os
+import re
 import sys
+import tempfile
 import unittest
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -731,11 +733,424 @@ class LevelTestCase(unittest.TestCase):
     ) -> ComparisonResult:
         return assert_level_matches(code_or_file, expected_level_or_file, **kwargs)
 
+    def assert_snapshot_matches(
+        self,
+        code_or_file: Union[str, Path, Callable[[], Any]],
+        expected_snapshot_or_file: Union[str, Path, Dict[str, Any]],
+        **kwargs: Any,
+    ) -> SnapshotVerificationResult:
+        return assert_snapshot_matches(code_or_file, expected_snapshot_or_file, **kwargs)
+
     def assert_no_floating_nodes(self, graph: LevelGraph) -> None:
         findings = [f for f in graph.analyze_optimizations() if f.kind == "FLOATING_NODE"]
         if findings:
             details = "\n".join(f"  - {f.message}" for f in findings)
             self.fail(f"Graph has {len(findings)} floating nodes:\n{details}")
+
+
+# =====================================================================
+# STRIPPED SNAPSHOT FORMAT & REFERENTIAL REGEX VERIFIER
+# =====================================================================
+
+_STRIPPED_META_KEYS = {
+    "position",
+    "m_Position",
+    "inputDefaults",
+    "m_InputDefaults",
+    "nodeName",
+    "m_Name",
+}
+
+_SYMBOL_FIELDS = {"nodeId", "variableId", "referencedNodeIds", "asset"}
+
+
+def _is_regex_matcher(val: Any) -> bool:
+    return isinstance(val, dict) and set(val.keys()) == {"$regex"} and isinstance(val["$regex"], str)
+
+
+def _match_pattern_val(exp_val: Any, act_val: Any) -> bool:
+    """Compare value or regex pattern dictionary against actual serialized value."""
+    if _is_regex_matcher(exp_val):
+        if act_val is None:
+            return False
+        return re.fullmatch(exp_val["$regex"], str(act_val)) is not None
+    if isinstance(exp_val, dict) and isinstance(act_val, dict):
+        if set(exp_val.keys()) != set(act_val.keys()):
+            return False
+        return all(_match_pattern_val(exp_val[k], act_val[k]) for k in exp_val)
+    if isinstance(exp_val, list) and isinstance(act_val, list):
+        if len(exp_val) != len(act_val):
+            return False
+        return all(_match_pattern_val(a, b) for a, b in zip(exp_val, act_val))
+    return _values_match(exp_val, act_val)
+
+
+def _clean_ref_data_for_snapshot(raw_data: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        k: v
+        for k, v in raw_data.items()
+        if k not in _STRIPPED_META_KEYS and not k.endswith("_PortName")
+    }
+
+
+def build_and_export_from_code(
+    code_or_path: Union[str, Path, Callable[[], Any]],
+) -> Tuple[Dict[str, Any], LevelGraph, str]:
+    """Execute Python DSL code in isolation and export to a temporary JSON file cleanly."""
+    import PvZ_Fusion_Transpiler as pft
+
+    with isolate_transpiler_context():
+        orig_export = _ctx.export
+        orig_pft_export = pft.export
+        # Prevent script-embedded export() calls from overwriting files on disk during tests
+        _ctx.export = lambda filepath=None: None  # type: ignore
+        pft.export = lambda filepath=None: None  # type: ignore
+        try:
+            if callable(code_or_path):
+                desc = getattr(code_or_path, "__name__", "callable")
+                code_or_path()
+            else:
+                path = Path(code_or_path) if isinstance(code_or_path, (str, Path)) and os.path.exists(str(code_or_path)) else None
+                if path and path.is_file():
+                    desc = str(path)
+                    code_text = path.read_text(encoding="utf-8")
+                    namespace = {"__file__": str(path), "__name__": "__main__"}
+                    exec(compile(code_text, str(path), "exec"), namespace)
+                else:
+                    code_str = str(code_or_path)
+                    desc = "Python Code Snippet"
+                    namespace = {"__name__": "__main__"}
+                    exec(compile(code_str, "<string>", "exec"), namespace)
+        finally:
+            _ctx.export = orig_export  # type: ignore
+            pft.export = orig_pft_export  # type: ignore
+
+        graph = LevelGraph.from_context(source_desc=desc)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            out_path = os.path.join(tmpdir, "level_build.json")
+            _ctx.export(filepath=out_path)
+            with open(out_path, "r", encoding="utf-8") as f:
+                exported_dict = json.load(f)
+
+        return exported_dict, graph, desc
+
+
+@dataclass
+class SnapshotVerificationResult:
+    """Result of verifying an exported level JSON against a stripped snapshot template."""
+    matched: bool
+    actual_desc: str
+    expected_desc: str
+    format_errors: List[str] = field(default_factory=list)
+    missing_refs: List[str] = field(default_factory=list)
+    extra_refs: List[str] = field(default_factory=list)
+    missing_connections: List[str] = field(default_factory=list)
+    extra_connections: List[str] = field(default_factory=list)
+    optimization_findings: List[OptimizationFinding] = field(default_factory=list)
+
+    def render_report(self) -> str:
+        lines: List[str] = [
+            "=" * 70,
+            "STRIPPED SNAPSHOT VERIFICATION REPORT",
+            "=" * 70,
+            f"Actual Source:   {self.actual_desc}",
+            f"Expected JSON:   {self.expected_desc}",
+            f"Status:          {'PASS (FORMAT & GRAPH MATCH)' if self.matched else 'FAIL (MISMATCH)'}",
+            "-" * 70,
+        ]
+        for title, items in [
+            ("Format Errors", self.format_errors),
+            ("Missing RefIds", self.missing_refs),
+            ("Unexpected RefIds", self.extra_refs),
+            ("Missing Connections", self.missing_connections),
+            ("Unexpected Connections", self.extra_connections),
+        ]:
+            if items:
+                lines.append(f"{title} ({len(items)}):")
+                for item in items:
+                    lines.append(f"  [-] {item}")
+        if self.optimization_findings:
+            lines.append(f"Optimization Findings ({len(self.optimization_findings)}):")
+            for opt in self.optimization_findings:
+                lines.append(f"  [*] [{opt.kind}] {opt.message}")
+        else:
+            lines.append("Optimization: Graph is clean (0 floating nodes, 0 dead triggers).")
+        lines.append("=" * 70)
+        return "\n".join(lines)
+
+
+def _ref_items_payload_compatible(exp_item: Dict[str, Any], act_item: Dict[str, Any]) -> bool:
+    """Check if RefId type metadata and non-symbolic data fields match."""
+    if not _match_pattern_val(exp_item.get("type", {}), act_item.get("type", {})):
+        return False
+    exp_data = exp_item.get("data", {})
+    act_data = _clean_ref_data_for_snapshot(act_item.get("data", {}))
+    if set(exp_data.keys()) != set(act_data.keys()):
+        return False
+    for k, ev in exp_data.items():
+        if k in _SYMBOL_FIELDS:
+            continue
+        if not _match_pattern_val(ev, act_data.get(k)):
+            return False
+    return True
+
+
+def _bind_symbol(sym: Any, val: Any, bindings: Dict[str, Any], reverse: Dict[str, Any]) -> bool:
+    if isinstance(sym, str) and sym.startswith("@"):
+        if sym.startswith("@rid_"):
+            if not isinstance(val, int) or isinstance(val, bool):
+                return False
+        else:
+            if not isinstance(val, str) or not re.fullmatch(r"[0-9a-f-]{32,36}", val):
+                return False
+        if sym in bindings:
+            return bindings[sym] == val
+        # Enforce 1-to-1 bijection per symbol namespace
+        prefix = sym.split("_", 1)[0]
+        rev_key = f"{prefix}:{val}"
+        if rev_key in reverse:
+            return False
+        bindings[sym] = val
+        reverse[rev_key] = sym
+        return True
+    return _match_pattern_val(sym, val)
+
+
+def _check_resolved_links(
+    exp_refs: List[Dict[str, Any]],
+    act_refs: List[Dict[str, Any]],
+    exp_to_act: Dict[int, int],
+    bindings: Dict[str, Any],
+    exp_graph: Dict[str, Any],
+    act_graph: Dict[str, Any],
+) -> Tuple[List[str], List[str], List[str]]:
+    """Verify asset links, referencedNodeIds, nodes, variables, and connections under bindings."""
+    fmt_errors: List[str] = []
+    # Check asset & referencedNodeIds inside mapped RefIds
+    for e_idx, a_idx in exp_to_act.items():
+        e_data = exp_refs[e_idx].get("data", {})
+        a_data = act_refs[a_idx].get("data", {})
+        if "asset" in e_data:
+            e_rid = e_data["asset"].get("rid")
+            a_rid = a_data.get("asset", {}).get("rid")
+            if bindings.get(e_rid, e_rid) != a_rid:
+                fmt_errors.append(f"Asset rid mismatch on {e_data.get('nodeType')}: expected {e_rid}, got {a_rid}")
+        if "referencedNodeIds" in e_data:
+            expected_nids = {bindings.get(n, n) for n in e_data["referencedNodeIds"]}
+            actual_nids = set(a_data.get("referencedNodeIds", []))
+            if expected_nids != actual_nids:
+                fmt_errors.append(f"referencedNodeIds mismatch: expected {sorted(expected_nids)}, got {sorted(actual_nids)}")
+
+    # Check eventNodeGraph.nodes and variables
+    exp_node_rids = {bindings.get(n["rid"], n["rid"]) for n in exp_graph.get("nodes", [])}
+    act_node_rids = {n["rid"] for n in act_graph.get("nodes", [])}
+    if exp_node_rids != act_node_rids:
+        fmt_errors.append(f"eventNodeGraph.nodes RID mismatch: expected {sorted(exp_node_rids)}, got {sorted(act_node_rids)}")
+
+    exp_var_rids = {bindings.get(v["rid"], v["rid"]) for v in exp_graph.get("variables", [])}
+    act_var_rids = {v["rid"] for v in act_graph.get("variables", [])}
+    if exp_var_rids != act_var_rids:
+        fmt_errors.append(f"eventNodeGraph.variables RID mismatch: expected {sorted(exp_var_rids)}, got {sorted(act_var_rids)}")
+
+    # Check connections
+    act_node_type_by_id = {
+        r.get("data", {}).get("nodeId"): r.get("data", {}).get("nodeType", "Unknown")
+        for r in act_refs
+        if r.get("data", {}).get("nodeId")
+    }
+    exp_node_type_by_sym = {
+        r.get("data", {}).get("nodeId"): r.get("data", {}).get("nodeType", "Unknown")
+        for r in exp_refs
+        if r.get("data", {}).get("nodeId")
+    }
+
+    exp_conns = [c for c in exp_graph.get("connections", []) if c.get("sourceNodeId")]
+    act_conns = [c for c in act_graph.get("connections", []) if c.get("sourceNodeId")]
+
+    resolved_exp_set: Dict[Tuple[str, str, str, str], int] = {}
+    for c in exp_conns:
+        sig = (
+            bindings.get(c["sourceNodeId"], c["sourceNodeId"]),
+            c.get("sourcePortName", ""),
+            bindings.get(c["targetNodeId"], c["targetNodeId"]),
+            c.get("targetPortName", ""),
+        )
+        resolved_exp_set[sig] = resolved_exp_set.get(sig, 0) + 1
+
+    actual_set: Dict[Tuple[str, str, str, str], int] = {}
+    for c in act_conns:
+        sig = (
+            c.get("sourceNodeId", ""),
+            c.get("sourcePortName", ""),
+            c.get("targetNodeId", ""),
+            c.get("targetPortName", ""),
+        )
+        actual_set[sig] = actual_set.get(sig, 0) + 1
+
+    missing_conns: List[str] = []
+    for sig, cnt in resolved_exp_set.items():
+        if actual_set.get(sig, 0) < cnt:
+            s_t = act_node_type_by_id.get(sig[0], exp_node_type_by_sym.get(sig[0], sig[0]))
+            t_t = act_node_type_by_id.get(sig[2], exp_node_type_by_sym.get(sig[2], sig[2]))
+            missing_conns.append(f"{s_t}[{sig[1]!r}] -> {t_t}[{sig[3]!r}]")
+
+    extra_conns: List[str] = []
+    for sig, cnt in actual_set.items():
+        if resolved_exp_set.get(sig, 0) < cnt:
+            s_t = act_node_type_by_id.get(sig[0], sig[0])
+            t_t = act_node_type_by_id.get(sig[2], sig[2])
+            extra_conns.append(f"{s_t}[{sig[1]!r}] -> {t_t}[{sig[3]!r}]")
+
+    return fmt_errors, missing_conns, extra_conns
+
+
+def verify_snapshot_matches(
+    actual_dict: Dict[str, Any],
+    expected_template: Dict[str, Any],
+    actual_desc: str = "Exported Level",
+    expected_desc: str = "Expected Snapshot",
+) -> SnapshotVerificationResult:
+    """Verify exported JSON structure, regex matchers, symbolic RefIds, and connections."""
+    format_errors: List[str] = []
+
+    if "eventNodeGraph" not in actual_dict or "references" not in actual_dict:
+        format_errors.append("Root JSON missing required 'eventNodeGraph' or 'references' section.")
+        return SnapshotVerificationResult(False, actual_desc, expected_desc, format_errors=format_errors)
+
+    exp_graph = expected_template["eventNodeGraph"]
+    act_graph = actual_dict["eventNodeGraph"]
+    exp_refs_root = expected_template["references"]
+    act_refs_root = actual_dict["references"]
+
+    if exp_refs_root.get("version") != act_refs_root.get("version"):
+        format_errors.append(f"references.version mismatch: expected {exp_refs_root.get('version')}, got {act_refs_root.get('version')}")
+    if exp_graph.get("executionVersion") != act_graph.get("executionVersion"):
+        format_errors.append(f"executionVersion mismatch: expected {exp_graph.get('executionVersion')}, got {act_graph.get('executionVersion')}")
+    if "graphId" in exp_graph and not _match_pattern_val(exp_graph["graphId"], act_graph.get("graphId")):
+        format_errors.append(f"graphId failed pattern check: {act_graph.get('graphId')!r}")
+
+    exp_conns_all = exp_graph.get("connections", [])
+    act_conns_all = act_graph.get("connections", [])
+    if exp_conns_all and exp_conns_all[0].get("sourceNodeId") == "":
+        if not act_conns_all or act_conns_all[0] != exp_conns_all[0]:
+            format_errors.append("eventNodeGraph.connections[0] must be the empty dummy connection.")
+
+    exp_refs: List[Dict[str, Any]] = exp_refs_root.get("RefIds", [])
+    act_refs: List[Dict[str, Any]] = act_refs_root.get("RefIds", [])
+
+    candidates: Dict[int, List[int]] = {
+        ei: [ai for ai, a in enumerate(act_refs) if _ref_items_payload_compatible(e, a)]
+        for ei, e in enumerate(exp_refs)
+    }
+
+    sorted_exp = sorted(range(len(exp_refs)), key=lambda i: len(candidates[i]))
+
+    best_result: Optional[Tuple[int, Dict[int, int], Dict[str, Any], List[str], List[str], List[str]]] = None
+
+    def try_assign(idx: int, mapping: Dict[int, int], used_act: Set[int], bindings: Dict[str, Any], reverse: Dict[str, Any]) -> bool:
+        nonlocal best_result
+        if idx >= len(sorted_exp):
+            ferr, mconn, econn = _check_resolved_links(exp_refs, act_refs, mapping, bindings, exp_graph, act_graph)
+            penalty = len(ferr) + len(mconn) + len(econn)
+            if best_result is None or penalty < best_result[0]:
+                best_result = (penalty, dict(mapping), dict(bindings), ferr, mconn, econn)
+            return penalty == 0
+
+        ei = sorted_exp[idx]
+        e_item = exp_refs[ei]
+        for ai in candidates[ei]:
+            if ai in used_act:
+                continue
+            a_item = act_refs[ai]
+            b_copy = dict(bindings)
+            r_copy = dict(reverse)
+            ok = _bind_symbol(e_item.get("rid"), a_item.get("rid"), b_copy, r_copy)
+            if ok and "nodeId" in e_item.get("data", {}):
+                ok = _bind_symbol(e_item["data"]["nodeId"], a_item.get("data", {}).get("nodeId"), b_copy, r_copy)
+            if ok and "variableId" in e_item.get("data", {}):
+                ok = _bind_symbol(e_item["data"]["variableId"], a_item.get("data", {}).get("variableId"), b_copy, r_copy)
+            if not ok:
+                continue
+            mapping[ei] = ai
+            used_act.add(ai)
+            if try_assign(idx + 1, mapping, used_act, b_copy, r_copy):
+                return True
+            used_act.remove(ai)
+            del mapping[ei]
+        return False
+
+    if len(exp_refs) == len(act_refs):
+        try_assign(0, {}, set(), {}, {})
+
+    missing_refs: List[str] = []
+    extra_refs: List[str] = []
+    missing_conns: List[str] = []
+    extra_conns: List[str] = []
+
+    if best_result is not None:
+        _, _, _, lerr, missing_conns, extra_conns = best_result
+        format_errors.extend(lerr)
+    else:
+        exp_classes: Dict[str, int] = {}
+        act_classes: Dict[str, int] = {}
+        for r in exp_refs:
+            c = str(r.get("type", {}).get("class", "Unknown"))
+            exp_classes[c] = exp_classes.get(c, 0) + 1
+        for r in act_refs:
+            c = str(r.get("type", {}).get("class", "Unknown"))
+            act_classes[c] = act_classes.get(c, 0) + 1
+        for c, cnt in exp_classes.items():
+            if act_classes.get(c, 0) < cnt:
+                missing_refs.append(f"{c} (expected {cnt}, got {act_classes.get(c, 0)})")
+        for c, cnt in act_classes.items():
+            if exp_classes.get(c, 0) < cnt:
+                extra_refs.append(f"{c} (expected {exp_classes.get(c, 0)}, got {cnt})")
+        if not missing_refs and not extra_refs:
+            format_errors.append("RefIds node attributes or payloads failed to align with expected snapshot.")
+
+    opt_findings = LevelGraph.from_json_dict(actual_dict, source_desc=actual_desc).analyze_optimizations()
+    matched = not (format_errors or missing_refs or extra_refs or missing_conns or extra_conns)
+    return SnapshotVerificationResult(
+        matched=matched,
+        actual_desc=actual_desc,
+        expected_desc=expected_desc,
+        format_errors=format_errors,
+        missing_refs=missing_refs,
+        extra_refs=extra_refs,
+        missing_connections=missing_conns,
+        extra_connections=extra_conns,
+        optimization_findings=opt_findings,
+    )
+
+
+def assert_snapshot_matches(
+    code_or_file: Union[str, Path, Callable[[], Any]],
+    expected_snapshot_or_file: Union[str, Path, Dict[str, Any]],
+    msg: Optional[str] = None,
+) -> SnapshotVerificationResult:
+    """Build level from Python code, export JSON, and verify it meets stripped snapshot format."""
+    actual_dict, _, actual_desc = build_and_export_from_code(code_or_file)
+    if isinstance(expected_snapshot_or_file, dict):
+        expected_template = expected_snapshot_or_file
+        expected_desc = "Snapshot Dict"
+    else:
+        path = Path(expected_snapshot_or_file)
+        if not path.is_file():
+            raise FileNotFoundError(f"Expected snapshot JSON not found: {path}")
+        expected_desc = str(path)
+        with open(path, "r", encoding="utf-8") as f:
+            expected_template = json.load(f)
+
+    result = verify_snapshot_matches(
+        actual_dict=actual_dict,
+        expected_template=expected_template,
+        actual_desc=actual_desc,
+        expected_desc=expected_desc,
+    )
+    if not result.matched:
+        report = result.render_report()
+        raise AssertionError(f"{msg}\n{report}" if msg else report)
+    return result
 
 
 def main() -> int:

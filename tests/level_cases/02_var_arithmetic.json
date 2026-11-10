@@ -1,0 +1,191 @@
+{
+  "eventNodeGraph": {
+    "nodes": [
+      {
+        "rid": "@rid_0"
+      },
+      {
+        "rid": "@rid_1"
+      },
+      {
+        "rid": "@rid_2"
+      },
+      {
+        "rid": "@rid_3"
+      },
+      {
+        "rid": "@rid_4"
+      },
+      {
+        "rid": "@rid_5"
+      },
+      {
+        "rid": "@rid_6"
+      }
+    ],
+    "connections": [
+      {
+        "sourceNodeId": "",
+        "sourcePortName": "",
+        "targetNodeId": "",
+        "targetPortName": ""
+      },
+      {
+        "sourceNodeId": "@node_0",
+        "sourcePortName": "变量",
+        "targetNodeId": "@node_1",
+        "targetPortName": "变量"
+      },
+      {
+        "sourceNodeId": "@node_1",
+        "sourcePortName": "值",
+        "targetNodeId": "@node_2",
+        "targetPortName": "A"
+      },
+      {
+        "sourceNodeId": "@node_3",
+        "sourcePortName": "值",
+        "targetNodeId": "@node_2",
+        "targetPortName": "B"
+      },
+      {
+        "sourceNodeId": "@node_2",
+        "sourcePortName": "积",
+        "targetNodeId": "@node_5",
+        "targetPortName": "Integer"
+      },
+      {
+        "sourceNodeId": "@node_5",
+        "sourcePortName": "Float",
+        "targetNodeId": "@node_6",
+        "targetPortName": "被除数"
+      },
+      {
+        "sourceNodeId": "@node_4",
+        "sourcePortName": "值",
+        "targetNodeId": "@node_6",
+        "targetPortName": "除数"
+      }
+    ],
+    "variables": [
+      {
+        "rid": "@rid_7"
+      }
+    ],
+    "executionVersion": 1,
+    "graphId": {
+      "$regex": "^[0-9a-f-]{32,36}$"
+    }
+  },
+  "references": {
+    "version": 2,
+    "RefIds": [
+      {
+        "rid": "@rid_0",
+        "type": {
+          "class": "IntVariableNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_0",
+          "nodeType": "IntVariableNode",
+          "asset": {
+            "rid": "@rid_7"
+          }
+        }
+      },
+      {
+        "rid": "@rid_1",
+        "type": {
+          "class": "GetIntVariableValueNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_1",
+          "nodeType": "GetIntVariableValueNode",
+          "value": 0
+        }
+      },
+      {
+        "rid": "@rid_2",
+        "type": {
+          "class": "IntMultiplyNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_2",
+          "nodeType": "IntMultiplyNode"
+        }
+      },
+      {
+        "rid": "@rid_3",
+        "type": {
+          "class": "IntValueNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_3",
+          "nodeType": "IntValueNode",
+          "value": 5
+        }
+      },
+      {
+        "rid": "@rid_4",
+        "type": {
+          "class": "FloatValueNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_4",
+          "nodeType": "FloatValueNode",
+          "value": 2.0
+        }
+      },
+      {
+        "rid": "@rid_5",
+        "type": {
+          "class": "IntToFloatNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_5",
+          "nodeType": "IntToFloatNode"
+        }
+      },
+      {
+        "rid": "@rid_6",
+        "type": {
+          "class": "DivideNode",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "nodeId": "@node_6",
+          "nodeType": "DivideNode"
+        }
+      },
+      {
+        "rid": "@rid_7",
+        "type": {
+          "class": "IntVariableAsset",
+          "ns": "GameLevel.EventNodes",
+          "asm": "Assembly-CSharp"
+        },
+        "data": {
+          "name": "Integer",
+          "variableId": "@var_0",
+          "referencedNodeIds": [
+            "@node_0"
+          ],
+          "value": 10
+        }
+      }
+    ]
+  }
+}
