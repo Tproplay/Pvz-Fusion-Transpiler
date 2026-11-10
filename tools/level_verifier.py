@@ -58,13 +58,23 @@ def _clean_payload(raw_data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _values_match(v1: Any, v2: Any) -> bool:
-    """Compare two payload values with float tolerance and int coercion."""
+    """Compare two payload values with float tolerance and recursive dict/list comparison."""
     if v1 is None and v2 is None:
         return True
     if v1 is None or v2 is None:
         return False
+    if isinstance(v1, bool) or isinstance(v2, bool):
+        return type(v1) is type(v2) and v1 == v2
     if isinstance(v1, (int, float)) and isinstance(v2, (int, float)):
         return math.isclose(float(v1), float(v2), rel_tol=1e-5, abs_tol=1e-5)
+    if isinstance(v1, dict) and isinstance(v2, dict):
+        if set(v1.keys()) != set(v2.keys()):
+            return False
+        return all(_values_match(v1[k], v2[k]) for k in v1)
+    if isinstance(v1, list) and isinstance(v2, list):
+        if len(v1) != len(v2):
+            return False
+        return all(_values_match(a, b) for a, b in zip(v1, v2))
     return bool(v1 == v2)
 
 
@@ -133,18 +143,58 @@ class LevelGraph:
 
     @classmethod
     def from_json_dict(cls, data: Dict[str, Any], source_desc: str = "JSON Dict") -> LevelGraph:
-        nodes: Dict[str, GraphNode] = {}
-        for item in data.get("references", {}).get("RefIds", []):
+        ref_ids = data.get("references", {}).get("RefIds", [])
+        var_rids = {
+            v.get("rid")
+            for v in data.get("eventNodeGraph", {}).get("variables", [])
+            if isinstance(v, dict) and v.get("rid") is not None
+        }
+
+        # Pass 1: Separate VariableAsset records by rid
+        vars_by_rid: Dict[int, Dict[str, Any]] = {}
+        variables_list: List[Dict[str, Any]] = []
+        for item in ref_ids:
+            rid = item.get("rid")
             data_block = item.get("data", {})
-            nid = data_block.get("nodeId") or data_block.get("id") or str(item.get("rid"))
-            
+            raw_type = data_block.get("nodeType")
+            if not raw_type and "type" in item:
+                t = item["type"]
+                raw_type = t.get("class") if isinstance(t, dict) else str(t).split(".")[-1]
+            type_str = str(raw_type or "")
+
+            if (rid is not None and rid in var_rids) or type_str.endswith("VariableAsset") or "variableId" in data_block:
+                var_info = {
+                    "type": type_str,
+                    "name": data_block.get("name"),
+                    "value": data_block.get("value"),
+                }
+                if rid is not None:
+                    vars_by_rid[rid] = var_info
+                variables_list.append(var_info)
+
+        # Pass 2: Extract actual GraphNodes and resolve variable asset links
+        nodes: Dict[str, GraphNode] = {}
+        for item in ref_ids:
+            rid = item.get("rid")
+            if rid is not None and rid in vars_by_rid:
+                continue
+            data_block = item.get("data", {})
             raw_type = data_block.get("nodeType")
             if not raw_type and "type" in item:
                 t = item["type"]
                 raw_type = t.get("class") if isinstance(t, dict) else str(t).split(".")[-1]
             node_type = str(raw_type or "UnknownNode")
+            if node_type.endswith("VariableAsset") or "variableId" in data_block:
+                continue
 
+            nid = data_block.get("nodeId") or data_block.get("id") or str(rid)
             payload = _clean_payload(data_block)
+
+            # Resolve {"rid": X} asset link into semantic asset descriptor
+            asset_ref = payload.get("asset")
+            if isinstance(asset_ref, dict) and asset_ref.get("rid") in vars_by_rid:
+                payload["asset"] = vars_by_rid[asset_ref["rid"]]
+
             in_ports: Set[str] = set()
             out_ports: Set[str] = set()
             for k, v in data_block.items():
@@ -158,7 +208,7 @@ class LevelGraph:
                 id=nid,
                 node_type=node_type,
                 payload=payload,
-                rid=item.get("rid"),
+                rid=rid,
                 input_ports=in_ports,
                 output_ports=out_ports,
             )
@@ -178,7 +228,7 @@ class LevelGraph:
                     )
                 )
 
-        return cls(nodes=nodes, connections=connections, source_desc=source_desc)
+        return cls(nodes=nodes, connections=connections, variables=variables_list, source_desc=source_desc)
 
     @classmethod
     def from_json_file(cls, filepath: Union[str, Path]) -> LevelGraph:
@@ -191,13 +241,49 @@ class LevelGraph:
 
     @classmethod
     def from_context(cls, source_desc: str = "Active Context") -> LevelGraph:
+        all_nodes = list(_ctx.nodes)
+        existing_ids = {getattr(n, "id", None) for n in all_nodes}
+        connections_raw = list(ConnectionManager.get_connections())
+        for conn in connections_raw:
+            if conn.source_node and getattr(conn.source_node, "id", None) not in existing_ids:
+                all_nodes.append(conn.source_node)
+                existing_ids.add(conn.source_node.id)
+            if conn.target_node and getattr(conn.target_node, "id", None) not in existing_ids:
+                all_nodes.append(conn.target_node)
+                existing_ids.add(conn.target_node.id)
+
         nodes: Dict[str, GraphNode] = {}
-        for n in _ctx.nodes:
+        variables_list: List[Dict[str, Any]] = []
+        seen_vars: Set[int] = set()
+        for v in _ctx.variables:
+            if id(v) not in seen_vars and hasattr(v, "dump_data"):
+                seen_vars.add(id(v))
+                vd = v.dump_data()
+                variables_list.append({
+                    "type": getattr(v, "asset_class", v.__class__.__name__),
+                    "name": vd.get("name"),
+                    "value": vd.get("value"),
+                })
+
+        for n in all_nodes:
             nid = getattr(n, "id", str(id(n)))
             node_type = getattr(n, "node_type", n.__class__.__name__)
             
             raw_data = n.dump_data() if hasattr(n, "dump_data") else {}
             payload = _clean_payload(raw_data)
+
+            asset_obj = getattr(n, "asset", None)
+            if asset_obj is not None and hasattr(asset_obj, "dump_data"):
+                vd = asset_obj.dump_data()
+                var_info = {
+                    "type": getattr(asset_obj, "asset_class", asset_obj.__class__.__name__),
+                    "name": vd.get("name"),
+                    "value": vd.get("value"),
+                }
+                payload["asset"] = var_info
+                if id(asset_obj) not in seen_vars:
+                    seen_vars.add(id(asset_obj))
+                    variables_list.append(var_info)
             
             in_ports: Set[str] = set()
             out_ports: Set[str] = set()
@@ -219,7 +305,7 @@ class LevelGraph:
             )
 
         connections: List[GraphConnection] = []
-        for c in ConnectionManager.get_connections():
+        for c in connections_raw:
             src_node = getattr(c, "source_node", None)
             tgt_node = getattr(c, "target_node", None)
             src_port = getattr(c, "source_port", None)
@@ -234,7 +320,7 @@ class LevelGraph:
                     )
                 )
 
-        return cls(nodes=nodes, connections=connections, source_desc=source_desc)
+        return cls(nodes=nodes, connections=connections, variables=variables_list, source_desc=source_desc)
 
     @classmethod
     def from_code(
