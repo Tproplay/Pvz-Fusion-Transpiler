@@ -10,7 +10,7 @@ from ....port_types import to_int_port, to_float_port, to_bool_port
 class IntVar:
     """Use to create a Variable Int Value. Don't use = to set the value, use .set() instead."""
 
-    def __init__(self, start_val: Any = 0, node_ref: Any = None, name: str = "整数") -> None:
+    def __init__(self, start_val: Any = 0, node_ref: Any = None, name: str = "Integer") -> None:
         self._nodes_by_scope: dict[str, Any] = {}
 
         if node_ref:
@@ -198,7 +198,7 @@ class IntVar:
 class FloatVar:
     """Use to create a Variable Float Value. Don't use = to set the value, use .set() instead."""
 
-    def __init__(self, start_val: Any = 0.0, node_ref: Any = None, name: str = "浮点数") -> None:
+    def __init__(self, start_val: Any = 0.0, node_ref: Any = None, name: str = "Float") -> None:
         self._nodes_by_scope: dict[str, Any] = {}
 
         if node_ref:
@@ -348,7 +348,7 @@ class FloatVar:
 class BoolVar:
     """Use to create a Variable Bool Value. Don't use = to set the value, use .set() instead."""
 
-    def __init__(self, start_val: Any = False, node_ref: Any = None, name: str = "布尔值") -> None:
+    def __init__(self, start_val: Any = False, node_ref: Any = None, name: str = "Bool") -> None:
         self._nodes_by_scope: dict[str, Any] = {}
 
         if node_ref:

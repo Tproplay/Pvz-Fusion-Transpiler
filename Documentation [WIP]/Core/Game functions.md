@@ -183,6 +183,10 @@ obj.set_transform(position=pft.WorldObject.vector3(100, 200, 0), scale_multiplie
 plant_target = obj.to_plant()          # CastTo
 plant_target, ok = obj.try_cast_to_plant()  # TryCast (returns plant and exists port)
 
+# Create GameObject from Plant or Zombie
+obj_from_plant = pft.Object.from_plant(plant_target)
+obj_from_zombie = pft.Object.from_zombie(boss_zombie)
+
 # Destroy object
 obj.destroy()
 ```
@@ -223,5 +227,5 @@ boss_zombie = pft.WorldObject.get_bound_zombie(name="首领")
 | `Lawnf` | Effects | `trigger_cherry_explosion`, `trigger_doom_explosion`, `trigger_jalapeno`, `trigger_ice_shroom` |
 | `Lawnf` | Sound | `play_sound` |
 | `Tool` | Tools | `get_held()`, `is_held(tool_type)`, `get_cooldown()`, `set_cooldown()` |
-| `WorldObject` | Objects | `create()`, `destroy()`, `get_transform()`, `set_transform()`, `to_plant()`, `to_zombie()` |
+| `WorldObject` | Objects | `create()`, `destroy()`, `get_transform()`, `set_transform()`, `to_plant()`, `to_zombie()`, `from_plant()`, `from_zombie()` |
 | `WorldObject` | Binding | `bind_plant()`, `get_bound_plant()`, `bind_zombie()`, `get_bound_zombie()` |

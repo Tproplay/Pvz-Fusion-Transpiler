@@ -19,7 +19,7 @@ STRICT OPERATING RULES:
 4. Enforce strict Enum usage for PlantType, ZombieType, ToolType, BulletType, SceneType, MusicType, etc. Reject raw integer literals and sentinel ints like -1.
 5. Never hardcode localized port strings in execution paths (e.g. '创建成功'); always reference port properties: `self.node.port_output_plant_Plant.name`.
 6. Extensions must strictly represent Original node capabilities with clean ergonomics; do not invent unbacked runtime concepts in the base library.
-7. Public API uses C#-style PascalCase (Add, TryGetValue, OnComplete). Old snake_case names stay as aliases.
+7. Use snake_case for functions and methods, and CamelCase for classes.
 8. No silent fallbacks. Unsupported types or arguments raise TypeError or ValueError. Operator traps (__len__, __contains__, __bool__) raise helpful errors.
 9. Python-side state must not depend on execution paths; object port references remain immutable across branches.
 10. Every new public API gets a snapshot test.
@@ -89,10 +89,9 @@ These 11 rules are defined in [`_Nodes/RULES.txt`](../PvZ_Fusion_Transpiler_src/
 - The base extension library must strictly provide clean, thin abstractions over **native visual scripting nodes** (e.g. `List[T]` over list nodes, `Time.WaitUntil`).
 - Complex simulated data structures (hash dictionaries, associative arrays, seeded RNG simulation) belong in `StdLib.py` or separate user packages, **not** in core extensions.
 
-### Rule 7: Public API C#-Style PascalCase
-- Public extension APIs use C#-style PascalCase (`Add`, `Count`, `TryGetValue`, `OnComplete`, `ChangeMap`, `DeleteGridItems`).
-- Old `snake_case` names are retained as aliases for backward compatibility.
-- Operations that can fail expose `TryX` returning `(value, ok)`.
+### Rule 7: Naming Conventions (snake_case functions, CamelCase classes)
+- Use `snake_case` for functions, methods, and properties.
+- Use `CamelCase` (PascalCase) for classes and types.
 - Exit branches use standard names: `OnSuccess`, `Failed` / `OnFailed`, `OnComplete`, `OnTimeout`.
 
 ### Rule 8: No Silent Fallbacks & Operator Traps

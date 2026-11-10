@@ -6,6 +6,57 @@
             },
             {
                 "rid": 1001
+            },
+            {
+                "rid": 1002
+            },
+            {
+                "rid": 1003
+            },
+            {
+                "rid": 1004
+            },
+            {
+                "rid": 1005
+            },
+            {
+                "rid": 1006
+            },
+            {
+                "rid": 1007
+            },
+            {
+                "rid": 1008
+            },
+            {
+                "rid": 1009
+            },
+            {
+                "rid": 1010
+            },
+            {
+                "rid": 1011
+            },
+            {
+                "rid": 1012
+            },
+            {
+                "rid": 1013
+            },
+            {
+                "rid": 1014
+            },
+            {
+                "rid": 1015
+            },
+            {
+                "rid": 1016
+            },
+            {
+                "rid": 1017
+            },
+            {
+                "rid": 1018
             }
         ],
         "connections": [
@@ -14,6 +65,36 @@
                 "sourcePortName": "",
                 "targetNodeId": "",
                 "targetPortName": ""
+            },
+            {
+                "sourceNodeId": "ee416ccb-51b9-47f5-a6a5-b73164795533",
+                "sourcePortName": "值",
+                "targetNodeId": "e657aecc-dce8-4fbb-bc93-3cab730fbe9d",
+                "targetPortName": "行"
+            },
+            {
+                "sourceNodeId": "b2b2c97e-ca0d-4305-a8e1-507d127f0959",
+                "sourcePortName": "值",
+                "targetNodeId": "e657aecc-dce8-4fbb-bc93-3cab730fbe9d",
+                "targetPortName": "列"
+            },
+            {
+                "sourceNodeId": "d0f564b2-bfac-4d4b-90b9-de160f51d274",
+                "sourcePortName": "值",
+                "targetNodeId": "c060e962-d8bd-4435-930e-5cb54e872070",
+                "targetPortName": "数值"
+            },
+            {
+                "sourceNodeId": "fce4a130-d64b-49e7-aa15-54968abaa652",
+                "sourcePortName": "值",
+                "targetNodeId": "2cafe709-057e-4491-b823-a39cd5a5375d",
+                "targetPortName": "数值"
+            },
+            {
+                "sourceNodeId": "9f0356d6-f821-42de-a96c-c25fd1fa74f1",
+                "sourcePortName": "值",
+                "targetNodeId": "4888444f-668f-4de2-bd6b-dce1c95fc2c4",
+                "targetPortName": "名称或编号"
             }
         ],
         "variables": [],
@@ -27,41 +108,504 @@
             {
                 "rid": 1000,
                 "type": {
-                    "class": "BindPlantNode",
+                    "class": "ChangeEventMusicNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "0253e0d1-d283-43e8-bd18-efb690f14b74",
-                    "nodeType": "BindPlantNode",
+                    "nodeId": "50df96cb-fdf4-4e41-9d6b-aa5a258bde37",
+                    "nodeType": "ChangeEventMusicNode",
                     "position": {
-                        "x": -436.3636169433594,
-                        "y": 223.63633728027344
+                        "x": -800.0,
+                        "y": 400.0
                     },
-                    "nodeName": "BindPlantNode",
-                    "bindingName": "守护目标"
+                    "nodeName": "ChangeEventMusicNode",
+                    "music": 4
                 }
             },
             {
                 "rid": 1001,
                 "type": {
-                    "class": "ChangeStageNode",
+                    "class": "ChangeEventMapNode",
                     "ns": "GameLevel.EventNodes",
                     "asm": "Assembly-CSharp"
                 },
                 "data": {
                     "inputDefaults": [],
-                    "nodeId": "580e7d6a-5c44-4b67-84a1-5cfb3efe4837",
-                    "nodeType": "ChangeStageNode",
+                    "nodeId": "8922fe52-2bed-41fd-b10c-6b3083ab793e",
+                    "nodeType": "ChangeEventMapNode",
                     "position": {
-                        "x": -117.50016021728516,
-                        "y": 145.03988647460938
+                        "x": -560.0,
+                        "y": 400.0
                     },
-                    "nodeName": "ChangeStageNode",
-                    "stageName": "战斗"
+                    "nodeName": "ChangeEventMapNode",
+                    "scene": 4
+                }
+            },
+            {
+                "rid": 1002,
+                "type": {
+                    "class": "BulletTypeValueNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "4d577011-eab7-4a4a-8c8d-baf335362598",
+                    "nodeType": "BulletTypeValueNode",
+                    "position": {
+                        "x": -320.0,
+                        "y": 400.0
+                    },
+                    "nodeName": "BulletTypeValueNode",
+                    "bulletType": 0
+                }
+            },
+            {
+                "rid": 1003,
+                "type": {
+                    "class": "ToolTypeValueNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "3eb389a8-50f3-4590-9ddd-716664276bc6",
+                    "nodeType": "ToolTypeValueNode",
+                    "position": {
+                        "x": -80.0,
+                        "y": 400.0
+                    },
+                    "nodeName": "ToolTypeValueNode",
+                    "toolType": 3
+                }
+            },
+            {
+                "rid": 1004,
+                "type": {
+                    "class": "DeleteGridItemsNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "e657aecc-dce8-4fbb-bc93-3cab730fbe9d",
+                    "nodeType": "DeleteGridItemsNode",
+                    "position": {
+                        "x": 160.0,
+                        "y": 400.0
+                    },
+                    "nodeName": "DeleteGridItemsNode",
+                    "kind": 2
+                }
+            },
+            {
+                "rid": 1005,
+                "type": {
+                    "class": "IntValueNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "ee416ccb-51b9-47f5-a6a5-b73164795533",
+                    "nodeType": "IntValueNode",
+                    "position": {
+                        "x": -800.0,
+                        "y": 240.0
+                    },
+                    "nodeName": "IntValueNode",
+                    "value": 1,
+                    "value_PortName": "值"
+                }
+            },
+            {
+                "rid": 1006,
+                "type": {
+                    "class": "IntValueNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "b2b2c97e-ca0d-4305-a8e1-507d127f0959",
+                    "nodeType": "IntValueNode",
+                    "position": {
+                        "x": -560.0,
+                        "y": 240.0
+                    },
+                    "nodeName": "IntValueNode",
+                    "value": 2,
+                    "value_PortName": "值"
+                }
+            },
+            {
+                "rid": 1007,
+                "type": {
+                    "class": "FloatVariableArithmeticNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "ddea00b3-c88f-481d-a9ad-375c6e69627b",
+                    "nodeType": "FloatVariableArithmeticNode",
+                    "position": {
+                        "x": -320.0,
+                        "y": 240.0
+                    },
+                    "nodeName": "FloatVariableArithmeticNode",
+                    "operation": 2
+                }
+            },
+            {
+                "rid": 1008,
+                "type": {
+                    "class": "IntVariableArithmeticNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "e0d479cf-07e1-4d8c-ac18-256440e3e91a",
+                    "nodeType": "IntVariableArithmeticNode",
+                    "position": {
+                        "x": -80.0,
+                        "y": 240.0
+                    },
+                    "nodeName": "IntVariableArithmeticNode",
+                    "operation": 1
+                }
+            },
+            {
+                "rid": 1009,
+                "type": {
+                    "class": "GetZombieStatsNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "bf31f807-7ee6-4ee0-ab53-73eedf0f241f",
+                    "nodeType": "GetZombieStatsNode",
+                    "position": {
+                        "x": 160.0,
+                        "y": 240.0
+                    },
+                    "nodeName": "GetZombieStatsNode",
+                    "stat": 5
+                }
+            },
+            {
+                "rid": 1010,
+                "type": {
+                    "class": "SetZombieStatsNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "c060e962-d8bd-4435-930e-5cb54e872070",
+                    "nodeType": "SetZombieStatsNode",
+                    "position": {
+                        "x": -800.0,
+                        "y": 80.0
+                    },
+                    "nodeName": "SetZombieStatsNode",
+                    "stat": 3
+                }
+            },
+            {
+                "rid": 1011,
+                "type": {
+                    "class": "FloatValueNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "d0f564b2-bfac-4d4b-90b9-de160f51d274",
+                    "nodeType": "FloatValueNode",
+                    "position": {
+                        "x": -560.0,
+                        "y": 80.0
+                    },
+                    "nodeName": "FloatValueNode",
+                    "value": 500.0,
+                    "value_PortName": "值"
+                }
+            },
+            {
+                "rid": 1012,
+                "type": {
+                    "class": "GetZombieStatusNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "02f22fd0-7076-44e5-94b6-d00282c9e858",
+                    "nodeType": "GetZombieStatusNode",
+                    "position": {
+                        "x": -320.0,
+                        "y": 80.0
+                    },
+                    "nodeName": "GetZombieStatusNode",
+                    "status": 7
+                }
+            },
+            {
+                "rid": 1013,
+                "type": {
+                    "class": "SetZombieStatusNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "2cafe709-057e-4491-b823-a39cd5a5375d",
+                    "nodeType": "SetZombieStatusNode",
+                    "position": {
+                        "x": -80.0,
+                        "y": 80.0
+                    },
+                    "nodeName": "SetZombieStatusNode",
+                    "status": 3
+                }
+            },
+            {
+                "rid": 1014,
+                "type": {
+                    "class": "FloatValueNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "fce4a130-d64b-49e7-aa15-54968abaa652",
+                    "nodeType": "FloatValueNode",
+                    "position": {
+                        "x": 160.0,
+                        "y": 80.0
+                    },
+                    "nodeName": "FloatValueNode",
+                    "value": 5.0,
+                    "value_PortName": "值"
+                }
+            },
+            {
+                "rid": 1015,
+                "type": {
+                    "class": "ModifyEventBulletNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "6a3829c1-9beb-4897-80d0-ba5d1b62cc2b",
+                    "nodeType": "ModifyEventBulletNode",
+                    "position": {
+                        "x": -800.0,
+                        "y": -80.0
+                    },
+                    "nodeName": "ModifyEventBulletNode",
+                    "property": 2
+                }
+            },
+            {
+                "rid": 1016,
+                "type": {
+                    "class": "OnWorldPlantEffectNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "21c8f21b-f9ce-47f0-b33e-3e20beed0281",
+                    "nodeType": "OnWorldPlantEffectNode",
+                    "position": {
+                        "x": -560.0,
+                        "y": -80.0
+                    },
+                    "nodeName": "OnWorldPlantEffectNode",
+                    "effect": 1
+                }
+            },
+            {
+                "rid": 1017,
+                "type": {
+                    "class": "RemoveTravelEntryNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "4888444f-668f-4de2-bd6b-dce1c95fc2c4",
+                    "nodeType": "RemoveTravelEntryNode",
+                    "position": {
+                        "x": -320.0,
+                        "y": -80.0
+                    },
+                    "nodeName": "RemoveTravelEntryNode",
+                    "kind": 1
+                }
+            },
+            {
+                "rid": 1018,
+                "type": {
+                    "class": "StringValueNode",
+                    "ns": "GameLevel.EventNodes",
+                    "asm": "Assembly-CSharp"
+                },
+                "data": {
+                    "inputDefaults": [],
+                    "nodeId": "9f0356d6-f821-42de-a96c-c25fd1fa74f1",
+                    "nodeType": "StringValueNode",
+                    "position": {
+                        "x": -80.0,
+                        "y": -80.0
+                    },
+                    "nodeName": "StringValueNode",
+                    "value": "buff1",
+                    "value_PortName": "值"
                 }
             }
         ]
+    },
+    "name": "Untitled",
+    "boardConfig": {
+        "izDropCount": 0,
+        "redLineColumn": 5,
+        "ignoreZombieHouse": false,
+        "zombieStartAmmor": 0.0,
+        "zombieHealthMultiplier": 1.0,
+        "zombieDamageMultiplier": 1.0,
+        "zombieSpeedMultiplier": 1.0,
+        "zombieCountMultiplier": 1.0,
+        "minOriginalSpeed": 1.0,
+        "maxOriginalSpeed": 1.4,
+        "waveInterval": 30.0,
+        "firstWaveArrivedTimer": 15.0,
+        "conveyInterval": 6.0,
+        "gloveSpeed": 10.0,
+        "holdTimer": 4.2,
+        "holdTimer2": 1.8,
+        "holdTimer3": 5.0,
+        "startTip": "",
+        "tipTime": 6.0,
+        "applyRandomData": false,
+        "plantModifyMin": 0.2,
+        "plantModifyMax": 6.0,
+        "plantSpeedMin": 0.2,
+        "plantSpeedMax": 6.0,
+        "plantSpeedAvg": 1.5,
+        "zombieModifyMin": 0.1,
+        "zombieModifyMax": 10.0,
+        "zombieModifyAvg": 3.0,
+        "zombieSpeedMin": 0.3,
+        "zombieSpeedMax": 4.0,
+        "zombieSpeedAvg": 1.5,
+        "zombieScaleMin": 0.3,
+        "zombieScaleMax": 2.5,
+        "zombieScaleAvg": 1.0
+    },
+    "boardTag": {
+        "waveLeaders": false,
+        "evolutionWar": false,
+        "rhythmGame": false,
+        "imZombieBoss": false,
+        "allScaryPotShow": false,
+        "customEdit": false,
+        "allCards": false,
+        "isIZ": false,
+        "HorseBoss": false,
+        "Iz_ai": false,
+        "rShowHealth": false,
+        "lessSun": false,
+        "lessMoney": false,
+        "zombieDropSun": false,
+        "disableNormalSun": false,
+        "zombieRevive": false,
+        "isScaredyDream": false,
+        "isTowerDefence": false,
+        "isShooting": false,
+        "rogueShooting": false,
+        "newShooting": false,
+        "isSeedRain": false,
+        "isIndestructible": false,
+        "isColumn": false,
+        "isSuperRandom": false,
+        "isNormalRandom": false,
+        "isElementRandom": false,
+        "isDrawCards": false,
+        "isUltimateSuperRandom": false,
+        "isNight": false,
+        "isBigMap": false,
+        "freeCamera": false,
+        "isEndless": false,
+        "isTravel": false,
+        "isEasyTravel": false,
+        "randomTravel": false,
+        "superCustomEditorMode": false,
+        "enableTravelPlant": false,
+        "enableAllTravelPlant": false,
+        "enableTravelBuff": false,
+        "isRoof": false,
+        "isGarden": false,
+        "isMirror": false,
+        "isConvey": false,
+        "isExchange": false,
+        "shooting_loon": false,
+        "isBoss": false,
+        "isBoss2": false,
+        "isFreeCardSelect": false,
+        "isTutor": false,
+        "isObsidianImp": false,
+        "isDixMix": false,
+        "isSingle": false,
+        "bungiBattle": false,
+        "isBejeweled": false,
+        "isBubbleGame": false,
+        "isScaryPot": false,
+        "isMidMap": false,
+        "isChess": false,
+        "isMidMap2": false,
+        "isLookStar": false,
+        "isGardenBattle": false,
+        "isRandomMix": false,
+        "isRandomMix2": false,
+        "freeGloveZombie": false,
+        "disableMower": false,
+        "isHappyRandom": false,
+        "oppsiteBuff": false,
+        "pvpScaryPot": false,
+        "pvpRandom": false,
+        "ultimateEndless": false,
+        "isHammerZombie": false,
+        "fastZombie": false,
+        "isHugeGravity": false,
+        "zombieSplit": false,
+        "fullStrike": false,
+        "billiardBall": false,
+        "isSnake": false,
+        "isSquash": false,
+        "zombieBattle": false,
+        "plantingZombie": false,
+        "is2048": false,
+        "isRogue": false,
+        "isFruitNinjia": false,
+        "isFruitNinjia2": false,
+        "lightShadow": false,
+        "isLoonGame": false,
+        "snowBoss": false,
+        "playerShooting": false,
+        "smallZombie": false,
+        "isFlagGame": false,
+        "isTreasure": false,
+        "isBrick": false,
+        "disableSummonZombie": false,
+        "disableSelectCard": false,
+        "disableInInterlude": false
     }
 }

@@ -79,6 +79,24 @@ class WorldObject:
         node = nodes.string_to_object(text=name)
         return WorldObject(node.port_output_gameobject_GameObject)
 
+    FromString = from_string
+
+    @staticmethod
+    def from_plant(plant: Any) -> WorldObject:
+        plant_ref = plant.ref if hasattr(plant, "ref") else plant
+        node = nodes.plant_to_object(plant=plant_ref)
+        return WorldObject(node.port_output_gameobject_GameObject)
+
+    FromPlant = from_plant
+
+    @staticmethod
+    def from_zombie(zombie: Any) -> WorldObject:
+        zombie_ref = zombie.ref if hasattr(zombie, "ref") else zombie
+        node = nodes.zombie_to_object(zombie=zombie_ref)
+        return WorldObject(node.port_output_gameobject_GameObject)
+
+    FromZombie = from_zombie
+
     @staticmethod
     def vector3(x: Any = 0.0, y: Any = 0.0, z: Any = 0.0) -> Any:
         return nodes.make_vector3(x=x, y=y, z=z).port_output_vector3_Vector

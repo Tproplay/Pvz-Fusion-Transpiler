@@ -150,6 +150,17 @@ class TestApprovedExtensions(unittest.TestCase):
         self.assertIsNotNone(obj.get_transform())
         self.assertIsNotNone(obj.destroy())
 
+        # from_plant and from_zombie static methods on Object / WorldObject
+        p = pft.Spawner.Set_Plant(0, 0, PlantType.Peashooter)
+        obj_p = pft.Object.from_plant(p)
+        self.assertIsInstance(obj_p, pft.WorldObject)
+        self.assertEqual(obj_p.ref.node.__class__.__name__, "PlantToObjectNode")
+
+        z = pft.Spawner.Set_Zombie(0, 0, ZombieType.NormalZombie)
+        obj_z = pft.Object.from_zombie(z)
+        self.assertIsInstance(obj_z, pft.WorldObject)
+        self.assertEqual(obj_z.ref.node.__class__.__name__, "ZombieToObjectNode")
+
     # 15. Math & Conversions
     def test_math_and_conversions(self):
         self.assertIsNotNone(pft.Math.pow(2.0, 3.0))

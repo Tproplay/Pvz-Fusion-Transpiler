@@ -92,5 +92,6 @@ class InGameUI:
 
     delete_info_cards = clear_info_cards
 
+Print = InGameUI.display_text
 
-__all__ = ["InGameUI"]
+__all__ = ["InGameUI", "Print"]

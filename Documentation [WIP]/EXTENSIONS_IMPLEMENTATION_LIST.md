@@ -211,6 +211,8 @@ This document details all **high-level Extension implementations** in `PvZ_Fusio
 | `WorldObject.bind_zombie(obj, zombie)` | Attaches object to zombie | Parent-child link | `BindZombieNode` |
 | `WorldObject.to_plant(obj)` | Casts object to plant wrapper | Returns `Plant` | `ObjectToPlantNode` |
 | `WorldObject.to_zombie(obj)` | Casts object to zombie wrapper | Returns `Zombie` | `ObjectToZombieNode` |
+| `WorldObject.from_plant(plant)` | Converts plant to GameObject wrapper | Returns `WorldObject` | `PlantToObjectNode` |
+| `WorldObject.from_zombie(zombie)` | Converts zombie to GameObject wrapper | Returns `WorldObject` | `ZombieToObjectNode` |
 | `Vector3(x, y, z)` | 3D coordinate vector | Used for object positions | `Vector3ValueNode` |
 
 ### 13. Math & Logic (`Math/`)

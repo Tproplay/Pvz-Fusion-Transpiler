@@ -22,7 +22,7 @@ These rules must be followed for any changes inside the _Nodes folder.
    Not allowed: new data structures, algorithms or gameplay mechanics built on top of nodes (dictionaries, arrays, seeded RNG, key-driven movement).
    When unsure, put it in the extra library and note it in the report.
 
-7. [new] Public API uses C#-style PascalCase (Add, TryGetValue, OnComplete). Old snake_case names stay as aliases and are never removed without a deprecation period. Exit branches use the standard names: OnSuccess, Failed / OnFailed, OnComplete, OnTimeout. Operations that can fail expose TryX returning (value, ok).
+7. Use snake_case for functions and methods, and CamelCase for classes.
 
 8. [new] No silent fallbacks. Unsupported types or arguments raise TypeError or ValueError with a message saying what to use instead. Never default to "int" or to the first match. Python operators that cannot work on graph values (len(), "in", bool(), iteration) must raise a helpful error rather than behave silently.
 
