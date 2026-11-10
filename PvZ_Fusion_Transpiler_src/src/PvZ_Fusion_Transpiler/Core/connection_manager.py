@@ -269,8 +269,30 @@ class Port:
             self.connect(cmp.get_input("僵尸类型A"))
             to_port(other).connect(cmp.get_input("僵尸类型B"))
             return cmp.get_output("相同")
+        if self.port_type == PortType.ToolType or (isinstance(other, Enum) and other.__class__.__name__ == "ToolType"):
+            from .._Nodes.Original.GeneralFunction.compare_tool_type_node import CompareToolTypeNode
+            cmp = CompareToolTypeNode()
+            self.connect(cmp.port_input_tooltype_A)
+            to_port(other).connect(cmp.port_input_tooltype_B)
+            return cmp.port_output_bool_Equal
+        if self.port_type == PortType.GameObject:
+            from .._Nodes.Original.Comparison.compare_game_object_node import CompareGameObjectNode
+            cmp = CompareGameObjectNode()
+            self.connect(cmp.port_input_gameobject_GameObjectA)
+            to_port(other).connect(cmp.port_input_gameobject_GameObjectB)
+            return cmp.port_output_bool_Same
+        if self.port_type == PortType.Bool:
+            if isinstance(other, bool):
+                return self if other else ~self
+            from ..port_types import to_bool_port
+            other_b = to_bool_port(other)
+            return (self & other_b) | ((~self) & (~other_b))
 
         other_port = to_port(other)
+        if other_port.port_type == PortType.Bool:
+            from ..port_types import to_bool_port
+            self_b = to_bool_port(self)
+            return (self_b & other_port) | ((~self_b) & (~other_port))
         is_float = self._is_float_port() or other_port._is_float_port()
         if is_float:
             from .._Nodes.Original.Comparison.compare_float_node import CompareFloatNode
@@ -286,6 +308,8 @@ class Port:
             return cmp.get_output("等于")
 
     def __ne__(self, other: Any) -> Port:
+        if self.port_type == PortType.Bool and isinstance(other, bool):
+            return ~self if other else self
         eq_port = self.__eq__(other)
         from .._Nodes.Original.Logic.not_node import NotNode
         not_n = NotNode()

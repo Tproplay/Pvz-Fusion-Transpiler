@@ -396,6 +396,37 @@ class TestNewRequirements(unittest.TestCase):
         self.assertEqual(p2o.port_input_plant_Plant.name, "Plant")
         self.assertEqual(p2o.port_output_gameobject_GameObject.name, "Object")
 
+    def test_bool_comparison_and_static_mouse_properties(self):
+        from PvZ_Fusion_Transpiler.Core.connection_manager import ConnectionManager
+        _ctx.clear()
+        ConnectionManager.clear()
+
+        found = pft.BoolVar(name="found")
+        other = pft.BoolVar(name="other")
+
+        with pft.Trigger.OnKeyDown(KeyCode.K):
+            with pft.Lawnf.for_each_plant_on_lawn() as plant:
+                with pft.If((plant.plantType == pft.PlantType.SunFlower) & (found == False)):
+                    pft.Object.bind_plant(plant, "sunflower")
+                    found.set(True)
+                with pft.If(found == other):
+                    pass
+
+        with pft.Trigger.OnGameStart():
+            with pft.Time.OnFixedUpdate(5):
+                pft.Object.get_bound_plant("sunflower").move(pft.Mouse.col, pft.Mouse.row)
+
+        node_types = [n.node_type for n in _ctx.nodes]
+        self.assertIn("NotNode", node_types)
+        self.assertIn("GetMouseWorldPositionNode", node_types)
+        self.assertIn("MovePlantNode", node_types)
+
+        move_node = next(n for n in _ctx.nodes if n.node_type == "MovePlantNode")
+        conns = ConnectionManager.get_connections()
+        move_inputs = {c.target_port.name: c.source_node.node_type for c in conns if c.target_node.id == move_node.id}
+        self.assertEqual(move_inputs.get("列"), "GetMouseWorldPositionNode")
+        self.assertEqual(move_inputs.get("行"), "GetMouseWorldPositionNode")
+
 
 if __name__ == "__main__":
     unittest.main()

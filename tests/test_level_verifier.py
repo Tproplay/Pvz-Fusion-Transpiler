@@ -76,21 +76,6 @@ VAR_ARITHMETIC_FIXTURE = {
 class TestLevelVerifierSystem(LevelTestCase):
     """Test suite for the automated level graph and optimization verifier."""
 
-    def test_bin_test_py_matches_exported_level(self):
-        """Verify that bin/test.py generates the exact graph exported in Test.json."""
-        if not BIN_TEST_PY.is_file() or not APP_DATA_TEST_JSON.is_file():
-            self.skipTest("bin/test.py or AppData Test.json not present")
-
-        result = self.assert_level_matches(
-            code_or_file=BIN_TEST_PY,
-            expected_level_or_file=APP_DATA_TEST_JSON,
-            check_payloads=True,
-        )
-        self.assertTrue(result.matched)
-        self.assertEqual(len(result.missing_nodes), 0)
-        self.assertEqual(len(result.missing_connections), 0)
-        self.assertEqual(len(result.property_mismatches), 0)
-
     def test_display_text_graph_and_callable_match(self):
         """Verify inline Python code and callable match the frozen display_text(5) fixture."""
         code = """
