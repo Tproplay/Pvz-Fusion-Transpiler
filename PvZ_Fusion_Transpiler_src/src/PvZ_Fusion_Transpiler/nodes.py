@@ -1822,8 +1822,13 @@ def bind_zombie(zombie: Any = None, binding_name: str = "首领", **kwargs: Any)
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     return node
 
-def get_bound_plant(binding_name: str = "守护目标", **kwargs: Any) -> GetBoundPlantNode:
-    return GetBoundPlantNode(bindingName=kwargs.pop("bindingName", binding_name), **kwargs)
+def get_bound_plant(binding_name: Any = "守护目标", **kwargs: Any) -> GetBoundPlantNode:
+    if isinstance(binding_name, str):
+        return GetBoundPlantNode(bindingName=kwargs.pop("bindingName", binding_name), **kwargs)
+    node = GetBoundPlantNode(**kwargs)
+    if binding_name is not None:
+        to_string_port(binding_name).connect(node.port_input_string_Name)
+    return node
 
 def get_bound_zombie(binding_name: str = "首领", **kwargs: Any) -> GetBoundZombieNode:
     return GetBoundZombieNode(bindingName=kwargs.pop("bindingName", binding_name), **kwargs)

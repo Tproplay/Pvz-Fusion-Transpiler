@@ -115,7 +115,7 @@ class WorldObject:
         return nodes.bind_plant(plant=plant_ref, binding_name=name)
 
     @staticmethod
-    def get_bound_plant(name: str = "守护目标") -> Plant:
+    def get_bound_plant(name: Any = "守护目标") -> Plant:
         node = nodes.get_bound_plant(binding_name=name)
         return Plant(node.port_output_plant_Plant)
 

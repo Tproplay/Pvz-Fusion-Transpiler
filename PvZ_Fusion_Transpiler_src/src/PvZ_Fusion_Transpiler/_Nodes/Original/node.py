@@ -94,11 +94,18 @@ class Node(ABC):
     def create_port(self, name : str, direction : PortDirection, port_type : PortType) -> Port:
         port = Port(self, name, direction, port_type)
         self.ports.append(port)
-        if direction == PortDirection.Input and port_type == PortType.Trigger and name == "触发":
+        if direction == PortDirection.Input and port_type == PortType.Trigger and name in ("触发", "Trigger"):
             if _ctx.trigger_stack and not getattr(self, "_skip_auto_wire", False):
                 prev = _ctx.trigger_stack[-1]
                 prev_id = getattr(prev, "id", str(prev))
-                prev_trigger = getattr(prev, "out_trigger", "触发")
+                prev_trigger = getattr(prev, "out_trigger", None)
+                if prev_trigger is None:
+                    out_triggers = [
+                        p.name
+                        for p in getattr(prev, "ports", [])
+                        if p.direction == PortDirection.Output and p.port_type == PortType.Trigger
+                    ]
+                    prev_trigger = out_triggers[0] if out_triggers else "触发"
                 _ctx.add_connection(prev_id, prev_trigger, self.id, name)
                 from ..Extensions.Abstract.execution_path import ExecutionPath
                 if not isinstance(prev, ExecutionPath):
@@ -180,6 +187,7 @@ class Node(ABC):
             "triggerfalse": "else",
             "triggertrue": "then",
             "column": "col",
+            "lane": "row",
             "portoutputintcolumn": "col",
         }
         target_name = attr_alias_map.get(normalized_name, normalized_name)

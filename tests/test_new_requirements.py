@@ -427,6 +427,89 @@ class TestNewRequirements(unittest.TestCase):
         self.assertEqual(move_inputs.get("列"), "GetMouseWorldPositionNode")
         self.assertEqual(move_inputs.get("行"), "GetMouseWorldPositionNode")
 
+    def test_bind_object_get_bound_plant_and_mouse_runtime_ports(self):
+        from PvZ_Fusion_Transpiler.Core.connection_manager import ConnectionManager
+        _ctx.clear()
+        ConnectionManager.clear()
+
+        found = pft.BoolVar(name="found")
+        with pft.Trigger.OnKeyDown(KeyCode.K):
+            with pft.Lawnf.for_each_plant_on_lawn() as plant:
+                with pft.If((plant.plantType == pft.PlantType.SunFlower) & (found == False)):
+                    bind_node = pft.Object.bind(pft.Object.from_plant(plant), "sunflower")
+                    found.set(True)
+
+        with pft.Trigger.OnGameStart():
+            with pft.Time.OnFixedUpdate(5):
+                bound_p = pft.Object.get_bound_plant("sunflower")
+                bound_p.move(pft.Mouse.col, pft.Mouse.row)
+                pos_port = pft.Mouse.position
+
+        conns = ConnectionManager.get_connections()
+
+        # Verify BindObjectNode runtime ports and connections
+        self.assertEqual(bind_node.port_input_trigger_Trigger.name, "Trigger")
+        self.assertEqual(bind_node.port_input_string_Name.name, "Name")
+        self.assertEqual(bind_node.port_input_gameobject_GameObject.name, "Object")
+        self.assertEqual(bind_node.port_output_trigger_Complete.name, "On Complete")
+        self.assertEqual(bind_node.port_output_trigger_Failed.name, "Game Over")
+
+        bind_in = {c.target_port.name: (c.source_node.node_type, c.source_port.name) for c in conns if c.target_node.id == bind_node.id}
+        self.assertEqual(bind_in.get("Trigger"), ("BranchNode", "真（触发）"))
+        self.assertEqual(bind_in.get("Name"), ("StringValueNode", "值"))
+        self.assertEqual(bind_in.get("Object"), ("PlantToObjectNode", "Object"))
+
+        # Verify GetBoundPlantNode runtime ports and connections
+        gbp_node = next(n for n in _ctx.nodes if n.node_type == "GetBoundPlantNode")
+        self.assertEqual(gbp_node.port_input_string_Name.name, "Name")
+        self.assertEqual(gbp_node.port_output_plant_Plant.name, "Plant")
+        self.assertEqual(gbp_node.port_output_bool_Exists.name, "Exists")
+        self.assertEqual(gbp_node.dump_data().get("bindingName"), "sunflower")
+        gbp_out = [(c.source_port.name, c.target_node.node_type, c.target_port.name) for c in conns if c.source_node.id == gbp_node.id]
+        self.assertEqual(gbp_out, [("Plant", "MovePlantNode", "植物")])
+
+        # Verify GetMouseWorldPositionNode runtime ports and connections
+        mouse_nodes = [n for n in _ctx.nodes if n.node_type == "GetMouseWorldPositionNode"]
+        self.assertEqual(len(mouse_nodes), 3)
+        for mn in mouse_nodes:
+            self.assertEqual(mn.port_output_vector3_Position.name, "Coordinates")
+            self.assertEqual(mn.port_output_int_Row.name, "Lane")
+            self.assertEqual(mn.port_output_int_Col.name, "Column")
+        self.assertEqual(pos_port.name, "Coordinates")
+
+        mouse_out_ports = sorted(
+            (c.source_port.name, c.target_port.name)
+            for c in conns
+            if c.source_node.node_type == "GetMouseWorldPositionNode"
+        )
+        self.assertEqual(mouse_out_ports, [("Column", "列"), ("Lane", "行")])
+
+        # Verify sequential fallback auto-wiring from BindObjectNode when on trigger_stack
+        _ctx.clear()
+        ConnectionManager.clear()
+        with pft.Trigger.OnGameStart():
+            _ctx.trigger_stack.pop()
+            b = pft.Object.bind(pft.Object.create("Pin"), "pin")
+            _ctx.trigger_stack.append(b)
+            pft.Game.Stage.change("next")
+        seq_conns = ConnectionManager.get_connections()
+        b_out = [c for c in seq_conns if c.source_node.id == b.id and c.target_node.node_type == "ChangeStageNode"]
+        self.assertEqual(len(b_out), 1)
+        self.assertEqual(b_out[0].source_port.name, "On Complete")
+        self.assertNotIn("out_trigger", b.dump_data())
+
+        # Verify dynamic StringVar name connects to GetBoundPlantNode.Name input
+        _ctx.clear()
+        ConnectionManager.clear()
+        tag = pft.StringVar("sunflower", name="tag")
+        dyn_plant = pft.Object.get_bound_plant(tag)
+        self.assertIsNotNone(dyn_plant.ref)
+        dyn_gbp = next(n for n in _ctx.nodes if n.node_type == "GetBoundPlantNode")
+        dyn_in = [c for c in ConnectionManager.get_connections() if c.target_node.id == dyn_gbp.id]
+        self.assertEqual(len(dyn_in), 1)
+        self.assertEqual(dyn_in[0].target_port.name, "Name")
+        self.assertEqual(dyn_in[0].source_node.node_type, "GetStringVariableValueNode")
+
 
 if __name__ == "__main__":
     unittest.main()
