@@ -74,7 +74,7 @@ class IntVar:
         if cls_name == "IntVar":
             return val.value
         if cls_name == "FloatVar":
-            return nodes.float_to_int(float_val=val.value).port_output_int_IntValue
+            return nodes.float_to_int(float_val=val.value).port_output_int_Int
         if cls_name == "BoolVar":
             raise TypeError("Cannot implicitly cast a BoolVar to an IntVar.")
         if isinstance(val, bool):
@@ -86,9 +86,9 @@ class IntVar:
         return to_int_port(val)
 
     def to_string(self, decimals: int = 0) -> Any:
-        f_val = nodes.int_to_float(int_val=self.value).port_output_float_FloatValue
+        f_val = nodes.int_to_float(int_val=self.value).port_output_float_Float
         dec_node = nodes.int_value(val=decimals).port_output_int_Value
-        return nodes.float_to_string(float_val=f_val, decimals=dec_node).port_output_string_StringValue
+        return nodes.float_to_string(float_val=f_val, decimals=dec_node).port_output_string_String
 
     def __iadd__(self, other: Any) -> IntVar:
         self.set(nodes.int_add(a=self.value, b=self._cast_to_int(other)).port_output_int_Sum)
@@ -101,7 +101,7 @@ class IntVar:
         return self
 
     def __isub__(self, other: Any) -> IntVar:
-        self.set(nodes.int_subtract(a=self.value, b=self._cast_to_int(other)).port_output_int_Difference)
+        self.set(nodes.int_subtract(a=self.value, b=self._cast_to_int(other)).port_output_int_Diff)
         return self
 
     def __imod__(self, other: Any) -> IntVar:
@@ -115,10 +115,10 @@ class IntVar:
         return nodes.int_add(a=self._cast_to_int(other), b=self.value).port_output_int_Sum
 
     def __sub__(self, other: Any) -> Any:
-        return nodes.int_subtract(a=self.value, b=self._cast_to_int(other)).port_output_int_Difference
+        return nodes.int_subtract(a=self.value, b=self._cast_to_int(other)).port_output_int_Diff
 
     def __rsub__(self, other: Any) -> Any:
-        return nodes.int_subtract(a=self._cast_to_int(other), b=self.value).port_output_int_Difference
+        return nodes.int_subtract(a=self._cast_to_int(other), b=self.value).port_output_int_Diff
 
     def __mod__(self, other: Any) -> Any:
         return nodes.int_modulo(a=self.value, b=self._cast_to_int(other)).port_output_int_Remainder
@@ -137,35 +137,35 @@ class IntVar:
         return nodes.int_divide(a=self._cast_to_int(other), b=self.value).port_output_int_Quotient
 
     def __itruediv__(self, other: Any) -> IntVar:
-        f_self = nodes.int_to_float(int_val=self.value).port_output_float_FloatValue
+        f_self = nodes.int_to_float(int_val=self.value).port_output_float_Float
         f_other = to_float_port(other)
         f_result = nodes.divide_node(a=f_self, b=f_other).port_output_float_Quotient
-        self.set(nodes.float_to_int(float_val=f_result).port_output_int_IntValue)
+        self.set(nodes.float_to_int(float_val=f_result).port_output_int_Int)
         return self
 
     def __truediv__(self, other: Any) -> Any:
-        f_self = nodes.int_to_float(int_val=self.value).port_output_float_FloatValue
+        f_self = nodes.int_to_float(int_val=self.value).port_output_float_Float
         f_other = to_float_port(other)
         return nodes.divide_node(a=f_self, b=f_other).port_output_float_Quotient
 
     def __rtruediv__(self, other: Any) -> Any:
-        f_self = nodes.int_to_float(int_val=self.value).port_output_float_FloatValue
+        f_self = nodes.int_to_float(int_val=self.value).port_output_float_Float
         f_other = to_float_port(other)
         return nodes.divide_node(a=f_other, b=f_self).port_output_float_Quotient
 
     def __imul__(self, other: Any) -> IntVar:
         if isinstance(other, float) or (hasattr(other, "value") and getattr(other, "__class__").__name__ == "FloatVar"):
-            f_self = nodes.int_to_float(int_val=self.value).port_output_float_FloatValue
+            f_self = nodes.int_to_float(int_val=self.value).port_output_float_Float
             f_other = to_float_port(other)
             f_result = nodes.multiply_node(a=f_self, b=f_other).port_output_float_Product
-            self.set(nodes.float_to_int(float_val=f_result).port_output_int_IntValue)
+            self.set(nodes.float_to_int(float_val=f_result).port_output_int_Int)
         else:
             self.set(nodes.int_multiply(a=self.value, b=self._cast_to_int(other)).port_output_int_Product)
         return self
 
     def __mul__(self, other: Any) -> Any:
         if isinstance(other, float) or (hasattr(other, "value") and getattr(other, "__class__").__name__ == "FloatVar"):
-            f_self = nodes.int_to_float(int_val=self.value).port_output_float_FloatValue
+            f_self = nodes.int_to_float(int_val=self.value).port_output_float_Float
             f_other = to_float_port(other)
             return nodes.multiply_node(a=f_self, b=f_other).port_output_float_Product
         return nodes.int_multiply(a=self.value, b=self._cast_to_int(other)).port_output_int_Product
@@ -262,7 +262,7 @@ class FloatVar:
         if cls_name == "FloatVar":
             return val.value
         if cls_name == "IntVar":
-            return nodes.int_to_float(int_val=val.value).port_output_float_FloatValue
+            return nodes.int_to_float(int_val=val.value).port_output_float_Float
         if cls_name == "BoolVar":
             raise TypeError("Cannot implicitly cast a BoolVar to a FloatVar.")
         if isinstance(val, bool):
@@ -275,7 +275,7 @@ class FloatVar:
 
     def to_string(self, decimals: int = 2) -> Any:
         dec_node = nodes.int_value(val=decimals).port_output_int_Value
-        return nodes.float_to_string(float_val=self.value, decimals=dec_node).port_output_string_StringValue
+        return nodes.float_to_string(float_val=self.value, decimals=dec_node).port_output_string_String
 
     def __iadd__(self, other: Any) -> FloatVar:
         self.set(nodes.add_node(a=self.value, b=self._cast_to_float(other)).port_output_float_Result)
@@ -288,7 +288,7 @@ class FloatVar:
         return self
 
     def __isub__(self, other: Any) -> FloatVar:
-        self.set(nodes.subtract_node(a=self.value, b=self._cast_to_float(other)).port_output_float_Difference)
+        self.set(nodes.subtract_node(a=self.value, b=self._cast_to_float(other)).port_output_float_Diff)
         return self
 
     def __imul__(self, other: Any) -> FloatVar:
@@ -306,10 +306,10 @@ class FloatVar:
         return nodes.add_node(a=self._cast_to_float(other), b=self.value).port_output_float_Result
 
     def __sub__(self, other: Any) -> Any:
-        return nodes.subtract_node(a=self.value, b=self._cast_to_float(other)).port_output_float_Difference
+        return nodes.subtract_node(a=self.value, b=self._cast_to_float(other)).port_output_float_Diff
 
     def __rsub__(self, other: Any) -> Any:
-        return nodes.subtract_node(a=self._cast_to_float(other), b=self.value).port_output_float_Difference
+        return nodes.subtract_node(a=self._cast_to_float(other), b=self.value).port_output_float_Diff
 
     def __mul__(self, other: Any) -> Any:
         return nodes.multiply_node(a=self.value, b=self._cast_to_float(other)).port_output_float_Product

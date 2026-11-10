@@ -1,4 +1,12 @@
 from .context import _ctx, Config, export
+from .level_config import (
+    BoardConfig,
+    BoardTag,
+    PlantData,
+    PlantEntry,
+    OrderedSpawn,
+    LevelConfig,
+)
 from .connection_manager import (
     ConnectionManager,
     Connection,
@@ -27,6 +35,12 @@ __all__ = [
     "_ctx",
     "Config",
     "export",
+    "BoardConfig",
+    "BoardTag",
+    "PlantData",
+    "PlantEntry",
+    "OrderedSpawn",
+    "LevelConfig",
     "ConnectionManager",
     "Connection",
     "Port",

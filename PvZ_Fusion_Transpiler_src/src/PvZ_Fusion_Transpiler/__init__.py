@@ -3,6 +3,12 @@ from .Core import (
     Config,
     export,
     _ctx,
+    BoardConfig,
+    BoardTag,
+    PlantData,
+    PlantEntry,
+    OrderedSpawn,
+    LevelConfig,
     VariableAsset,
     IntVariableAsset,
     FloatVariableAsset,
@@ -10,6 +16,7 @@ from .Core import (
     StringVariableAsset,
     ListVariableAsset,
 )
+from ._Data import PlantType, ZombieType
 from .Core.connection_manager import (
     ConnectionManager,
     Connection,
@@ -24,6 +31,7 @@ from . import _Data as Data
 from . import nodes
 from . import StdLib
 from . import Types
+from . import Math
 from . import port_types
 
 from ._Nodes.Extensions import (
@@ -81,7 +89,6 @@ from ._Nodes.Extensions import (
     Object,
     Vector3,
     ObjectTransform,
-    Math,
     Compare,
     Int,
     Float,
@@ -95,6 +102,8 @@ if "_Nodes" not in sys.modules:
 if "PvZ_Fusion_Transpiler.Data" not in sys.modules:
     sys.modules["PvZ_Fusion_Transpiler.Data"] = _Data
 
+level_config = _ctx.level_config
+
 Extensions = _Nodes.Extensions
 Extentions = _Nodes.Extensions
 sys.modules["PvZ_Fusion_Transpiler._Nodes.Extentions"] = _Nodes.Extensions
@@ -104,6 +113,15 @@ sys.modules["PvZ_Fusion_Transpiler.Extentions"] = _Nodes.Extensions
 __all__ = [
     "Config",
     "export",
+    "level_config",
+    "BoardConfig",
+    "BoardTag",
+    "PlantData",
+    "PlantEntry",
+    "OrderedSpawn",
+    "LevelConfig",
+    "PlantType",
+    "ZombieType",
     "Extensions",
     "Extentions",
     "_ctx",

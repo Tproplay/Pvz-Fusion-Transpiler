@@ -87,8 +87,8 @@ class PlantTypeList:
         reset_branch = nodes.branch_node(condition=match_toggle.port_output_bool_State)
         loop = nodes.for_each_plant_type(type_list=self._current_port)
 
-        curr_type = loop.port_output_planttype_CurrentPlantType
-        is_equal = nodes.compare_plant_type(a=curr_type, b=target_port).port_output_bool_Equal
+        curr_type = loop.port_output_planttype_CurrentType
+        is_equal = nodes.compare_plant_type(a=curr_type, b=target_port).port_output_bool_Same
         match_branch = nodes.branch_node(condition=is_equal)
         state_guard = nodes.branch_node(condition=match_toggle.port_output_bool_State)
 
@@ -106,7 +106,8 @@ class PlantTypeList:
         _ctx.add_connection(state_guard.id, state_guard.port_output_trigger_Else.name, match_toggle.id, match_toggle.port_input_trigger_Trigger.name)
 
         _ctx.trigger_stack.extend(saved_stack)
-        _ctx.trigger_stack[-1] = ExecutionPath(loop.port_output_trigger_LoopComplete)
+        if _ctx.trigger_stack:
+            _ctx.trigger_stack[-1] = ExecutionPath(loop.port_output_trigger_LoopComplete)
 
         return match_toggle.port_output_bool_State
 

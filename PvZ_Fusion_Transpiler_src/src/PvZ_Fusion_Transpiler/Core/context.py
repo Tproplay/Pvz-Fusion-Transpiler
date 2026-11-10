@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import atexit
+import copy
 import json
 import math
 import os
@@ -9,6 +10,7 @@ import uuid
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set
 
 from .connection_manager import ConnectionManager, Connection, Port
+from .level_config import LevelConfig, DEFAULT_LEVEL_TEMPLATE
 
 if TYPE_CHECKING:
     from .._Nodes.Original.node import Node
@@ -54,6 +56,7 @@ class CompilerContext:
         self.trigger_stack: List[Any] = []
         self._configured: bool = False
         self._exported_file: Optional[str] = None
+        self.level_config: LevelConfig = LevelConfig()
 
     def _generate_uuid(self) -> str:
         return uuid.uuid4().hex
@@ -130,6 +133,7 @@ class CompilerContext:
         self._configured = False
         self._exported_file = None
         ConnectionManager.clear()
+        self.level_config.reset()
 
     def export(self, filepath: Optional[str] = None) -> Optional[str]:
         """Compiles and exports the level to a JSON file.
@@ -216,8 +220,11 @@ class CompilerContext:
             "RefIds": [n.dump_ref() for n in all_nodes] + [v.dump_ref() for v in all_variables],
         }
 
-        # If file exists, update references and eventNodeGraph, leave everything else as it is.
-        # If file doesn't exist, just dump references and eventNodeGraph.
+        # If file exists, update references and eventNodeGraph, and merge level_config if dirty.
+        # If file doesn't exist, start from DEFAULT_LEVEL_TEMPLATE if level_config is dirty,
+        # otherwise dump references and eventNodeGraph.
+        is_dirty = self.level_config.is_dirty()
+        effective_name = os.path.splitext(os.path.basename(target_path))[0]
         if os.path.isfile(target_path):
             with open(target_path, "r", encoding="utf-8") as f:
                 level_data = json.load(f)
@@ -230,13 +237,22 @@ class CompilerContext:
                 if ev:
                     event_node_graph["executionVersion"] = ev
 
+            if is_dirty:
+                self.level_config.merge_into(level_data, file_name=effective_name)
+
             level_data["eventNodeGraph"] = event_node_graph
             level_data["references"] = references
         else:
-            level_data = {
-                "eventNodeGraph": event_node_graph,
-                "references": references,
-            }
+            if is_dirty:
+                level_data = copy.deepcopy(DEFAULT_LEVEL_TEMPLATE)
+                self.level_config.merge_into(level_data, file_name=effective_name)
+                level_data["eventNodeGraph"] = event_node_graph
+                level_data["references"] = references
+            else:
+                level_data = {
+                    "eventNodeGraph": event_node_graph,
+                    "references": references,
+                }
 
         os.makedirs(os.path.dirname(os.path.abspath(target_path)), exist_ok=True)
         with open(target_path, "w", encoding="utf-8") as f:

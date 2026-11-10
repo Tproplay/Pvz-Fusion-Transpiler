@@ -94,16 +94,16 @@ class Port:
             return port
         from .._Nodes.Original.TypeConvert.int_to_float_node import IntToFloatNode
         conv = IntToFloatNode()
-        port.connect(conv.get_input("IntValue"))
-        return conv.get_output("FloatValue")
+        port.connect(conv.port_input_int_Int)
+        return conv.port_output_float_Float
 
     def _ensure_int(self, port: Port) -> Port:
         if not port._is_float_port():
             return port
         from .._Nodes.Original.TypeConvert.float_to_int_node import FloatToIntNode
         conv = FloatToIntNode()
-        port.connect(conv.get_input("FloatValue"))
-        return conv.get_output("IntValue")
+        port.connect(conv.port_input_float_Float)
+        return conv.port_output_int_Int
 
     def __add__(self, other: Any) -> Port:
         from ..port_types import to_port

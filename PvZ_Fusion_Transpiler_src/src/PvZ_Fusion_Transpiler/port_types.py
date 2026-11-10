@@ -161,8 +161,26 @@ def to_bool_port(val: Any) -> Port:
 
 def to_string_port(val: Any) -> Port:
     """Converts a value or port into a String output port."""
+    if isinstance(val, bool):
+        from ._Nodes.Original.Constants.string_value_node import StringValueNode
+        return StringValueNode(value="True" if val else "False").port_output_string_Value
+
     port = to_port(val)
-    if port.port_type == PortType.Int:
+    if port.port_type == PortType.Bool:
+        from ._Nodes.Extensions.Branching import If
+        from ._Nodes.Extensions.Variables import StringVar
+        res = StringVar(start_val="False", name="BoolStr")
+        with If(port) as flow:
+            res.set("True")
+        with flow.Else:
+            res.set("False")
+        return res.value
+    elif port.port_type == PortType.GameObject:
+        from ._Nodes.Original.TypeConvert.object_to_string_node import ObjectToStringNode
+        conv = ObjectToStringNode()
+        port.connect(conv.port_input_gameobject_GameObject)
+        return conv.port_output_string_String
+    elif port.port_type == PortType.Int:
         from ._Nodes.Original.TypeConvert.int_to_string_node import IntToStringNode
         conv = IntToStringNode()
         port.connect(conv.port_input_int_Value)

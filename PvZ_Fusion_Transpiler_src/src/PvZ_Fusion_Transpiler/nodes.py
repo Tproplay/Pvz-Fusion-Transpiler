@@ -475,7 +475,7 @@ def modify_plant_attack(plant: Any = None, multiplier: Any = None, **kwargs: Any
     if plant is not None:
         to_port(plant).connect(node.port_input_plant_Plant)
     if multiplier is not None:
-        to_float_port(multiplier).connect(node.port_input_float_Multiplier)
+        to_float_port(multiplier).connect(node.port_input_float_AttackBonus)
     return node
 
 def modify_plant_health(plant: Any = None, multiplier: Any = None, **kwargs: Any) -> ModifyPlantHealthNode:
@@ -483,7 +483,7 @@ def modify_plant_health(plant: Any = None, multiplier: Any = None, **kwargs: Any
     if plant is not None:
         to_port(plant).connect(node.port_input_plant_Plant)
     if multiplier is not None:
-        to_float_port(multiplier).connect(node.port_input_float_Multiplier)
+        to_float_port(multiplier).connect(node.port_input_float_HealthBonus)
     return node
 
 def damage_zombie(zombie: Any = None, damage: Any = None, **kwargs: Any) -> DamageZombieNode:
@@ -499,7 +499,7 @@ def modify_zombie_health(zombie: Any = None, ratio: Any = None, **kwargs: Any) -
     if zombie is not None:
         to_port(zombie).connect(node.port_input_zombie_Zombie)
     if ratio is not None:
-        to_float_port(ratio).connect(node.port_input_float_Ratio)
+        to_float_port(ratio).connect(node.port_input_float_HealthMultiplier)
     return node
 
 def move_zombie(zombie: Any = None, row: Any = None, column: Any = None, **kwargs: Any) -> MoveZombieNode:
